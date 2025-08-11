@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="LBDairy Clients Management Dashboard">
+    <meta name="author" content="LBDairy">
+
+    <title>LBDairy - Clients Management</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+    
+    <!-- DataTables Core -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #3c5aa6;
+            --success-color: #1cc88a;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --info-color: #36b9cc;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --border-color: #e3e6f0;
+            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        /* Enhanced Card Styling */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-bottom: none;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h6 {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header h6::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        /* Enhanced Table Styling */
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        .table thead th {
+            background-color: #f8f9fc;
+            border-top: none;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            padding: 1rem 0.75rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.05);
+            transform: scale(1.001);
+        }
+
+        .table tbody td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Enhanced Button Styling */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #17a673 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c73e1d 100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-outline-danger {
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            background: transparent;
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+            color: white;
+        }
+
+        /* Enhanced Search and Export Controls */
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-container input {
+            border-radius: 25px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .search-container::before {
+            content: '\f002';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            z-index: 2;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        /* Enhanced Modal Styling */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-paid, .status-active {
+            background: rgba(28, 200, 138, 0.1);
+            color: #25855a;
+            border: 1px solid rgba(28, 200, 138, 0.3);
+        }
+
+        .status-partial {
+            background: rgba(246, 194, 62, 0.1);
+            color: #d69e2e;
+            border: 1px solid rgba(246, 194, 62, 0.3);
+        }
+
+        .status-unpaid {
+            background: rgba(231, 74, 59, 0.1);
+            color: #c53030;
+            border: 1px solid rgba(231, 74, 59, 0.3);
+        }
+
+        /* Page Header Enhancement */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card.primary {
+            border-left-color: var(--primary-color);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+
+        .stat-card.info {
+            border-left-color: var(--info-color);
+        }
+
+        .stat-card .icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin: 0 auto 1rem;
+        }
+
+        .stat-card.primary .icon {
+            background: rgba(78, 115, 223, 0.1);
+            color: var(--primary-color);
+        }
+
+        .stat-card.success .icon {
+            background: rgba(28, 200, 138, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-card.danger .icon {
+            background: rgba(231, 74, 59, 0.1);
+            color: var(--danger-color);
+        }
+
+        .stat-card.info .icon {
+            background: rgba(54, 185, 204, 0.1);
+            color: var(--info-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--dark-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-card .footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Client Info Card */
+        .client-info-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .client-info-card .icon {
+            width: 4rem;
+            height: 4rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .table-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                min-width: 100%;
+            }
+
+            .export-controls {
+                justify-content: center;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .card-header .ms-auto {
+                margin-left: 0 !important;
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* DataTables Custom Styling */
+        .dataTables_wrapper .dataTables_info {
+            color: var(--dark-color);
+            font-size: 0.85rem;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 6px;
+            margin: 0 2px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-color);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <br><br><br>
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="users.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">LBDairy</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Tools
+            </div>
+            
+            <!-- Nav Items - Tools -->
+            <li class="nav-item">
+                <a class="nav-link" href="scan.html">
+                    <i class="fas fa-fw fa-qrcode"></i>
+                    <span>Scan Livestock</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="manage_livestock.html">
+                    <i class="fas fa-fw fa-list"></i>
+                    <span>Manage Livestock</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="manage_issues.html">
+                    <i class="fas fa-fw fa-exclamation-triangle"></i>
+                    <span>Manage Issues</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="issue_alert.html">
+                    <i class="fas fa-fw fa-bell"></i>
+                    <span>Issue Alerts</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="farm_analysis.html">
+                    <i class="fas fa-fw fa-chart-line"></i>
+                    <span>Farm Analysis</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="livestock_analysis.html">
+                    <i class="fas fa-fw fa-chart-bar"></i>
+                    <span>Livestock Analysis</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Operation
+            </div>
+            
+            <!-- Nav Items - Operation -->
+            <li class="nav-item">
+                <a class="nav-link" href="sales.html">
+                    <i class="fas fa-fw fa-shopping-cart"></i>
+                    <span>Sales</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="clients.html">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="suppliers.html">
+                    <i class="fas fa-fw fa-truck"></i>
+                    <span>Suppliers</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="production.html">
+                    <i class="fas fa-fw fa-tasks"></i>
+                    <span>Production</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="expenses.html">
+                    <i class="fas fa-fw fa-receipt"></i>
+                    <span>Expenses</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="inventory.html">
+                    <i class="fas fa-fw fa-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="schedule.html">
+                    <i class="fas fa-fw fa-calendar"></i>
+                    <span>Calendar</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Account
+            </div>
+            
+            <!-- Nav Items - Account -->
+            <li class="nav-item">
+                <a class="nav-link" href="profile-f.html">
+                    <i class="fas fa-fw fa-user-circle"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow fixed-top">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Logo -->
+                    <a class="navbar-brand d-flex align-items-center" href="users.html" style="padding: 0;">
+                        <img src="img/logo.png" alt="LBDairy Logo" style="height: 60px; width: auto; margin-right: 10px;">
+                    </a>
+
+                    <!-- Topbar Search -->
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2" id="navbarSearch" style="padding: 0.375rem 0.75rem; height: 38px;">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="performNavbarSearch()">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Notifications
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-chart-line text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">2 hours ago</div>
+                                        New Report Available: Weekly productivity analytics report is ready
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-thermometer-half text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">1 day ago</div>
+                                        Temperature Alert: Barn temperature exceeds 32°C
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-tint text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">3 hours ago</div>
+                                        Low Milk Yield Alert: Average yield dropped by 12% this week
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Notifications</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Farmer</span>
+                                <img class="img-profile rounded-circle" src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="profile-f.html">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <br><br><br><br>
+                    
+                    <!-- Page Header -->
+                    <div class="page-header fade-in">
+                        <h1>
+                            <i class="fas fa-users"></i>
+                            Clients Management
+                        </h1>
+                        <p>Manage your client relationships and transactions</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-container fade-in">
+                        <div class="stat-card primary">
+                            <div class="icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-number">6</div>
+                            <div class="stat-label">Total Clients</div>
+                            <div class="footer">
+                                <span>View all clients</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Active Clients</div>
+                            <div class="footer">
+                                <span>Currently active</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card danger">
+                            <div class="icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Outstanding Balance</div>
+                            <div class="footer">
+                                <span>Requires attention</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="stat-number">1</div>
+                            <div class="stat-label">New This Month</div>
+                            <div class="footer">
+                                <span>January 2025</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clients Table Card -->
+                    <div class="card shadow mb-4 fade-in">
+                        <div class="card-header">
+                            <h6>
+                                <i class="fas fa-users"></i>
+                                Client Directory
+                            </h6>
+                            <div class="table-controls">
+                                <div class="search-container">
+                                    <input type="text" class="form-control custom-search" id="customSearch" placeholder="Search clients...">
+                                </div>
+                                <div class="export-controls">
+                                    <button class="btn btn-primary btn-sm" onclick="addNewClient()">
+                                        <i class="fas fa-plus mr-2"></i>Add Client
+                                    </button>
+                                    <div class="btn-group">
+                                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                            <i class="fas fa-download mr-2"></i>Export
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                                <i class="fas fa-file-csv mr-2"></i>Download CSV
+                                            </a>
+                                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                                <i class="fas fa-file-pdf mr-2"></i>Download PDF
+                                            </a>
+                                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                                <i class="fas fa-file-image mr-2"></i>Download PNG
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" onclick="printTable()">
+                                        <i class="fas fa-print mr-2"></i>Print
+                                    </button>
+                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#historyModal">
+                                        <i class="fas fa-history mr-2"></i>History
+                                    </button>
+                                    <button class="btn btn-success btn-sm" onclick="document.getElementById('csvInput').click()">
+                                        <i class="fas fa-file-import mr-2"></i>Import
+                                    </button>
+                                    <input type="file" id="csvInput" accept=".csv" style="display: none;" onchange="importCSV(event)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="clientsTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Client ID</th>
+                                            <th>Name</th>
+                                            <th>Address</th>
+                                            <th>Contact</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code class="small">CL001</code></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop" class="rounded-circle mr-2" width="32" height="32" alt="Juan">
+                                                    <span class="font-weight-bold">Juan Dela Cruz</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted">123 Mabini St., Manila</td>
+                                            <td class="text-muted">+63 912 345 6789</td>
+                                            <td><span class="status-badge status-paid">Active</span></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                                                        <i class="fas fa-book"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code class="small">CL002</code></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop" class="rounded-circle mr-2" width="32" height="32" alt="Maria">
+                                                    <span class="font-weight-bold">Maria Santos</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted">456 Rizal Ave., Quezon City</td>
+                                            <td class="text-muted">+63 917 234 5678</td>
+                                            <td><span class="status-badge status-partial">Partial</span></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                                                        <i class="fas fa-book"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code class="small">CL003</code></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop" class="rounded-circle mr-2" width="32" height="32" alt="Jose">
+                                                    <span class="font-weight-bold">Jose Rizal</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted">789 Bonifacio St., Makati</td>
+                                            <td class="text-muted">+63 918 345 6789</td>
+                                            <td><span class="status-badge status-paid">Active</span></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                                                        <i class="fas fa-book"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code class="small">CL004</code></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop" class="rounded-circle mr-2" width="32" height="32" alt="Ana">
+                                                    <span class="font-weight-bold">Ana Cruz</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted">321 Aguinaldo Blvd., Pasig</td>
+                                            <td class="text-muted">+63 919 456 7890</td>
+                                            <td><span class="status-badge status-unpaid">Overdue</span></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                                                        <i class="fas fa-book"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code class="small">CL005</code></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop" class="rounded-circle mr-2" width="32" height="32" alt="Pedro">
+                                                    <span class="font-weight-bold">Pedro Pascual</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted">654 Katipunan Ave., Marikina</td>
+                                            <td class="text-muted">+63 920 567 8901</td>
+                                            <td><span class="status-badge status-paid">Active</span></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                                                        <i class="fas fa-book"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code class="small">CL006</code></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop" class="rounded-circle mr-2" width="32" height="32" alt="Liza">
+                                                    <span class="font-weight-bold">Liza Dizon</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted">987 Quirino Hwy., Caloocan</td>
+                                            <td class="text-muted">+63 921 678 9012</td>
+                                            <td><span class="status-badge status-partial">Partial</span></td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                                                        <i class="fas fa-book"></i>
+                                                    </button>
+                                                    <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; LBDairy 2025</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Client Ledger Modal -->
+    <div class="modal fade" id="clientLedgerModal" tabindex="-1" role="dialog" aria-labelledby="clientLedgerLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-book"></i>
+                        Client Ledger
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Client Info Card -->
+                    <div class="client-info-card">
+                        <div class="d-flex align-items-center">
+                            <div class="icon mr-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1" id="ledgerClientName">Juan Dela Cruz</h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <small class="opacity-75">Client ID:</small>
+                                        <div id="clientInfoId">CL001</div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <small class="opacity-75">Address:</small>
+                                        <div id="clientInfoAddress">123 Mabini St., Manila</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-light btn-sm" onclick="showAddLedgerEntryForm()">
+                                <i class="fas fa-plus mr-2"></i>Add Entry
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ledger Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0" id="ledgerTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Total (₱)</th>
+                                    <th>Due (₱)</th>
+                                    <th>Received (₱)</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Ledger entries will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Add Entry Form -->
+                    <form id="ledgerEntryForm" class="mt-4" style="display:none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Add New Ledger Entry</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="ledgerDate" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="ledgerDate" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="ledgerType" class="form-label">Type</label>
+                                        <select class="form-control" id="ledgerType" required>
+                                            <option value="" disabled selected>Select</option>
+                                            <option value="Goat">Goat</option>
+                                            <option value="Cow">Cow</option>
+                                            <option value="Carabao">Carabao</option>
+                                            <option value="Milk">Milk</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="ledgerTotal" class="form-label">Total (₱)</label>
+                                        <input type="number" class="form-control" id="ledgerTotal" min="0" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="ledgerDue" class="form-label">Due (₱)</label>
+                                        <input type="number" class="form-control" id="ledgerDue" min="0" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="ledgerReceived" class="form-label">Received (₱)</label>
+                                        <input type="number" class="form-control" id="ledgerReceived" min="0" required>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-primary w-100">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Client Modal -->
+    <div class="modal fade" id="addClientModal" tabindex="-1" role="dialog" aria-labelledby="addClientLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus"></i>
+                        Add New Client
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addClientForm">
+                        <div class="form-group">
+                            <label for="clientId">Client ID</label>
+                            <input type="text" class="form-control" id="clientId" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientName">Full Name</label>
+                            <input type="text" class="form-control" id="clientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientAddress">Address</label>
+                            <textarea class="form-control" id="clientAddress" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientContact">Contact Number</label>
+                            <input type="tel" class="form-control" id="clientContact" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" form="addClientForm" class="btn btn-primary">Add Client</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-history"></i>
+                        Client Transaction History
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="sortHistory">Sort By:</label>
+                            <select id="sortHistory" class="form-control">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="filterHistory">Filter By:</label>
+                            <select id="filterHistory" class="form-control">
+                                <option value="all">All Types</option>
+                                <option value="milk">Milk</option>
+                                <option value="goat">Goat</option>
+                                <option value="cow">Cow</option>
+                                <option value="carabao">Carabao</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Client ID</th>
+                                    <th>Type</th>
+                                    <th>Amount (₱)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- History entries will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="exportHistory()">Export History</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Confirm Deletion
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-3">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <p class="mb-0">Are you sure you want to delete this client? This action cannot be undone.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                        <i class="fas fa-trash mr-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title" id="logoutModalLabel">
+                        <i class="fas fa-sign-out-alt"></i> Ready to Leave?
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pt-0">
+                    Select "Logout" below if you are ready to end your current session.
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                    <a href="login.html" class="btn btn-primary" id="globalLogoutBtn">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Details Modal -->
+    <div class="modal fade" id="clientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="clientDetailsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-info-circle"></i>
+                        Client Details
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Client Basic Info Rectangle -->
+                    <div class="container my-3">
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-12 col-md-8">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Client Information</div>
+                                                <div class="mb-1"><strong>Name:</strong> <span id="clientDetailsName">Juan Dela Cruz</span></div>
+                                                <div class="mb-1"><strong>Client ID:</strong> <span id="clientDetailsId">CL001</span></div>
+                                                <div class="mb-1"><strong>Address:</strong> <span id="clientDetailsAddress">123 Mabini St., Manila</span></div>
+                                                <div class="mb-1"><strong>Contact:</strong> <span id="clientDetailsContact">+63 912 345 6789</span></div>
+                                                <div class="mb-1"><strong>Status:</strong> <span id="clientDetailsStatus">Active</span></div>
+                                            </div>
+                                            <div class="col-12 col-md-4 text-center">
+                                                <i class="fas fa-user fa-3x text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3 text-primary">Transaction Summary</h6>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Purchases</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalPurchases">₱125,000</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Outstanding Balance</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="outstandingBalance">₱15,000</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3 text-primary">Recent Activity</h6>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="small text-muted mb-2">Last 3 transactions</div>
+                                    <div id="recentActivity">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Goat Purchase</span>
+                                            <span class="text-success">₱8,500</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Milk Delivery</span>
+                                            <span class="text-info">₱2,300</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Cow Purchase</span>
+                                            <span class="text-success">₱35,000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="viewLedgerFromDetails()">
+                        <i class="fas fa-book"></i> View Ledger
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- DataTables Core -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Buttons -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
+    <!-- Required libraries for PDF/Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        let dataTable;
+        let currentClientId = null;
+        let ledgerDeleteIndex = null;
+
+        // Client data
+        const clientLedgers = {
+            'CL001': [
+                {date: '2024-06-01', type: 'Milk', total: 5000, due: 2000, received: 3000, status: 'Partial'},
+                {date: '2024-06-10', type: 'Cow', total: 15000, due: 0, received: 15000, status: 'Paid'}
+            ],
+            'CL002': [
+                {date: '2024-06-03', type: 'Goat', total: 3000, due: 3000, received: 0, status: 'Unpaid'}
+            ],
+            'CL003': [],
+            'CL004': [],
+            'CL005': [],
+            'CL006': []
+        };
+
+        const clientNames = {
+            'CL001': 'Juan Dela Cruz',
+            'CL002': 'Maria Santos',
+            'CL003': 'Jose Rizal',
+            'CL004': 'Ana Cruz',
+            'CL005': 'Pedro Pascual',
+            'CL006': 'Liza Dizon'
+        };
+
+        const clientHistoryData = [
+            { date: '2024-06-01', clientId: 'CL001', type: 'Milk', amount: 5000 },
+            { date: '2024-06-03', clientId: 'CL002', type: 'Goat', amount: 3000 },
+            { date: '2024-06-05', clientId: 'CL003', type: 'Cow', amount: 15000 },
+            { date: '2024-06-07', clientId: 'CL004', type: 'Carabao', amount: 20000 },
+            { date: '2024-06-10', clientId: 'CL005', type: 'Milk', amount: 7000 },
+            { date: '2024-06-12', clientId: 'CL006', type: 'Goat', amount: 4000 }
+        ];
+
+        $(document).ready(function() {
+            // Initialize DataTable
+            dataTable = $('#clientsTable').DataTable({
+                dom: 'Bfrtip',
+                searching: true,
+                paging: true,
+                info: true,
+                ordering: true,
+                lengthChange: false,
+                pageLength: 10,
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csvHtml5',
+                        title: 'LBDairy_Clients_' + new Date().toISOString().split('T')[0],
+                        className: 'd-none'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'LBDairy Clients Report',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        className: 'd-none',
+                        customize: function(doc) {
+                            doc.styles.title.fontSize = 16;
+                            doc.styles.title.alignment = 'center';
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        title: 'LBDairy Clients Report',
+                        className: 'd-none'
+                    }
+                ],
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search clients...",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ clients",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    },
+                    emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No clients found</h5><p>There are no clients to display at this time.</p></div>'
+                },
+                columnDefs: [
+                    {
+                        targets: [0, 1, 4, 5],
+                        className: 'text-nowrap'
+                    }
+                ]
+            });
+
+            // Hide default DataTables elements
+            $('.dataTables_filter').hide();
+            $('.dt-buttons').hide();
+
+            // Custom search functionality
+            $('#customSearch').on('keyup', function() {
+                dataTable.search(this.value).draw();
+            });
+
+            // Navbar search functionality
+            $('#navbarSearch').on('keypress', function(e) {
+                if (e.which === 13) { // Enter key
+                    performNavbarSearch();
+                }
+            });
+
+            // Initialize history modal
+            renderClientHistory();
+
+            // Add fade-in animation to rows
+            setTimeout(() => {
+                document.querySelectorAll('#clientsTable tbody tr').forEach((row, index) => {
+                    setTimeout(() => {
+                        row.style.opacity = '0';
+                        row.style.transform = 'translateY(10px)';
+                        row.style.transition = 'all 0.3s ease';
+                        setTimeout(() => {
+                            row.style.opacity = '1';
+                            row.style.transform = 'translateY(0)';
+                        }, 50);
+                    }, index * 50);
+                });
+            }, 100);
+        });
+
+        // Show ledger modal for a client
+        function viewLedger(btn) {
+            const row = btn.closest('tr');
+            const clientId = row.children[0].textContent.trim();
+            currentClientId = clientId;
+            
+            document.getElementById('ledgerClientName').textContent = clientNames[clientId] || clientId;
+            document.getElementById('clientInfoId').textContent = clientId;
+            document.getElementById('clientInfoAddress').textContent = row.children[2].textContent || '';
+            
+            renderLedgerTable();
+            document.getElementById('ledgerEntryForm').style.display = 'none';
+            
+            $('#clientLedgerModal').modal('show');
+        }
+
+        // Render ledger table rows
+        function renderLedgerTable() {
+            const tbody = document.querySelector('#ledgerTable tbody');
+            tbody.innerHTML = '';
+            const ledger = clientLedgers[currentClientId] || [];
+            
+            ledger.forEach((entry, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${entry.date}</td>
+                    <td>${entry.type}</td>
+                    <td>₱${parseInt(entry.total).toLocaleString()}</td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm" value="${entry.due}" min="0" style="width:100px;" onchange="updateDueAmount(${idx}, this.value)">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm" value="${entry.received !== undefined ? entry.received : ''}" min="0" style="width:100px;" onchange="updateReceivedAmount(${idx}, this.value)">
+                    </td>
+                    <td>
+                        <select class="form-control form-control-sm" onchange="updateLedgerStatus(${idx}, this.value)">
+                            <option value="Unpaid" ${entry.status === 'Unpaid' ? 'selected' : ''}>Unpaid</option>
+                            <option value="Partial" ${entry.status === 'Partial' ? 'selected' : ''}>Partial</option>
+                            <option value="Paid" ${entry.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-danger btn-sm" onclick="confirmLedgerDelete(${idx})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Update due amount in ledger
+        function updateDueAmount(idx, value) {
+            if (clientLedgers[currentClientId] && clientLedgers[currentClientId][idx]) {
+                clientLedgers[currentClientId][idx].due = parseInt(value) || 0;
+            }
+        }
+
+        // Update received amount in ledger
+        function updateReceivedAmount(idx, value) {
+            if (clientLedgers[currentClientId] && clientLedgers[currentClientId][idx]) {
+                clientLedgers[currentClientId][idx].received = parseInt(value) || 0;
+            }
+        }
+
+        // Update status in ledger
+        function updateLedgerStatus(idx, value) {
+            if (clientLedgers[currentClientId] && clientLedgers[currentClientId][idx]) {
+                clientLedgers[currentClientId][idx].status = value;
+            }
+        }
+
+        // Show add ledger entry form
+        function showAddLedgerEntryForm() {
+            document.getElementById('ledgerEntryForm').reset();
+            document.getElementById('ledgerEntryForm').style.display = '';
+        }
+
+        // Handle ledger entry form submit
+        document.getElementById('ledgerEntryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const date = document.getElementById('ledgerDate').value;
+            const type = document.getElementById('ledgerType').value;
+            const total = document.getElementById('ledgerTotal').value;
+            const due = document.getElementById('ledgerDue').value;
+            const received = document.getElementById('ledgerReceived').value;
+            
+            if (!clientLedgers[currentClientId]) clientLedgers[currentClientId] = [];
+            
+            // Determine status based on amounts
+            let status = 'Unpaid';
+            if (parseInt(received) >= parseInt(total)) {
+                status = 'Paid';
+            } else if (parseInt(received) > 0) {
+                status = 'Partial';
+            }
+            
+            clientLedgers[currentClientId].push({
+                date, type, total, due, received, status
+            });
+            
+            renderLedgerTable();
+            document.getElementById('ledgerEntryForm').style.display = 'none';
+            showNotification('Ledger entry added successfully!', 'success');
+        });
+
+        // Delete ledger entry
+        function confirmLedgerDelete(idx) {
+            ledgerDeleteIndex = idx;
+            $('#confirmDeleteModal').modal('show');
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (ledgerDeleteIndex !== null && currentClientId) {
+                clientLedgers[currentClientId].splice(ledgerDeleteIndex, 1);
+                renderLedgerTable();
+                ledgerDeleteIndex = null;
+                $('#confirmDeleteModal').modal('hide');
+                showNotification('Ledger entry deleted successfully!', 'success');
+            }
+        });
+
+        // Add new client
+        function addNewClient() {
+            document.getElementById('addClientForm').reset();
+            document.getElementById('clientId').value = getNextClientId();
+            $('#addClientModal').modal('show');
+        }
+
+        // Generate next client ID
+        function getNextClientId() {
+            const rows = document.querySelectorAll('#clientsTable tbody tr');
+            let maxId = 0;
+            rows.forEach(row => {
+                const cell = row.querySelector('td code');
+                if (cell) {
+                    const match = cell.textContent.match(/^CL(\d+)$/);
+                    if (match) {
+                        const num = parseInt(match[1], 10);
+                        if (num > maxId) maxId = num;
+                    }
+                }
+            });
+            return 'CL' + String(maxId + 1).padStart(3, '0');
+        }
+
+        // Handle add client form submit
+        document.getElementById('addClientForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const clientId = document.getElementById('clientId').value;
+            const clientName = document.getElementById('clientName').value;
+            const clientAddress = document.getElementById('clientAddress').value;
+            const clientContact = document.getElementById('clientContact').value;
+
+            // Add new row to table
+            const tbody = document.querySelector('#clientsTable tbody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><code class="small">${clientId}</code></td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&fit=crop" class="rounded-circle mr-2" width="32" height="32" alt="${clientName}">
+                        <span class="font-weight-bold">${clientName}</span>
+                    </div>
+                </td>
+                <td class="text-muted">${clientAddress}</td>
+                <td class="text-muted">${clientContact}</td>
+                <td><span class="status-badge status-paid">Active</span></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                            <i class="fas fa-book"></i>
+                        </button>
+                        <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+
+            // Add to client names
+            clientNames[clientId] = clientName;
+            clientLedgers[clientId] = [];
+
+            $('#addClientModal').modal('hide');
+            dataTable.row.add(tr).draw();
+            showNotification('Client added successfully!', 'success');
+        });
+
+        // Confirm delete client
+        function confirmDelete(btn) {
+            $('#confirmDeleteModal').modal('show');
+            
+            document.getElementById('confirmDeleteBtn').onclick = function() {
+                const row = btn.closest('tr');
+                dataTable.row(row).remove().draw();
+                $('#confirmDeleteModal').modal('hide');
+                showNotification('Client deleted successfully!', 'success');
+            };
+        }
+
+        // View client details
+        function viewDetails(btn) {
+            const row = btn.closest('tr');
+            const cells = row.querySelectorAll('td');
+            
+            // Extract client information from the row
+            const clientId = cells[0].querySelector('code').textContent;
+            const clientName = cells[1].querySelector('.font-weight-bold').textContent;
+            const clientAddress = cells[2].textContent;
+            const clientContact = cells[3].textContent;
+            const clientStatus = cells[4].querySelector('.status-badge').textContent;
+            
+            // Populate the details modal
+            document.getElementById('clientDetailsName').textContent = clientName;
+            document.getElementById('clientDetailsId').textContent = clientId;
+            document.getElementById('clientDetailsAddress').textContent = clientAddress;
+            document.getElementById('clientDetailsContact').textContent = clientContact;
+            document.getElementById('clientDetailsStatus').textContent = clientStatus;
+            
+            // Calculate and display transaction summary
+            const ledger = clientLedgers[clientId] || [];
+            const totalPurchases = ledger.reduce((sum, entry) => sum + entry.total, 0);
+            const outstandingBalance = ledger.reduce((sum, entry) => sum + (entry.total - entry.received), 0);
+            
+            document.getElementById('totalPurchases').textContent = `₱${totalPurchases.toLocaleString()}`;
+            document.getElementById('outstandingBalance').textContent = `₱${outstandingBalance.toLocaleString()}`;
+            
+            // Show recent activity
+            const recentActivity = document.getElementById('recentActivity');
+            const recentEntries = ledger.slice(-3).reverse();
+            recentActivity.innerHTML = '';
+            
+            if (recentEntries.length > 0) {
+                recentEntries.forEach(entry => {
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'd-flex justify-content-between mb-1';
+                    activityItem.innerHTML = `
+                        <span>${entry.type}</span>
+                        <span class="text-success">₱${entry.total.toLocaleString()}</span>
+                    `;
+                    recentActivity.appendChild(activityItem);
+                });
+            } else {
+                recentActivity.innerHTML = '<div class="text-muted">No recent transactions</div>';
+            }
+            
+            $('#clientDetailsModal').modal('show');
+        }
+
+        // View ledger from details modal
+        function viewLedgerFromDetails() {
+            $('#clientDetailsModal').modal('hide');
+            const clientId = document.getElementById('clientDetailsId').textContent;
+            
+            // Find the row with this client ID and trigger viewLedger
+            const rows = document.querySelectorAll('#clientsTable tbody tr');
+            rows.forEach(row => {
+                const idCell = row.querySelector('td code');
+                if (idCell && idCell.textContent === clientId) {
+                    const ledgerBtn = row.querySelector('button[onclick="viewLedger(this)"]');
+                    if (ledgerBtn) {
+                        viewLedger(ledgerBtn);
+                    }
+                }
+            });
+        }
+
+        // Export functions
+        function exportCSV() {
+            dataTable.button('.buttons-csv').trigger();
+        }
+
+        function exportPDF() {
+            dataTable.button('.buttons-pdf').trigger();
+        }
+
+        function printTable() {
+            dataTable.button('.buttons-print').trigger();
+        }
+
+        function exportPNG() {
+            const table = document.querySelector('#clientsTable');
+            html2canvas(table, {
+                backgroundColor: '#ffffff',
+                scale: 2
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'LBDairy_Clients_' + new Date().toISOString().split('T')[0] + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // Import CSV
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const csv = e.target.result;
+                    const lines = csv.split('\n');
+                    // Process CSV data here
+                    console.log('CSV imported:', lines);
+                    showNotification('CSV imported successfully!', 'success');
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // History functions
+        function renderClientHistory(sortOrder = 'newest', filter = 'all') {
+            let filteredData = [...clientHistoryData];
+            if (filter !== 'all') {
+                filteredData = filteredData.filter(entry => entry.type.toLowerCase() === filter);
+            }
+            if (sortOrder === 'oldest') {
+                filteredData.reverse();
+            }
+
+            const historyTableBody = document.getElementById('historyTableBody');
+            historyTableBody.innerHTML = '';
+
+            filteredData.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.date}</td>
+                    <td><code class="small">${entry.clientId}</code></td>
+                    <td>${entry.type}</td>
+                    <td>₱${entry.amount.toLocaleString()}</td>
+                `;
+                historyTableBody.appendChild(row);
+            });
+        }
+
+        document.getElementById('sortHistory').addEventListener('change', (event) => {
+            renderClientHistory(event.target.value, document.getElementById('filterHistory').value);
+        });
+
+        document.getElementById('filterHistory').addEventListener('change', (event) => {
+            renderClientHistory(document.getElementById('sortHistory').value, event.target.value);
+        });
+
+        function exportHistory() {
+            let csv = 'Date,Client ID,Type,Amount (₱)\n';
+            clientHistoryData.forEach(entry => {
+                csv += `${entry.date},${entry.clientId},${entry.type},${entry.amount}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'client_history.csv';
+            link.click();
+        }
+
+        // Show notification function
+        function showNotification(message, type) {
+            const notification = $(`
+                <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
+                     style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `);
+            
+            $('body').append(notification);
+            
+            setTimeout(() => {
+                notification.alert('close');
+            }, 5000);
+        }
+
+        function performNavbarSearch() {
+            const searchTerm = document.getElementById('navbarSearch').value.trim();
+            
+            if (searchTerm === '') {
+                showSearchNotification('Please enter a search term');
+                return;
+            }
+
+            // Search functionality for clients data
+            const searchResults = searchClientsData(searchTerm);
+            
+            // Show notification with results
+            showSearchNotification(`Found ${searchResults.length} result(s) for "${searchTerm}"`);
+            
+            // Clear search field after 2 seconds
+            setTimeout(() => {
+                document.getElementById('navbarSearch').value = '';
+            }, 2000);
+        }
+
+        function searchClientsData(searchTerm) {
+            // Search through clients data
+            const results = [];
+            const searchLower = searchTerm.toLowerCase();
+            
+            // Search in clients table
+            const tableRows = document.querySelectorAll('#clientsTable tbody tr');
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(searchLower)) {
+                        const clientId = cells[0].textContent.trim();
+                        const clientName = cells[1].querySelector('.font-weight-bold')?.textContent || '';
+                        const address = cells[2].textContent;
+                        const contact = cells[3].textContent;
+                        const status = cells[4].textContent;
+                        
+                        results.push({
+                            type: 'client',
+                            clientId: clientId,
+                            name: clientName,
+                            address: address,
+                            contact: contact,
+                            status: status
+                        });
+                        return; // Break out of inner loop once found
+                    }
+                });
+            });
+            
+            return results;
+        }
+
+        function showSearchNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
+            notification.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                <i class="fas fa-search"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

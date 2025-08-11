@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>LBDAIRY: SuperAdmin - Productivity Analysis</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+    
+    <!-- DataTables Core -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #3c5aa6;
+            --success-color: #1cc88a;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --info-color: #36b9cc;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --border-color: #e3e6f0;
+            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        /* Enhanced Card Styling */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-bottom: none;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h6 {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header h6::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        /* Enhanced Table Styling */
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        .table thead th {
+            background-color: #f8f9fc;
+            border-top: none;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            padding: 1rem 0.75rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.05);
+            transform: scale(1.001);
+        }
+
+        .table tbody td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .table tbody td a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .table tbody td a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Enhanced Button Styling */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #17a673 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c73e1d 100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+        }
+
+        .btn-light {
+            background: white;
+            color: var(--dark-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-light:hover {
+            background: #f8f9fc;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* Enhanced Search and Export Controls */
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-container input {
+            border-radius: 25px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .search-container::before {
+            content: '\f002';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            z-index: 2;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        /* Enhanced Modal Styling */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        /* Status Select Styling */
+        .status-active {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+        }
+
+        .status-inactive {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+        }
+
+        .form-select {
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        /* Page Header Enhancement */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--dark-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Badge Styling */
+        .badge {
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Chart Container */
+        #lineChart {
+            max-height: 400px;
+            border-radius: 8px;
+        }
+
+        /* Analysis Text */
+        #analysisText {
+            background: #f8f9fc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .table-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                min-width: 100%;
+            }
+
+            .export-controls {
+                justify-content: center;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .d-sm-flex {
+                flex-direction: column !important;
+                gap: 1rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* DataTables Custom Styling */
+        .dataTables_wrapper .dataTables_info {
+            color: var(--dark-color);
+            font-size: 0.85rem;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 6px;
+            margin: 0 2px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-color);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: relative;
+            opacity: 0.7;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <br><br><br>
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="superadmin.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-file"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">LBDairy</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Tools
+            </div>
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="manage-admins.html">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Manage Admins</span>
+                </a>
+            </li>
+            <!-- Nav Item - Calendar -->
+            <li class="nav-item">
+                <a class="nav-link" href="manage-farmers.html">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Manage Farmers</span></a>
+            </li>
+            <!-- Nav Item - Calendar -->
+            <li class="nav-item">
+                <a class="nav-link" href="manage-farms.html">
+                    <i class="fas fa-fw fa-university"></i>
+                    <span>Manage Farms</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="manage-analysis.html">
+                    <i class="fas fa-fw fa-database"></i>
+                    <span>Productivity Analysis</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="audit-logs.html">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Logs</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="profile-sa.html">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Profile</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow fixed-top">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Logo -->
+                    <a class="navbar-brand d-flex align-items-center" href="superadmin.html" style="padding: 0;">
+                        <img src="img/logo.png" alt="LBDairy Logo" style="height: 60px; width: auto; margin-right: 10px;">
+                    </a>
+
+                    <!-- Topbar Search -->
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Notifications
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 10, 2025</div>
+                                        Farm F005 productivity dropped by 15%. Investigation required.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-chart-line text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 01, 2025</div>
+                                        Monthly productivity report generated successfully.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 05, 2025</div>
+                                        <span class="font-weight-bold">New analysis data available for review!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Super Admin</span>
+                                <img class="img-profile rounded-circle" src="img/ronaldo.png">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <br><br><br><br>
+                    
+                    <!-- Page Header -->
+                    <div class="page-header fade-in">
+                        <h1>
+                            <i class="fas fa-chart-line"></i>
+                            Farm Productivity Analysis
+                        </h1>
+                        <p>Monitor and analyze farm productivity metrics across all registered farms</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-container fade-in">
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--success-color);" id="activeFarms">6</div>
+                            <div class="stat-label">Active Farms</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--danger-color);" id="inactiveFarms">4</div>
+                            <div class="stat-label">Inactive Farms</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--info-color);" id="totalFarms">10</div>
+                            <div class="stat-label">Total Farms</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--warning-color);" id="avgProductivity">112L</div>
+                            <div class="stat-label">Avg. Productivity</div>
+                        </div>
+                    </div>
+
+                    <!-- Farm Analysis Table -->
+                    <div class="card shadow mb-4 fade-in">
+                        <div class="card-header">
+                            <h6>
+                                <i class="fas fa-chart-bar"></i>
+                                Farm Management Overview
+                            </h6>
+                            <div class="table-controls">
+                                <div class="search-container">
+                                    <input type="text" class="form-control custom-search" id="customSearch" placeholder="Search farms...">
+                                </div>
+                                <div class="export-controls">
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="fas fa-download fa-sm"></i> Generate Report
+                                    </button>
+                                    
+                                    <div class="btn-group">
+                                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                            <i class="fas fa-download"></i> Export
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                                <i class="fas fa-file-csv"></i> CSV
+                                            </a>
+                                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                                <i class="fas fa-file-pdf"></i> PDF
+                                            </a>
+                                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                                <i class="fas fa-image"></i> PNG
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" onclick="printTable()">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Farm ID</th>
+                                            <th>Owner Name</th>
+                                            <th>Contact Email</th>
+                                            <th>Phone Number</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F001')" class="fw-bold">F001</a></td>
+                                            <td>Juan Dela Cruz</td>
+                                            <td>juan.delacruz@example.com</td>
+                                            <td>(123) 456-7890</td>
+                                            <td><span class="badge bg-success">Abang</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F002')" class="fw-bold">F002</a></td>
+                                            <td>Maria Reyes</td>
+                                            <td>maria.reyes@example.com</td>
+                                            <td>(098) 765-4321</td>
+                                            <td><span class="badge bg-success">Aliliw</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active">Active</option>
+                                                    <option value="inactive" selected>Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F003')" class="fw-bold">F003</a></td>
+                                            <td>Josefa Reyes</td>
+                                            <td>josefa.reyes@example.com</td>
+                                            <td>(555) 123-4567</td>
+                                            <td><span class="badge bg-success">Atulinao</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F004')" class="fw-bold">F004</a></td>
+                                            <td>Maria Rivera</td>
+                                            <td>maria.rivera@example.com</td>
+                                            <td>(321) 654-0987</td>
+                                            <td><span class="badge bg-success">Ayuti (Poblacion)</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F005')" class="fw-bold">F005</a></td>
+                                            <td>Antonio Santos</td>
+                                            <td>antonio.santos@example.com</td>
+                                            <td>(222) 333-4444</td>
+                                            <td><span class="badge bg-success">Binangonan</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active">Active</option>
+                                                    <option value="inactive" selected>Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F006')" class="fw-bold">F006</a></td>
+                                            <td>Lucia Garcia</td>
+                                            <td>lucia.garcia@example.com</td>
+                                            <td>(777) 888-9999</td>
+                                            <td><span class="badge bg-success">Calamba</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F007')" class="fw-bold">F007</a></td>
+                                            <td>Carlos Mendoza</td>
+                                            <td>carlos.mendoza@example.com</td>
+                                            <td>(444) 555-6666</td>
+                                            <td><span class="badge bg-success">San Pablo</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F008')" class="fw-bold">F008</a></td>
+                                            <td>Rosa Villanueva</td>
+                                            <td>rosa.villanueva@example.com</td>
+                                            <td>(111) 222-3333</td>
+                                            <td><span class="badge bg-success">Lucena</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active">Active</option>
+                                                    <option value="inactive" selected>Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F009')" class="fw-bold">F009</a></td>
+                                            <td>Pedro Cruz</td>
+                                            <td>pedro.cruz@example.com</td>
+                                            <td>(666) 777-8888</td>
+                                            <td><span class="badge bg-success">Tayabas</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" onclick="openDetailsModal('F010')" class="fw-bold">F010</a></td>
+                                            <td>Gloria Mendoza</td>
+                                            <td>gloria.mendoza@example.com</td>
+                                            <td>(999) 000-1111</td>
+                                            <td><span class="badge bg-success">Luisiana</span></td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active">Active</option>
+                                                    <option value="inactive" selected>Inactive</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; LBDairy 2025</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Productivity Analysis Modal -->
+    <div class="modal fade" id="productivityModal" tabindex="-1" role="dialog" aria-labelledby="productivityModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productivityModalLabel">
+                        <i class="fas fa-chart-line me-2"></i>Farm Productivity Analysis
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h6 class="mb-1">Farm ID: <span id="modalFarmId" class="text-primary font-weight-bold">F001</span></h6>
+                            <small class="text-muted">Last updated: <span id="lastUpdated">Jan 15, 2025</span></small>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                <i class="fas fa-download me-1"></i>Export Report
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#" onclick="exportCSVChart()">
+                                    <i class="fas fa-file-csv me-2"></i>Download as CSV
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportPNGChart()">
+                                    <i class="fas fa-file-image me-2"></i>Download as PNG
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportPDFChart()">
+                                    <i class="fas fa-file-pdf me-2"></i>Download as PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    
+                    <div id="analysisText">
+                        <strong>Analysis:</strong>  
+                        Farm productivity showed a consistent upward trend from January through June, indicating improved agricultural practices and effective resource management. The gradual increase suggests that crop rotation, soil enhancement, efficient irrigation, and labor planning are positively impacting overall output.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title" id="logoutModalLabel">
+                        <i class="fas fa-sign-out-alt"></i> Ready to Leave?
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pt-0">
+                    Select "Logout" below if you are ready to end your current session.
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                    <a href="login.html" class="btn btn-primary" id="globalLogoutBtn">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- DataTables Core -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Buttons -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
+    <!-- Required libraries for PDF/Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Farm data for productivity analysis
+        const farmData = {
+            F001: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [120, 135, 150, 140, 160, 170],
+                analysis: 'Milk production showed a consistent upward trend from January through June, indicating improved herd health and effective farm management practices. The gradual increase suggests that nutritional plans, breeding programs, and overall livestock care are positively impacting productivity. Continued monitoring and optimization of feed quality and animal welfare are recommended to sustain this growth. Seasonal factors and environmental conditions may also influence production levels, so maintaining detailed records will help in identifying further areas for improvement.'
+            },
+            F002: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [90, 95, 100, 105, 110, 115],
+                analysis: 'Moderate milk production growth from January to June with potential seasonal dips. The farm shows steady improvement but may benefit from enhanced feeding protocols and veterinary care optimization.'
+            },
+            F003: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [80, 85, 95, 100, 110, 125],
+                analysis: 'Strong productivity growth trajectory with excellent month-over-month improvements. This farm demonstrates effective implementation of modern dairy practices and consistent herd management.'
+            },
+            F004: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [100, 98, 105, 110, 115, 120],
+                analysis: 'Stable production with gradual increases. Minor fluctuation in February suggests potential feed quality issues that were successfully addressed in subsequent months.'
+            },
+            F005: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [70, 75, 80, 85, 90, 95],
+                analysis: 'Consistent improvement pattern indicating effective farm management strategies. Though production levels are moderate, the upward trend suggests good potential for continued growth.'
+            },
+            F006: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [130, 125, 135, 140, 150, 160],
+                analysis: 'High-performing farm with strong production levels. Brief dip in February was quickly recovered, demonstrating resilient farm management and effective problem-solving capabilities.'
+            },
+            F007: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [110, 115, 120, 125, 130, 135],
+                analysis: 'Excellent consistent growth pattern with no significant fluctuations. This farm serves as a model for steady productivity improvement and reliable output management.'
+            },
+            F008: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [85, 90, 88, 95, 100, 105],
+                analysis: 'Moderate performance with room for improvement. March dip suggests potential management issues that were successfully addressed. Continued support and monitoring recommended.'
+            },
+            F009: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [95, 100, 110, 115, 120, 125],
+                analysis: 'Strong performance with accelerating growth in the latter months. This farm demonstrates effective scaling of operations and optimization of dairy practices.'
+            },
+            F010: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [75, 80, 85, 90, 95, 100],
+                analysis: 'Steady improvement throughout the period with consistent monthly gains. While production levels are moderate, the reliable growth pattern indicates strong management potential.'
+            }
+        };
+
+        let chartInstance;
+        let dataTable;
+
+        // Initialize DataTable
+        $(document).ready(function() {
+            dataTable = $('#dataTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'csvHtml5', title: 'Farm_Analysis_Report', className: 'd-none' },
+                    { extend: 'pdfHtml5', title: 'Farm_Analysis_Report', orientation: 'landscape', className: 'd-none' },
+                    { extend: 'print', title: 'Farm Analysis Report', className: 'd-none' }
+                ],
+                pageLength: 10,
+                responsive: true,
+                searching: true,
+                paging: true,
+                info: true,
+                ordering: true,
+                lengthChange: false,
+                language: {
+                    search: '',
+                    searchPlaceholder: 'Search farms...',
+                    emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No farms found</h5><p>There are no farm records to display at this time.</p></div>'
+                }
+            });
+
+            // Hide default search and buttons
+            $('.dataTables_filter').hide();
+            $('.dt-buttons').hide();
+
+            // Custom search functionality
+            $('#customSearch').on('keyup', function() {
+                dataTable.search(this.value).draw();
+            });
+
+            // Add fade-in animation to cards
+            $('.card').addClass('fade-in');
+        });
+
+        // Open productivity modal
+        function openDetailsModal(farmId) {
+            const farm = farmData[farmId];
+            if (!farm) {
+                showNotification('No data available for this farm ID', 'warning');
+                return;
+            }
+
+            document.getElementById('modalFarmId').innerText = farmId;
+            document.getElementById('analysisText').innerHTML = `<strong>Analysis:</strong> ${farm.analysis}`;
+
+            // Destroy existing chart
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Create new chart
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: farm.labels,
+                    datasets: [{
+                        label: 'Milk Production (liters)',
+                        data: farm.data,
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        borderColor: 'rgba(78, 115, 223, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Inter'
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'L';
+                                },
+                                font: {
+                                    family: 'Inter'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter'
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+
+            // Show modal
+            $('#productivityModal').modal('show');
+        }
+
+        // Update activity status styling
+        function updateActivity(selectElement) {
+            const activity = selectElement.value;
+            const row = $(selectElement).closest('tr');
+            
+            // Update visual feedback
+            if (activity === 'active') {
+                row.removeClass('table-danger').addClass('table-success');
+                showNotification('Farm status updated to Active', 'success');
+            } else {
+                row.removeClass('table-success').addClass('table-danger');
+                showNotification('Farm status updated to Inactive', 'warning');
+            }
+            
+            console.log(`Farm activity updated to: ${activity}`);
+        }
+
+        // Export functions for table
+        function exportCSV() {
+            dataTable.button('.buttons-csv').trigger();
+        }
+
+        function exportPDF() {
+            dataTable.button('.buttons-pdf').trigger();
+        }
+
+        function printTable() {
+            dataTable.button('.buttons-print').trigger();
+        }
+
+        function exportPNG() {
+            html2canvas(document.querySelector("#dataTable")).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Farm_Analysis_Report.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        // Export functions for chart
+        function exportCSVChart() {
+            const farmId = document.getElementById('modalFarmId').textContent;
+            const farm = farmData[farmId];
+            const headers = ['Month', 'Milk Production (liters)'];
+            const rows = farm.labels.map((month, i) => [month, farm.data[i]]);
+
+            let csvContent = "data:text/csv;charset=utf-8,"
+                + headers.join(",") + "\n"
+                + rows.map(e => e.join(",")).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", farmId + "_production_analysis.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportPNGChart() {
+            const canvas = document.getElementById('lineChart');
+            const link = document.createElement('a');
+            link.download = 'production_analysis_chart.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function exportPDFChart() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            pdf.setFontSize(18);
+            pdf.text("Farm Productivity Analysis", 14, 22);
+
+            const canvas = document.getElementById('lineChart');
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 15, 30, 180, 100);
+
+            const farmId = document.getElementById('modalFarmId').textContent;
+            const farm = farmData[farmId];
+            pdf.setFontSize(12);
+            pdf.text(farm.analysis, 14, 140, { maxWidth: 180 });
+
+            pdf.save(farmId + '_production_analysis.pdf');
+        }
+
+        // Notification system
+        function showNotification(message, type) {
+            const notification = $(`
+                <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
+                     style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `);
+            
+            $('body').append(notification);
+            
+            setTimeout(() => {
+                notification.alert('close');
+            }, 5000);
+        }
+
+        // Add loading states to buttons
+        $('button[onclick]').on('click', function() {
+            const $btn = $(this);
+            $btn.addClass('loading').prop('disabled', true);
+            setTimeout(() => {
+                $btn.removeClass('loading').prop('disabled', false);
+            }, 1000);
+        });
+
+        document.getElementById('globalLogoutBtn')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+
+</html>

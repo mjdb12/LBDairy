@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>LBDAIRY: Farmers - Scan Livestock</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #3c5aa6;
+            --success-color: #1cc88a;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --info-color: #36b9cc;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --border-color: #e3e6f0;
+            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        /* Enhanced Card Styling */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-bottom: none;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h6 {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header h6::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        /* Enhanced Button Styling */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #17a673 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c73e1d 100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+        }
+
+        /* Enhanced Modal Styling */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        /* Enhanced Table Styling */
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        .table thead th {
+            background-color: #f8f9fc;
+            border-top: none;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            padding: 1rem 0.75rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.05);
+        }
+
+        .table tbody td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Page Header Enhancement */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* QR Scanner Container Enhancement */
+        .scanner-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin: 2rem auto;
+            max-width: 700px;
+            transition: all 0.3s ease;
+        }
+
+        .scanner-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
+        }
+
+        #qr-reader-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            overflow: hidden;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--primary-color);
+        }
+
+        #qr-reader {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qr-reader video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            border-radius: inherit;
+        }
+
+        /* Scanner Controls Enhancement */
+        .scanner-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .scanner-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scanner-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+            transform: scale(1.1);
+            color: white;
+        }
+
+        .scanner-btn:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Scanner Info Panel */
+        .scanner-info {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fc 0%, #e3e6f0 100%);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .scanner-info h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .scanner-info p {
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .status-ready {
+            background: rgba(28, 200, 138, 0.9);
+            color: white;
+        }
+
+        .status-scanning {
+            background: rgba(246, 194, 62, 0.9);
+            color: white;
+        }
+
+        .status-error {
+            background: rgba(231, 74, 59, 0.9);
+            color: white;
+        }
+
+        /* Scanner Overlay */
+        .scanner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(78, 115, 223, 0.8);
+            border-radius: 12px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .scanner-overlay::before,
+        .scanner-overlay::after,
+        .scanner-overlay .corner::before,
+        .scanner-overlay .corner::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--primary-color);
+        }
+
+        .scanner-overlay::before {
+            top: -3px;
+            left: -3px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .scanner-overlay::after {
+            top: -3px;
+            right: -3px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .scanner-overlay .corner:nth-child(1)::before {
+            bottom: -3px;
+            left: -3px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .scanner-overlay .corner:nth-child(1)::after {
+            bottom: -3px;
+            right: -3px;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(78, 115, 223, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(78, 115, 223, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(78, 115, 223, 0); }
+        }
+
+        /* Tab Enhancement */
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--dark-color);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: none;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Form Enhancement */
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .form-control[readonly] {
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .scanner-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            #qr-reader-container {
+                height: 300px;
+                border-radius: 16px;
+            }
+
+            .scanner-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-header p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #qr-reader-container {
+                height: 250px;
+                border-radius: 12px;
+            }
+
+            .scanner-controls {
+                gap: 8px;
+            }
+
+            .scanner-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Hide default QR reader elements */
+        #qr-reader__dashboard_section_csr,
+        #qr-reader__dashboard_section_swaplink {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+       <!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<br><br><br>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="users.html">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-file"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">LBDairy</div>
+    </a>
+<!-- Divider -->
+    <hr class="sidebar-divider">
+
+   <!-- Heading -->
+    <div class="sidebar-heading">
+        Tools
+    </div>
+    <li class="nav-item active">
+        <a class="nav-link" href="scan.html">
+            <i class="fas fa-qrcode"></i>
+            <span>Scan Livestock</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="manage_livestock.html">
+            <i class="fa fa-list"></i>
+            <span>Manage Livestock</span></a>
+    </li>
+    <!-- Nav Item - Calendar -->
+    <li class="nav-item">
+        <a class="nav-link" href="manage_issues.html">
+            <i class="fa fa-exclamation-triangle"></i>
+            <span>Manage Issues</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="issue_alert.html">
+            <i class="fa fa-exclamation-triangle"></i>
+            <span>Issues Alerts</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="farm_analysis.html">
+            <i class="fas fa-fw fa-database"></i>
+            <span>Farm Analysis</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="livestock_analysis.html">
+            <i class="fas fa-fw fa-database"></i>
+            <span>Livestock Analysis</span></a>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Operation
+    </div>
+    <li class="nav-item">
+        <a class="nav-link" href="sales.html">
+            <i class="fas fa-fw fa-donate"></i>
+            <span>Sales</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="clients.html">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Clients</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="suppliers.html">
+            <i class="fa fa-users"></i>
+            <span>Suppliers</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="production.html">
+            <i class="fas fa-fw fa-tasks"></i>
+            <span>Production</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="expenses.html">
+            <i class="fas fa-fw fa-donate"></i>
+            <span>Expenses</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="inventory.html">
+            <i class="fa fa-list"></i>
+            <span>Inventory</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="schedule.html">
+            <i class="fas fa-fw fa-clock"></i>
+            <span>Calendar</span></a>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Manage Profile
+    </div>
+    <li class="nav-item">
+        <a class="nav-link" href="profile-f.html">
+            <i class="fas fa-fw fa-user"></i>
+            <span>Profile</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+        <i class="fas fa-fw fa-user"></i>
+        <span>Logout</span>
+      </a>
+    </li>
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+<!-- End of Sidebar -->
+    
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow fixed-top">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3 ">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                   <!-- Logo -->
+                    <a class="navbar-brand d-flex align-items-center" href="users.html" style="padding: 0;">
+                        <img src="img/logo.png" alt="LBDairy Logo" style="height: 60px; width: auto; margin-right: 10px;">
+                    </a>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Notifications
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 10, 2025</div>
+                                        New Report Available: Weekly productivity analytics report is now ready for review.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 01, 2025</div>
+                                        Temperature Alert: Barn temperature exceeds 32°C. Cooling measures needed to prevent heat stress.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 05, 2025</div>
+                                        <span class="font-weight-bold">Low Milk Yield Alert: Average milk yield dropped by 12% this week compared to the last. Check feeding and stress factors.</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Farmer</span>
+                                <img class="img-profile rounded-circle" src="img/ronaldo.png">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <br><br><br><br>
+                    
+                    <!-- Page Header -->
+                    <div class="page-header fade-in">
+                        <h1>
+                            <i class="fas fa-qrcode"></i>
+                            QR Code Scanner
+                        </h1>
+                        <p>Scan livestock QR codes to view and manage animal information</p>
+                    </div>
+
+                    <!-- QR Scanner Container -->
+                    <div class="scanner-container fade-in">
+                        <div id="qr-reader-container" class="pulse">
+                            <!-- Status Indicator -->
+                            <div class="status-indicator status-ready" id="statusIndicator">
+                                <i class="fas fa-camera"></i> Ready to Scan
+                            </div>
+
+                            <!-- Scanner Overlay -->
+                            <div class="scanner-overlay">
+                                <div class="corner"></div>
+                            </div>
+
+                            <!-- Camera feed -->
+                            <div id="qr-reader"></div>
+
+                            <!-- Scanner Controls -->
+                            <div class="scanner-controls">
+                                <button id="captureButton" class="scanner-btn" onclick="viewLivestockDetails('LS001')" title="Capture QR Code">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                                <label for="uploadQR" class="scanner-btn mb-0" title="Upload QR Image">
+                                    <i class="fas fa-upload"></i>
+                                </label>
+                                <input type="file" id="uploadQR" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+
+                        <!-- Scanner Info Panel -->
+                        <div class="scanner-info">
+                            <h5><i class="fas fa-info-circle"></i> How to Use</h5>
+                            <p><strong>Camera Scan:</strong> Point your camera at a QR code to scan</p>
+                            <p><strong>Upload Image:</strong> Upload a QR code image file</p>
+                            <p><strong>Capture:</strong> Take a photo of a QR code</p>
+                            <p><strong>View Details:</strong> Successfully scanned codes will display livestock information</p>
+                        </div>
+
+                        <!-- Scan Results -->
+                        <div id="qr-reader-results" class="mt-3 text-center" style="font-size: 1.1rem; font-weight: 500;"></div>
+                    </div>
+
+                    <!-- LIVESTOCK DETAILS & EDIT MODAL WITH OPTION BAR -->
+                    <div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-paw"></i>
+                                        Livestock Details: <span id="detailLivestockId"></span>
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Option Bar -->
+                                    <ul class="nav nav-tabs mb-3" id="livestockTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab" aria-controls="basicForm" aria-selected="true">
+                                                <i class="fas fa-info-circle"></i> Basic Info
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab" aria-controls="growthForm" aria-selected="false">
+                                                <i class="fas fa-chart-line"></i> Growth
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="milk-tab" data-toggle="tab" href="#milkForm" role="tab" aria-controls="milkForm" aria-selected="false">
+                                                <i class="fas fa-tint"></i> Milk
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab" aria-controls="breedingForm" aria-selected="false">
+                                                <i class="fas fa-heart"></i> Breeding
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab" aria-controls="healthForm" aria-selected="false">
+                                                <i class="fas fa-heartbeat"></i> Health
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    
+                                    <div class="tab-content" id="livestockTabContent">
+                                        <!-- Basic Info (Read-only) -->
+                                        <div class="tab-pane fade show active" id="basicForm" role="tabpanel" aria-labelledby="basic-tab">
+                                            <form id="basicDetailsForm">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                            <tr><th>Owned By</th><td><input type="text" class="form-control" id="ownedBy" readonly></td></tr>
+                                                            <tr><th>Dispersal From</th><td><input type="text" class="form-control" id="dispersalFrom" readonly></td></tr>
+                                                            <tr><th>Registry ID</th><td><input type="text" class="form-control" id="registryId" readonly></td></tr>
+                                                            <tr><th>Tag ID</th><td><input type="text" class="form-control" id="tagId" readonly></td></tr>
+                                                            <tr><th>Name</th><td><input type="text" class="form-control" id="livestockName" readonly></td></tr>
+                                                            <tr><th>Date of Birth</th><td><input type="date" class="form-control" id="dob" readonly></td></tr>
+                                                            <tr><th>Sex</th><td><input type="text" class="form-control" id="sex" readonly></td></tr>
+                                                            <tr><th>Breed</th><td><input type="text" class="form-control" id="breed" readonly></td></tr>
+                                                            <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="sireId" readonly></td></tr>
+                                                            <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="damId" readonly></td></tr>
+                                                            <tr><th>Sire Name</th><td><input type="text" class="form-control" id="sireName" readonly></td></tr>
+                                                            <tr><th>Dam Name</th><td><input type="text" class="form-control" id="damName" readonly></td></tr>
+                                                            <tr><th>Sire Breed</th><td><input type="text" class="form-control" id="sireBreed" readonly></td></tr>
+                                                            <tr><th>Dam Breed</th><td><input type="text" class="form-control" id="damBreed" readonly></td></tr>
+                                                            <tr><th>Natural Marks</th><td><input type="text" class="form-control" id="naturalMarks" readonly></td></tr>
+                                                            <tr><th>Property No.</th><td><input type="text" class="form-control" id="propertyNo" readonly></td></tr>
+                                                            <tr><th>Date Acquired</th><td><input type="date" class="form-control" id="acquisitionDate" readonly></td></tr>
+                                                            <tr><th>Acquisition Cost</th><td><input type="number" class="form-control" id="acquisitionCost" readonly></td></tr>
+                                                            <tr><th>Source</th><td><input type="text" class="form-control" id="source" readonly></td></tr>
+                                                            <tr><th>Remarks</th><td><textarea class="form-control" id="remarks" readonly></textarea></td></tr>
+                                                            <tr><th>Cooperator</th><td><input type="text" class="form-control" id="cooperator" readonly></td></tr>
+                                                            <tr><th>Date Released</th><td><input type="date" class="form-control" id="releasedDate" readonly></td></tr>
+                                                            <tr><th>Cooperative</th><td><input type="text" class="form-control" id="cooperative" readonly></td></tr>
+                                                            <tr><th>Address</th><td><input type="text" class="form-control" id="address" readonly></td></tr>
+                                                            <tr><th>Contact No.</th><td><input type="text" class="form-control" id="contactNo" readonly></td></tr>
+                                                            <tr><th>In-Charge</th><td><input type="text" class="form-control" id="inCharge" readonly></td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        
+                                        <!-- Growth (Editable) -->
+                                        <div class="tab-pane fade" id="growthForm" role="tabpanel" aria-labelledby="growth-tab">
+                                            <form id="growthDetailsForm">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                            <tr><th>Date</th><td><input type="date" class="form-control" id="growthDate"></td></tr>
+                                                            <tr><th>Weight (kg)</th><td><input type="number" class="form-control" id="weight"></td></tr>
+                                                            <tr><th>Height (cm)</th><td><input type="number" class="form-control" id="height"></td></tr>
+                                                            <tr><th>Heart Girth (cm)</th><td><input type="number" step="0.1" class="form-control" id="heartGirthCm" required></td></tr>
+                                                            <tr><th>Body Length (cm)</th><td><input type="number" step="0.1" class="form-control" id="bodyLengthCm" required></td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-save"></i> Save Record
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Milk (Editable) -->
+                                        <div class="tab-pane fade" id="milkForm" role="tabpanel" aria-labelledby="milk-tab">
+                                            <form id="milkDetailsForm">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                            <tr><th>Date of Calving</th><td><input type="date" class="form-control" id="calvingDate" required></td></tr>
+                                                            <tr><th>Calf ID Number</th><td><input type="text" class="form-control" id="calfIdNumber" required></td></tr>
+                                                            <tr><th>Sex</th><td><select class="form-control" id="calfSex" required><option value="" disabled selected>Select Sex</option><option value="Male">Male</option><option value="Female">Female</option></select></td></tr>
+                                                            <tr><th>Breed</th><td><input type="text" class="form-control" id="calfBreed" required></td></tr>
+                                                            <tr><th>Sire ID Number</th><td><input type="text" class="form-control" id="sireIdNumber" required></td></tr>
+                                                            <tr><th>Milk Production (liters)</th><td><input type="number" step="0.01" class="form-control" id="milkProduction" required></td></tr>
+                                                            <tr><th>Days in Milk</th><td><input type="number" class="form-control" id="daysInMilk" required></td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-save"></i> Save Record
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        
+                                        <!-- Breeding Form -->
+                                        <div class="tab-pane fade" id="breedingForm" role="tabpanel" aria-labelledby="breeding-tab">
+                                            <form id="breedingDetailsForm">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                            <tr><th>Breeding Date</th><td><input type="date" class="form-control" id="breedingDate" value="2023-04-15" readonly></td></tr>
+                                                            <tr><th>Breeding Type</th><td><select class="form-control" id="breedingType" readonly><option value="Natural" selected>Natural</option><option value="Artificial Insemination">Artificial Insemination</option></select></td></tr>
+                                                            <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="breedingSireId" value="SR123" readonly></td></tr>
+                                                            <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="breedingDamId" value="DR456" readonly></td></tr>
+                                                            <tr><th>Pregnancy Check Date</th><td><input type="date" class="form-control" id="pregnancyCheckDate" value="2023-05-01" readonly></td></tr>
+                                                            <tr><th>Pregnancy Result</th><td><select class="form-control" id="pregnancyResult" readonly><option value="Positive" selected>Positive</option><option value="Negative">Negative</option><option value="Unknown">Unknown</option></select></td></tr>
+                                                            <tr><th>Remarks</th><td><textarea class="form-control" id="breedingRemarks" readonly>Healthy pregnancy confirmed.</textarea></td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Health Form -->
+                                        <div class="tab-pane fade" id="healthForm" role="tabpanel" aria-labelledby="health-tab">
+                                            <form id="healthDetailsForm">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                            <tr><th>Date</th><td><input type="date" class="form-control" id="healthDate" value="2023-04-20" readonly></td></tr>
+                                                            <tr><th>Health Status</th><td><input type="text" class="form-control" id="healthStatus" value="Good" readonly></td></tr>
+                                                            <tr><th>Treatment</th><td><input type="text" class="form-control" id="treatment" value="Routine check-up" readonly></td></tr>
+                                                            <tr><th>Remarks</th><td><textarea class="form-control" id="healthRemarks" readonly>No issues found during the check-up.</textarea></td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; LBDairy 2025</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title" id="logoutModalLabel">
+              <i class="fas fa-sign-out-alt"></i> Ready to Leave?
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body pt-0">
+            Select "Logout" below if you are ready to end your current session.
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            <a href="login.html" class="btn btn-primary" id="globalLogoutBtn">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- QR Code Scanner -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+    <!-- QR Code Generator for Test Codes -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
+    <script>
+        let html5QrCode;
+        let isScanning = false;
+
+        function updateStatus(message, type) {
+            const statusElement = document.getElementById('statusIndicator');
+            const iconMap = {
+                'ready': 'fas fa-camera',
+                'scanning': 'fas fa-search',
+                'success': 'fas fa-check-circle',
+                'error': 'fas fa-exclamation-triangle'
+            };
+            
+            statusElement.className = `status-indicator status-${type}`;
+            statusElement.innerHTML = `<i class="${iconMap[type]}"></i> ${message}`;
+        }
+
+        function viewLivestockDetails(id) {
+            // Simulate data fetching
+            const data = {
+                LS001: {
+                    ownedBy: "Juan Dela Cruz",
+                    dispersalFrom: "LGU Lucban",
+                    registryId: "REG123",
+                    tagId: "TAG001",
+                    livestockName: "Boer Goat Alpha",
+                    dob: "2021-03-10",
+                    sex: "Male",
+                    breed: "Boer",
+                    sireId: "SR001",
+                    damId: "DR001",
+                    sireName: "Billy",
+                    damName: "Nanny",
+                    sireBreed: "Boer",
+                    damBreed: "Boer",
+                    naturalMarks: "White patch on right ear",
+                    propertyNo: "PROP-001",
+                    acquisitionDate: "2022-01-15",
+                    acquisitionCost: "12000",
+                    source: "DA Dispersal",
+                    remarks: "Healthy and active",
+                    cooperator: "Maria Clara",
+                    releasedDate: "2022-02-01",
+                    cooperative: "Lucban Goat Farmers",
+                    address: "Brgy. Kulapi, Lucban",
+                    contactNo: "09123456789",
+                    inCharge: "Mr. Veterinarian"
+                },
+                LS002: {
+                    ownedBy: "Maria Reyes",
+                    dispersalFrom: "DA Office",
+                    registryId: "REG124",
+                    tagId: "TAG002",
+                    livestockName: "Angus Cow Beta",
+                    dob: "2020-05-15",
+                    sex: "Female",
+                    breed: "Angus",
+                    sireId: "SR002",
+                    damId: "DR002",
+                    sireName: "Bull",
+                    damName: "Daisy",
+                    sireBreed: "Angus",
+                    damBreed: "Angus",
+                    naturalMarks: "Black coat with white star on forehead",
+                    propertyNo: "PROP-002",
+                    acquisitionDate: "2021-06-20",
+                    acquisitionCost: "45000",
+                    source: "Private Purchase",
+                    remarks: "Excellent milk producer",
+                    cooperator: "Pedro Santos",
+                    releasedDate: "2021-07-01",
+                    cooperative: "Lucban Cattle Farmers",
+                    address: "Brgy. Aliliw, Lucban",
+                    contactNo: "09234567890",
+                    inCharge: "Dr. Animal Health"
+                },
+                LS003: {
+                    ownedBy: "Josefa Reyes",
+                    dispersalFrom: "LGU Lucban",
+                    registryId: "REG125",
+                    tagId: "TAG003",
+                    livestockName: "Carabao Gamma",
+                    dob: "2019-08-22",
+                    sex: "Male",
+                    breed: "Philippine Native",
+                    sireId: "SR003",
+                    damId: "DR003",
+                    sireName: "Kalabaw",
+                    damName: "Maya",
+                    sireBreed: "Philippine Native",
+                    damBreed: "Philippine Native",
+                    naturalMarks: "Gray coat with white markings",
+                    propertyNo: "PROP-003",
+                    acquisitionDate: "2020-09-10",
+                    acquisitionCost: "35000",
+                    source: "Government Dispersal",
+                    remarks: "Strong and healthy",
+                    cooperator: "Luis Garcia",
+                    releasedDate: "2020-10-01",
+                    cooperative: "Lucban Carabao Farmers",
+                    address: "Brgy. Atulinao, Lucban",
+                    contactNo: "09345678901",
+                    inCharge: "Mr. Farm Manager"
+                },
+                LS004: {
+                    ownedBy: "Maria Rivera",
+                    dispersalFrom: "DA Office",
+                    registryId: "REG126",
+                    tagId: "TAG004",
+                    livestockName: "Dorper Goat Delta",
+                    dob: "2021-11-05",
+                    sex: "Female",
+                    breed: "Dorper",
+                    sireId: "SR004",
+                    damId: "DR004",
+                    sireName: "Rocky",
+                    damName: "Flora",
+                    sireBreed: "Dorper",
+                    damBreed: "Dorper",
+                    naturalMarks: "White head with black body",
+                    propertyNo: "PROP-004",
+                    acquisitionDate: "2022-12-01",
+                    acquisitionCost: "15000",
+                    source: "Private Breeder",
+                    remarks: "Good for breeding",
+                    cooperator: "Ana Lopez",
+                    releasedDate: "2022-12-15",
+                    cooperative: "Lucban Goat Farmers",
+                    address: "Brgy. Ayuti, Lucban",
+                    contactNo: "09456789012",
+                    inCharge: "Ms. Livestock Specialist"
+                },
+                LS005: {
+                    ownedBy: "Juan Dela Cruz",
+                    dispersalFrom: "LGU Lucban",
+                    registryId: "REG127",
+                    tagId: "TAG005",
+                    livestockName: "Angus Cow Epsilon",
+                    dob: "2020-12-18",
+                    sex: "Female",
+                    breed: "Angus",
+                    sireId: "SR005",
+                    damId: "DR005",
+                    sireName: "Thunder",
+                    damName: "Rose",
+                    sireBreed: "Angus",
+                    damBreed: "Angus",
+                    naturalMarks: "Solid black coat",
+                    propertyNo: "PROP-005",
+                    acquisitionDate: "2021-01-25",
+                    acquisitionCost: "48000",
+                    source: "Government Dispersal",
+                    remarks: "High milk yield potential",
+                    cooperator: "Carlos Mendoza",
+                    releasedDate: "2021-02-10",
+                    cooperative: "Lucban Cattle Farmers",
+                    address: "Brgy. Kulapi, Lucban",
+                    contactNo: "09567890123",
+                    inCharge: "Dr. Veterinary Officer"
+                },
+                LS006: {
+                    ownedBy: "Maria Reyes",
+                    dispersalFrom: "DA Office",
+                    registryId: "REG128",
+                    tagId: "TAG006",
+                    livestockName: "Carabao Zeta",
+                    dob: "2019-03-30",
+                    sex: "Female",
+                    breed: "Philippine Native",
+                    sireId: "SR006",
+                    damId: "DR006",
+                    sireName: "Toro",
+                    damName: "Luna",
+                    sireBreed: "Philippine Native",
+                    damBreed: "Philippine Native",
+                    naturalMarks: "Dark gray with white belly",
+                    propertyNo: "PROP-006",
+                    acquisitionDate: "2020-04-15",
+                    acquisitionCost: "38000",
+                    source: "Private Purchase",
+                    remarks: "Excellent for farming",
+                    cooperator: "Roberto Cruz",
+                    releasedDate: "2020-05-01",
+                    cooperative: "Lucban Carabao Farmers",
+                    address: "Brgy. Aliliw, Lucban",
+                    contactNo: "09678901234",
+                    inCharge: "Mr. Agricultural Technician"
+                }
+            };
+
+            const info = data[id];
+            if (info) {
+                console.log('Found livestock data for:', id, info);
+                document.getElementById("detailLivestockId").textContent = id;
+                
+                // Populate form fields with exact field name matching
+                const fieldMappings = {
+                    'ownedBy': 'ownedBy',
+                    'dispersalFrom': 'dispersalFrom',
+                    'registryId': 'registryId',
+                    'tagId': 'tagId',
+                    'livestockName': 'livestockName',
+                    'dob': 'dob',
+                    'sex': 'sex',
+                    'breed': 'breed',
+                    'sireId': 'sireId',
+                    'damId': 'damId',
+                    'sireName': 'sireName',
+                    'damName': 'damName',
+                    'sireBreed': 'sireBreed',
+                    'damBreed': 'damBreed',
+                    'naturalMarks': 'naturalMarks',
+                    'propertyNo': 'propertyNo',
+                    'acquisitionDate': 'acquisitionDate',
+                    'acquisitionCost': 'acquisitionCost',
+                    'source': 'source',
+                    'remarks': 'remarks',
+                    'cooperator': 'cooperator',
+                    'releasedDate': 'releasedDate',
+                    'cooperative': 'cooperative',
+                    'address': 'address',
+                    'contactNo': 'contactNo',
+                    'inCharge': 'inCharge'
+                };
+                
+                // Populate each field
+                for (const [dataKey, formId] of Object.entries(fieldMappings)) {
+                    const input = document.getElementById(formId);
+                    if (input && info[dataKey] !== undefined) {
+                        input.value = info[dataKey];
+                        console.log(`Set ${formId} = ${info[dataKey]}`);
+                    }
+                }
+                
+                // Show the modal and activate the Basic Info tab
+                $('#livestockDetailsModal').modal('show');
+                $('#livestockTab a[href="#basicForm"]').tab('show');
+                
+                updateStatus("Livestock Found", "success");
+            } else {
+                console.log('No data found for livestock ID:', id);
+                updateStatus("No Data Found", "error");
+                setTimeout(() => updateStatus("Ready to Scan", "ready"), 3000);
+            }
+        }
+
+        function processQRCode(qrData) {
+            try {
+                console.log('Processing QR code data:', qrData);
+                
+                // Try to parse as JSON first (for QR codes generated by our system)
+                let livestockId = null;
+                
+                try {
+                    const parsedData = JSON.parse(qrData);
+                    console.log('Parsed JSON data:', parsedData);
+                    
+                    if (parsedData.livestockId) {
+                        livestockId = parsedData.livestockId;
+                        console.log('Extracted livestock ID from JSON:', livestockId);
+                    } else {
+                        console.log('No livestockId found in JSON data');
+                    }
+                } catch (e) {
+                    console.log('Not JSON data, checking if direct livestock ID');
+                    // If not JSON, check if it's a direct livestock ID
+                    if (qrData.startsWith('LS') && qrData.length <= 10) {
+                        livestockId = qrData;
+                        console.log('Using direct livestock ID:', livestockId);
+                    } else {
+                        console.log('Not a valid livestock ID format');
+                    }
+                }
+                
+                if (livestockId) {
+                    // Show success message
+                    const resultEl = document.getElementById('qr-reader-results');
+                    resultEl.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>QR Code Scanned Successfully!</strong><br>
+                            Livestock ID: ${livestockId}
+                        </div>
+                    `;
+                    
+                    updateStatus("Processing...", "scanning");
+                    
+                    // Stop scanning temporarily
+                    if (html5QrCode && isScanning) {
+                        html5QrCode.pause();
+                    }
+                    
+                    // Show livestock details after a short delay
+                    setTimeout(() => {
+                        console.log('Calling viewLivestockDetails with ID:', livestockId);
+                        viewLivestockDetails(livestockId);
+                        // Resume scanning after showing details
+                        setTimeout(() => {
+                            if (html5QrCode && isScanning) {
+                                html5QrCode.resume();
+                                updateStatus("Point camera at QR code", "scanning");
+                            }
+                        }, 2000);
+                    }, 1000);
+                    
+                } else {
+                    // Invalid QR code
+                    console.log('Invalid QR code - no livestock ID found');
+                    const resultEl = document.getElementById('qr-reader-results');
+                    resultEl.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Invalid QR Code:</strong> This QR code is not recognized as a livestock identifier.<br>
+                            Scanned data: ${qrData}
+                        </div>
+                    `;
+                    
+                    updateStatus("Invalid QR Code", "error");
+                    setTimeout(() => updateStatus("Point camera at QR code", "scanning"), 3000);
+                }
+                
+            } catch (error) {
+                console.error('Error processing QR code:', error);
+                updateStatus("Processing Error", "error");
+                setTimeout(() => updateStatus("Point camera at QR code", "scanning"), 3000);
+            }
+        }
+
+        // Initialize QR Scanner
+        async function initializeScanner() {
+            const resultEl = document.getElementById('qr-reader-results');
+            
+            try {
+                html5QrCode = new Html5Qrcode("qr-reader");
+                
+                // Get available cameras
+                const devices = await Html5Qrcode.getCameras();
+                
+                if (devices && devices.length) {
+                    console.log('Available cameras:', devices);
+                    
+                    const config = {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.0
+                    };
+                    
+                    try {
+                        await html5QrCode.start(
+                            { deviceId: devices[0].id },
+                            config,
+                            (decodedText) => {
+                                console.log('QR Code scanned:', decodedText);
+                                if (isScanning) {
+                                    processQRCode(decodedText);
+                                }
+                            },
+                            (errorMessage) => {
+                                // Handle scan errors silently
+                                console.log('Scan error:', errorMessage);
+                            }
+                        );
+                        
+                        isScanning = true;
+                        updateStatus("Point camera at QR code", "scanning");
+                        
+                    } catch (err) {
+                        console.error('Failed to start scanner:', err);
+                        updateStatus("Failed to start camera", "error");
+                        resultEl.innerHTML = `
+                            <div class="alert alert-danger">
+                                <i class="fas fa-times-circle"></i>
+                                Failed to start camera. Please check permissions and try again.
+                            </div>
+                        `;
+                    }
+                    
+                } else {
+                    console.log('No cameras found');
+                    updateStatus("No Camera Found", "error");
+                    resultEl.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            No camera found. Please use the upload feature instead.
+                        </div>
+                    `;
+                }
+                
+            } catch (err) {
+                console.error('Camera access error:', err);
+                updateStatus("Camera Access Denied", "error");
+                resultEl.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i>
+                        Camera access failed. Please allow camera permissions or use the upload feature.
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeScanner();
+        });
+
+        // Capture button functionality
+        document.getElementById('captureButton').addEventListener('click', function () {
+            const qrReader = document.getElementById('qr-reader');
+            const video = qrReader.querySelector('video');
+
+            if (video) {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const imageData = canvas.toDataURL('image/png');
+                console.log('Captured QR image:', imageData);
+                
+                updateStatus("Image Captured", "success");
+                
+                // For demo purposes, simulate QR processing with LS002
+                setTimeout(() => {
+                    const testData = JSON.stringify({
+                        livestockId: 'LS002',
+                        name: 'Angus Cow Beta',
+                        breed: 'Angus',
+                        tagId: 'TAG002',
+                        owner: 'Maria Reyes',
+                        timestamp: new Date().toISOString()
+                    });
+                    processQRCode(testData);
+                }, 1000);
+            } else {
+                updateStatus("No Video Feed", "error");
+                setTimeout(() => updateStatus("Ready to Scan", "ready"), 3000);
+            }
+        });
+
+        // Upload functionality
+        document.getElementById('uploadQR').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                console.log('File selected:', file.name, file.type, file.size);
+                updateStatus("Processing uploaded image...", "scanning");
+                
+                // Clear previous results
+                const resultEl = document.getElementById('qr-reader-results');
+                resultEl.innerHTML = '';
+                
+                // Use a simpler, more reliable approach
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    console.log('File loaded, processing...');
+                    
+                    // Create image element
+                    const img = new Image();
+                    img.onload = function() {
+                        console.log('Image loaded, dimensions:', img.width, 'x', img.height);
+                        
+                        // Create canvas
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        
+                        // Try to decode using html5-qrcode
+                        if (html5QrCode) {
+                            try {
+                                // Use the scanFile method which is more reliable
+                                html5QrCode.scanFile(file, true)
+                                    .then(decodedText => {
+                                        console.log('QR Code decoded successfully:', decodedText);
+                                        updateStatus("QR Code found!", "success");
+                                        processQRCode(decodedText);
+                                    })
+                                    .catch(error => {
+                                        console.log('QR decoding failed:', error);
+                                        // Try fallback method
+                                        tryFallbackDecoding(file);
+                                    });
+                            } catch (error) {
+                                console.error('Error with scanFile:', error);
+                                tryFallbackDecoding(file);
+                            }
+                        } else {
+                            console.log('html5QrCode not available, using fallback');
+                            tryFallbackDecoding(file);
+                        }
+                    };
+                    
+                    img.onerror = function() {
+                        console.error('Failed to load image');
+                        updateStatus("Failed to load image", "error");
+                        setTimeout(() => updateStatus("Ready to Scan", "ready"), 3000);
+                    };
+                    
+                    img.src = e.target.result;
+                };
+                
+                reader.onerror = function() {
+                    console.error('Failed to read file');
+                    updateStatus("Failed to read file", "error");
+                    setTimeout(() => updateStatus("Ready to Scan", "ready"), 3000);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Simplified fallback decoding
+        function tryFallbackDecoding(file) {
+            console.log('Using fallback decoding for file:', file.name);
+            updateStatus("Using fallback processing...", "scanning");
+            
+            // Extract livestock ID from filename or use default
+            let livestockId = 'LS001'; // Default
+            
+            const filename = file.name.toLowerCase();
+            if (filename.includes('ls001') || filename.includes('ls1')) {
+                livestockId = 'LS001';
+            } else if (filename.includes('ls002') || filename.includes('ls2')) {
+                livestockId = 'LS002';
+            } else if (filename.includes('ls003') || filename.includes('ls3')) {
+                livestockId = 'LS003';
+            } else if (filename.includes('ls004') || filename.includes('ls4')) {
+                livestockId = 'LS004';
+            } else if (filename.includes('ls005') || filename.includes('ls5')) {
+                livestockId = 'LS005';
+            } else if (filename.includes('ls006') || filename.includes('ls6')) {
+                livestockId = 'LS006';
+            } else {
+                // Random selection for demo
+                const livestockIds = ['LS001', 'LS002', 'LS003', 'LS004', 'LS005', 'LS006'];
+                livestockId = livestockIds[Math.floor(Math.random() * livestockIds.length)];
+            }
+            
+            console.log('Fallback selected livestock ID:', livestockId);
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                const testData = JSON.stringify({
+                    livestockId: livestockId,
+                    name: `Demo ${livestockId}`,
+                    breed: 'Demo Breed',
+                    tagId: `TAG${livestockId.slice(-3)}`,
+                    owner: 'Demo Owner',
+                    timestamp: new Date().toISOString()
+                });
+                
+                console.log('Processing fallback data:', testData);
+                processQRCode(testData);
+            }, 1000);
+        }
+
+        // Form submit handlers
+        $('#growthDetailsForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#livestockDetailsModal').modal('hide');
+            
+            // Show success notification
+            $('body').append(`
+                <div class="alert alert-success alert-dismissible fade show position-fixed" 
+                     style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-check-circle"></i>
+                    Growth record saved successfully!
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `);
+        });
+
+        $('#milkDetailsForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#livestockDetailsModal').modal('hide');
+            
+            // Show success notification
+            $('body').append(`
+                <div class="alert alert-success alert-dismissible fade show position-fixed" 
+                     style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-check-circle"></i>
+                    Milk record saved successfully!
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `);
+        });
+
+        $('#breedingDetailsForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#livestockDetailsModal').modal('hide');
+        });
+
+        $('#healthDetailsForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#livestockDetailsModal').modal('hide');
+        });
+
+        $('#basicDetailsForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#livestockDetailsModal').modal('hide');
+        });
+
+        // Logout functionality
+        document.getElementById('globalLogoutBtn')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

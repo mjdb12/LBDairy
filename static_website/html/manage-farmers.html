@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>LBDAIRY: SuperAdmin - Manage Farmers</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+    
+    <!-- DataTables Core -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #3c5aa6;
+            --success-color: #1cc88a;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --info-color: #36b9cc;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --border-color: #e3e6f0;
+            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        /* Enhanced Card Styling */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-bottom: none;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h6 {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header h6::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        /* Enhanced Table Styling */
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        .table thead th {
+            background-color: #f8f9fc;
+            border-top: none;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            padding: 1rem 0.75rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.05);
+            transform: scale(1.001);
+        }
+
+        .table tbody td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Enhanced Button Styling */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #17a673 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c73e1d 100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+        }
+
+        /* Enhanced Search and Export Controls */
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-container input {
+            border-radius: 25px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .search-container::before {
+            content: '\f002';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            z-index: 2;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        /* Enhanced Modal Styling */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(28, 200, 138, 0.1);
+            color: #25855a;
+            border: 1px solid rgba(28, 200, 138, 0.3);
+        }
+
+        .status-inactive {
+            background: rgba(231, 74, 59, 0.1);
+            color: #c73e1d;
+            border: 1px solid rgba(231, 74, 59, 0.3);
+        }
+
+        /* Page Header Enhancement */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--dark-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .table-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                min-width: 100%;
+            }
+
+            .export-controls {
+                justify-content: center;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* DataTables Custom Styling */
+        .dataTables_wrapper .dataTables_info {
+            color: var(--dark-color);
+            font-size: 0.85rem;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 6px;
+            margin: 0 2px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-color);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Form Controls */
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        /* Farmer ID Links */
+        .farmer-id-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .farmer-id-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <br><br><br>
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="superadmin.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-file"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">LBDairy</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Tools
+            </div>
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="manage-admins.html">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Manage Admins</span>
+                </a>
+            </li>
+            <!-- Nav Item - Calendar -->
+            <li class="nav-item active">
+                <a class="nav-link" href="manage-farmers.html">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Manage Farmers</span></a>
+            </li>
+            <!-- Nav Item - Calendar -->
+            <li class="nav-item">
+                <a class="nav-link" href="manage-farms.html">
+                    <i class="fas fa-fw fa-university"></i>
+                    <span>Manage Farms</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="manage-analysis.html">
+                    <i class="fas fa-fw fa-database"></i>
+                    <span>Productivity Analysis</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="audit-logs.html">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Logs</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="profile-sa.html">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Profile</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow fixed-top">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Logo -->
+                    <a class="navbar-brand d-flex align-items-center" href="superadmin.html" style="padding: 0;">
+                        <img src="img/logo.png" alt="LBDairy Logo" style="height: 60px; width: auto; margin-right: 10px;">
+                    </a>
+
+                    <!-- Topbar Search -->
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Notifications
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 10, 2025</div>
+                                        Vaccination Reminder: Upcoming vaccination for Batch 3 is scheduled on June 5. Prepare livestock accordingly.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 01, 2025</div>
+                                        Notice: There will be a system update on June 10, 12:00 AM – 2:00 AM. Services may be briefly unavailable.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">January 05, 2025</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Super Admin</span>
+                                <img class="img-profile rounded-circle" src="img/ronaldo.png">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <br><br><br><br>
+                    
+                    <!-- Page Header -->
+                    <div class="page-header fade-in">
+                        <h1>
+                            <i class="fas fa-users"></i>
+                            Farmer Management
+                        </h1>
+                        <p>Manage farmer accounts, status, and communication</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-container fade-in">
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--success-color);" id="activeCount">3</div>
+                            <div class="stat-label">Active Farmers</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--danger-color);" id="inactiveCount">1</div>
+                            <div class="stat-label">Inactive Farmers</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--info-color);" id="totalCount">4</div>
+                            <div class="stat-label">Total Farmers</div>
+                        </div>
+                    </div>
+
+                    <!-- Farmers Management Card -->
+                    <div class="card shadow mb-4 fade-in">
+                        <div class="card-header">
+                            <h6>
+                                <i class="fas fa-list"></i>
+                                Farmer Directory
+                            </h6>
+                            <div class="table-controls">
+                                <div class="search-container">
+                                    <input type="text" class="form-control custom-search" placeholder="Search farmers...">
+                                </div>
+                                <div class="export-controls">
+                                    <div class="btn-group">
+                                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                            <i class="fas fa-download"></i> Export
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                                <i class="fas fa-file-csv"></i> CSV
+                                            </a>
+                                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                                <i class="fas fa-file-pdf"></i> PDF
+                                            </a>
+                                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                                <i class="fas fa-image"></i> PNG
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" onclick="printTable()">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('csvInput').click()">
+                                        <i class="fas fa-file-import"></i> Import CSV
+                                    </button>
+                                    <input type="file" id="csvInput" accept=".csv" style="display: none;" onchange="importCSV(event)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Farmer ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Address</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><a href="#" class="farmer-id-link" onclick="openDetailsModal('F001')">F001</a></td>
+                                            <td>Juan Dela Cruz</td>
+                                            <td>juan.delacruz@example.com</td>
+                                            <td>(123) 456-7890</td>
+                                            <td>Abang</td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" class="farmer-id-link" onclick="openDetailsModal('F002')">F002</a></td>
+                                            <td>Maria Reyes</td>
+                                            <td>maria.reyes@example.com</td>
+                                            <td>(098) 765-4321</td>
+                                            <td>Aliliw</td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active">Active</option>
+                                                    <option value="inactive" selected>Inactive</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" class="farmer-id-link" onclick="openDetailsModal('F003')">F003</a></td>
+                                            <td>Josefa Reyes</td>
+                                            <td>josefa.reyes@example.com</td>
+                                            <td>(555) 123-4567</td>
+                                            <td>Atulinao</td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" class="farmer-id-link" onclick="openDetailsModal('F004')">F004</a></td>
+                                            <td>Maria Rivera</td>
+                                            <td>maria.rivera@example.com</td>
+                                            <td>(321) 654-0987</td>
+                                            <td>Ayuti (Poblacion)</td>
+                                            <td>
+                                                <select class="form-control" onchange="updateActivity(this)">
+                                                    <option value="active" selected>Active</option>
+                                                    <option value="inactive">Inactive</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmDeleteLabel">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Confirm Delete
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this farmer? This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Yes, Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Modal -->
+                <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detailsModalLabel">
+                                    <i class="fas fa-user"></i>
+                                    Farmer Details
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="farmerDetails"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="openContactModal()">
+                                    <i class="fas fa-envelope"></i> Contact Farmer
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Farmer Modal -->
+                <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="contactModalLabel">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Send Message to Farmer
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form onsubmit="sendMessage(event)">
+                                <div class="modal-body">
+                                    <input type="hidden" id="farmerNameHidden">
+                                    <div class="form-group">
+                                        <label for="messageSubject">Subject</label>
+                                        <input type="text" class="form-control" id="messageSubject" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="messageBody">Message</label>
+                                        <textarea class="form-control" id="messageBody" rows="4" required></textarea>
+                                    </div>
+                                    <div id="messageNotification" class="mt-2" style="display: none;"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-paper-plane"></i> Send Message
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; LBDairy 2025</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title" id="logoutModalLabel">
+                        <i class="fas fa-sign-out-alt"></i> Ready to Leave?
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pt-0">
+                    Select "Logout" below if you are ready to end your current session.
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                    <a href="login.html" class="btn btn-primary" id="globalLogoutBtn">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- DataTables Core -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Buttons -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
+    <!-- Required libraries for PDF/Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        let dataTable;
+        let farmerToDelete = null;
+
+        $(document).ready(function () {
+            // Initialize DataTable
+            initializeDataTable();
+            
+            // Custom search functionality
+            $('.custom-search').on('keyup', function() {
+                dataTable.search(this.value).draw();
+            });
+
+            // Update stats on page load
+            updateStats();
+        });
+
+        function initializeDataTable() {
+            dataTable = $('#dataTable').DataTable({
+                dom: 'Bfrtip',
+                searching: true,
+                paging: true,
+                info: true,
+                ordering: true,
+                lengthChange: false,
+                pageLength: 10,
+                buttons: [
+                    {
+                        extend: 'csvHtml5',
+                        title: 'Farmers_Report',
+                        className: 'd-none'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Farmers_Report',
+                        orientation: 'landscape',
+                        pageSize: 'Letter',
+                        className: 'd-none'
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Farmers Report',
+                        className: 'd-none'
+                    }
+                ],
+                language: {
+                    search: "",
+                    emptyTable: '<div class="empty-state"><i class="fas fa-users"></i><h5>No farmers found</h5><p>There are no farmer records to display at this time.</p></div>'
+                }
+            });
+
+            // Hide default DataTables elements
+            $('.dataTables_filter').hide();
+            $('.dt-buttons').hide();
+        }
+
+        function updateStats() {
+            const table = $('#dataTable').DataTable();
+            const totalRows = table.rows().count();
+            
+            let activeFarmers = 0;
+            let inactiveFarmers = 0;
+
+            // Count active/inactive farmers
+            table.rows().every(function() {
+                const select = $(this.node()).find('select');
+                const status = select.val();
+                
+                if (status === 'active') {
+                    activeFarmers++;
+                } else {
+                    inactiveFarmers++;
+                }
+            });
+
+            document.getElementById('activeCount').textContent = activeFarmers;
+            document.getElementById('inactiveCount').textContent = inactiveFarmers;
+            document.getElementById('totalCount').textContent = totalRows;
+        }
+
+        function openDetailsModal(farmerId) {
+            let details = '';
+            let farmerName = '';
+
+            switch (farmerId) {
+                case 'F001':
+                    details = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Personal Information</h6>
+                                <p><strong>Name:</strong> Juan Dela Cruz</p>
+                                <p><strong>Email:</strong> juan.delacruz@example.com</p>
+                                <p><strong>Phone:</strong> (123) 456-7890</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Farm Information</h6>
+                                <p><strong>Farmer ID:</strong> F001</p>
+                                <p><strong>Address:</strong> Abang</p>
+                                <p><strong>Status:</strong> <span class="status-badge status-active">Active</span></p>
+                            </div>
+                        </div>
+                    `;
+                    farmerName = 'Juan Dela Cruz';
+                    break;
+                case 'F002':
+                    details = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Personal Information</h6>
+                                <p><strong>Name:</strong> Maria Reyes</p>
+                                <p><strong>Email:</strong> maria.reyes@example.com</p>
+                                <p><strong>Phone:</strong> (098) 765-4321</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Farm Information</h6>
+                                <p><strong>Farmer ID:</strong> F002</p>
+                                <p><strong>Address:</strong> Aliliw</p>
+                                <p><strong>Status:</strong> <span class="status-badge status-inactive">Inactive</span></p>
+                            </div>
+                        </div>
+                    `;
+                    farmerName = 'Maria Reyes';
+                    break;
+                case 'F003':
+                    details = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Personal Information</h6>
+                                <p><strong>Name:</strong> Josefa Reyes</p>
+                                <p><strong>Email:</strong> josefa.reyes@example.com</p>
+                                <p><strong>Phone:</strong> (555) 123-4567</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Farm Information</h6>
+                                <p><strong>Farmer ID:</strong> F003</p>
+                                <p><strong>Address:</strong> Atulinao</p>
+                                <p><strong>Status:</strong> <span class="status-badge status-active">Active</span></p>
+                            </div>
+                        </div>
+                    `;
+                    farmerName = 'Josefa Reyes';
+                    break;
+                case 'F004':
+                    details = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Personal Information</h6>
+                                <p><strong>Name:</strong> Maria Rivera</p>
+                                <p><strong>Email:</strong> maria.rivera@example.com</p>
+                                <p><strong>Phone:</strong> (321) 654-0987</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3 text-primary">Farm Information</h6>
+                                <p><strong>Farmer ID:</strong> F004</p>
+                                <p><strong>Address:</strong> Ayuti (Poblacion)</p>
+                                <p><strong>Status:</strong> <span class="status-badge status-active">Active</span></p>
+                            </div>
+                        </div>
+                    `;
+                    farmerName = 'Maria Rivera';
+                    break;
+                default:
+                    details = '<p>No details found for this farmer.</p>';
+                    farmerName = '';
+            }
+
+            document.getElementById('farmerDetails').innerHTML = details;
+            document.getElementById('farmerNameHidden').value = farmerName;
+            $('#detailsModal').modal('show');
+        }
+
+        function updateActivity(selectElement) {
+            const activity = selectElement.value;
+            const row = $(selectElement).closest('tr');
+            
+            // Update visual feedback
+            if (activity === 'active') {
+                row.removeClass('table-danger').addClass('table-success');
+                showNotification('Farmer status updated to Active', 'success');
+            } else {
+                row.removeClass('table-success').addClass('table-danger');
+                showNotification('Farmer status updated to Inactive', 'warning');
+            }
+            
+            // Update stats
+            updateStats();
+            
+            console.log(`Farmer activity updated to: ${activity}`);
+        }
+
+        function confirmDelete(button) {
+            farmerToDelete = button;
+            $('#confirmDeleteModal').modal('show');
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (farmerToDelete) {
+                deleteFarmer(farmerToDelete);
+                farmerToDelete = null;
+                $('#confirmDeleteModal').modal('hide');
+            }
+        });
+
+        function deleteFarmer(button) {
+            let row = button.closest('tr');
+            const farmerId = $(row).find('td:first a').text();
+            
+            dataTable.row(row).remove().draw();
+            updateStats();
+            
+            showNotification(`Farmer ${farmerId} has been deleted successfully`, 'success');
+        }
+
+        function openContactModal() {
+            $('#detailsModal').modal('hide');
+            $('#contactModal').modal('show');
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const name = document.getElementById('farmerNameHidden').value;
+            const subject = document.getElementById('messageSubject').value;
+            const message = document.getElementById('messageBody').value;
+
+            console.log(`Message to ${name}: ${subject} - ${message}`);
+
+            document.getElementById('messageNotification').innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    Message sent to <strong>${name}</strong> successfully!
+                </div>
+            `;
+            document.getElementById('messageNotification').style.display = 'block';
+
+            document.getElementById('messageSubject').value = '';
+            document.getElementById('messageBody').value = '';
+        }
+
+        function showNotification(message, type) {
+            const notification = $(`
+                <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
+                     style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `);
+            
+            $('body').append(notification);
+            
+            setTimeout(() => {
+                notification.alert('close');
+            }, 5000);
+        }
+
+        // Export functions
+        function exportCSV() {
+            dataTable.button('.buttons-csv').trigger();
+        }
+
+        function exportPDF() {
+            dataTable.button('.buttons-pdf').trigger();
+        }
+
+        function printTable() {
+            dataTable.button('.buttons-print').trigger();
+        }
+
+        function exportPNG() {
+            html2canvas(document.querySelector("#dataTable")).then(canvas => {
+                let link = document.createElement('a');
+                link.download = 'Farmers_Report.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (file) {
+                showNotification('CSV import functionality would be implemented here', 'info');
+            }
+        }
+
+        document.getElementById('globalLogoutBtn')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+
+</html>
