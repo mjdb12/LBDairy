@@ -153,13 +153,70 @@
 
         @elseif(auth()->user()->isAdmin())
             <!-- Admin Navigation -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-home"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Tools
+            </div>
+
+            <!-- Nav Item - Farmers -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.manage-farmers') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Farmers</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Livestock -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCharts"
+                    aria-expanded="false" aria-controls="collapseCharts">
+                    <i class="fas fa-fw fa-list"></i>
+                    <span>Livestock</span>
+                </a>
+                <div id="collapseCharts" class="collapse" aria-labelledby="headingCharts" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manage:</h6>
+                        <a class="collapse-item" href="{{ route('admin.livestock.index') }}">List of Farmers</a>
+                        <div class="collapse-divider"></div>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Analysis -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.analysis.index') }}">
+                    <i class="fas fa-fw fa-chart-bar"></i>
+                    <span>Productivity Analysis</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Issues -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.issues.index') }}">
+                    <i class="fas fa-fw fa-exclamation-triangle"></i>
+                    <span>Issues Alerts</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Logs -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.audit-logs') }}">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Logs</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Profile -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.profile') }}">
                     <i class="fas fa-fw fa-user"></i>
@@ -167,66 +224,11 @@
                 </a>
             </li>
 
+            <!-- Nav Item - Logout -->
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.farms') }}">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>Farms</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.farmers') }}">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Farmers</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.livestock.index') }}">
-                    <i class="fas fa-fw fa-cow"></i>
-                    <span>Manage Livestock</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.farms.index') }}">
-                    <i class="fas fa-fw fa-university"></i>
-                    <span>Manage Farms</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.production') }}">
-                    <i class="fas fa-fw fa-chart-line"></i>
-                    <span>Production</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.sales') }}">
-                    <i class="fas fa-fw fa-dollar-sign"></i>
-                    <span>Sales</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.expenses') }}">
-                    <i class="fas fa-fw fa-receipt"></i>
-                    <span>Expenses</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.issues.index') }}">
-                    <i class="fas fa-fw fa-exclamation-triangle"></i>
-                    <span>Manage Issues</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.analysis.index') }}">
-                    <i class="fas fa-fw fa-chart-bar"></i>
-                    <span>Productivity Analysis</span>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </a>
             </li>
 

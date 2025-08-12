@@ -12,13 +12,13 @@
 
 <!-- Statistics Grid -->
 <div class="row fade-in">
-    <!-- Total Farmers -->
+    <!-- Active Farms -->
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card border-left-primary">
+        <div class="stat-card border-left-info">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="stat-title text-primary">Total Farmers</div>
-                    <div class="stat-value">{{ \App\Models\User::where('role', 'farmer')->count() }}</div>
+                    <div class="stat-title text-info">Active Farms</div>
+                    <div class="stat-value">{{ \App\Models\Farm::where('status', 'active')->count() }}</div>
                     <div class="mt-2">
                         <span class="text-success font-weight-bold small">
                             <i class="fas fa-arrow-up mr-1"></i>+12%
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="stat-icon">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-building"></i>
                 </div>
             </div>
             <div class="stat-footer">
@@ -39,13 +39,13 @@
         </div>
     </div>
 
-    <!-- Total Livestock -->
+    <!-- Efficiency Rate -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card border-left-success">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="stat-title text-success">Total Livestock</div>
-                    <div class="stat-value">{{ \App\Models\Livestock::count() }}</div>
+                    <div class="stat-title text-success">Efficiency Rate</div>
+                    <div class="stat-value">53<sup class="font-size-4">%</sup></div>
                     <div class="mt-2">
                         <span class="text-success font-weight-bold small">
                             <i class="fas fa-arrow-up mr-1"></i>+5%
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="stat-icon">
-                                                            <i class="fas fa-paw"></i>
+                    <i class="fas fa-chart-line"></i>
                 </div>
             </div>
             <div class="stat-footer">
@@ -422,6 +422,10 @@
         font-size: 0.875rem;
         color: #858796;
         line-height: 1.4;
+    }
+
+    .font-size-4 {
+        font-size: 0.6em;
     }
 </style>
 @endpush

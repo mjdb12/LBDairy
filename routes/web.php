@@ -162,6 +162,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/expenses', [App\Http\Controllers\AdminController::class, 'manageExpenses'])->name('expenses');
         Route::get('/issues', function () { return view('admin.issues'); })->name('issues');
         Route::get('/analysis', [App\Http\Controllers\AdminController::class, 'analysis'])->name('analysis');
+        
+        // Additional admin routes for missing functionality
+        Route::get('/clients', function () { return view('admin.clients'); })->name('clients');
+        Route::get('/inventory', function () { return view('admin.inventory'); })->name('inventory');
+        Route::get('/farm-analysis', function () { return view('admin.farm-analysis'); })->name('farm-analysis');
+        Route::get('/livestock-analysis', function () { return view('admin.livestock-analysis'); })->name('livestock-analysis');
+        Route::get('/audit-logs', function () { return view('admin.audit-logs'); })->name('audit-logs');
     });
     
     // Super Admin routes
