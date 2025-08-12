@@ -22,6 +22,121 @@
                 </a>
             </li>
 
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Tools
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.scan') }}">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Scan Livestock</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.livestock') }}">
+                    <i class="fa fa-list"></i>
+                    <span>Manage Livestock</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.issues') }}">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>Manage Issues</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.issue-alerts') }}">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>Issues Alerts</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.farm-analysis') }}">
+                    <i class="fas fa-fw fa-database"></i>
+                    <span>Farm Analysis</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.livestock-analysis') }}">
+                    <i class="fas fa-fw fa-database"></i>
+                    <span>Livestock Analysis</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Operation
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.sales') }}">
+                    <i class="fas fa-fw fa-donate"></i>
+                    <span>Sales</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.clients') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.suppliers') }}">
+                    <i class="fa fa-users"></i>
+                    <span>Suppliers</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.production') }}">
+                    <i class="fas fa-fw fa-tasks"></i>
+                    <span>Production</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.expenses') }}">
+                    <i class="fas fa-fw fa-donate"></i>
+                    <span>Expenses</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.inventory') }}">
+                    <i class="fa fa-list"></i>
+                    <span>Inventory</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.schedule') }}">
+                    <i class="fas fa-fw fa-clock"></i>
+                    <span>Calendar</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Manage Profile
+            </div>
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('farmer.profile') }}">
                     <i class="fas fa-fw fa-user"></i>
@@ -30,44 +145,9 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('farmer.farms') }}">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>My Farms</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('farmer.livestock') }}">
-                    <i class="fas fa-fw fa-cow"></i>
-                    <span>Livestock</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('farmer.production') }}">
-                    <i class="fas fa-fw fa-chart-line"></i>
-                    <span>Production</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('farmer.sales') }}">
-                    <i class="fas fa-fw fa-dollar-sign"></i>
-                    <span>Sales</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('farmer.expenses') }}">
-                    <i class="fas fa-fw fa-receipt"></i>
-                    <span>Expenses</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('farmer.issues') }}">
-                    <i class="fas fa-fw fa-exclamation-triangle"></i>
-                    <span>Issues</span>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </a>
             </li>
 
@@ -206,10 +286,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
+
 
 </ul>
 <!-- End of Sidebar -->

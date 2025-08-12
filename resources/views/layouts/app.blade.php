@@ -555,6 +555,62 @@
             opacity: 0.9;
             font-size: 1.1rem;
         }
+        
+        /* Ensure sidebar scrolling works properly */
+        #wrapper {
+            position: relative;
+        }
+        
+        #content-wrapper {
+            margin-left: 6.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            #content-wrapper {
+                margin-left: 14rem;
+            }
+        }
+        
+        body.sidebar-toggled #content-wrapper {
+            margin-left: 6.5rem;
+        }
+        
+        /* Enhanced Sidebar Toggle Button Styling */
+        #sidebarToggle {
+            width: 40px !important;
+            height: 40px !important;
+            background-color: #4e73df !important;
+            color: white !important;
+            border: none !important;
+            cursor: pointer !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+        
+        #sidebarToggle:hover {
+            background-color: #3c5aa6 !important;
+            transform: scale(1.1) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+        }
+        
+        #sidebarToggle:active {
+            transform: scale(0.95) !important;
+        }
+        
+        #sidebarToggle i {
+            font-size: 14px !important;
+            font-weight: bold !important;
+        }
+        
+        /* Ensure sidebar toggle container is visible */
+        .sidebar #sidebarToggle {
+            position: relative !important;
+            z-index: 1000 !important;
+        }
     </style>
     
     @stack('styles')
@@ -616,7 +672,67 @@
     </a>
 
     <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SB Admin 2 JS -->
     <script src="{{ asset('js/sb-admin-2.js') }}"></script>
+    
+    <!-- Additional JavaScript for functionality -->
+    <script>
+        $(document).ready(function() {
+            // Enhanced sidebar toggle functionality
+            $('#sidebarToggle').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                $('body').toggleClass('sidebar-toggled');
+                $('.sidebar').toggleClass('toggled');
+                
+                // Update button icon and text
+                var icon = $(this).find('i');
+                if ($('.sidebar').hasClass('toggled')) {
+                    icon.removeClass('fa-chevron-left').addClass('fa-chevron-right');
+                    $('.sidebar .collapse').collapse('hide');
+                } else {
+                    icon.removeClass('fa-chevron-right').addClass('fa-chevron-left');
+                }
+                
+                console.log('Sidebar toggled:', $('.sidebar').hasClass('toggled'));
+            });
+            
+            // Topbar sidebar toggle for mobile
+            $('#sidebarToggleTop').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                $('body').toggleClass('sidebar-toggled');
+                $('.sidebar').toggleClass('toggled');
+                
+                console.log('Topbar sidebar toggle clicked');
+            });
+            
+            // Ensure logout modal works
+            $('[data-toggle="modal"][data-target="#logoutModal"]').on('click', function(e) {
+                e.preventDefault();
+                $('#logoutModal').modal('show');
+            });
+            
+            // Debug logging
+            console.log('jQuery loaded:', typeof $ !== 'undefined');
+            console.log('Bootstrap modal:', typeof $.fn.modal !== 'undefined');
+            console.log('Sidebar toggle button:', $('#sidebarToggle').length);
+            console.log('Topbar sidebar toggle button:', $('#sidebarToggleTop').length);
+            console.log('Logout modal:', $('#logoutModal').length);
+            
+            // Test click events
+            $('#sidebarToggle').on('click', function() {
+                console.log('Sidebar toggle button clicked!');
+            });
+        });
+    </script>
+    
     @stack('scripts')
     
     @include('layouts.logout-modal')

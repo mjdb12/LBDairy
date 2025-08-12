@@ -10322,6 +10322,39 @@ a:focus {
 .sidebar {
   width: 6.5rem;
   min-height: 100vh;
+  overflow-y: auto;
+  max-height: 100vh;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  /* Ensure the sidebar takes full height */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.sidebar .navbar-nav {
+  padding-bottom: 2rem;
+  /* Force the nav to take full height */
+  min-height: calc(100vh - 200px);
 }
 
 .sidebar .nav-item {
@@ -10510,6 +10543,10 @@ a:focus {
 @media (min-width: 768px) {
   .sidebar {
     width: 14rem !important;
+    overflow-y: auto;
+    max-height: 100vh;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
   }
   .sidebar .nav-item .collapse {
     position: relative;
@@ -10568,6 +10605,30 @@ a:focus {
   .sidebar .sidebar-heading {
     text-align: left;
   }
+  
+  .sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+  }
+  
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .sidebar .navbar-nav {
+    padding-bottom: 2rem;
+    /* Force the nav to take full height */
+    min-height: calc(100vh - 200px);
+  }
+  
   .sidebar.toggled {
     overflow: visible;
     width: 6.5rem !important;

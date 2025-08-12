@@ -126,7 +126,7 @@
                                     <th>Age</th>
                                     <th>Weight</th>
                                     <th>Health Status</th>
-                                    <th>Production Status</th>
+                                    <th>Status</th>
                                     <th>Last Updated</th>
                                     <th>Actions</th>
                                 </tr>
@@ -136,21 +136,21 @@
                                 <tr>
                                     <td>
                                         <a href="#" onclick="openLivestockDetails('{{ $animal->id }}')" class="text-primary font-weight-bold">
-                                            {{ $animal->livestock_id }}
+                                            {{ $animal->tag_number }}
                                         </a>
                                     </td>
                                     <td>{{ $animal->type }}</td>
                                     <td>{{ $animal->breed }}</td>
-                                    <td>{{ $animal->age }} years</td>
-                                    <td>{{ $animal->weight }} kg</td>
+                                    <td>{{ $animal->birth_date ? $animal->birth_date->diffForHumans() : 'N/A' }}</td>
+                                    <td>{{ $animal->weight ? $animal->weight . ' kg' : 'N/A' }}</td>
                                     <td>
                                         <span class="status-badge status-{{ $animal->health_status == 'Healthy' ? 'active' : 'inactive' }}">
                                             {{ $animal->health_status }}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="status-badge status-{{ $animal->production_status == 'Active' ? 'active' : 'inactive' }}">
-                                            {{ $animal->production_status }}
+                                        <span class="status-badge status-{{ $animal->status == 'Active' ? 'active' : 'inactive' }}">
+                                            {{ $animal->status }}
                                         </span>
                                     </td>
                                     <td>{{ $animal->updated_at->format('M d, Y') }}</td>
@@ -228,10 +228,18 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="livestock_id">Livestock ID</label>
-                                        <input type="text" class="form-control" id="livestock_id" name="livestock_id" required>
+                                        <label for="tag_number">Tag Number</label>
+                                        <input type="text" class="form-control" id="tag_number" name="tag_number" required>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="type">Type</label>
@@ -254,8 +262,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="age">Age (years)</label>
-                                        <input type="number" class="form-control" id="age" name="age" min="0" step="0.1" required>
+                                        <label for="birth_date">Birth Date</label>
+                                        <input type="date" class="form-control" id="birth_date" name="birth_date">
                                     </div>
                                 </div>
                             </div>
@@ -293,16 +301,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="vaccination_date">Last Vaccination Date</label>
-                                        <input type="date" class="form-control" id="vaccination_date" name="vaccination_date">
-                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="health_notes">Health Notes</label>
-                                <textarea class="form-control" id="health_notes" name="health_notes" rows="3" placeholder="Any health-related notes or observations"></textarea>
                             </div>
                         </div>
 
@@ -311,25 +310,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="production_status">Production Status</label>
-                                        <select class="form-control" id="production_status" name="production_status" required>
+                                        <label for="status">Status</label>
+                                        <select class="form-control" id="status" name="status" required>
                                             <option value="Active">Active</option>
                                             <option value="Inactive">Inactive</option>
-                                            <option value="Pregnant">Pregnant</option>
-                                            <option value="Lactating">Lactating</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="last_milking">Last Milking Date</label>
-                                        <input type="date" class="form-control" id="last_milking" name="last_milking">
-                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="production_notes">Production Notes</label>
-                                <textarea class="form-control" id="production_notes" name="production_notes" rows="3" placeholder="Any production-related notes or observations"></textarea>
                             </div>
                         </div>
                     </div>
@@ -400,6 +388,12 @@
 @endsection
 
 @push('scripts')
+<!-- DataTables CSS and JS -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
 <script>
 let currentLivestockId = null;
 
