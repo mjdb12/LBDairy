@@ -535,7 +535,7 @@ function initializeDataTable() {
 
 function openLogDetails(logId) {
     // Load log details via AJAX
-    $.get(`/superadmin/audit-logs/${logId}/details`, function(data) {
+    $.get(`{{ route("superadmin.audit-logs.details", ":id") }}`.replace(':id', logId), function(data) {
         $('#logDetailsContent').html(data);
         $('#logDetailsModal').modal('show');
     });
@@ -547,7 +547,7 @@ function viewLogDetails(logId) {
 
 function investigateLog(logId) {
     // Open investigation view
-    window.open(`/superadmin/audit-logs/${logId}/investigate`, '_blank');
+    window.open(`{{ route("superadmin.audit-logs.details", ":id") }}`.replace(':id', logId), '_blank');
 }
 
 function investigateFromModal() {
@@ -558,7 +558,7 @@ function investigateFromModal() {
 
 function flagLog(logId) {
     if (confirm('Flag this log entry for further investigation?')) {
-        $.post(`/superadmin/audit-logs/${logId}/flag`, {
+        $.post(`{{ route("superadmin.audit-logs.details", ":id") }}`.replace(':id', logId), {
             _token: '{{ csrf_token() }}'
         }, function(response) {
             if (response.success) {
@@ -576,11 +576,11 @@ function investigateAlert(alertId) {
 }
 
 function exportLogs() {
-    window.location.href = '/superadmin/audit-logs/export';
+    window.location.href = '{{ route("superadmin.audit-logs.export") }}';
 }
 
 function generateReport() {
-    window.open('/superadmin/audit-logs/report', '_blank');
+            window.open('{{ route("superadmin.audit-logs.export") }}', '_blank');
 }
 
 function openFilterModal() {
@@ -589,7 +589,7 @@ function openFilterModal() {
 
 function clearOldLogs() {
     if (confirm('Are you sure you want to clear logs older than 90 days? This action cannot be undone.')) {
-        $.post('/superadmin/audit-logs/clear-old', {
+        $.post('{{ route("superadmin.audit-logs.clear") }}', {
             _token: '{{ csrf_token() }}'
         }, function(response) {
             if (response.success) {
@@ -608,7 +608,7 @@ $('#filterForm').on('submit', function(e) {
     
     // Apply filter and reload table
     const formData = $(this).serialize();
-    $.get('/superadmin/audit-logs/filter?' + formData, function(response) {
+            $.get('{{ route("superadmin.audit-logs.export") }}?' + formData, function(response) {
         if (response.success) {
             $('#filterModal').modal('hide');
             location.reload();

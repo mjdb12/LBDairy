@@ -413,7 +413,7 @@ function showAddUserModal() {
 function editUser(userId) {
     // Load user data via AJAX
     $.ajax({
-        url: `{{ route("superadmin.users.show", "") }}/${userId}`,
+        url: `{{ route("superadmin.users.show", ":id") }}`.replace(':id', userId),
         method: 'GET',
         success: function(response) {
             const user = response.data;
@@ -453,7 +453,7 @@ function saveUser(event) {
     
     const formData = new FormData($('#userForm')[0]);
     const userId = $('#userId').val();
-    const url = userId ? `{{ route("superadmin.users.update", "") }}/${userId}` : '{{ route("superadmin.users.store") }}';
+            const url = userId ? `{{ route("superadmin.users.update", ":id") }}`.replace(':id', userId) : '{{ route("superadmin.users.store") }}';
     const method = userId ? 'PUT' : 'POST';
 
     $.ajax({
@@ -494,7 +494,7 @@ function toggleUserStatus(userId, currentStatus) {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     
     $.ajax({
-        url: `{{ route("superadmin.users.toggle-status", "") }}/${userId}`,
+        url: `{{ route("superadmin.users.toggle-status", ":id") }}`.replace(':id', userId),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -516,7 +516,7 @@ function toggleUserStatus(userId, currentStatus) {
 function showUserDetails(userId) {
     // Load user details via AJAX
     $.ajax({
-        url: `{{ route("superadmin.users.show", "") }}/${userId}`,
+        url: `{{ route("superadmin.users.show", ":id") }}`.replace(':id', userId),
         method: 'GET',
         success: function(response) {
             const user = response.data;
@@ -564,7 +564,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
 
 function deleteUser(userId) {
     $.ajax({
-        url: `{{ route("superadmin.users.destroy", "") }}/${userId}`,
+        url: `{{ route("superadmin.users.destroy", ":id") }}`.replace(':id', userId),
         method: 'DELETE',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

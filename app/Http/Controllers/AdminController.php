@@ -67,7 +67,7 @@ class AdminController extends Controller
         $stats = $this->getFarmStats();
         
         // Get farms with performance data
-        $farms = Farm::with(['user', 'livestock', 'productionRecords'])
+        $farms = Farm::with(['owner', 'livestock', 'productionRecords'])
             ->get()
             ->map(function ($farm) {
                 $farm->performance_score = $this->calculateFarmPerformance($farm);
@@ -290,7 +290,7 @@ class AdminController extends Controller
         $stats = $this->getFarmsOverviewStats();
         
         // Get farms with owner information
-        $farms = Farm::with(['user'])
+        $farms = Farm::with(['owner'])
             ->orderBy('created_at', 'desc')
             ->get();
 

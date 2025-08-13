@@ -186,12 +186,52 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile/password', [SuperAdminController::class, 'changePassword'])->name('profile.password');
         Route::get('/users', function () { return view('superadmin.users'); })->name('users');
         Route::get('/admins', function () { return view('superadmin.admins'); })->name('admins');
-        Route::get('/farms', function () { return view('superadmin.farms'); })->name('farms');
+        // Route::get('/farms', function () { return view('superadmin.farms'); })->name('farms');
         Route::get('/audit-logs', [SuperAdminController::class, 'auditLogs'])->name('audit-logs');
         Route::get('/audit-logs/{id}/details', [SuperAdminController::class, 'getAuditLogDetails'])->name('audit-logs.details');
         Route::get('/audit-logs/export', [SuperAdminController::class, 'exportAuditLogs'])->name('audit-logs.export');
         Route::post('/audit-logs/clear', [SuperAdminController::class, 'clearOldLogs'])->name('audit-logs.clear');
         Route::get('/system-overview', [SuperAdminController::class, 'getSystemOverview'])->name('system-overview');
         Route::get('/system-settings', function () { return view('superadmin.settings'); })->name('settings');
+        
+        // Additional routes for superadmin functionality
+        Route::get('/users/index', function () { return view('superadmin.users'); })->name('users.index');
+        Route::get('/users/stats', [SuperAdminController::class, 'getUserStats'])->name('users.stats');
+        Route::get('/users/{id}', [SuperAdminController::class, 'showUser'])->name('users.show');
+        Route::post('/users', [SuperAdminController::class, 'storeUser'])->name('users.store');
+        Route::put('/users/{id}', [SuperAdminController::class, 'updateUser'])->name('users.update');
+        Route::patch('/users/{id}/toggle-status', [SuperAdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
+        Route::delete('/users/{id}', [SuperAdminController::class, 'destroyUser'])->name('users.destroy');
+        
+        Route::get('/admins/pending', [SuperAdminController::class, 'getPendingAdmins'])->name('admins.pending');
+        Route::get('/admins/active', [SuperAdminController::class, 'getActiveAdmins'])->name('admins.active');
+        Route::get('/admins/stats', [SuperAdminController::class, 'getAdminStats'])->name('admins.stats');
+        Route::post('/admins/{id}/approve', [SuperAdminController::class, 'approveAdmin'])->name('admins.approve');
+        Route::post('/admins/{id}/reject', [SuperAdminController::class, 'rejectAdmin'])->name('admins.reject');
+        Route::post('/admins/{id}/deactivate', [SuperAdminController::class, 'deactivateAdmin'])->name('admins.deactivate');
+        Route::post('/admins/contact', [SuperAdminController::class, 'contactAdmin'])->name('admins.contact');
+        
+        Route::get('/farms/index', function () { return view('superadmin.farms'); })->name('farms.index');
+        Route::get('/farms/stats', [SuperAdminController::class, 'getFarmStats'])->name('farms.stats');
+        Route::get('/farms/{id}', [SuperAdminController::class, 'showFarm'])->name('farms.show');
+        Route::patch('/farms/{id}/update-status', [SuperAdminController::class, 'updateFarmStatus'])->name('farms.update-status');
+        Route::delete('/farms/{id}', [SuperAdminController::class, 'destroyFarm'])->name('farms.destroy');
+        Route::post('/farms/import', [SuperAdminController::class, 'importFarms'])->name('farms.import');
+        
+        // Additional superadmin routes to match static website
+        Route::get('/manage-farmers', function () { return view('superadmin.manage-farmers'); })->name('manage-farmers');
+        Route::get('/manage-analysis', function () { return view('superadmin.manage-analysis'); })->name('manage-analysis');
+        
+        Route::get('/settings/get', [SuperAdminController::class, 'getSettings'])->name('settings.get');
+        Route::post('/settings/general', [SuperAdminController::class, 'updateGeneralSettings'])->name('settings.general');
+        Route::post('/settings/security', [SuperAdminController::class, 'updateSecuritySettings'])->name('settings.security');
+        Route::post('/settings/notifications', [SuperAdminController::class, 'updateNotificationSettings'])->name('settings.notifications');
+        Route::post('/settings/test-email', [SuperAdminController::class, 'testEmail'])->name('settings.test-email');
+        Route::post('/settings/create-backup', [SuperAdminController::class, 'createBackup'])->name('settings.create-backup');
+        Route::post('/settings/clear-cache', [SuperAdminController::class, 'clearCache'])->name('settings.clear-cache');
+        Route::post('/settings/optimize-database', [SuperAdminController::class, 'optimizeDatabase'])->name('settings.optimize-database');
+        Route::get('/settings/logs', [SuperAdminController::class, 'getSettingsLogs'])->name('settings.logs');
+        Route::post('/settings/clear-logs', [SuperAdminController::class, 'clearSettingsLogs'])->name('settings.clear-logs');
+        Route::get('/settings/export-logs', [SuperAdminController::class, 'exportSettingsLogs'])->name('settings.export-logs');
     });
 });

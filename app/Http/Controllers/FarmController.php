@@ -21,7 +21,7 @@ class FarmController extends Controller
         $stats = $this->getStats();
         
         // Get farms with their owners and related data
-        $farms = Farm::with(['user', 'livestock', 'productionRecords'])
+        $farms = Farm::with(['owner', 'livestock', 'productionRecords'])
             ->get()
             ->map(function ($farm) {
                 $farm->farm_id = 'FS' . str_pad($farm->id, 3, '0', STR_PAD_LEFT);
@@ -43,7 +43,7 @@ class FarmController extends Controller
     public function show($id)
     {
         try {
-            $farm = Farm::with(['user', 'livestock', 'productionRecords'])->findOrFail($id);
+            $farm = Farm::with(['owner', 'livestock', 'productionRecords'])->findOrFail($id);
             
             // Get farm statistics
             $stats = $this->getFarmStats($farm->id);
@@ -238,7 +238,7 @@ class FarmController extends Controller
      */
     private function exportToCSV()
     {
-        $farms = Farm::with(['user', 'livestock', 'productionRecords'])->get();
+        $farms = Farm::with(['owner', 'livestock', 'productionRecords'])->get();
         
         $filename = 'farm_management_' . date('Y-m-d') . '.csv';
         
@@ -264,8 +264,8 @@ class FarmController extends Controller
                 
                 fputcsv($file, [
                     'FS' . str_pad($farm->id, 3, '0', STR_PAD_LEFT),
-                    $farm->user->name ?? 'N/A',
-                    $farm->user->email ?? 'N/A',
+                    $farm->owner->name ?? 'N/A',
+                    $farm->owner->email ?? 'N/A',
                     $farm->phone ?? 'N/A',
                     $farm->location ?? 'N/A',
                     $farm->status ?? 'active',

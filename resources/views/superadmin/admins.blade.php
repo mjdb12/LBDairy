@@ -474,7 +474,7 @@ function showAdminDetails(admin) {
 
 function approveAdmin(adminId) {
     $.ajax({
-        url: `{{ route("superadmin.admins.approve", "") }}/${adminId}`,
+        url: `{{ route("superadmin.admins.approve", ":id") }}`.replace(':id', adminId),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -495,7 +495,7 @@ function rejectAdmin(adminId) {
     if (!confirm('Are you sure you want to reject this admin registration?')) return;
 
     $.ajax({
-        url: `{{ route("superadmin.admins.reject", "") }}/${adminId}`,
+        url: `{{ route("superadmin.admins.reject", ":id") }}`.replace(':id', adminId),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -515,7 +515,7 @@ function deactivateAdmin(adminId) {
     if (!confirm('Are you sure you want to deactivate this admin?')) return;
 
     $.ajax({
-        url: `{{ route("superadmin.admins.deactivate", "") }}/${adminId}`,
+        url: `{{ route("superadmin.admins.deactivate", ":id") }}`.replace(':id', adminId),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

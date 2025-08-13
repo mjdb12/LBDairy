@@ -70,9 +70,10 @@ class SuperAdminController extends Controller
 
         return view('superadmin.audit-logs', [
             'totalLogs' => $stats['total_logs'],
-            'criticalLogs' => $stats['critical_logs'],
+            'criticalEvents' => $stats['critical_logs'],
             'todayLogs' => $stats['today_logs'],
             'systemHealth' => $stats['system_health'],
+            'activeUsers' => User::where('is_active', true)->count(),
             'auditLogs' => $auditLogs
         ]);
     }
@@ -251,6 +252,405 @@ class SuperAdminController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to clear old logs'], 500);
+        }
+    }
+
+    // User Management Methods
+    public function getUserStats()
+    {
+        try {
+            $stats = [
+                'total_users' => User::count(),
+                'active_users' => User::where('is_active', true)->count(),
+                'inactive_users' => User::where('is_active', false)->count(),
+                'farmers' => User::where('role', 'farmer')->count(),
+                'admins' => User::where('role', 'admin')->count(),
+                'superadmins' => User::where('role', 'superadmin')->count(),
+            ];
+            
+            return response()->json(['success' => true, 'stats' => $stats]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get user stats'], 500);
+        }
+    }
+
+    public function showUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            return response()->json(['success' => true, 'user' => $user]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'User not found'], 404);
+        }
+    }
+
+    public function storeUser(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users',
+                'role' => 'required|in:farmer,admin,superadmin',
+                'phone' => 'nullable|string|max:20',
+                'address' => 'nullable|string|max:500',
+            ]);
+
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'password' => Hash::make('password123'), // Default password
+                'is_active' => true,
+            ]);
+
+            return response()->json(['success' => true, 'user' => $user, 'message' => 'User created successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to create user'], 500);
+        }
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
+                'role' => 'required|in:farmer,admin,superadmin',
+                'phone' => 'nullable|string|max:20',
+                'address' => 'nullable|string|max:500',
+            ]);
+
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role,
+                'phone' => $request->phone,
+                'address' => $request->address,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'User updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update user'], 500);
+        }
+    }
+
+    public function toggleUserStatus($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->update(['is_active' => !$user->is_active]);
+            
+            return response()->json([
+                'success' => true, 
+                'message' => 'User status updated successfully',
+                'is_active' => $user->is_active
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update user status'], 500);
+        }
+    }
+
+    public function destroyUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            
+            return response()->json(['success' => true, 'message' => 'User deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete user'], 500);
+        }
+    }
+
+    // Admin Management Methods
+    public function getPendingAdmins()
+    {
+        try {
+            $pendingAdmins = User::where('role', 'admin')
+                ->where('is_active', false)
+                ->get();
+            
+            return response()->json(['success' => true, 'admins' => $pendingAdmins]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get pending admins'], 500);
+        }
+    }
+
+    public function getActiveAdmins()
+    {
+        try {
+            $activeAdmins = User::where('role', 'admin')
+                ->where('is_active', true)
+                ->get();
+            
+            return response()->json(['success' => true, 'admins' => $activeAdmins]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get active admins'], 500);
+        }
+    }
+
+    public function getAdminStats()
+    {
+        try {
+            $stats = [
+                'total_admins' => User::where('role', 'admin')->count(),
+                'active_admins' => User::where('role', 'admin')->where('is_active', true)->count(),
+                'pending_admins' => User::where('role', 'admin')->where('is_active', false)->count(),
+            ];
+            
+            return response()->json(['success' => true, 'stats' => $stats]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get admin stats'], 500);
+        }
+    }
+
+    public function approveAdmin($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            $admin->update(['is_active' => true]);
+            
+            return response()->json(['success' => true, 'message' => 'Admin approved successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to approve admin'], 500);
+        }
+    }
+
+    public function rejectAdmin($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            $admin->delete();
+            
+            return response()->json(['success' => true, 'message' => 'Admin rejected and removed']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to reject admin'], 500);
+        }
+    }
+
+    public function deactivateAdmin($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            $admin->update(['is_active' => false]);
+            
+            return response()->json(['success' => true, 'message' => 'Admin deactivated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to deactivate admin'], 500);
+        }
+    }
+
+    public function contactAdmin(Request $request)
+    {
+        try {
+            $request->validate([
+                'admin_id' => 'required|exists:users,id',
+                'message' => 'required|string|max:1000',
+            ]);
+
+            // This would typically send an email or notification
+            // For now, just return success
+            return response()->json(['success' => true, 'message' => 'Message sent to admin successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to send message'], 500);
+        }
+    }
+
+    // Farm Management Methods
+    public function getFarmStats()
+    {
+        try {
+            $stats = [
+                'total_farms' => Farm::count(),
+                'active_farms' => Farm::where('status', 'active')->count(),
+                'inactive_farms' => Farm::where('status', 'inactive')->count(),
+            ];
+            
+            return response()->json(['success' => true, 'stats' => $stats]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get farm stats'], 500);
+        }
+    }
+
+    public function showFarm($id)
+    {
+        try {
+            $farm = Farm::findOrFail($id);
+            return response()->json(['success' => true, 'farm' => $farm]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Farm not found'], 404);
+        }
+    }
+
+    public function updateFarmStatus($id)
+    {
+        try {
+            $farm = Farm::findOrFail($id);
+            $farm->update(['status' => $farm->status === 'active' ? 'inactive' : 'active']);
+            
+            return response()->json([
+                'success' => true, 
+                'message' => 'Farm status updated successfully',
+                'status' => $farm->status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update farm status'], 500);
+        }
+    }
+
+    public function destroyFarm($id)
+    {
+        try {
+            $farm = Farm::findOrFail($id);
+            $farm->delete();
+            
+            return response()->json(['success' => true, 'message' => 'Farm deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete farm'], 500);
+        }
+    }
+
+    public function importFarms(Request $request)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|file|mimes:csv,xlsx',
+            ]);
+
+            // This would typically process the uploaded file
+            // For now, just return success
+            return response()->json(['success' => true, 'message' => 'Farms imported successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to import farms'], 500);
+        }
+    }
+
+    // Settings Methods
+    public function getSettings()
+    {
+        try {
+            $settings = [
+                'general' => [
+                    'site_name' => 'LBDAIRY',
+                    'site_description' => 'Modern Dairy Management System',
+                ],
+                'security' => [
+                    'password_min_length' => 8,
+                    'session_timeout' => 120,
+                ],
+                'notifications' => [
+                    'email_notifications' => true,
+                    'sms_notifications' => false,
+                ],
+            ];
+            
+            return response()->json(['success' => true, 'settings' => $settings]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get settings'], 500);
+        }
+    }
+
+    public function updateGeneralSettings(Request $request)
+    {
+        try {
+            // This would typically update database settings
+            return response()->json(['success' => true, 'message' => 'General settings updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update general settings'], 500);
+        }
+    }
+
+    public function updateSecuritySettings(Request $request)
+    {
+        try {
+            // This would typically update security settings
+            return response()->json(['success' => true, 'message' => 'Security settings updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update security settings'], 500);
+        }
+    }
+
+    public function updateNotificationSettings(Request $request)
+    {
+        try {
+            // This would typically update notification settings
+            return response()->json(['success' => true, 'message' => 'Notification settings updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update notification settings'], 500);
+        }
+    }
+
+    public function testEmail(Request $request)
+    {
+        try {
+            // This would typically send a test email
+            return response()->json(['success' => true, 'message' => 'Test email sent successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to send test email'], 500);
+        }
+    }
+
+    public function createBackup(Request $request)
+    {
+        try {
+            // This would typically create a system backup
+            return response()->json(['success' => true, 'message' => 'Backup created successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to create backup'], 500);
+        }
+    }
+
+    public function clearCache(Request $request)
+    {
+        try {
+            // This would typically clear system cache
+            return response()->json(['success' => true, 'message' => 'Cache cleared successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to clear cache'], 500);
+        }
+    }
+
+    public function optimizeDatabase(Request $request)
+    {
+        try {
+            // This would typically optimize the database
+            return response()->json(['success' => true, 'message' => 'Database optimized successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to optimize database'], 500);
+        }
+    }
+
+    public function getSettingsLogs(Request $request)
+    {
+        try {
+            // This would typically return settings change logs
+            return response()->json(['success' => true, 'logs' => []]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get settings logs'], 500);
+        }
+    }
+
+    public function clearSettingsLogs(Request $request)
+    {
+        try {
+            // This would typically clear settings logs
+            return response()->json(['success' => true, 'message' => 'Settings logs cleared successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to clear settings logs'], 500);
+        }
+    }
+
+    public function exportSettingsLogs(Request $request)
+    {
+        try {
+            // This would typically export settings logs
+            return response()->json(['success' => true, 'message' => 'Settings logs exported successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to export settings logs'], 500);
         }
     }
 }

@@ -93,9 +93,9 @@
                                     {{ $farm->farm_id ?? 'F' . str_pad($farm->id, 3, '0', STR_PAD_LEFT) }}
                                 </a>
                             </td>
-                            <td>{{ $farm->user->name ?? 'N/A' }}</td>
-                            <td>{{ $farm->user->email ?? 'N/A' }}</td>
-                            <td>{{ $farm->user->phone ?? 'N/A' }}</td>
+                                                            <td>{{ $farm->owner->name ?? 'N/A' }}</td>
+                                <td>{{ $farm->owner->email ?? 'N/A' }}</td>
+                                <td>{{ $farm->owner->phone ?? 'N/A' }}</td>
                             <td>{{ $farm->location ?? 'N/A' }}</td>
                             <td>
                                 <select class="form-control" onchange="updateActivity(this, '{{ $farm->id }}')">

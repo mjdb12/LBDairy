@@ -97,8 +97,8 @@
                                     {{ $farm->farm_id ?? 'FS' . str_pad($farm->id, 3, '0', STR_PAD_LEFT) }}
                                 </a>
                             </td>
-                            <td>{{ $farm->owner_name ?? $farm->user->name ?? 'N/A' }}</td>
-                            <td>{{ $farm->user->email ?? 'N/A' }}</td>
+                                                            <td>{{ $farm->owner->name ?? 'N/A' }}</td>
+                                <td>{{ $farm->owner->email ?? 'N/A' }}</td>
                             <td>{{ $farm->phone ?? 'N/A' }}</td>
                             <td>{{ $farm->location ?? 'N/A' }}</td>
                             <td>

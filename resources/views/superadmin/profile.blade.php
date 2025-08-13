@@ -26,7 +26,7 @@
                     <i class="fas fa-user-shield fa-2x"></i>
                 </div>
             </div>
-            <a href="{{ route('superadmin.manage-admins') }}" class="card-footer text-info small d-flex justify-content-between align-items-center">
+            <a href="{{ route('superadmin.admins') }}" class="card-footer text-info small d-flex justify-content-between align-items-center">
                 View Admins <i class="fas fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -43,7 +43,7 @@
                     <i class="fas fa-user-check fa-2x"></i>
                 </div>
             </div>
-            <a href="{{ route('superadmin.manage-admins') }}" class="card-footer text-success small d-flex justify-content-between align-items-center">
+            <a href="{{ route('superadmin.admins') }}" class="card-footer text-success small d-flex justify-content-between align-items-center">
                 View Active <i class="fas fa-arrow-circle-right"></i>
             </a>
         </div>
@@ -60,7 +60,7 @@
                     <i class="fas fa-user-clock fa-2x"></i>
                 </div>
             </div>
-            <a href="{{ route('superadmin.manage-admins') }}" class="card-footer text-warning small d-flex justify-content-between align-items-center">
+            <a href="{{ route('superadmin.admins') }}" class="card-footer text-warning small d-flex justify-content-between align-items-center">
                 View Requests <i class="fas fa-arrow-circle-right"></i>
             </a>
         </div>

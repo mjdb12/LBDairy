@@ -270,7 +270,7 @@ function updateStats() {
 function openDetailsModal(farmId) {
     // Load farm details via AJAX
     $.ajax({
-        url: `{{ route("superadmin.farms.show", "") }}/${farmId}`,
+        url: `{{ route("superadmin.farms.show", ":id") }}`.replace(':id', farmId),
         method: 'GET',
         success: function(response) {
             const farm = response.data;
@@ -314,7 +314,7 @@ function updateActivity(selectElement, farmId) {
     const newStatus = selectElement.value;
     
     $.ajax({
-        url: `{{ route("superadmin.farms.update-status", "") }}/${farmId}`,
+        url: `{{ route("superadmin.farms.update-status", ":id") }}`.replace(':id', farmId),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -349,7 +349,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
 
 function deleteFarm(farmId) {
     $.ajax({
-        url: `{{ route("superadmin.farms.destroy", "") }}/${farmId}`,
+        url: `{{ route("superadmin.farms.destroy", ":id") }}`.replace(':id', farmId),
         method: 'DELETE',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

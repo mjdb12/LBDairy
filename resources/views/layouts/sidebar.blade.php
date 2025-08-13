@@ -241,6 +241,49 @@
                 </a>
             </li>
 
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Tools
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.admins') }}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Manage Admins</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.manage-farmers') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Manage Farmers</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.farms.index') }}">
+                    <i class="fas fa-fw fa-university"></i>
+                    <span>Manage Farms</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.manage-analysis') }}">
+                    <i class="fas fa-fw fa-database"></i>
+                    <span>Productivity Analysis</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.audit-logs') }}">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Logs</span>
+                </a>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('superadmin.profile') }}">
                     <i class="fas fa-fw fa-user"></i>
@@ -249,37 +292,9 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('superadmin.users') }}">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Users</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('superadmin.admins') }}">
-                    <i class="fas fa-fw fa-user-shield"></i>
-                    <span>Admins</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('superadmin.farms') }}">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>Farms</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('superadmin.audit-logs') }}">
-                    <i class="fas fa-fw fa-history"></i>
-                    <span>Audit Logs</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('superadmin.settings') }}">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Settings</span>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </a>
             </li>
         @endif
