@@ -145,7 +145,7 @@
                             <td>{{ $record->id }}</td>
                             <td>{{ $record->type ?? 'Milk' }}</td>
                             <td>BATCH-{{ $record->created_at->format('Ymd') }}</td>
-                            <td>{{ $record->quantity ?? 0 }}</td>
+                            <td>{{ $record->milk_quantity ?? 0 }}</td>
                             <td>{{ $record->farm->name ?? 'N/A' }}</td>
                             <td>{{ $record->created_at->format('M d, Y') }}</td>
                             <td>

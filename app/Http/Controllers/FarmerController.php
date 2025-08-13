@@ -223,6 +223,9 @@ class FarmerController extends Controller
             $query->where('owner_id', $user->id);
         })->get();
 
+        // Get farms for the farmer
+        $farms = Farm::where('owner_id', $user->id)->get();
+
         $totalLivestock = $livestock->count();
         $healthyLivestock = $livestock->where('health_status', 'Healthy')->count();
         $attentionNeeded = $livestock->where('health_status', '!=', 'Healthy')->count();
@@ -230,6 +233,7 @@ class FarmerController extends Controller
 
         return view('farmer.livestock', compact(
             'livestock',
+            'farms',
             'totalLivestock',
             'healthyLivestock',
             'attentionNeeded',

@@ -89,8 +89,15 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
         Route::put('/profile/password', [AdminController::class, 'changePassword'])->name('profile.password');
         Route::get('/farms', function () { return view('admin.farms'); })->name('farms');
-        Route::get('/manage-farmers', function () { return view('admin.manage-farmers'); })->name('manage-farmers');
-        Route::get('/farmers', function () { return view('admin.farmers'); })->name('farmers');
+        // Farmer management routes
+        Route::get('/manage-farmers', [App\Http\Controllers\AdminController::class, 'manageFarmers'])->name('manage-farmers');
+        Route::get('/farmers', [App\Http\Controllers\AdminController::class, 'farmers'])->name('farmers');
+        Route::post('/farmers', [App\Http\Controllers\AdminController::class, 'storeFarmer'])->name('farmers.store');
+        Route::get('/farmers/{id}', [App\Http\Controllers\AdminController::class, 'showFarmer'])->name('farmers.show');
+        Route::post('/farmers/{id}/update', [App\Http\Controllers\AdminController::class, 'updateFarmer'])->name('farmers.update');
+        Route::delete('/farmers/{id}', [App\Http\Controllers\AdminController::class, 'deleteFarmer'])->name('farmers.destroy');
+        Route::patch('/farmers/{id}/status', [App\Http\Controllers\AdminController::class, 'updateFarmerStatus'])->name('farmers.update-status');
+        Route::post('/farmers/{id}/reset-password', [App\Http\Controllers\AdminController::class, 'resetFarmerPassword'])->name('farmers.reset-password');
         
         // Livestock management routes
         Route::get('/manage-livestock', [App\Http\Controllers\LivestockController::class, 'index'])->name('livestock.index');

@@ -92,7 +92,7 @@
                     <tbody>
                         @forelse($issues as $issue)
                         <tr>
-                            <td><strong>{{ $issue->livestock->livestock_id ?? 'N/A' }}</strong></td>
+                            <td><strong>{{ $issue->livestock->tag_number ?? 'N/A' }}</strong></td>
                             <td>{{ $issue->livestock->type ?? 'N/A' }}</td>
                             <td>{{ $issue->livestock->breed ?? 'N/A' }}</td>
                             <td>
@@ -161,7 +161,7 @@
                                 <select class="form-control" id="livestock_id" name="livestock_id" required>
                                     <option value="">Select Livestock</option>
                                     @foreach($livestock as $animal)
-                                    <option value="{{ $animal->id }}">{{ $animal->livestock_id }} - {{ $animal->type }} ({{ $animal->breed }})</option>
+                                    <option value="{{ $animal->id }}">{{ $animal->tag_number }} - {{ $animal->type }} ({{ $animal->breed }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -242,7 +242,7 @@
                                 <select class="form-control" id="edit_livestock_id" name="livestock_id" required>
                                     <option value="">Select Livestock</option>
                                     @foreach($livestock as $animal)
-                                    <option value="{{ $animal->id }}">{{ $animal->livestock_id }} - {{ $animal->type }} ({{ $animal->breed }})</option>
+                                    <option value="{{ $animal->id }}">{{ $animal->tag_number }} - {{ $animal->type }} ({{ $animal->breed }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -552,6 +552,33 @@
         font-weight: 600;
     }
 
+    .issue-type-behavioral {
+        background: rgba(102, 16, 242, 0.1);
+        color: #6610f2;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .issue-type-environmental {
+        background: rgba(32, 201, 151, 0.1);
+        color: #20c997;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .issue-type-other {
+        background: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
     .status-badge {
         padding: 0.375rem 0.75rem;
         border-radius: 50px;
@@ -654,6 +681,22 @@
     let dataTable;
 
     $(document).ready(function() {
+        // Debug: Check table structure before initializing DataTable
+        const table = $('#issuesTable');
+        const headerRow = table.find('thead tr');
+        const headerCount = headerRow.find('th').length;
+        const firstDataRow = table.find('tbody tr:first');
+        const dataCount = firstDataRow.find('td').length;
+        
+        console.log('Header columns:', headerCount);
+        console.log('Data columns:', dataCount);
+        
+        if (headerCount !== dataCount) {
+            console.error('Column count mismatch detected!');
+            console.error('Headers:', headerCount, 'Data:', dataCount);
+            return; // Don't initialize DataTable if there's a mismatch
+        }
+        
         // Initialize DataTable
         dataTable = $('#issuesTable').DataTable({
             dom: 'Bfrtip',
@@ -697,8 +740,14 @@
 
         // Custom search
         $('.custom-search').on('keyup', function() {
-            dataTable.search(this.value).draw();
+            if (dataTable) {
+                dataTable.search(this.value).draw();
+            }
         });
+        
+        // Additional debugging
+        console.log('Table structure check completed');
+        console.log('Issues count:', {{ count($issues ?? []) }});
     });
 
     function viewIssueDetails(issueId) {
@@ -710,7 +759,7 @@
                 const issue = data.issue;
                 
                 // Populate the modal
-                document.getElementById('modalLivestockId').textContent = issue.livestock?.livestock_id || 'N/A';
+                document.getElementById('modalLivestockId').textContent = issue.livestock?.tag_number || 'N/A';
                 document.getElementById('modalLivestockType').textContent = issue.livestock?.type || 'N/A';
                 document.getElementById('modalLivestockBreed').textContent = issue.livestock?.breed || 'N/A';
                 document.getElementById('modalIssueType').textContent = issue.issue_type || 'N/A';

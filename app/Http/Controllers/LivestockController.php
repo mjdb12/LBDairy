@@ -16,6 +16,7 @@ class LivestockController extends Controller
     public function index()
     {
         $livestock = Livestock::with('farm')->get();
+        $farms = Farm::all(); // Add this line to get all farms
         $totalLivestock = $livestock->count();
         $activeLivestock = $livestock->where('status', 'active')->count();
         $inactiveLivestock = $livestock->where('status', 'inactive')->count();
@@ -23,6 +24,7 @@ class LivestockController extends Controller
 
         return view('admin.manage-livestock', compact(
             'livestock',
+            'farms', // Add this to the compact array
             'totalLivestock',
             'activeLivestock',
             'inactiveLivestock',

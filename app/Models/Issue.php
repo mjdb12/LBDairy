@@ -10,23 +10,31 @@ class Issue extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
+        'livestock_id',
+        'farm_id',
+        'issue_type',
         'description',
         'priority',
         'status',
-        'category',
-        'farm_id',
+        'date_reported',
+        'resolved_date',
+        'notes',
         'reported_by',
         'assigned_to',
-        'reported_date',
-        'resolved_date',
-        'resolution_notes',
     ];
 
     protected $casts = [
-        'reported_date' => 'date',
+        'date_reported' => 'date',
         'resolved_date' => 'date',
     ];
+
+    /**
+     * Get the livestock for this issue.
+     */
+    public function livestock()
+    {
+        return $this->belongsTo(Livestock::class);
+    }
 
     /**
      * Get the farm for this issue.

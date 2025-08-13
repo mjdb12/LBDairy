@@ -103,7 +103,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(\App\Models\User::where('role', 'farmer')->get() as $farmer)
+                    @forelse($farmers ?? [] as $farmer)
                     <tr>
                         <td>
                             <a href="#" class="farmer-id-link" onclick="openDetailsModal('{{ $farmer->id }}')">
@@ -132,7 +132,13 @@
                             </button>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            <i class="fas fa-info-circle"></i> No farmers found
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -206,6 +212,68 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save Farmer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Farmer Modal -->
+<div class="modal fade" id="editFarmerModal" tabindex="-1" role="dialog" aria-labelledby="editFarmerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editFarmerModalLabel">
+                    <i class="fas fa-user-edit"></i>
+                    Edit Farmer
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editFarmerForm">
+                @csrf
+                @method('PUT')
+                <input type="hidden" id="editFarmerId" name="farmer_id">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editName">Full Name *</label>
+                                <input type="text" class="form-control" id="editName" name="name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editUsername">Username *</label>
+                                <input type="text" class="form-control" id="editUsername" name="username" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmail">Email *</label>
+                                <input type="email" class="form-control" id="editEmail" name="email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editPhone">Phone</label>
+                                <input type="tel" class="form-control" id="editPhone" name="phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAddress">Address</label>
+                        <textarea class="form-control" id="editAddress" name="address" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Farmer
                     </button>
                 </div>
             </form>
@@ -323,6 +391,66 @@ $(document).ready(function() {
             info: "Showing _START_ to _END_ of _TOTAL_ farmers"
         }
     });
+
+    // Handle add farmer form submission
+    $('#addFarmerForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch('/admin/farmers', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('success', data.message);
+                $('#addFarmerModal').modal('hide');
+                this.reset();
+                location.reload();
+            } else {
+                showAlert('danger', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'An error occurred. Please try again.');
+        });
+    });
+
+    // Handle edit farmer form submission
+    $('#editFarmerForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const farmerId = document.getElementById('editFarmerId').value;
+        const formData = new FormData(this);
+        
+        fetch(`/admin/farmers/${farmerId}/update`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('success', data.message);
+                $('#editFarmerModal').modal('hide');
+                location.reload();
+            } else {
+                showAlert('danger', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'An error occurred. Please try again.');
+        });
+    });
 });
 
 function updateActivity(select, farmerId) {
@@ -414,6 +542,30 @@ function openDetailsModal(farmerId) {
         .catch(error => {
             console.error('Error:', error);
             showAlert('danger', 'Failed to load farmer details.');
+        });
+}
+
+function editFarmer(farmerId) {
+    // Fetch farmer details and populate edit modal
+    fetch(`/admin/farmers/${farmerId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const farmer = data.farmer;
+                // Populate edit form fields
+                document.getElementById('editFarmerId').value = farmer.id;
+                document.getElementById('editName').value = farmer.name;
+                document.getElementById('editUsername').value = farmer.username;
+                document.getElementById('editEmail').value = farmer.email;
+                document.getElementById('editPhone').value = farmer.phone || '';
+                document.getElementById('editAddress').value = farmer.address || '';
+                
+                $('#editFarmerModal').modal('show');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Failed to load farmer details for editing.');
         });
 }
 

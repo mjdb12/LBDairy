@@ -162,6 +162,47 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
         ]);
 
+        // Create sample production records
+        ProductionRecord::create([
+            'livestock_id' => $livestock1->id,
+            'farm_id' => $farm1->id,
+            'production_date' => now()->subDays(1),
+            'milk_quantity' => 25.5,
+            'milk_quality_score' => 8.5,
+            'notes' => 'Good production day',
+            'recorded_by' => $farmer1->id,
+        ]);
+
+        ProductionRecord::create([
+            'livestock_id' => $livestock1->id,
+            'farm_id' => $farm1->id,
+            'production_date' => now()->subDays(2),
+            'milk_quantity' => 24.8,
+            'milk_quality_score' => 8.0,
+            'notes' => 'Slightly lower than usual',
+            'recorded_by' => $farmer1->id,
+        ]);
+
+        ProductionRecord::create([
+            'livestock_id' => $livestock2->id,
+            'farm_id' => $farm1->id,
+            'production_date' => now()->subDays(1),
+            'milk_quantity' => 18.2,
+            'milk_quality_score' => 7.5,
+            'notes' => 'Normal production',
+            'recorded_by' => $farmer1->id,
+        ]);
+
+        ProductionRecord::create([
+            'livestock_id' => $livestock3->id,
+            'farm_id' => $farm2->id,
+            'production_date' => now()->subDays(1),
+            'milk_quantity' => 30.1,
+            'milk_quality_score' => 9.0,
+            'notes' => 'Excellent production',
+            'recorded_by' => $farmer2->id,
+        ]);
+
         // Audit logs will be created automatically by the system
 
         $this->command->info('Database seeded successfully!');

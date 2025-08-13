@@ -224,7 +224,7 @@ class FarmController extends Controller
         $activeLivestock = Livestock::where('farm_id', $farmId)->where('status', 'active')->count();
         $totalProduction = ProductionRecord::whereHas('livestock', function($query) use ($farmId) {
             $query->where('farm_id', $farmId);
-        })->sum('quantity');
+        })->sum('milk_quantity');
         
         return [
             'total_livestock' => $totalLivestock,
@@ -260,7 +260,7 @@ class FarmController extends Controller
             foreach ($farms as $farm) {
                 $totalLivestock = $farm->livestock->count();
                 $activeLivestock = $farm->livestock->where('status', 'active')->count();
-                $totalProduction = $farm->productionRecords->sum('quantity');
+                $totalProduction = $farm->productionRecords->sum('milk_quantity');
                 
                 fputcsv($file, [
                     'FS' . str_pad($farm->id, 3, '0', STR_PAD_LEFT),

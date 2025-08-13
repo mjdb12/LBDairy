@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('issues', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->foreignId('livestock_id')->nullable()->constrained('livestock')->onDelete('cascade');
+            $table->foreignId('farm_id')->nullable()->constrained('farms')->onDelete('cascade');
+            $table->string('issue_type');
             $table->text('description');
-            $table->enum('priority', ['low', 'medium', 'high', 'critical'])->default('medium');
-            $table->enum('status', ['open', 'in_progress', 'resolved', 'closed'])->default('open');
-            $table->enum('category', ['health', 'equipment', 'feed', 'management', 'other']);
-            $table->foreignId('farm_id')->constrained('farms')->onDelete('cascade');
+            $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent'])->default('Medium');
+            $table->enum('status', ['Pending', 'In Progress', 'Resolved', 'Closed'])->default('Pending');
+            $table->date('date_reported');
+            $table->date('resolved_date')->nullable();
+            $table->text('notes')->nullable();
             $table->foreignId('reported_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
-            $table->date('reported_date');
-            $table->date('resolved_date')->nullable();
-            $table->text('resolution_notes')->nullable();
             $table->timestamps();
         });
     }

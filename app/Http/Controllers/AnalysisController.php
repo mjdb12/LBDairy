@@ -22,7 +22,7 @@ class AnalysisController extends Controller
         
         // Get farmers with their productivity data
         $farmers = User::where('role', 'farmer')
-            ->with(['farm', 'livestock', 'productionRecords'])
+            ->with(['farms.livestock', 'farms.productionRecords'])
             ->get()
             ->map(function ($farmer) {
                 $farmer->farmer_id = 'F' . str_pad($farmer->id, 3, '0', STR_PAD_LEFT);
@@ -153,11 +153,12 @@ class AnalysisController extends Controller
         $totalFarmers = User::where('role', 'farmer')->count();
         
         // Calculate average productivity from production records
-        $avgProductivity = ProductionRecord::avg('quantity') ?? 0;
+        $avgProductivity = ProductionRecord::avg('milk_quantity') ?? 0;
         
         // Find top producer (farmer with highest average production)
-        $topProducer = ProductionRecord::select('user_id', DB::raw('AVG(quantity) as avg_production'))
-            ->groupBy('user_id')
+        $topProducer = ProductionRecord::select('farms.owner_id as user_id', DB::raw('AVG(production_records.milk_quantity) as avg_production'))
+            ->join('farms', 'production_records.farm_id', '=', 'farms.id')
+            ->groupBy('farms.owner_id')
             ->orderBy('avg_production', 'desc')
             ->first();
         
@@ -185,10 +186,11 @@ class AnalysisController extends Controller
             $months[] = $date->format('M');
             
             // Get average production for this month
-            $monthlyProduction = ProductionRecord::where('user_id', $farmerId)
+            $monthlyProduction = ProductionRecord::join('farms', 'production_records.farm_id', '=', 'farms.id')
+                ->where('farms.owner_id', $farmerId)
                 ->whereYear('production_date', $date->year)
                 ->whereMonth('production_date', $date->month)
-                ->avg('quantity') ?? 0;
+                ->avg('production_records.milk_quantity') ?? 0;
             
             $data[] = round($monthlyProduction, 1);
         }
@@ -247,9 +249,11 @@ class AnalysisController extends Controller
      */
     private function getFarmerStats($farmerId)
     {
-        $totalLivestock = Livestock::where('user_id', $farmerId)->count();
-        $activeLivestock = Livestock::where('user_id', $farmerId)->where('status', 'active')->count();
-        $totalProduction = ProductionRecord::where('user_id', $farmerId)->sum('quantity');
+        $totalLivestock = Livestock::where('owner_id', $farmerId)->count();
+        $activeLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'active')->count();
+        $totalProduction = ProductionRecord::join('farms', 'production_records.farm_id', '=', 'farms.id')
+            ->where('farms.owner_id', $farmerId)
+            ->sum('production_records.milk_quantity');
         
         return [
             'total_livestock' => $totalLivestock,
@@ -301,10 +305,10 @@ class AnalysisController extends Controller
             ]);
             
             foreach ($farmers as $farmer) {
-                $totalLivestock = $farmer->livestock->count();
-                $activeLivestock = $farmer->livestock->where('status', 'active')->count();
-                $totalProduction = $farmer->productionRecords->sum('quantity');
-                $avgMonthlyProduction = $farmer->productionRecords->avg('quantity') ?? 0;
+                $totalLivestock = $farmer->farms->sum(function($farm) { return $farm->livestock->count(); });
+                $activeLivestock = $farmer->farms->sum(function($farm) { return $farm->livestock->where('status', 'active')->count(); });
+                $totalProduction = $farmer->farms->sum(function($farm) { return $farm->productionRecords->sum('milk_quantity'); });
+                $avgMonthlyProduction = $farmer->farms->avg(function($farm) { return $farm->productionRecords->avg('milk_quantity'); }) ?? 0;
                 
                 fputcsv($file, [
                     'F' . str_pad($farmer->id, 3, '0', STR_PAD_LEFT),

@@ -105,7 +105,7 @@ class AdminController extends Controller
         $activeLivestock = $livestock->where('status', 'active')->count();
         $avgProductivity = $livestock->avg('productivity_score') ?? 0;
         $totalProduction = $livestock->sum(function($animal) {
-            return $animal->productionRecords->sum('quantity') ?? 0;
+            return $animal->productionRecords->sum('milk_quantity') ?? 0;
         });
         
         // Get top performer
@@ -475,7 +475,7 @@ class AdminController extends Controller
         $totalFarms = Farm::count();
         $activeFarms = Farm::where('status', 'active')->count();
         
-        $avgProduction = ProductionRecord::avg('quantity') ?? 0;
+        $avgProduction = ProductionRecord::avg('milk_quantity') ?? 0;
         $totalRevenue = Sale::sum('amount') ?? 0;
 
         return [
@@ -494,7 +494,7 @@ class AdminController extends Controller
         $totalLivestock = Livestock::count();
         $healthyCount = Livestock::where('health_status', 'healthy')->count();
         
-        $avgProduction = ProductionRecord::avg('quantity') ?? 0;
+        $avgProduction = ProductionRecord::avg('milk_quantity') ?? 0;
         $totalValue = Livestock::sum('estimated_value') ?? 0;
 
         return [
@@ -601,8 +601,8 @@ class AdminController extends Controller
     private function getProductionStats()
     {
         $totalProducts = ProductionRecord::count();
-        $totalStock = ProductionRecord::sum('quantity') ?? 0;
-        $todayProduction = ProductionRecord::whereDate('created_at', today())->sum('quantity') ?? 0;
+        $totalStock = ProductionRecord::sum('milk_quantity') ?? 0;
+        $todayProduction = ProductionRecord::whereDate('created_at', today())->sum('milk_quantity') ?? 0;
         
         // Placeholder for low stock alerts - would need a more sophisticated logic
         $lowStockAlerts = 0;
@@ -659,7 +659,7 @@ class AdminController extends Controller
     private function calculateFarmerProductivity($farmer)
     {
         // Simple productivity calculation based on production and livestock health
-        $productionScore = $farmer->productionRecords->avg('quantity') ?? 0;
+        $productionScore = $farmer->productionRecords->avg('milk_quantity') ?? 0;
         $healthScore = $farmer->livestock->where('health_status', 'healthy')->count() / max($farmer->livestock->count(), 1) * 100;
         $farmScore = $farmer->farms->where('status', 'active')->count() > 0 ? 100 : 0;
         
@@ -672,7 +672,7 @@ class AdminController extends Controller
     private function calculateFarmPerformance($farm)
     {
         // Simple performance calculation based on production and livestock health
-        $productionScore = $farm->productionRecords->avg('quantity') ?? 0;
+        $productionScore = $farm->productionRecords->avg('milk_quantity') ?? 0;
         $healthScore = $farm->livestock->where('health_status', 'healthy')->count() / max($farm->livestock->count(), 1) * 100;
         
         return ($productionScore + $healthScore) / 2;
@@ -685,7 +685,7 @@ class AdminController extends Controller
     {
         // Simple health score based on health status and production
         $healthStatus = $animal->health_status === 'healthy' ? 100 : 50;
-        $productionScore = $animal->productionRecords->avg('quantity') ?? 0;
+        $productionScore = $animal->productionRecords->avg('milk_quantity') ?? 0;
         
         return ($healthStatus + $productionScore) / 2;
     }
@@ -699,15 +699,15 @@ class AdminController extends Controller
         
         // Base score from production records
         if ($animal->productionRecords && $animal->productionRecords->count() > 0) {
-            $totalProduction = $animal->productionRecords->sum('quantity');
-            $avgProduction = $animal->productionRecords->avg('quantity');
+            $totalProduction = $animal->productionRecords->sum('milk_quantity');
+            $avgProduction = $animal->productionRecords->avg('milk_quantity');
             
             // Score based on total production (0-50 points)
             $score += min(50, ($totalProduction / 100) * 50);
             
             // Score based on consistency (0-30 points)
             $variance = $animal->productionRecords->map(function($record) use ($avgProduction) {
-                return abs($record->quantity - $avgProduction);
+                return abs($record->milk_quantity - $avgProduction);
             })->avg();
             $consistencyScore = max(0, 30 - ($variance / 10));
             $score += $consistencyScore;
@@ -715,7 +715,7 @@ class AdminController extends Controller
             // Score based on recent performance (0-20 points)
             $recentRecords = $animal->productionRecords->sortByDesc('created_at')->take(3);
             if ($recentRecords->count() > 0) {
-                $recentAvg = $recentRecords->avg('quantity');
+                $recentAvg = $recentRecords->avg('milk_quantity');
                 $recentScore = min(20, ($recentAvg / 50) * 20);
                 $score += $recentScore;
             }
@@ -818,6 +818,179 @@ class AdminController extends Controller
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to delete admin'], 500);
+        }
+    }
+
+    /**
+     * Display farmer management interface
+     */
+    public function manageFarmers()
+    {
+        $farmers = User::where('role', 'farmer')
+            ->with(['farms', 'livestock', 'productionRecords'])
+            ->get()
+            ->map(function ($farmer) {
+                $farmer->total_farms = $farmer->farms->count();
+                $farmer->total_livestock = $farmer->livestock->count();
+                $farmer->total_production = $farmer->productionRecords->sum('milk_quantity');
+                return $farmer;
+            });
+
+        return view('admin.manage-farmers', compact('farmers'));
+    }
+
+    /**
+     * Display farmers list
+     */
+    public function farmers()
+    {
+        $farmers = User::where('role', 'farmer')
+            ->with(['farms', 'livestock'])
+            ->get();
+
+        return view('admin.farmers', compact('farmers'));
+    }
+
+    /**
+     * Store a new farmer
+     */
+    public function storeFarmer(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        try {
+            $farmer = User::create([
+                'name' => $request->name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'password' => Hash::make($request->password),
+                'role' => 'farmer',
+                'status' => 'active',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Farmer created successfully!',
+                'farmer' => $farmer
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create farmer: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Show farmer details
+     */
+    public function showFarmer($id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')
+                ->with(['farms', 'livestock', 'productionRecords'])
+                ->findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'farmer' => $farmer
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Farmer not found'
+            ], 404);
+        }
+    }
+
+    /**
+     * Update farmer information
+     */
+    public function updateFarmer(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($id)],
+            'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $farmer->update([
+                'name' => $request->name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Farmer updated successfully!',
+                'farmer' => $farmer
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update farmer: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete farmer
+     */
+    public function deleteFarmer($id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $farmer->delete();
+            
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete farmer'], 500);
+        }
+    }
+
+    /**
+     * Update farmer status
+     */
+    public function updateFarmerStatus(Request $request, $id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $farmer->update(['status' => $request->status]);
+            
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update status'], 500);
+        }
+    }
+
+    /**
+     * Reset farmer password
+     */
+    public function resetFarmerPassword($id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $newPassword = 'password123'; // Default password
+            $farmer->update(['password' => Hash::make($newPassword)]);
+            
+            return response()->json(['success' => true, 'password' => $newPassword]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to reset password'], 500);
         }
     }
 }
