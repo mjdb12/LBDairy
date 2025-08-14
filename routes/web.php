@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/livestock/{id}/edit', [FarmerController::class, 'editLivestock'])->name('livestock.edit');
         Route::put('/livestock/{id}', [FarmerController::class, 'updateLivestock'])->name('livestock.update');
         Route::delete('/livestock/{id}', [FarmerController::class, 'deleteLivestock'])->name('livestock.destroy');
+        Route::post('/livestock/{id}/status', [FarmerController::class, 'updateLivestockStatus'])->name('livestock.update-status');
         Route::get('/production', [FarmerController::class, 'production'])->name('production');
         Route::post('/production', [FarmerController::class, 'storeProduction'])->name('production.store');
         Route::get('/production/{id}', [FarmerController::class, 'showProduction'])->name('production.show');
@@ -63,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/schedule', function () { return view('farmer.schedule'); })->name('schedule');
         Route::get('/scan', function () { return view('farmer.scan'); })->name('scan');
         Route::get('/farms', [FarmerController::class, 'farms'])->name('farms');
+        Route::post('/farms', [FarmerController::class, 'storeFarm'])->name('farms.store');
         Route::get('/farm-details/{id}', [FarmerController::class, 'farmDetails'])->name('farm-details');
         Route::get('/sales', function () { return view('farmer.sales'); })->name('sales');
         Route::get('/expenses', [FarmerController::class, 'expenses'])->name('expenses');
@@ -99,17 +101,7 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/farmers/{id}/status', [App\Http\Controllers\AdminController::class, 'updateFarmerStatus'])->name('farmers.update-status');
         Route::post('/farmers/{id}/reset-password', [App\Http\Controllers\AdminController::class, 'resetFarmerPassword'])->name('farmers.reset-password');
         
-        // Livestock management routes
-        Route::get('/manage-livestock', [App\Http\Controllers\LivestockController::class, 'index'])->name('livestock.index');
-        Route::get('/livestock/create', [App\Http\Controllers\LivestockController::class, 'create'])->name('livestock.create');
-        Route::post('/livestock', [App\Http\Controllers\LivestockController::class, 'store'])->name('livestock.store');
-        Route::get('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'show'])->name('livestock.show');
-        Route::get('/livestock/{id}/edit', [App\Http\Controllers\LivestockController::class, 'edit'])->name('livestock.edit');
-        Route::put('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'update'])->name('livestock.update');
-        Route::delete('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'destroy'])->name('livestock.destroy');
-        Route::post('/livestock/{id}/status', [App\Http\Controllers\LivestockController::class, 'updateStatus'])->name('livestock.update-status');
-        Route::get('/livestock-stats', [App\Http\Controllers\LivestockController::class, 'getStats'])->name('livestock.stats');
-        Route::get('/livestock-export', [App\Http\Controllers\LivestockController::class, 'export'])->name('livestock.export');
+
         
         // Issue management routes
         Route::get('/manage-issues', [App\Http\Controllers\IssueController::class, 'index'])->name('issues.index');
@@ -160,6 +152,17 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/farms/{id}', [App\Http\Controllers\FarmController::class, 'destroy'])->name('farms.destroy');
         Route::post('/farms/import', [App\Http\Controllers\FarmController::class, 'import'])->name('farms.import');
         Route::get('/farms/export', [App\Http\Controllers\FarmController::class, 'export'])->name('farms.export');
+        
+        // Livestock management routes
+        Route::get('/manage-livestock', [App\Http\Controllers\LivestockController::class, 'index'])->name('livestock.index');
+        Route::get('/livestock/create', [App\Http\Controllers\LivestockController::class, 'create'])->name('livestock.create');
+        Route::post('/livestock', [App\Http\Controllers\LivestockController::class, 'store'])->name('livestock.store');
+        Route::get('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'show'])->name('livestock.show');
+        Route::get('/livestock/{id}/edit', [App\Http\Controllers\LivestockController::class, 'edit'])->name('livestock.edit');
+        Route::put('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'update'])->name('livestock.update');
+        Route::delete('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'destroy'])->name('livestock.destroy');
+        Route::post('/livestock/{id}/status', [App\Http\Controllers\LivestockController::class, 'updateStatus'])->name('livestock.update-status');
+        Route::get('/livestock/export', [App\Http\Controllers\LivestockController::class, 'export'])->name('livestock.export');
         
         Route::get('/production', [App\Http\Controllers\AdminController::class, 'production'])->name('production');
         Route::get('/sales', [App\Http\Controllers\AdminController::class, 'sales'])->name('sales');

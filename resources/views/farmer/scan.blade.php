@@ -7,38 +7,55 @@
 <div class="page-header fade-in">
     <h1>
         <i class="fas fa-qrcode"></i>
-        Scan Livestock
+        QR Code Scanner
     </h1>
-    <p>Scan QR codes to access livestock information and manage records</p>
+    <p>Scan livestock QR codes to view and manage animal information</p>
 </div>
 
-<div class="row">
-    <!-- Scanner Section -->
-    <div class="col-md-6">
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header">
-                <h6>
-                    <i class="fas fa-camera"></i>
-                    QR Code Scanner
-                </h6>
-            </div>
-            <div class="card-body text-center">
-                <div id="reader" style="width: 100%; max-width: 400px; margin: 0 auto;"></div>
-                <div id="statusIndicator" class="status-indicator status-ready mt-3">
-                    <i class="fas fa-camera"></i> Ready to scan
-                </div>
-                <div class="mt-3">
-                    <button class="btn btn-primary" onclick="startScanning()" id="startBtn">
-                        <i class="fas fa-play"></i> Start Scanning
-                    </button>
-                    <button class="btn btn-secondary" onclick="stopScanning()" id="stopBtn" style="display: none;">
-                        <i class="fas fa-stop"></i> Stop Scanning
-                    </button>
-                </div>
-            </div>
+<!-- QR Scanner Container -->
+<div class="scanner-container fade-in">
+    <div id="qr-reader-container" class="pulse">
+        <!-- Status Indicator -->
+        <div class="status-indicator status-ready" id="statusIndicator">
+            <i class="fas fa-camera"></i> Ready to Scan
         </div>
 
-        <!-- Test QR Codes -->
+        <!-- Scanner Overlay -->
+        <div class="scanner-overlay">
+            <div class="corner"></div>
+        </div>
+
+        <!-- Camera feed -->
+        <div id="qr-reader"></div>
+
+        <!-- Scanner Controls -->
+        <div class="scanner-controls">
+            <button id="captureButton" class="scanner-btn" onclick="viewLivestockDetails('LS001')" title="Capture QR Code">
+                <i class="fas fa-camera"></i>
+            </button>
+            <label for="uploadQR" class="scanner-btn mb-0" title="Upload QR Image">
+                <i class="fas fa-upload"></i>
+            </label>
+            <input type="file" id="uploadQR" accept="image/*" style="display: none;">
+        </div>
+    </div>
+
+    <!-- Scanner Info Panel -->
+    <div class="scanner-info">
+        <h5><i class="fas fa-info-circle"></i> How to Use</h5>
+        <p><strong>Camera Scan:</strong> Point your camera at a QR code to scan</p>
+        <p><strong>Upload Image:</strong> Upload a QR code image file</p>
+        <p><strong>Capture:</strong> Take a photo of a QR code</p>
+        <p><strong>View Details:</strong> Successfully scanned codes will display livestock information</p>
+    </div>
+
+    <!-- Scan Results -->
+    <div id="qr-reader-results" class="mt-3 text-center" style="font-size: 1.1rem; font-weight: 500;"></div>
+</div>
+
+<!-- Test QR Codes Section -->
+<div class="row mt-4">
+    <div class="col-12">
         <div class="card shadow mb-4 fade-in">
             <div class="card-header">
                 <h6>
@@ -46,60 +63,73 @@
                     Test QR Codes
                 </h6>
             </div>
-            <div class="card-body">
-                <p class="text-muted small">Scan these test codes to see sample livestock data:</p>
-                <div class="row">
-                    <div class="col-6 text-center mb-3">
-                        <div id="qrCode1"></div>
-                        <small class="text-muted">LS001</small>
+            <div class="card-body text-center">
+                <p class="text-muted mb-3">Scan these test codes to see sample livestock data:</p>
+                <div class="row justify-content-center">
+                    <div class="col-3 text-center mb-3">
+                        <div id="qrCode1" class="test-qr-code"></div>
+                        <small class="text-muted d-block mt-2">LS001</small>
                     </div>
-                    <div class="col-6 text-center mb-3">
-                        <div id="qrCode2"></div>
-                        <small class="text-muted">LS002</small>
+                    <div class="col-3 text-center mb-3">
+                        <div id="qrCode2" class="test-qr-code"></div>
+                        <small class="text-muted d-block mt-2">LS002</small>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 text-center mb-3">
-                        <div id="qrCode3"></div>
-                        <small class="text-muted">LS003</small>
+                    <div class="col-3 text-center mb-3">
+                        <div id="qrCode3" class="test-qr-code"></div>
+                        <small class="text-muted d-block mt-2">LS003</small>
                     </div>
-                    <div class="col-6 text-center mb-3">
-                        <div id="qrCode4"></div>
-                        <small class="text-muted">LS004</small>
+                    <div class="col-3 text-center mb-3">
+                        <div id="qrCode4" class="test-qr-code"></div>
+                        <small class="text-muted d-block mt-2">LS004</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Livestock Details Section -->
-    <div class="col-md-6">
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header">
-                <h6>
-                    <i class="fas fa-info-circle"></i>
-                    Livestock Details
-                </h6>
-                <span class="badge badge-primary" id="detailLivestockId">No ID</span>
+<!-- LIVESTOCK DETAILS & EDIT MODAL WITH OPTION BAR -->
+<div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-paw"></i>
+                    Livestock Details: <span id="detailLivestockId"></span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                    <span>&times;</span>
+                </button>
             </div>
-            <div class="card-body">
-                <div class="nav nav-tabs" id="livestockTab" role="tablist">
-                    <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab">
-                        <i class="fas fa-info"></i> Basic Info
-                    </a>
-                    <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab">
-                        <i class="fas fa-chart-line"></i> Growth
-                    </a>
-                    <a class="nav-link" id="milk-tab" data-toggle="tab" href="#milkForm" role="tab">
-                        <i class="fas fa-milk"></i> Milk
-                    </a>
-                    <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab">
-                        <i class="fas fa-heart"></i> Breeding
-                    </a>
-                    <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab">
-                        <i class="fas fa-heartbeat"></i> Health
-                    </a>
-                </div>
+            <div class="modal-body">
+                <!-- Option Bar -->
+                <ul class="nav nav-tabs mb-3" id="livestockTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab" aria-controls="basicForm" aria-selected="true">
+                            <i class="fas fa-info-circle"></i> Basic Info
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab" aria-controls="growthForm" aria-selected="false">
+                            <i class="fas fa-chart-line"></i> Growth
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="milk-tab" data-toggle="tab" href="#milkForm" role="tab" aria-controls="milkForm" aria-selected="false">
+                            <i class="fas fa-tint"></i> Milk
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab" aria-controls="breedingForm" aria-selected="false">
+                            <i class="fas fa-heart"></i> Breeding
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab" aria-controls="healthForm" aria-selected="false">
+                            <i class="fas fa-heartbeat"></i> Health
+                        </a>
+                    </li>
+                </ul>
                 
                 <div class="tab-content" id="livestockTabContent">
                     <!-- Basic Info (Read-only) -->
@@ -229,33 +259,420 @@
 
 @push('styles')
 <style>
-.status-indicator {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: 500;
-    display: inline-flex;
+:root {
+    --primary-color: #4e73df;
+    --primary-dark: #3c5aa6;
+    --success-color: #1cc88a;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+    --info-color: #36b9cc;
+    --light-color: #f8f9fc;
+    --dark-color: #5a5c69;
+    --border-color: #e3e6f0;
+    --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+/* Enhanced Card Styling */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-bottom: none;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header h6 {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+    display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
+.card-header h6::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+/* Enhanced Button Styling */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 0.85rem;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+/* QR Scanner Container Enhancement */
+.scanner-container {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    margin: 2rem auto;
+    max-width: 700px;
+    transition: all 0.3s ease;
+}
+
+.scanner-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
+}
+
+#qr-reader-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    overflow: hidden;
+    margin: 0 auto;
+    border-radius: 20px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--primary-color);
+}
+
+#qr-reader {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#qr-reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: inherit;
+}
+
+/* Scanner Controls Enhancement */
+.scanner-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 12px;
+}
+
+.scanner-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.scanner-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: white;
+    transform: scale(1.1);
+    color: white;
+}
+
+.scanner-btn:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+/* Scanner Info Panel */
+.scanner-info {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fc 0%, #e3e6f0 100%);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.scanner-info h5 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.scanner-info p {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Status Indicators */
+.status-indicator {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 10;
+}
+
 .status-ready {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background: rgba(28, 200, 138, 0.9);
+    color: white;
 }
 
 .status-scanning {
-    background-color: #fff3e0;
-    color: #f57c00;
-}
-
-.status-success {
-    background-color: #e8f5e8;
-    color: #388e3c;
+    background: rgba(246, 194, 62, 0.9);
+    color: white;
 }
 
 .status-error {
-    background-color: #ffebee;
-    color: #d32f2f;
+    background: rgba(231, 74, 59, 0.9);
+    color: white;
+}
+
+/* Scanner Overlay */
+.scanner-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgba(78, 115, 223, 0.8);
+    border-radius: 12px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.scanner-overlay::before,
+.scanner-overlay::after,
+.scanner-overlay .corner::before,
+.scanner-overlay .corner::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--primary-color);
+}
+
+.scanner-overlay::before {
+    top: -3px;
+    left: -3px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.scanner-overlay::after {
+    top: -3px;
+    right: -3px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.scanner-overlay .corner:nth-child(1)::before {
+    bottom: -3px;
+    left: -3px;
+    border-right: none;
+    border-top: none;
+}
+
+.scanner-overlay .corner:nth-child(1)::after {
+    bottom: -3px;
+    right: -3px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(78, 115, 223, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(78, 115, 223, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(78, 115, 223, 0); }
+}
+
+/* Tab Enhancement */
+.nav-tabs {
+    border-bottom: 2px solid var(--border-color);
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--dark-color);
+    font-weight: 500;
+    padding: 1rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.nav-tabs .nav-link.active {
+    background: none;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Form Enhancement */
+.form-control {
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+.form-control[readonly] {
+    background-color: #f8f9fc;
+    border-color: #e3e6f0;
+}
+
+/* Test QR Code Styling */
+.test-qr-code {
+    display: inline-block;
+    padding: 10px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.test-qr-code:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .scanner-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    #qr-reader-container {
+        height: 300px;
+        border-radius: 16px;
+    }
+
+    .scanner-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .page-header p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #qr-reader-container {
+        height: 250px;
+        border-radius: 12px;
+    }
+
+    .scanner-controls {
+        gap: 8px;
+    }
+
+    .scanner-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Hide default QR reader elements */
+#qr-reader__dashboard_section_csr,
+#qr-reader__dashboard_section_swaplink {
+    display: none !important;
+}
+
+/* Page Header Enhancement */
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--light-color) 0%, #e3e6f0 100%);
+    border-radius: 16px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.page-header h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.page-header p {
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    margin: 0;
 }
 </style>
 @endpush
@@ -273,7 +690,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize forms
     initializeForms();
+    
+    // Initialize scanner
+    initializeScanner();
 });
+
+function initializeScanner() {
+    html5QrCode = new Html5Qrcode("qr-reader");
+    
+    const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0
+    };
+    
+    // Start scanning automatically
+    html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        onScanSuccess,
+        onScanFailure
+    ).then(() => {
+        isScanning = true;
+        updateStatus('Scanning...', 'scanning');
+    }).catch(err => {
+        console.error('Failed to start scanner:', err);
+        updateStatus('Failed to start scanner', 'error');
+    });
+}
 
 function updateStatus(message, type) {
     const statusElement = document.getElementById('statusIndicator');
@@ -300,51 +744,8 @@ function generateTestQRCodes() {
     });
 }
 
-function startScanning() {
-    if (isScanning) return;
-    
-    html5QrCode = new Html5Qrcode("reader");
-    
-    const config = {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1.0
-    };
-    
-    html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        onScanSuccess,
-        onScanFailure
-    ).then(() => {
-        isScanning = true;
-        updateStatus('Scanning...', 'scanning');
-        document.getElementById('startBtn').style.display = 'none';
-        document.getElementById('stopBtn').style.display = 'inline-block';
-    }).catch(err => {
-        console.error('Failed to start scanner:', err);
-        updateStatus('Failed to start scanner', 'error');
-    });
-}
-
-function stopScanning() {
-    if (!isScanning || !html5QrCode) return;
-    
-    html5QrCode.stop().then(() => {
-        isScanning = false;
-        updateStatus('Ready to scan', 'ready');
-        document.getElementById('startBtn').style.display = 'inline-block';
-        document.getElementById('stopBtn').style.display = 'none';
-    }).catch(err => {
-        console.error('Failed to stop scanner:', err);
-    });
-}
-
 function onScanSuccess(decodedText, decodedResult) {
     console.log('QR Code scanned:', decodedText);
-    
-    // Stop scanning after successful scan
-    stopScanning();
     
     // Update status
     updateStatus('QR Code detected!', 'success');
@@ -354,7 +755,7 @@ function onScanSuccess(decodedText, decodedResult) {
     
     // Reset status after 2 seconds
     setTimeout(() => {
-        updateStatus('Ready to scan', 'ready');
+        updateStatus('Scanning...', 'scanning');
     }, 2000);
 }
 
@@ -493,6 +894,9 @@ function viewLivestockDetails(id) {
             }
         });
         
+        // Show the modal
+        $('#livestockDetailsModal').modal('show');
+        
         // Show success message
         showNotification(`Livestock ${id} information loaded successfully!`, 'success');
     } else {
@@ -531,6 +935,17 @@ function showNotification(message, type) {
         notification.remove();
     }, 5000);
 }
+
+// Handle file upload for QR codes
+document.getElementById('uploadQR').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Here you would implement QR code reading from image file
+        // For now, we'll simulate a successful scan
+        const simulatedId = 'LS001'; // You can change this to test different IDs
+        viewLivestockDetails(simulatedId);
+    }
+});
 </script>
 @endpush
 

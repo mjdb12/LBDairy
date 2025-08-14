@@ -7,6 +7,7 @@ use App\Models\Farm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class LivestockController extends Controller
 {
@@ -47,11 +48,12 @@ class LivestockController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'livestock_id' => 'required|string|max:255|unique:livestock',
+            'livestock_id' => 'required|string|max:255|unique:livestock,tag_number',
             'type' => 'required|string|max:255',
             'breed' => 'required|string|max:255',
             'farm_id' => 'required|exists:farms,id',
-            'birth_date' => 'nullable|date',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string|max:1000',
         ]);
@@ -64,14 +66,16 @@ class LivestockController extends Controller
 
         try {
             Livestock::create([
-                'livestock_id' => $request->livestock_id,
+                'tag_number' => $request->livestock_id,
                 'type' => $request->type,
                 'breed' => $request->breed,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
                 'weight' => $request->weight,
-                'notes' => $request->notes,
+                'health_status' => $request->notes ?? 'healthy',
                 'status' => 'active',
+                'owner_id' => Auth::user()->id,
             ]);
 
             return redirect()->route('admin.livestock.index')
@@ -122,11 +126,12 @@ class LivestockController extends Controller
         $livestock = Livestock::findOrFail($id);
         
         $validator = Validator::make($request->all(), [
-            'livestock_id' => 'required|string|max:255|unique:livestock,livestock_id,' . $id,
+            'livestock_id' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
             'type' => 'required|string|max:255',
             'breed' => 'required|string|max:255',
             'farm_id' => 'required|exists:farms,id',
-            'birth_date' => 'nullable|date',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string|max:1000',
         ]);
@@ -139,13 +144,14 @@ class LivestockController extends Controller
 
         try {
             $livestock->update([
-                'livestock_id' => $request->livestock_id,
+                'tag_number' => $request->livestock_id,
                 'type' => $request->type,
                 'breed' => $request->breed,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
                 'weight' => $request->weight,
-                'notes' => $request->notes,
+                'health_status' => $request->notes ?? 'healthy',
             ]);
 
             return redirect()->route('admin.livestock.index')

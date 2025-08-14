@@ -227,9 +227,9 @@ class FarmerController extends Controller
         $farms = Farm::where('owner_id', $user->id)->get();
 
         $totalLivestock = $livestock->count();
-        $healthyLivestock = $livestock->where('health_status', 'Healthy')->count();
-        $attentionNeeded = $livestock->where('health_status', '!=', 'Healthy')->count();
-        $productionReady = $livestock->where('status', 'Active')->count(); // You can adjust this logic based on your needs
+        $healthyLivestock = $livestock->where('health_status', 'healthy')->count();
+        $attentionNeeded = $livestock->where('health_status', '!=', 'healthy')->count();
+        $productionReady = $livestock->where('status', 'active')->count(); // You can adjust this logic based on your needs
 
         return view('farmer.livestock', compact(
             'livestock',
@@ -249,13 +249,13 @@ class FarmerController extends Controller
         $request->validate([
             'tag_number' => 'required|string|max:255|unique:livestock',
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
-            'birth_date' => 'nullable|date',
-            'gender' => 'required|in:Male,Female',
+            'type' => 'required|in:cow,buffalo,goat,sheep',
+            'breed' => 'required|in:holstein,jersey,guernsey,ayrshire,brown_swiss,other',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
-            'health_status' => 'required|in:Healthy,Sick,Under Observation',
-            'status' => 'required|in:Active,Inactive',
+            'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
+            'status' => 'required|in:active,inactive',
         ]);
 
         try {
@@ -326,13 +326,13 @@ class FarmerController extends Controller
         $request->validate([
             'tag_number' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
-            'birth_date' => 'nullable|date',
-            'gender' => 'required|in:Male,Female',
+            'type' => 'required|in:cow,buffalo,goat,sheep',
+            'breed' => 'required|in:holstein,jersey,guernsey,ayrshire,brown_swiss,other',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
-            'health_status' => 'required|in:Healthy,Sick,Under Observation',
-            'status' => 'required|in:Active,Inactive',
+            'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
+            'status' => 'required|in:active,inactive',
         ]);
 
         try {
@@ -361,6 +361,37 @@ class FarmerController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update livestock. Please try again.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Update the specified livestock status.
+     */
+    public function updateLivestockStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        try {
+            $user = Auth::user();
+            $livestock = Livestock::whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })->findOrFail($id);
+
+            $livestock->update([
+                'status' => ucfirst($request->status),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Livestock status updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update livestock status. Please try again.'
             ], 500);
         }
     }
@@ -685,6 +716,51 @@ class FarmerController extends Controller
         $farms = Farm::where('owner_id', $user->id)->get();
 
         return view('farmer.farms', compact('farms'));
+    }
+
+    /**
+     * Store a newly created farm.
+     */
+    public function storeFarm(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'location' => 'required|string|max:500',
+            'size' => 'nullable|numeric|min:0',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        try {
+            $user = Auth::user();
+            
+            Farm::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'location' => $request->location,
+                'size' => $request->size,
+                'status' => $request->status,
+                'owner_id' => $user->id,
+            ]);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Farm created successfully!'
+                ]);
+            }
+
+            return redirect()->route('farmer.farms')->with('success', 'Farm created successfully!');
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to create farm. Please try again.'
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Failed to create farm. Please try again.')->withInput();
+        }
     }
 
     /**

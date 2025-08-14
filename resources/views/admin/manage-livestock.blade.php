@@ -83,9 +83,10 @@
                 <table class="table table-bordered" id="livestockTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Livestock ID</th>
+                            <th>Tag Number</th>
                             <th>Type</th>
                             <th>Breed</th>
+                            <th>Gender</th>
                             <th>Farm</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -95,10 +96,11 @@
                         @forelse($livestock as $animal)
                         <tr>
                             <td>
-                                <a href="#" class="livestock-link" onclick="openDetailsModal('{{ $animal->id }}')">{{ $animal->livestock_id }}</a>
+                                <a href="#" class="livestock-link" onclick="openDetailsModal('{{ $animal->id }}')">{{ $animal->tag_number }}</a>
                             </td>
                             <td>{{ $animal->type }}</td>
                             <td>{{ $animal->breed }}</td>
+                            <td>{{ $animal->gender }}</td>
                             <td>{{ $animal->farm->name ?? 'N/A' }}</td>
                             <td>
                                 <select class="form-control" onchange="updateStatus(this, '{{ $animal->id }}')">
@@ -117,7 +119,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="7" class="text-center">
                                 <div class="empty-state">
                                     <i class="fas fa-inbox"></i>
                                     <h5>No livestock found</h5>
@@ -151,7 +153,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="livestock_id">Livestock ID</label>
+                                <label for="livestock_id">Tag Number</label>
                                 <input type="text" class="form-control" id="livestock_id" name="livestock_id" required>
                             </div>
                         </div>
@@ -160,10 +162,10 @@
                                 <label for="type">Type</label>
                                 <select class="form-control" id="type" name="type" required>
                                     <option value="">Select Type</option>
-                                    <option value="Cow">Cow</option>
-                                    <option value="Goat">Goat</option>
-                                    <option value="Carabao">Carabao</option>
-                                    <option value="Buffalo">Buffalo</option>
+                                    <option value="cow">Cow</option>
+                                    <option value="buffalo">Buffalo</option>
+                                    <option value="goat">Goat</option>
+                                    <option value="sheep">Sheep</option>
                                 </select>
                             </div>
                         </div>
@@ -172,7 +174,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="breed">Breed</label>
-                                <input type="text" class="form-control" id="breed" name="breed" required>
+                                <select class="form-control" id="breed" name="breed" required>
+                                    <option value="">Select Breed</option>
+                                    <option value="holstein">Holstein</option>
+                                    <option value="jersey">Jersey</option>
+                                    <option value="guernsey">Guernsey</option>
+                                    <option value="ayrshire">Ayrshire</option>
+                                    <option value="brown_swiss">Brown Swiss</option>
+                                    <option value="other">Other</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -191,7 +201,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="birth_date">Birth Date</label>
-                                <input type="date" class="form-control" id="birth_date" name="birth_date">
+                                <input type="date" class="form-control" id="birth_date" name="birth_date" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -201,9 +211,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="notes">Notes</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select class="form-control" id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="notes">Notes</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -234,7 +258,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="edit_livestock_id">Livestock ID</label>
+                                <label for="edit_livestock_id">Tag Number</label>
                                 <input type="text" class="form-control" id="edit_livestock_id" name="livestock_id" required>
                             </div>
                         </div>
@@ -243,10 +267,10 @@
                                 <label for="edit_type">Type</label>
                                 <select class="form-control" id="edit_type" name="type" required>
                                     <option value="">Select Type</option>
-                                    <option value="Cow">Cow</option>
-                                    <option value="Goat">Goat</option>
-                                    <option value="Carabao">Carabao</option>
-                                    <option value="Buffalo">Buffalo</option>
+                                    <option value="cow">Cow</option>
+                                    <option value="buffalo">Buffalo</option>
+                                    <option value="goat">Goat</option>
+                                    <option value="sheep">Sheep</option>
                                 </select>
                             </div>
                         </div>
@@ -255,7 +279,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="edit_breed">Breed</label>
-                                <input type="text" class="form-control" id="edit_breed" name="breed" required>
+                                <select class="form-control" id="edit_breed" name="breed" required>
+                                    <option value="">Select Breed</option>
+                                    <option value="holstein">Holstein</option>
+                                    <option value="jersey">Jersey</option>
+                                    <option value="guernsey">Guernsey</option>
+                                    <option value="ayrshire">Ayrshire</option>
+                                    <option value="brown_swiss">Brown Swiss</option>
+                                    <option value="other">Other</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -274,7 +306,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="edit_birth_date">Birth Date</label>
-                                <input type="date" class="form-control" id="edit_birth_date" name="birth_date">
+                                <input type="date" class="form-control" id="edit_birth_date" name="birth_date" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -284,9 +316,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="edit_notes">Notes</label>
-                        <textarea class="form-control" id="edit_notes" name="notes" rows="3"></textarea>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_gender">Gender</label>
+                                <select class="form-control" id="edit_gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_notes">Notes</label>
+                                <textarea class="form-control" id="edit_notes" name="notes" rows="3"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -506,6 +552,8 @@
     let dataTable;
 
     $(document).ready(function() {
+        console.log('Livestock management page loaded');
+        
         // Initialize DataTable
         dataTable = $('#livestockTable').DataTable({
             dom: 'Bfrtip',
@@ -551,9 +599,16 @@
         $('.custom-search').on('keyup', function() {
             dataTable.search(this.value).draw();
         });
+
+        // Store original values for status updates
+        const statusSelects = document.querySelectorAll('select[onchange*="updateStatus"]');
+        statusSelects.forEach(select => {
+            select.setAttribute('data-original-value', select.value);
+        });
     });
 
     function updateStatus(select, livestockId) {
+        console.log('Updating status for livestock:', livestockId, 'to:', select.value);
         const status = select.value;
         const url = `{{ route('admin.livestock.update-status', ':id') }}`.replace(':id', livestockId);
         
@@ -569,6 +624,8 @@
         .then(data => {
             if (data.success) {
                 showNotification('Status updated successfully', 'success');
+                // Update the original value
+                select.setAttribute('data-original-value', select.value);
             } else {
                 showNotification('Failed to update status', 'error');
                 // Revert the select value
@@ -584,21 +641,24 @@
     }
 
     function editLivestock(livestockId) {
+        console.log('Editing livestock:', livestockId);
         // Fetch livestock data and populate the edit modal
         fetch(`{{ route('admin.livestock.show', ':id') }}`.replace(':id', livestockId))
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 const livestock = data.livestock;
+                console.log('Livestock data:', livestock);
                 
                 // Populate the edit form
-                document.getElementById('edit_livestock_id').value = livestock.livestock_id;
+                document.getElementById('edit_livestock_id').value = livestock.tag_number;
                 document.getElementById('edit_type').value = livestock.type;
                 document.getElementById('edit_breed').value = livestock.breed;
                 document.getElementById('edit_farm_id').value = livestock.farm_id;
                 document.getElementById('edit_birth_date').value = livestock.birth_date;
+                document.getElementById('edit_gender').value = livestock.gender;
                 document.getElementById('edit_weight').value = livestock.weight;
-                document.getElementById('edit_notes').value = livestock.notes;
+                document.getElementById('edit_notes').value = livestock.health_status;
                 
                 // Update the form action
                 document.getElementById('editLivestockForm').action = `{{ route('admin.livestock.update', ':id') }}`.replace(':id', livestockId);
@@ -614,11 +674,80 @@
     }
 
     function deleteLivestock(livestockId) {
+        console.log('Deleting livestock:', livestockId);
         // Update the delete form action
         document.getElementById('deleteLivestockForm').action = `{{ route('admin.livestock.destroy', ':id') }}`.replace(':id', livestockId);
         
         // Show the confirmation modal
         $('#confirmDeleteModal').modal('show');
+    }
+
+    function openDetailsModal(livestockId) {
+        console.log('Opening details modal for livestock:', livestockId);
+        // Fetch livestock details and show in a modal
+        fetch(`{{ route('admin.livestock.show', ':id') }}`.replace(':id', livestockId))
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const livestock = data.livestock;
+                console.log('Livestock details:', livestock);
+                
+                // Create and show a details modal
+                const modalHtml = `
+                    <div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-cow"></i> Livestock Details
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Tag Number:</strong> ${livestock.tag_number}</p>
+                                            <p><strong>Type:</strong> ${livestock.type}</p>
+                                            <p><strong>Breed:</strong> ${livestock.breed}</p>
+                                            <p><strong>Gender:</strong> ${livestock.gender || 'N/A'}</p>
+                                            <p><strong>Farm:</strong> ${livestock.farm ? livestock.farm.name : 'N/A'}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Birth Date:</strong> ${livestock.birth_date || 'N/A'}</p>
+                                            <p><strong>Weight:</strong> ${livestock.weight ? livestock.weight + ' kg' : 'N/A'}</p>
+                                            <p><strong>Status:</strong> <span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status}</span></p>
+                                            <p><strong>Health Status:</strong> ${livestock.health_status || 'N/A'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onclick="editLivestock('${livestock.id}')">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Remove existing modal if any
+                const existingModal = document.getElementById('livestockDetailsModal');
+                if (existingModal) {
+                    existingModal.remove();
+                }
+                
+                // Add new modal to body
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                
+                // Show the modal
+                $('#livestockDetailsModal').modal('show');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to load livestock details', 'error');
+        });
     }
 
     function exportCSV() {
@@ -669,13 +798,5 @@
             }
         }, 3000);
     }
-
-    // Store original values for status updates
-    document.addEventListener('DOMContentLoaded', function() {
-        const statusSelects = document.querySelectorAll('select[onchange*="updateStatus"]');
-        statusSelects.forEach(select => {
-            select.setAttribute('data-original-value', select.value);
-        });
-    });
 </script>
 @endpush
