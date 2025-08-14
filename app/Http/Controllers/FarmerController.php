@@ -303,6 +303,54 @@ class FarmerController extends Controller
     }
 
     /**
+     * Print the specified livestock record.
+     */
+    public function printLivestock($id)
+    {
+        $user = Auth::user();
+        $livestock = Livestock::whereHas('farm', function($query) use ($user) {
+            $query->where('owner_id', $user->id);
+        })->findOrFail($id);
+
+        // Get related data
+        $farm = $livestock->farm;
+        $owner = $livestock->owner;
+        
+        // Get production records for this livestock
+        $productionRecords = $livestock->productionRecords()
+            ->orderBy('production_date', 'desc')
+            ->take(15)
+            ->get();
+            
+        // Mock data for growth records (you can replace with actual data when available)
+        $growthRecords = collect([
+            [
+                'date' => $livestock->birth_date ? $livestock->birth_date->format('Y-m-d') : 'N/A',
+                'weight' => $livestock->weight ?? 'N/A',
+                'height' => 'N/A',
+                'heart_girth' => 'N/A',
+                'body_length' => 'N/A'
+            ]
+        ]);
+        
+        // Mock data for breeding records (you can replace with actual data when available)
+        $breedingRecords = collect([]);
+        
+        // Mock data for calving records (you can replace with actual data when available)
+        $calvingRecords = collect([]);
+
+        return view('farmer.livestock-print', compact(
+            'livestock',
+            'farm',
+            'owner',
+            'productionRecords',
+            'growthRecords',
+            'breedingRecords',
+            'calvingRecords'
+        ));
+    }
+
+    /**
      * Show the form for editing the specified livestock.
      */
     public function editLivestock($id)

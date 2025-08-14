@@ -114,6 +114,9 @@
                                             <button class="btn btn-primary btn-sm" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </button>
+                                            <a href="{{ route('farmer.livestock.print', $animal->id) }}" class="btn btn-info btn-sm" title="Print Record" target="_blank">
+                                                <i class="fas fa-print"></i>
+                                            </a>
                                             <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -323,6 +326,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info" onclick="printLivestockRecord()" id="printLivestockBtn">
+                    <i class="fas fa-print"></i> Print Record
+                </button>
                 <button type="button" class="btn btn-primary" onclick="editCurrentLivestock()">
                     <i class="fas fa-edit"></i> Edit
                 </button>
@@ -761,6 +767,14 @@ function editCurrentLivestock() {
     if (currentLivestockId) {
         $('#livestockDetailsModal').modal('hide');
         openEditLivestockModal(currentLivestockId);
+    }
+}
+
+function printLivestockRecord() {
+    if (currentLivestockId) {
+        // Open the print page in a new window
+        const printUrl = `/farmer/livestock/${currentLivestockId}/print`;
+        window.open(printUrl, '_blank');
     }
 }
 

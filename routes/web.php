@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/livestock', [FarmerController::class, 'livestock'])->name('livestock');
         Route::post('/livestock', [FarmerController::class, 'storeLivestock'])->name('livestock.store');
         Route::get('/livestock/{id}', [FarmerController::class, 'showLivestock'])->name('livestock.show');
+        Route::get('/livestock/{id}/print', [FarmerController::class, 'printLivestock'])->name('livestock.print');
         Route::get('/livestock/{id}/edit', [FarmerController::class, 'editLivestock'])->name('livestock.edit');
         Route::put('/livestock/{id}', [FarmerController::class, 'updateLivestock'])->name('livestock.update');
         Route::delete('/livestock/{id}', [FarmerController::class, 'deleteLivestock'])->name('livestock.destroy');
