@@ -1,307 +1,146 @@
 @extends('layouts.app')
 
+@section('title', 'LBDAIRY: Admin - Manage Farmers')
+
 @section('content')
-<!-- Page Header -->
-<div class="page-header fade-in">
-    <h1>
-        <i class="fas fa-users"></i>
-        Farmer Management
-    </h1>
-    <p>Manage farmer accounts, status, and communication</p>
-</div>
+<div class="container-fluid">
+    <br><br><br><br>
+    
+    <!-- Page Header -->
+    <div class="page-header fade-in">
+        <h1>
+            <i class="fas fa-users"></i>
+            Farmer Management
+        </h1>
+        <p>Manage farmer registrations, approvals, and account status</p>
+    </div>
 
-<!-- Statistics Cards -->
-<div class="row fade-in mb-4">
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Farmers</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->count() }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
+    <!-- Stats Cards -->
+    <div class="stats-container fade-in">
+        <div class="stat-card">
+            <div class="stat-number" style="color: var(--warning-color);" id="pendingCount">0</div>
+            <div class="stat-label">Pending Approvals</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color: var(--success-color);" id="activeCount">0</div>
+            <div class="stat-label">Active Farmers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color: var(--info-color);" id="totalCount">0</div>
+            <div class="stat-label">Total Farmers</div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Farmers</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->where('is_active', true)->count() }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-user-check fa-2x text-gray-300"></i>
-                    </div>
+    <!-- Pending Farmers Card -->
+    <div class="card shadow mb-4 fade-in">
+        <div class="card-header">
+            <h6>
+                <i class="fas fa-clock"></i>
+                Pending Farmer Registrations
+            </h6>
+            <div class="table-controls">
+                <div class="search-container">
+                    <input type="text" class="form-control custom-search" placeholder="Search pending farmers...">
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Inactive Farmers</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->where('is_active', false)->count() }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-user-times fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">New This Month</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->whereMonth('created_at', now()->month)->count() }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-user-plus fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Farmers Table -->
-<div class="card shadow fade-in-up">
-    <div class="card-header">
-        <h6 class="m-0 font-weight-bold text-white">
-            <i class="fas fa-table"></i>
-            Farmers List
-        </h6>
-        <button class="btn btn-light btn-sm" data-toggle="modal" data-target="#addFarmerModal">
-            <i class="fas fa-plus"></i> Add New Farmer
-        </button>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover" id="farmersTable">
-                <thead>
-                    <tr>
-                        <th>Farmer ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($farmers ?? [] as $farmer)
-                    <tr>
-                        <td>
-                            <a href="#" class="farmer-id-link" onclick="openDetailsModal('{{ $farmer->id }}')">
-                                {{ $farmer->username ?? 'F' . str_pad($farmer->id, 3, '0', STR_PAD_LEFT) }}
+                <div class="export-controls">
+                    <div class="btn-group">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportCSV('pendingFarmersTable')">
+                                <i class="fas fa-file-csv"></i> CSV
                             </a>
-                        </td>
-                        <td>{{ $farmer->name }}</td>
-                        <td>{{ $farmer->email }}</td>
-                        <td>{{ $farmer->phone ?? 'N/A' }}</td>
-                        <td>{{ $farmer->address ?? 'N/A' }}</td>
-                        <td>
-                            <select class="form-control form-control-sm" onchange="updateActivity(this, {{ $farmer->id }})">
-                                <option value="1" {{ $farmer->is_active ? 'selected' : '' }}>Active</option>
-                                <option value="0" {{ !$farmer->is_active ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-info btn-sm mr-1" onclick="openDetailsModal('{{ $farmer->id }}')" title="View Details">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-warning btn-sm mr-1" onclick="editFarmer({{ $farmer->id }})" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ $farmer->id }})" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8" class="text-center text-muted">
-                            <i class="fas fa-info-circle"></i> No farmers found
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Add Farmer Modal -->
-<div class="modal fade" id="addFarmerModal" tabindex="-1" role="dialog" aria-labelledby="addFarmerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addFarmerModalLabel">
-                    <i class="fas fa-user-plus"></i>
-                    Add New Farmer
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('admin.farmers.store') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="name">Full Name *</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="username">Username *</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
-                            </div>
+                            <a class="dropdown-item" href="#" onclick="exportPDF('pendingFarmersTable')">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPNG('pendingFarmersTable')">
+                                <i class="fas fa-image"></i> PNG
+                            </a>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="phone">Phone</label>
-                                <input type="tel" class="form-control" id="phone" name="phone">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <textarea class="form-control" id="address" name="address" rows="2"></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="password">Password *</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="password_confirmation">Confirm Password *</label>
-                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Farmer
+                    <button class="btn btn-secondary btn-sm" onclick="printTable('pendingFarmersTable')">
+                        <i class="fas fa-print"></i>
                     </button>
                 </div>
-            </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="pendingFarmersTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Farm Name</th>
+                            <th>Barangay</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Registration Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingFarmersBody">
+                        <!-- Pending farmers will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Edit Farmer Modal -->
-<div class="modal fade" id="editFarmerModal" tabindex="-1" role="dialog" aria-labelledby="editFarmerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editFarmerModalLabel">
-                    <i class="fas fa-user-edit"></i>
-                    Edit Farmer
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="editFarmerForm">
-                @csrf
-                @method('PUT')
-                <input type="hidden" id="editFarmerId" name="farmer_id">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editName">Full Name *</label>
-                                <input type="text" class="form-control" id="editName" name="name" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editUsername">Username *</label>
-                                <input type="text" class="form-control" id="editUsername" name="username" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editEmail">Email *</label>
-                                <input type="email" class="form-control" id="editEmail" name="email" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editPhone">Phone</label>
-                                <input type="tel" class="form-control" id="editPhone" name="phone">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="editAddress">Address</label>
-                        <textarea class="form-control" id="editAddress" name="address" rows="2"></textarea>
-                    </div>
+    <!-- Active Farmers Card -->
+    <div class="card shadow mb-4 fade-in">
+        <div class="card-header">
+            <h6>
+                <i class="fas fa-user-check"></i>
+                Active Farmers
+            </h6>
+            <div class="table-controls">
+                <div class="search-container">
+                    <input type="text" class="form-control custom-search" placeholder="Search active farmers...">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update Farmer
+                <div class="export-controls">
+                    <div class="btn-group">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportCSV('activeFarmersTable')">
+                                <i class="fas fa-file-csv"></i> CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPDF('activeFarmersTable')">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPNG('activeFarmersTable')">
+                                <i class="fas fa-image"></i> PNG
+                            </a>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="printTable('activeFarmersTable')">
+                        <i class="fas fa-print"></i>
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this farmer? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Yes, Delete
-                </button>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="activeFarmersTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Farm Name</th>
+                            <th>Barangay</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Registration Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activeFarmersBody">
+                        <!-- Active farmers will be loaded here -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -347,6 +186,7 @@
                 </button>
             </div>
             <form onsubmit="sendMessage(event)">
+                @csrf
                 <div class="modal-body">
                     <input type="hidden" id="farmerNameHidden">
                     <div class="form-group">
@@ -369,204 +209,363 @@
         </div>
     </div>
 </div>
+
+<!-- Rejection Reason Modal -->
+<div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectionModalLabel">
+                    <i class="fas fa-times-circle"></i>
+                    Reject Farmer Registration
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form onsubmit="submitRejection(event)">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" id="farmerIdHidden">
+                    <div class="form-group">
+                        <label for="rejectionReason">Reason for Rejection</label>
+                        <textarea class="form-control" id="rejectionReason" rows="4" required placeholder="Please provide a reason for rejecting this farmer registration..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Reject Registration
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
-@push('styles')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-@endpush
-
 @push('scripts')
+<!-- DataTables Core -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
+<!-- Required libraries for PDF/Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <script>
-$(document).ready(function() {
-    $('#farmersTable').DataTable({
-        responsive: true,
-        order: [[1, 'asc']],
-        pageLength: 25,
-        language: {
-            search: "Search farmers:",
-            lengthMenu: "Show _MENU_ farmers per page",
-            info: "Showing _START_ to _END_ of _TOTAL_ farmers"
-        }
-    });
+let pendingFarmersTable;
+let activeFarmersTable;
 
-    // Handle add farmer form submission
-    $('#addFarmerForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        
-        fetch('/admin/farmers', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showAlert('success', data.message);
-                $('#addFarmerModal').modal('hide');
-                this.reset();
-                location.reload();
-            } else {
-                showAlert('danger', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'An error occurred. Please try again.');
-        });
-    });
+$(document).ready(function () {
+    // Initialize DataTables
+    initializeDataTables();
+    
+    // Load data
+    loadPendingFarmers();
+    loadActiveFarmers();
+    updateStats();
 
-    // Handle edit farmer form submission
-    $('#editFarmerForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        const farmerId = document.getElementById('editFarmerId').value;
-        const formData = new FormData(this);
-        
-        fetch(`/admin/farmers/${farmerId}/update`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showAlert('success', data.message);
-                $('#editFarmerModal').modal('hide');
-                location.reload();
-            } else {
-                showAlert('danger', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'An error occurred. Please try again.');
-        });
+    // Custom search functionality
+    $('.custom-search').on('keyup', function() {
+        const tableId = $(this).closest('.card').find('table').attr('id');
+        const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
+        table.search(this.value).draw();
     });
 });
 
-function updateActivity(select, farmerId) {
-    const isActive = select.value === '1';
-    const status = isActive ? 'active' : 'inactive';
-    
-    // Send AJAX request to update farmer status
-    fetch(`/admin/farmers/${farmerId}/status`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ is_active: isActive })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Show success message
-            showAlert('success', `Farmer status updated to ${status} successfully!`);
-        } else {
-            // Show error message and revert selection
-            showAlert('danger', 'Failed to update farmer status. Please try again.');
-            select.value = isActive ? '0' : '1';
+function initializeDataTables() {
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                className: 'd-none'
+            },
+            {
+                extend: 'pdfHtml5',
+                orientation: 'landscape',
+                pageSize: 'Letter',
+                className: 'd-none'
+            },
+            {
+                extend: 'print',
+                className: 'd-none'
+            }
+        ],
+        language: {
+            search: "",
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>'
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('danger', 'An error occurred. Please try again.');
-        select.value = isActive ? '0' : '1';
+    };
+
+    pendingFarmersTable = $('#pendingFarmersTable').DataTable({
+        ...commonConfig,
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                title: 'Pending_Farmers_Report',
+                className: 'd-none'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Pending_Farmers_Report',
+                orientation: 'landscape',
+                pageSize: 'Letter',
+                className: 'd-none'
+            },
+            {
+                extend: 'print',
+                title: 'Pending Farmers Report',
+                className: 'd-none'
+            }
+        ]
+    });
+
+    activeFarmersTable = $('#activeFarmersTable').DataTable({
+        ...commonConfig,
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                title: 'Active_Farmers_Report',
+                className: 'd-none'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Active_Farmers_Report',
+                orientation: 'landscape',
+                pageSize: 'Letter',
+                className: 'd-none'
+            },
+            {
+                extend: 'print',
+                title: 'Active Farmers Report',
+                className: 'd-none'
+            }
+        ]
+    });
+
+    // Hide default DataTables elements
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
+}
+
+function loadPendingFarmers() {
+    // Load pending farmers from the database via AJAX
+    $.ajax({
+        url: '{{ route("admin.farmers.pending") }}',
+        method: 'GET',
+        success: function(response) {
+            console.log('Pending farmers response:', response);
+            pendingFarmersTable.clear();
+            
+            if (response.success && response.data) {
+                response.data.forEach((farmer, index) => {
+                    console.log(`Farmer ${index}:`, farmer);
+                    const rowData = [
+                        `${farmer.first_name || ''} ${farmer.last_name || ''}`,
+                        farmer.farm_name || '',
+                        farmer.barangay || '',
+                        farmer.phone || '',
+                        farmer.email || '',
+                        farmer.username || '',
+                        farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : '',
+                        `<div class="btn-group" role="group">
+                            <button class="btn btn-success btn-sm" onclick="approveFarmer('${farmer.id}')" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="showRejectionModal('${farmer.id}')" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>`
+                    ];
+                    
+                    console.log(`Row data for farmer ${index}:`, rowData);
+                    const row = pendingFarmersTable.row.add(rowData).draw(false);
+                    
+                    // Add click handler for row details (excluding action buttons)
+                    $(row.node()).on('click', function(e) {
+                        if (!$(e.target).closest('button').length) {
+                            showFarmerDetails(farmer);
+                        }
+                    });
+                });
+            }
+        },
+        error: function(xhr) {
+            console.error('Error loading pending farmers:', xhr);
+        }
     });
 }
 
-function confirmDelete(farmerId) {
-    $('#confirmDeleteModal').modal('show');
-    $('#confirmDeleteBtn').off('click').on('click', function() {
-        // Send delete request
-        fetch(`/admin/farmers/${farmerId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+function loadActiveFarmers() {
+    // Load active farmers from the database via AJAX
+    $.ajax({
+        url: '{{ route("admin.farmers.active") }}',
+        method: 'GET',
+        success: function(response) {
+            console.log('Active farmers response:', response);
+            activeFarmersTable.clear();
+            
+            if (response.success && response.data) {
+                response.data.forEach((farmer, index) => {
+                    console.log(`Active farmer ${index}:`, farmer);
+                    const rowData = [
+                        `${farmer.first_name || ''} ${farmer.last_name || ''}`,
+                        farmer.farm_name || '',
+                        farmer.barangay || '',
+                        farmer.phone || '',
+                        farmer.email || '',
+                        farmer.username || '',
+                        farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : '',
+                        `<button class="btn btn-danger btn-sm" onclick="deactivateFarmer('${farmer.id}')" title="Deactivate">
+                            <i class="fas fa-user-slash"></i>
+                        </button>`
+                    ];
+                    
+                    console.log(`Row data for active farmer ${index}:`, rowData);
+                    const row = activeFarmersTable.row.add(rowData).draw(false);
+                    
+                    // Add click handler for row details (excluding action buttons)
+                    $(row.node()).on('click', function(e) {
+                        if (!$(e.target).closest('button').length) {
+                            showFarmerDetails(farmer);
+                        }
+                    });
+                });
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showAlert('success', 'Farmer deleted successfully!');
-                location.reload();
-            } else {
-                showAlert('danger', 'Failed to delete farmer. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'An error occurred. Please try again.');
-        });
-        
-        $('#confirmDeleteModal').modal('hide');
+        },
+        error: function(xhr) {
+            console.error('Error loading active farmers:', xhr);
+        }
     });
 }
 
-function openDetailsModal(farmerId) {
-    // Fetch farmer details and populate modal
-    fetch(`/admin/farmers/${farmerId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const farmer = data.farmer;
-                document.getElementById('farmerDetails').innerHTML = `
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Name:</strong> ${farmer.name}</p>
-                            <p><strong>Username:</strong> ${farmer.username}</p>
-                            <p><strong>Email:</strong> ${farmer.email}</p>
-                            <p><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Address:</strong> ${farmer.address || 'N/A'}</p>
-                            <p><strong>Status:</strong> <span class="badge badge-${farmer.is_active ? 'success' : 'danger'}">${farmer.is_active ? 'Active' : 'Inactive'}</span></p>
-                            <p><strong>Joined:</strong> ${new Date(farmer.created_at).toLocaleDateString()}</p>
-                            <p><strong>Last Updated:</strong> ${new Date(farmer.updated_at).toLocaleDateString()}</p>
-                        </div>
-                    </div>
-                `;
-                document.getElementById('farmerNameHidden').value = farmer.name;
-                $('#detailsModal').modal('show');
+function updateStats() {
+    // Update stats via AJAX
+    $.ajax({
+        url: '{{ route("admin.farmers.stats") }}',
+        method: 'GET',
+        success: function(response) {
+            console.log('Stats response:', response);
+            if (response.success && response.data) {
+                document.getElementById('pendingCount').textContent = response.data.pending;
+                document.getElementById('activeCount').textContent = response.data.active;
+                document.getElementById('totalCount').textContent = response.data.total;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'Failed to load farmer details.');
-        });
+        },
+        error: function(xhr) {
+            console.error('Error loading stats:', xhr);
+        }
+    });
 }
 
-function editFarmer(farmerId) {
-    // Fetch farmer details and populate edit modal
-    fetch(`/admin/farmers/${farmerId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const farmer = data.farmer;
-                // Populate edit form fields
-                document.getElementById('editFarmerId').value = farmer.id;
-                document.getElementById('editName').value = farmer.name;
-                document.getElementById('editUsername').value = farmer.username;
-                document.getElementById('editEmail').value = farmer.email;
-                document.getElementById('editPhone').value = farmer.phone || '';
-                document.getElementById('editAddress').value = farmer.address || '';
-                
-                $('#editFarmerModal').modal('show');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'Failed to load farmer details for editing.');
-        });
+function showFarmerDetails(farmer) {
+    const details = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="mb-3 text-primary">Personal Information</h6>
+                <p><strong>Full Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
+                <p><strong>Email:</strong> ${farmer.email || ''}</p>
+                <p><strong>Contact Number:</strong> ${farmer.phone || ''}</p>
+                <p><strong>Barangay:</strong> ${farmer.barangay || ''}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="mb-3 text-primary">Farm Information</h6>
+                <p><strong>Farm Name:</strong> ${farmer.farm_name || ''}</p>
+                <p><strong>Farm Address:</strong> ${farmer.farm_address || ''}</p>
+                <p><strong>Username:</strong> ${farmer.username || ''}</p>
+                <p><strong>Registration Date:</strong> ${farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : ''}</p>
+                ${farmer.status ? `<p><strong>Status:</strong> <span class="status-badge status-${farmer.status}">${farmer.status}</span></p>` : ''}
+            </div>
+        </div>
+    `;
+
+    document.getElementById('farmerDetails').innerHTML = details;
+    document.getElementById('farmerNameHidden').value = `${farmer.first_name || ''} ${farmer.last_name || ''}`;
+    $('#detailsModal').modal('show');
+}
+
+function approveFarmer(farmerId) {
+    $.ajax({
+        url: `{{ route("admin.farmers.approve", ":id") }}`.replace(':id', farmerId),
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            loadPendingFarmers();
+            loadActiveFarmers();
+            updateStats();
+            showNotification('Farmer approved successfully!', 'success');
+        },
+        error: function(xhr) {
+            showNotification('Error approving farmer', 'danger');
+        }
+    });
+}
+
+function showRejectionModal(farmerId) {
+    document.getElementById('farmerIdHidden').value = farmerId;
+    $('#rejectionModal').modal('show');
+}
+
+function submitRejection(event) {
+    event.preventDefault();
+    const farmerId = document.getElementById('farmerIdHidden').value;
+    const reason = document.getElementById('rejectionReason').value;
+
+    $.ajax({
+        url: `{{ route("admin.farmers.reject", ":id") }}`.replace(':id', farmerId),
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            rejection_reason: reason
+        },
+        success: function(response) {
+            $('#rejectionModal').modal('hide');
+            document.getElementById('rejectionReason').value = '';
+            loadPendingFarmers();
+            updateStats();
+            showNotification('Farmer registration rejected.', 'warning');
+        },
+        error: function(xhr) {
+            showNotification('Error rejecting farmer', 'danger');
+        }
+    });
+}
+
+function deactivateFarmer(farmerId) {
+    if (!confirm('Are you sure you want to deactivate this farmer?')) return;
+
+    $.ajax({
+        url: `{{ route("admin.farmers.deactivate", ":id") }}`.replace(':id', farmerId),
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            loadActiveFarmers();
+            updateStats();
+            showNotification('Farmer deactivated successfully.', 'danger');
+        },
+        error: function(xhr) {
+            showNotification('Error deactivating farmer', 'danger');
+        }
+    });
 }
 
 function openContactModal() {
@@ -576,50 +575,89 @@ function openContactModal() {
 
 function sendMessage(event) {
     event.preventDefault();
-    
+    const name = document.getElementById('farmerNameHidden').value;
     const subject = document.getElementById('messageSubject').value;
-    const body = document.getElementById('messageBody').value;
-    const farmerName = document.getElementById('farmerNameHidden').value;
-    
-    // Here you would typically send the message via email or save to database
-    // For now, we'll just show a success message
-    
-    document.getElementById('messageNotification').innerHTML = `
-        <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            Message sent successfully to ${farmerName}!
-        </div>
-    `;
-    document.getElementById('messageNotification').style.display = 'block';
-    
-    // Clear form
-    document.getElementById('messageSubject').value = '';
-    document.getElementById('messageBody').value = '';
-    
-    // Hide notification after 3 seconds
-    setTimeout(() => {
-        document.getElementById('messageNotification').style.display = 'none';
-    }, 3000);
+    const message = document.getElementById('messageBody').value;
+
+    // Send message via AJAX
+    $.ajax({
+        url: '{{ route("admin.farmers.contact") }}',
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            name: name,
+            subject: subject,
+            message: message
+        },
+        success: function(response) {
+            document.getElementById('messageNotification').innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    Message sent to <strong>${name}</strong> successfully!
+                </div>
+            `;
+            document.getElementById('messageNotification').style.display = 'block';
+
+            document.getElementById('messageSubject').value = '';
+            document.getElementById('messageBody').value = '';
+        },
+        error: function(xhr) {
+            document.getElementById('messageNotification').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Error sending message. Please try again.
+                </div>
+            `;
+            document.getElementById('messageNotification').style.display = 'block';
+        }
+    });
 }
 
-function showAlert(type, message) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    `;
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
+             style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
     
-    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.page-header'));
+    $('body').append(notification);
     
-    // Auto-remove after 5 seconds
     setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
+        notification.alert('close');
     }, 5000);
+}
+
+// Export functions
+function exportCSV(tableId) {
+    const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
+    table.button('.buttons-csv').trigger();
+}
+
+function exportPDF(tableId) {
+    const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
+    table.button('.buttons-pdf').trigger();
+}
+
+function printTable(tableId) {
+    const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
+    table.button('.buttons-print').trigger();
+}
+
+function exportPNG(tableId) {
+    const tableElement = document.getElementById(tableId);
+    html2canvas(tableElement).then(canvas => {
+        let link = document.createElement('a');
+        link.download = `${tableId}_Report.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
 }
 </script>
 @endpush

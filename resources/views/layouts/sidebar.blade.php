@@ -208,6 +208,14 @@
                 </a>
             </li>
 
+            <!-- Nav Item - User Approvals -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.approvals') }}">
+                    <i class="fas fa-fw fa-user-check"></i>
+                    <span>User Approvals</span>
+                </a>
+            </li>
+
             <!-- Nav Item - Logs -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.audit-logs') }}">

@@ -359,35 +359,40 @@ function loadPendingAdmins() {
         url: '{{ route("superadmin.admins.pending") }}',
         method: 'GET',
         success: function(response) {
+            console.log('Pending admins response:', response);
             pendingAdminsTable.clear();
             
-            response.data.forEach(admin => {
-                const rowData = [
-                    `${admin.first_name} ${admin.last_name}`,
-                    admin.barangay,
-                    admin.contact_number,
-                    admin.email,
-                    admin.username,
-                    new Date(admin.created_at).toLocaleDateString(),
-                    `<div class="btn-group" role="group">
-                        <button class="btn btn-success btn-sm" onclick="approveAdmin('${admin.id}')" title="Approve">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="rejectAdmin('${admin.id}')" title="Reject">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>`
-                ];
-                
-                const row = pendingAdminsTable.row.add(rowData).draw(false);
-                
-                // Add click handler for row details (excluding action buttons)
-                $(row.node()).on('click', function(e) {
-                    if (!$(e.target).closest('button').length) {
-                        showAdminDetails(admin);
-                    }
+            if (response.success && response.data) {
+                response.data.forEach((admin, index) => {
+                    console.log(`Admin ${index}:`, admin);
+                    const rowData = [
+                        `${admin.first_name || ''} ${admin.last_name || ''}`,
+                        admin.barangay || '',
+                        admin.phone || '',
+                        admin.email || '',
+                        admin.username || '',
+                        admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
+                        `<div class="btn-group" role="group">
+                            <button class="btn btn-success btn-sm" onclick="approveAdmin('${admin.id}')" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectAdmin('${admin.id}')" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>`
+                    ];
+                    
+                    console.log(`Row data for admin ${index}:`, rowData);
+                    const row = pendingAdminsTable.row.add(rowData).draw(false);
+                    
+                    // Add click handler for row details (excluding action buttons)
+                    $(row.node()).on('click', function(e) {
+                        if (!$(e.target).closest('button').length) {
+                            showAdminDetails(admin);
+                        }
+                    });
                 });
-            });
+            }
         },
         error: function(xhr) {
             console.error('Error loading pending admins:', xhr);
@@ -401,30 +406,35 @@ function loadActiveAdmins() {
         url: '{{ route("superadmin.admins.active") }}',
         method: 'GET',
         success: function(response) {
+            console.log('Active admins response:', response);
             activeAdminsTable.clear();
             
-            response.data.forEach(admin => {
-                const rowData = [
-                    `${admin.first_name} ${admin.last_name}`,
-                    admin.barangay,
-                    admin.contact_number,
-                    admin.email,
-                    admin.username,
-                    new Date(admin.created_at).toLocaleDateString(),
-                    `<button class="btn btn-danger btn-sm" onclick="deactivateAdmin('${admin.id}')" title="Deactivate">
-                        <i class="fas fa-user-slash"></i>
-                    </button>`
-                ];
-                
-                const row = activeAdminsTable.row.add(rowData).draw(false);
-                
-                // Add click handler for row details (excluding action buttons)
-                $(row.node()).on('click', function(e) {
-                    if (!$(e.target).closest('button').length) {
-                        showAdminDetails(admin);
-                    }
+            if (response.success && response.data) {
+                response.data.forEach((admin, index) => {
+                    console.log(`Active admin ${index}:`, admin);
+                    const rowData = [
+                        `${admin.first_name || ''} ${admin.last_name || ''}`,
+                        admin.barangay || '',
+                        admin.phone || '',
+                        admin.email || '',
+                        admin.username || '',
+                        admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
+                        `<button class="btn btn-danger btn-sm" onclick="deactivateAdmin('${admin.id}')" title="Deactivate">
+                            <i class="fas fa-user-slash"></i>
+                        </button>`
+                    ];
+                    
+                    console.log(`Row data for active admin ${index}:`, rowData);
+                    const row = activeAdminsTable.row.add(rowData).draw(false);
+                    
+                    // Add click handler for row details (excluding action buttons)
+                    $(row.node()).on('click', function(e) {
+                        if (!$(e.target).closest('button').length) {
+                            showAdminDetails(admin);
+                        }
+                    });
                 });
-            });
+            }
         },
         error: function(xhr) {
             console.error('Error loading active admins:', xhr);
@@ -438,9 +448,12 @@ function updateStats() {
         url: '{{ route("superadmin.admins.stats") }}',
         method: 'GET',
         success: function(response) {
-            document.getElementById('pendingCount').textContent = response.pending;
-            document.getElementById('activeCount').textContent = response.active;
-            document.getElementById('totalCount').textContent = response.total;
+            console.log('Stats response:', response);
+            if (response.success && response.data) {
+                document.getElementById('pendingCount').textContent = response.data.pending;
+                document.getElementById('activeCount').textContent = response.data.active;
+                document.getElementById('totalCount').textContent = response.data.total;
+            }
         },
         error: function(xhr) {
             console.error('Error loading stats:', xhr);
@@ -453,22 +466,22 @@ function showAdminDetails(admin) {
         <div class="row">
             <div class="col-md-6">
                 <h6 class="mb-3 text-primary">Personal Information</h6>
-                <p><strong>Full Name:</strong> ${admin.first_name} ${admin.last_name}</p>
-                <p><strong>Email:</strong> ${admin.email}</p>
-                <p><strong>Contact Number:</strong> ${admin.contact_number}</p>
+                <p><strong>Full Name:</strong> ${admin.first_name || ''} ${admin.last_name || ''}</p>
+                <p><strong>Email:</strong> ${admin.email || ''}</p>
+                <p><strong>Contact Number:</strong> ${admin.phone || ''}</p>
             </div>
             <div class="col-md-6">
                 <h6 class="mb-3 text-primary">Account Information</h6>
-                <p><strong>Username:</strong> ${admin.username}</p>
-                <p><strong>Barangay:</strong> ${admin.barangay}</p>
-                <p><strong>Registration Date:</strong> ${new Date(admin.created_at).toLocaleDateString()}</p>
+                <p><strong>Username:</strong> ${admin.username || ''}</p>
+                <p><strong>Barangay:</strong> ${admin.barangay || ''}</p>
+                <p><strong>Registration Date:</strong> ${admin.created_at ? new Date(admin.created_at).toLocaleDateString() : ''}</p>
                 ${admin.status ? `<p><strong>Status:</strong> <span class="status-badge status-${admin.status}">${admin.status}</span></p>` : ''}
             </div>
         </div>
     `;
 
     document.getElementById('farmerDetails').innerHTML = details;
-    document.getElementById('farmerNameHidden').value = `${admin.first_name} ${admin.last_name}`;
+    document.getElementById('farmerNameHidden').value = `${admin.first_name || ''} ${admin.last_name || ''}`;
     $('#detailsModal').modal('show');
 }
 

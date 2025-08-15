@@ -993,4 +993,172 @@ class AdminController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to reset password'], 500);
         }
     }
+
+    /**
+     * Get pending farmers for approval
+     */
+    public function getPendingFarmers()
+    {
+        try {
+            $pendingFarmers = User::where('role', 'farmer')
+                ->where('status', 'pending')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $pendingFarmers
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get pending farmers'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get active farmers
+     */
+    public function getActiveFarmers()
+    {
+        try {
+            $activeFarmers = User::where('role', 'farmer')
+                ->where('status', 'approved')
+                ->where('is_active', true)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $activeFarmers
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get active farmers'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get farmer statistics
+     */
+    public function getFarmerStats()
+    {
+        try {
+            $stats = [
+                'total' => User::where('role', 'farmer')->count(),
+                'active' => User::where('role', 'farmer')->where('status', 'approved')->where('is_active', true)->count(),
+                'pending' => User::where('role', 'farmer')->where('status', 'pending')->count(),
+            ];
+            
+            return response()->json(['success' => true, 'data' => $stats]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get farmer stats'], 500);
+        }
+    }
+
+    /**
+     * Approve farmer registration
+     */
+    public function approveFarmer($id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $farmer->update([
+                'status' => 'approved',
+                'is_active' => true
+            ]);
+            
+            // Log the approval action
+            $this->logAuditAction('approve', 'users', $farmer->id);
+            
+            return response()->json(['success' => true, 'message' => 'Farmer approved successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to approve farmer'], 500);
+        }
+    }
+
+    /**
+     * Reject farmer registration
+     */
+    public function rejectFarmer(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'rejection_reason' => 'required|string|max:500'
+            ]);
+
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $farmer->update([
+                'status' => 'rejected',
+                'is_active' => false
+            ]);
+            
+            // Log the rejection action
+            $this->logAuditAction('reject', 'users', $farmer->id, $request->rejection_reason);
+            
+            return response()->json(['success' => true, 'message' => 'Farmer rejected successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to reject farmer'], 500);
+        }
+    }
+
+    /**
+     * Deactivate farmer
+     */
+    public function deactivateFarmer($id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $farmer->update([
+                'status' => 'rejected',
+                'is_active' => false
+            ]);
+            
+            // Log the deactivation action
+            $this->logAuditAction('deactivate', 'users', $farmer->id);
+            
+            return response()->json(['success' => true, 'message' => 'Farmer deactivated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to deactivate farmer'], 500);
+        }
+    }
+
+    /**
+     * Contact farmer
+     */
+    public function contactFarmer(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'subject' => 'required|string|max:255',
+                'message' => 'required|string|max:1000',
+            ]);
+
+            // This would typically send an email or notification
+            // For now, just return success
+            return response()->json(['success' => true, 'message' => 'Message sent to farmer successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to send message'], 500);
+        }
+    }
+
+    /**
+     * Log audit action
+     */
+    private function logAuditAction($action, $tableName, $recordId, $details = null)
+    {
+        if (Auth::check()) {
+            \App\Models\AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => $action,
+                'table_name' => $tableName,
+                'record_id' => $recordId,
+                'details' => $details,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+        }
+    }
 }

@@ -2,6 +2,44 @@
 
 @section('title', 'LBDAIRY: SuperAdmin-Profile')
 
+<style>
+    /* Ensure select dropdown text is visible */
+    #editBarangay {
+        color: #333 !important;
+        background-color: white !important;
+    }
+    
+    #editBarangay option {
+        color: #333 !important;
+        background-color: white !important;
+    }
+    
+    #editBarangay option:checked {
+        color: #333 !important;
+        background-color: #e3f2fd !important;
+    }
+    
+    #editBarangay option:hover {
+        color: #333 !important;
+        background-color: #f5f5f5 !important;
+    }
+    
+    /* Ensure the selected value text is visible */
+    #editBarangay:focus {
+        color: #333 !important;
+        background-color: white !important;
+    }
+    
+    /* Make sure the profile table text is visible */
+    .profile-info-table td {
+        color: #333 !important;
+    }
+    
+    .profile-info-table th {
+        color: #333 !important;
+    }
+</style>
+
 @section('content')
 <!-- Page Header -->
 <div class="page-header fade-in">
@@ -127,7 +165,7 @@
             
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-borderless mb-0">
+                    <table class="table table-borderless mb-0 profile-info-table">
                         <tbody>
                             <tr>
                                 <th scope="row" style="width:180px;">
@@ -152,6 +190,12 @@
                                     <i class="fas fa-user-shield text-warning"></i>Position
                                 </th>
                                 <td>Super Admin III</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <i class="fas fa-map-marker-alt text-info"></i>Barangay
+                                </th>
+                                <td>{{ auth()->user()->barangay ?? 'N/A' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
@@ -205,6 +249,46 @@
                   <i class="fas fa-user-shield"></i>Position
               </label>
               <input type="text" class="form-control" id="editPosition" name="position" value="Super Admin III" readonly>
+          </div>
+          <div class="form-group">
+              <label for="editBarangay">
+                  <i class="fas fa-map-marker-alt"></i>Barangay
+              </label>
+              <select class="form-control" id="editBarangay" name="barangay" required style="color: #333; background-color: white;">
+                  <option value="" style="color: #333;">Select Barangay</option>
+                  <option value="Abang" {{ auth()->user()->barangay == 'Abang' ? 'selected' : '' }} style="color: #333;">Abang</option>
+                  <option value="Aliliw" {{ auth()->user()->barangay == 'Aliliw' ? 'selected' : '' }} style="color: #333;">Aliliw</option>
+                  <option value="Atulinao" {{ auth()->user()->barangay == 'Atulinao' ? 'selected' : '' }} style="color: #333;">Atulinao</option>
+                  <option value="Ayuti (Poblacion)" {{ auth()->user()->barangay == 'Ayuti (Poblacion)' ? 'selected' : '' }} style="color: #333;">Ayuti (Poblacion)</option>
+                  <option value="Barangay 1 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 1 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 1 (Poblacion)</option>
+                  <option value="Barangay 2 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 2 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 2 (Poblacion)</option>
+                  <option value="Barangay 3 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 3 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 3 (Poblacion)</option>
+                  <option value="Barangay 4 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 4 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 4 (Poblacion)</option>
+                  <option value="Barangay 5 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 5 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 5 (Poblacion)</option>
+                  <option value="Barangay 6 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 6 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 6 (Poblacion)</option>
+                  <option value="Barangay 7 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 7 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 7 (Poblacion)</option>
+                  <option value="Barangay 8 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 8 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 8 (Poblacion)</option>
+                  <option value="Barangay 9 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 9 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 9 (Poblacion)</option>
+                  <option value="Barangay 10 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 10 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 10 (Poblacion)</option>
+                  <option value="Igang" {{ auth()->user()->barangay == 'Igang' ? 'selected' : '' }} style="color: #333;">Igang</option>
+                  <option value="Kabatete" {{ auth()->user()->barangay == 'Kabatete' ? 'selected' : '' }} style="color: #333;">Kabatete</option>
+                  <option value="Kakawit" {{ auth()->user()->barangay == 'Kakawit' ? 'selected' : '' }} style="color: #333;">Kakawit</option>
+                  <option value="Kalangay" {{ auth()->user()->barangay == 'Kalangay' ? 'selected' : '' }} style="color: #333;">Kalangay</option>
+                  <option value="Kalyaat" {{ auth()->user()->barangay == 'Kalyaat' ? 'selected' : '' }} style="color: #333;">Kalyaat</option>
+                  <option value="Kilib" {{ auth()->user()->barangay == 'Kilib' ? 'selected' : '' }} style="color: #333;">Kilib</option>
+                  <option value="Kulapi" {{ auth()->user()->barangay == 'Kulapi' ? 'selected' : '' }} style="color: #333;">Kulapi</option>
+                  <option value="Mahabang Parang" {{ auth()->user()->barangay == 'Mahabang Parang' ? 'selected' : '' }} style="color: #333;">Mahabang Parang</option>
+                  <option value="Malupak" {{ auth()->user()->barangay == 'Malupak' ? 'selected' : '' }} style="color: #333;">Malupak</option>
+                  <option value="Manasa" {{ auth()->user()->barangay == 'Manasa' ? 'selected' : '' }} style="color: #333;">Manasa</option>
+                  <option value="May-It" {{ auth()->user()->barangay == 'May-It' ? 'selected' : '' }} style="color: #333;">May-It</option>
+                  <option value="Nagsinamo" {{ auth()->user()->barangay == 'Nagsinamo' ? 'selected' : '' }} style="color: #333;">Nagsinamo</option>
+                  <option value="Nalunao" {{ auth()->user()->barangay == 'Nalunao' ? 'selected' : '' }} style="color: #333;">Nalunao</option>
+                  <option value="Palola" {{ auth()->user()->barangay == 'Palola' ? 'selected' : '' }} style="color: #333;">Palola</option>
+                  <option value="Piis" {{ auth()->user()->barangay == 'Piis' ? 'selected' : '' }} style="color: #333;">Piis</option>
+                  <option value="Samil" {{ auth()->user()->barangay == 'Samil' ? 'selected' : '' }} style="color: #333;">Samil</option>
+                  <option value="Tiawe" {{ auth()->user()->barangay == 'Tiawe' ? 'selected' : '' }} style="color: #333;">Tiawe</option>
+                  <option value="Tinamnan" {{ auth()->user()->barangay == 'Tinamnan' ? 'selected' : '' }} style="color: #333;">Tinamnan</option>
+              </select>
           </div>
           <div class="form-group">
               <label for="editPhone">

@@ -10771,6 +10771,19 @@
     color: #858796;
   }
   
+  /* Enhanced select styling for barangay dropdown */
+  form.user select.form-control-user {
+    transition: color 0.3s ease;
+  }
+  
+  form.user select.form-control-user.selected {
+    color: #5a5c69 !important;
+  }
+  
+  form.user select.form-control-user:not(.selected) {
+    color: #858796 !important;
+  }
+  
   form.user .btn-user {
     font-size: 0.8rem;
     border-radius: 10rem;

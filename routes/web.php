@@ -10,6 +10,7 @@ use App\Http\Controllers\LivestockController;
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\FarmController;
+use App\Http\Controllers\AdminApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,8 +97,29 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/manage-farmers', [App\Http\Controllers\AdminController::class, 'manageFarmers'])->name('manage-farmers');
         Route::get('/farmers', [App\Http\Controllers\AdminController::class, 'farmers'])->name('farmers');
         Route::post('/farmers', [App\Http\Controllers\AdminController::class, 'storeFarmer'])->name('farmers.store');
+        // Farmer management routes
+        Route::get('/farmers/pending', [App\Http\Controllers\AdminController::class, 'getPendingFarmers'])->name('farmers.pending');
+        Route::get('/farmers/active', [App\Http\Controllers\AdminController::class, 'getActiveFarmers'])->name('farmers.active');
+        Route::get('/farmers/stats', [App\Http\Controllers\AdminController::class, 'getFarmerStats'])->name('farmers.stats');
+        Route::post('/farmers/{id}/approve', [App\Http\Controllers\AdminController::class, 'approveFarmer'])->name('farmers.approve');
+        Route::post('/farmers/{id}/reject', [App\Http\Controllers\AdminController::class, 'rejectFarmer'])->name('farmers.reject');
+        Route::post('/farmers/{id}/deactivate', [App\Http\Controllers\AdminController::class, 'deactivateFarmer'])->name('farmers.deactivate');
+        Route::post('/farmers/contact', [App\Http\Controllers\AdminController::class, 'contactFarmer'])->name('farmers.contact');
+        
         Route::get('/farmers/{id}', [App\Http\Controllers\AdminController::class, 'showFarmer'])->name('farmers.show');
         Route::post('/farmers/{id}/update', [App\Http\Controllers\AdminController::class, 'updateFarmer'])->name('farmers.update');
+        
+        // User approval routes
+        Route::get('/approvals', [AdminApprovalController::class, 'index'])->name('approvals');
+        Route::get('/approvals/{id}', [AdminApprovalController::class, 'show'])->name('approvals.show');
+        Route::post('/approvals/{id}/approve', [AdminApprovalController::class, 'approve'])->name('approvals.approve');
+        Route::post('/approvals/{id}/reject', [AdminApprovalController::class, 'reject'])->name('approvals.reject');
+        
+        // Pending registrations routes (for backward compatibility)
+        Route::get('/pending-registrations', [AdminApprovalController::class, 'pendingRegistrations'])->name('pending-registrations');
+        Route::get('/pending-registrations/{id}', [AdminApprovalController::class, 'show'])->name('pending-registrations.show');
+        Route::post('/pending-registrations/{id}/approve', [AdminApprovalController::class, 'approve'])->name('pending-registrations.approve');
+        Route::post('/pending-registrations/{id}/reject', [AdminApprovalController::class, 'reject'])->name('pending-registrations.reject');
         Route::delete('/farmers/{id}', [App\Http\Controllers\AdminController::class, 'deleteFarmer'])->name('farmers.destroy');
         Route::patch('/farmers/{id}/status', [App\Http\Controllers\AdminController::class, 'updateFarmerStatus'])->name('farmers.update-status');
         Route::post('/farmers/{id}/reset-password', [App\Http\Controllers\AdminController::class, 'resetFarmerPassword'])->name('farmers.reset-password');

@@ -36,8 +36,34 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
         $user = User::where('username', $credentials['username'])
                    ->where('role', $request->role)
-                   ->where('is_active', true)
                    ->first();
+
+        // Check if user exists and is approved
+        if (!$user) {
+            return back()->withErrors([
+                'username' => 'The provided credentials do not match our records.',
+            ])->withInput();
+        }
+
+        // Check if user is approved
+        if ($user->status !== 'approved') {
+            if ($user->status === 'pending') {
+                return back()->withErrors([
+                    'username' => 'Your account is pending approval. Please wait for admin approval.',
+                ])->withInput();
+            } elseif ($user->status === 'rejected') {
+                return back()->withErrors([
+                    'username' => 'Your account registration was rejected. Please contact support.',
+                ])->withInput();
+            }
+        }
+
+        // Check if user is active
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'username' => 'Your account has been deactivated. Please contact support.',
+            ])->withInput();
+        }
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
             Auth::login($user);
@@ -90,13 +116,32 @@ class AuthController extends Controller
             'address' => 'nullable|string|max:500',
             'role' => 'required|in:farmer,admin',
             'password' => 'required|string|min:8|confirmed',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'barangay' => 'required|string|max:255',
+            'terms_accepted' => 'required|accepted',
         ]);
+
+        // Add role-specific validation
+        if ($request->role === 'admin') {
+            $validator->addRules([
+                'admin_code' => 'required|string|max:255|unique:users',
+                'position' => 'required|string|max:255',
+            ]);
+        } elseif ($request->role === 'farmer') {
+            $validator->addRules([
+                'farmer_code' => 'required|string|max:255|unique:users',
+                'farm_name' => 'required|string|max:255',
+                'farm_address' => 'required|string|max:500',
+            ]);
+        }
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        $user = User::create([
+        // Prepare user data
+        $userData = [
             'name' => $request->name,
             'email' => $request->email,
             'username' => $request->username,
@@ -104,14 +149,30 @@ class AuthController extends Controller
             'address' => $request->address,
             'role' => $request->role,
             'password' => Hash::make($request->password),
-        ]);
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'barangay' => $request->barangay,
+            'terms_accepted' => $request->terms_accepted,
+            'status' => 'pending', // Default status for new registrations
+        ];
+
+        // Add role-specific fields
+        if ($request->role === 'admin') {
+            $userData['admin_code'] = $request->admin_code;
+            $userData['position'] = $request->position;
+        } elseif ($request->role === 'farmer') {
+            $userData['farmer_code'] = $request->farmer_code;
+            $userData['farm_name'] = $request->farm_name;
+            $userData['farm_address'] = $request->farm_address;
+        }
+
+        $user = User::create($userData);
 
         // Log the registration action
         $this->logAuditAction('create', 'users', $user->id);
 
-        Auth::login($user);
-
-        return redirect()->intended($this->getDashboardRoute($user->role));
+        // Don't auto-login for new registrations, require approval
+        return redirect()->route('login')->with('success', 'Registration successful! Your account is pending approval. You will be notified via email once approved.');
     }
 
     /**

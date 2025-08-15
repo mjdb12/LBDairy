@@ -24,6 +24,7 @@ class SuperAdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|string|max:20',
+            'barangay' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
         ]);
 
@@ -31,6 +32,7 @@ class SuperAdminController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'barangay' => $request->barangay,
             'address' => $request->address,
         ]);
 
@@ -371,10 +373,10 @@ class SuperAdminController extends Controller
     {
         try {
             $pendingAdmins = User::where('role', 'admin')
-                ->where('is_active', false)
+                ->where('status', 'pending')
                 ->get();
             
-            return response()->json(['success' => true, 'admins' => $pendingAdmins]);
+            return response()->json(['success' => true, 'data' => $pendingAdmins]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to get pending admins'], 500);
         }
@@ -384,10 +386,10 @@ class SuperAdminController extends Controller
     {
         try {
             $activeAdmins = User::where('role', 'admin')
-                ->where('is_active', true)
+                ->where('status', 'approved')
                 ->get();
             
-            return response()->json(['success' => true, 'admins' => $activeAdmins]);
+            return response()->json(['success' => true, 'data' => $activeAdmins]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to get active admins'], 500);
         }
@@ -397,12 +399,12 @@ class SuperAdminController extends Controller
     {
         try {
             $stats = [
-                'total_admins' => User::where('role', 'admin')->count(),
-                'active_admins' => User::where('role', 'admin')->where('is_active', true)->count(),
-                'pending_admins' => User::where('role', 'admin')->where('is_active', false)->count(),
+                'total' => User::where('role', 'admin')->count(),
+                'active' => User::where('role', 'admin')->where('status', 'approved')->count(),
+                'pending' => User::where('role', 'admin')->where('status', 'pending')->count(),
             ];
             
-            return response()->json(['success' => true, 'stats' => $stats]);
+            return response()->json(['success' => true, 'data' => $stats]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to get admin stats'], 500);
         }
@@ -412,7 +414,10 @@ class SuperAdminController extends Controller
     {
         try {
             $admin = User::where('role', 'admin')->findOrFail($id);
-            $admin->update(['is_active' => true]);
+            $admin->update([
+                'status' => 'approved',
+                'is_active' => true
+            ]);
             
             return response()->json(['success' => true, 'message' => 'Admin approved successfully']);
         } catch (\Exception $e) {
@@ -424,9 +429,12 @@ class SuperAdminController extends Controller
     {
         try {
             $admin = User::where('role', 'admin')->findOrFail($id);
-            $admin->delete();
+            $admin->update([
+                'status' => 'rejected',
+                'is_active' => false
+            ]);
             
-            return response()->json(['success' => true, 'message' => 'Admin rejected and removed']);
+            return response()->json(['success' => true, 'message' => 'Admin rejected successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to reject admin'], 500);
         }
@@ -436,7 +444,10 @@ class SuperAdminController extends Controller
     {
         try {
             $admin = User::where('role', 'admin')->findOrFail($id);
-            $admin->update(['is_active' => false]);
+            $admin->update([
+                'status' => 'rejected',
+                'is_active' => false
+            ]);
             
             return response()->json(['success' => true, 'message' => 'Admin deactivated successfully']);
         } catch (\Exception $e) {

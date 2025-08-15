@@ -1,203 +1,627 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LBDAIRY - Registration</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>LBDAIRY: User Registration</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #3c5aa6;
+            --success-color: #1cc88a;
+            --success-dark: #17a673;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --info-color: #36b9cc;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --border-color: #e3e6f0;
+            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
         }
-        .glass-effect {
-            backdrop-filter: blur(16px);
-            background: rgba(255, 255, 255, 0.97);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 40px 0 rgba(78, 115, 223, 0.18), 0 2px 8px 0 rgba(60, 90, 166, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.08);
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fff;
+            min-height: 100vh;
+            padding: 2rem 0;
         }
-        .tab-active {
-            background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
+            margin: 2rem auto;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-container {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-container img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .form-control-user {
+            border: 2px solid #e3e6f0;
+            border-radius: 15px;
+            padding: 1.25rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 400;
+            background: white;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+
+        /* Input fields get the dark color */
+        input.form-control-user {
+            color: var(--dark-color);
+        }
+
+        .form-control-user:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-user {
+            border-radius: 15px;
+            padding: 1.25rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-user:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 1rem 2rem rgba(78, 115, 223, 0.4);
+        }
+
+        .nav-tabs {
+            border: none;
+            margin-bottom: 2rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 15px;
+            margin-right: 1rem;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            background: var(--light-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: rgba(78, 115, 223, 0.1);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);
         }
-        .tab-inactive {
-            background: rgba(255, 255, 255, 0.1);
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .custom-control {
+            position: relative;
+            display: block;
+            min-height: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .custom-control-input {
+            position: absolute;
+            left: 0;
+            z-index: -1;
+            width: 1rem;
+            height: 1.25rem;
+            opacity: 0;
+        }
+
+        .custom-control-label {
+            position: relative;
+            margin-bottom: 0;
+            vertical-align: top;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .custom-control-label::before {
+            position: absolute;
+            top: 0.25rem;
+            left: -1.5rem;
+            display: block;
+            width: 1rem;
+            height: 1rem;
+            pointer-events: none;
+            content: "";
+            background-color: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .custom-control-label::after {
+            position: absolute;
+            top: 0.25rem;
+            left: -1.5rem;
+            display: block;
+            width: 1rem;
+            height: 1rem;
+            content: "";
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 0.5rem 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            color: #fff;
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+        }
+
+        .custom-control-input:focus ~ .custom-control-label::before {
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .custom-control-input:hover ~ .custom-control-label::before {
+            border-color: var(--primary-color);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom: none;
+            border-radius: 20px 20px 0 0;
+            padding: 2rem;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .modal-body {
+            padding: 2.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem 2.5rem;
+        }
+
+        .small {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .small:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(231, 74, 59, 0.25) !important;
+        }
+
+        .registration-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .registration-subtitle {
+            font-size: 1.1rem;
             color: #6b7280;
-            backdrop-filter: blur(8px);
+            margin-bottom: 2rem;
         }
-        .input-focus:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.15);
+
+        .alert {
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
-            transform: translateY(0);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        .alert-danger {
+            background: rgba(231, 74, 59, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(78, 115, 223, 0.4);
+
+        .alert-success {
+            background: rgba(28, 200, 138, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
         }
-        .hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .card {
+                margin: 1rem;
+                border-radius: 15px;
+            }
+
+            .registration-title {
+                font-size: 2rem;
+            }
+
+            .form-control-user {
+                padding: 1rem 1.25rem;
+                font-size: 0.95rem;
+            }
+
+            .btn-user {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 0.75rem 1.5rem;
+                margin-right: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen" style="background-color: #fff;">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-4xl">
-            <div class="glass-effect rounded-3xl shadow-2xl overflow-hidden">
-                <div class="flex flex-col lg:flex-row">
-                    <!-- Left Side - Branding -->
-                    <div class="lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black opacity-20"></div>
-                        <div class="relative z-10 text-center">
-                            <h1 class="text-4xl font-bold mb-4">LBDAIRY</h1>
-                            <p class="text-xl opacity-90 mb-8">Modern Dairy Management System</p>
-                            <p class="text-lg opacity-80">Join our community of dairy farmers and administrators</p>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="logo-container">
+                                <img src="https://via.placeholder.com/120x120/4e73df/ffffff?text=LB" alt="LBDAIRY Logo">
+                            </div>
+                            <h1 class="registration-title">Join LBDAIRY</h1>
+                            <p class="registration-subtitle">Create your account and start managing your dairy operations</p>
                         </div>
-                    </div>
 
-                    <!-- Right Side - Registration Form -->
-                    <div class="lg:w-1/2 p-12">
-                        <div class="max-w-md mx-auto">
-                            <div class="text-center mb-8">
-                                <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-                                <p class="text-gray-600">Join LBDAIRY today</p>
+                        <!-- User Type Tabs -->
+                        <ul class="nav nav-tabs justify-content-center" id="registrationTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="farmer-tab" data-toggle="tab" data-target="#farmer" type="button" role="tab" aria-controls="farmer" aria-selected="true">
+                                    <i class="fas fa-seedling mr-2"></i>Farmer Registration
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="admin-tab" data-toggle="tab" data-target="#admin" type="button" role="tab" aria-controls="admin" aria-selected="false">
+                                    <i class="fas fa-user-shield mr-2"></i>Admin Registration
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="registrationTabContent">
+                            <!-- Farmer Registration Form -->
+                            <div class="tab-pane fade show active" id="farmer" role="tabpanel" aria-labelledby="farmer-tab">
+                                <form method="POST" action="{{ route('register') }}" class="user" id="farmerForm">
+                                    @csrf
+                                    <input type="hidden" name="role" value="farmer">
+                                    
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+                                    <div class="form-group">
+                                        <label for="farmerCode">Farmer Registration Code</label>
+                                        <input type="text" class="form-control form-control-user" id="farmerCode" name="farmer_code" required>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <label for="farmerFirstName">First Name</label>
+                                            <input type="text" class="form-control form-control-user" id="farmerFirstName" name="first_name" required>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="farmerLastName">Last Name</label>
+                                            <input type="text" class="form-control form-control-user" id="farmerLastName" name="last_name" required>
+                                        </div>
+                                    </div>
+
+                                                                         <div class="form-group">
+                                         <label for="farmerBarangay">Barangay</label>
+                                         <input list="farmerBarangayList" class="form-control form-control-user" id="farmerBarangay" name="barangay" placeholder="Select Barangay" required>
+                                         <datalist id="farmerBarangayList">
+                                             <option value="Abang">Abang</option>
+                                             <option value="Aliliw">Aliliw</option>
+                                             <option value="Atulinao">Atulinao</option>
+                                             <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                             <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                             <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                             <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                             <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                             <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                             <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                             <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                             <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                             <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                             <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                                             <option value="Igang">Igang</option>
+                                             <option value="Kabatete">Kabatete</option>
+                                             <option value="Kakawit">Kakawit</option>
+                                             <option value="Kalangay">Kalangay</option>
+                                             <option value="Kalyaat">Kalyaat</option>
+                                             <option value="Kilib">Kilib</option>
+                                             <option value="Kulapi">Kulapi</option>
+                                             <option value="Mahabang Parang">Mahabang Parang</option>
+                                             <option value="Malupak">Malupak</option>
+                                             <option value="Manasa">Manasa</option>
+                                             <option value="May-It">May-It</option>
+                                             <option value="Nagsinamo">Nagsinamo</option>
+                                             <option value="Nalunao">Nalunao</option>
+                                             <option value="Palola">Palola</option>
+                                             <option value="Piis">Piis</option>
+                                             <option value="Samil">Samil</option>
+                                             <option value="Tiawe">Tiawe</option>
+                                             <option value="Tinamnan">Tinamnan</option>
+                                         </datalist>
+                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="farmerContactNumber">Contact Number</label>
+                                        <input type="tel" class="form-control form-control-user" id="farmerContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="farmerEmail">Email Address</label>
+                                        <input type="email" class="form-control form-control-user" id="farmerEmail" name="email" required>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <label for="farmerFarmName">Farm Name</label>
+                                            <input type="text" class="form-control form-control-user" id="farmerFarmName" name="farm_name" required>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="farmerFarmAddress">Farm Address</label>
+                                            <input type="text" class="form-control form-control-user" id="farmerFarmAddress" name="farm_address" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="farmerUsername">Username</label>
+                                        <input type="text" class="form-control form-control-user" id="farmerUsername" name="username" required>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <label for="farmerPassword">Password</label>
+                                            <input type="password" class="form-control form-control-user" id="farmerPassword" name="password" required>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="farmerConfirmPassword">Confirm Password</label>
+                                            <input type="password" class="form-control form-control-user" id="farmerConfirmPassword" name="password_confirmation" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="farmerTermsCheckbox" name="terms_accepted" required>
+                                            <label class="custom-control-label" for="farmerTermsCheckbox">
+                                                I agree to the <a href="#" onclick="showTerms(); return false;">Terms and Conditions</a>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        <i class="fas fa-seedling mr-2"></i>
+                                        Register as Farmer
+                                    </button>
+                                </form>
                             </div>
 
-                            <!-- User Type Tabs -->
-                            <div class="flex rounded-2xl p-1 bg-gray-100 mb-8">
-                                <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-active" data-tab="farmer">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <span>Farmer</span>
+                            <!-- Admin Registration Form -->
+                            <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
+                                <form method="POST" action="{{ route('register') }}" class="user" id="adminForm">
+                                    @csrf
+                                    <input type="hidden" name="role" value="admin">
+                                    
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+                                    <div class="form-group">
+                                        <label for="adminCode">Admin Registration Code</label>
+                                        <input type="text" class="form-control form-control-user" id="adminCode" name="admin_code" required>
                                     </div>
-                                </button>
-                                <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-inactive" data-tab="admin">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-                                        </svg>
-                                        <span>Admin</span>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <label for="adminFirstName">First Name</label>
+                                            <input type="text" class="form-control form-control-user" id="adminFirstName" name="first_name" required>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="adminLastName">Last Name</label>
+                                            <input type="text" class="form-control form-control-user" id="adminLastName" name="last_name" required>
+                                        </div>
                                     </div>
-                                </button>
+
+                                    <div class="form-group">
+                                        <label for="adminPosition">Position</label>
+                                        <input list="positionList" class="form-control form-control-user" id="adminPosition" name="position" required>
+                                        <datalist id="positionList">
+                                            <option value="Municipal Agriculturist">Municipal Agriculturist</option>
+                                            <option value="Livestock Technician">Livestock Technician</option>
+                                            <option value="IT Staff">IT Staff</option>
+                                        </datalist>
+                                    </div>
+
+                                     <div class="form-group">
+                                         <label for="adminBarangay">Barangay</label>
+                                         <input list="adminBarangayList" class="form-control form-control-user" id="adminBarangay" name="barangay" placeholder="Select Barangay" required>
+                                         <datalist id="adminBarangayList">
+                                             <option value="Abang">Abang</option>
+                                             <option value="Aliliw">Aliliw</option>
+                                             <option value="Atulinao">Atulinao</option>
+                                             <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                             <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                             <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                             <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                             <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                             <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                             <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                             <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                             <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                             <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                             <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                                             <option value="Igang">Igang</option>
+                                             <option value="Kabatete">Kabatete</option>
+                                             <option value="Kakawit">Kakawit</option>
+                                             <option value="Kalangay">Kalangay</option>
+                                             <option value="Kalyaat">Kalyaat</option>
+                                             <option value="Kilib">Kilib</option>
+                                             <option value="Kulapi">Kulapi</option>
+                                             <option value="Mahabang Parang">Mahabang Parang</option>
+                                             <option value="Malupak">Malupak</option>
+                                             <option value="Manasa">Manasa</option>
+                                             <option value="May-It">May-It</option>
+                                             <option value="Nagsinamo">Nagsinamo</option>
+                                             <option value="Nalunao">Nalunao</option>
+                                             <option value="Palola">Palola</option>
+                                             <option value="Piis">Piis</option>
+                                             <option value="Samil">Samil</option>
+                                             <option value="Tiawe">Tiawe</option>
+                                             <option value="Tinamnan">Tinamnan</option>
+                                         </datalist>
+                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="adminContactNumber">Contact Number</label>
+                                        <input type="tel" class="form-control form-control-user" id="adminContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="adminEmail">Email Address</label>
+                                        <input type="email" class="form-control form-control-user" id="adminEmail" name="email" required>
+                                        <input type="hidden" name="name" id="adminFullName">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="adminUsername">Username</label>
+                                        <input type="text" class="form-control form-control-user" id="adminUsername" name="username" required>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <label for="adminPassword">Password</label>
+                                            <input type="password" class="form-control form-control-user" id="adminPassword" name="password" required>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="adminConfirmPassword">Confirm Password</label>
+                                            <input type="password" class="form-control form-control-user" id="adminConfirmPassword" name="password_confirmation" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="adminTermsCheckbox" name="terms_accepted" required>
+                                            <label class="custom-control-label" for="adminTermsCheckbox">
+                                                I agree to the <a href="#" onclick="showTerms(); return false;">Terms and Conditions</a>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        <i class="fas fa-user-plus mr-2"></i>
+                                        Create Admin Account
+                                    </button>
+                                </form>
                             </div>
+                        </div>
 
-                            <!-- Registration Forms -->
-                            <form method="POST" action="{{ route('register') }}" class="space-y-6">
-                                @csrf
-                                <input type="hidden" name="role" id="selectedRole" value="farmer">
-                                
-                                <!-- Farmer Registration Form -->
-                                <div id="farmer-form" class="registration-form">
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="farmer-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                                            <input type="text" id="farmer-name" name="name" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your full name">
-                                        </div>
-                                        <div>
-                                            <label for="farmer-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                                            <input type="email" id="farmer-email" name="email" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your email">
-                                        </div>
-                                        <div>
-                                            <label for="farmer-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                                            <input type="text" id="farmer-username" name="username" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Choose a username">
-                                        </div>
-                                        <div>
-                                            <label for="farmer-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                                            <input type="tel" id="farmer-phone" name="phone"
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your phone number">
-                                        </div>
-                                        <div>
-                                            <label for="farmer-address" class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                                            <textarea id="farmer-address" name="address" rows="3"
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your address"></textarea>
-                                        </div>
-                                        <div>
-                                            <label for="farmer-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                                            <input type="password" id="farmer-password" name="password" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Create a password">
-                                        </div>
-                                        <div>
-                                            <label for="farmer-password-confirm" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                                            <input type="password" id="farmer-password-confirm" name="password_confirmation" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Confirm your password">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Admin Registration Form -->
-                                <div id="admin-form" class="registration-form hidden">
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="admin-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                                            <input type="text" id="admin-name" name="name" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your full name">
-                                        </div>
-                                        <div>
-                                            <label for="admin-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                                            <input type="email" id="admin-email" name="email" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your email">
-                                        </div>
-                                        <div>
-                                            <label for="admin-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                                            <input type="text" id="admin-username" name="username" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Choose a username">
-                                        </div>
-                                        <div>
-                                            <label for="admin-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                                            <input type="tel" id="admin-phone" name="phone"
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your phone number">
-                                        </div>
-                                        <div>
-                                            <label for="admin-address" class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                                            <textarea id="admin-address" name="address" rows="3"
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your address"></textarea>
-                                        </div>
-                                        <div>
-                                            <label for="admin-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                                            <input type="password" id="admin-password" name="password" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Create a password">
-                                        </div>
-                                        <div>
-                                            <label for="admin-password-confirm" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                                            <input type="password" id="admin-password-confirm" name="password_confirmation" required
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Confirm your password">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300">
-                                    Create Account
-                                </button>
-                            </form>
-
-                            <div class="text-center mt-6">
-                                <p class="text-gray-600">Already have an account? 
-                                    <a href="{{ route('login') }}" class="text-blue-600 hover:text-blue-700 font-medium">Sign in here</a>
-                                </p>
-                            </div>
+                        <hr>
+                        <div class="text-center">
+                            <a class="small" href="{{ route('login') }}">
+                                <i class="fas fa-sign-in-alt mr-1"></i>
+                                Already have an account? Sign In
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -205,33 +629,177 @@
         </div>
     </div>
 
-    <script>
-        // Tab switching functionality
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const registrationForms = document.querySelectorAll('.registration-form');
-        const selectedRoleInput = document.getElementById('selectedRole');
+    <!-- Terms and Conditions Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">
+                        <i class="fas fa-file-contract mr-2"></i>
+                        Terms and Conditions
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <h6 class="text-success mb-3">LBDAIRY User Agreement</h6>
+                        <p class="mb-3">By registering with LBDAIRY, you agree to the following terms:</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-secondary mb-2">Data Accuracy</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Provide accurate information</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Update information regularly</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Report changes promptly</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-secondary mb-2">Data Usage</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-chart-line text-info me-2"></i>Monitoring and analysis</li>
+                                <li class="mb-2"><i class="fas fa-chart-line text-info me-2"></i>Productivity tracking</li>
+                                <li class="mb-2"><i class="fas fa-chart-line text-info me-2"></i>Agricultural insights</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <strong>Privacy:</strong> Your data is handled according to our privacy policy and local data protection laws.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">
+                        <i class="fas fa-check mr-2"></i>
+                        I Understand and Agree
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.dataset.tab;
-                
-                // Update tab buttons
-                tabBtns.forEach(b => {
-                    b.classList.remove('tab-active');
-                    b.classList.add('tab-inactive');
-                });
-                btn.classList.remove('tab-inactive');
-                btn.classList.add('tab-active');
-                
-                // Update forms
-                registrationForms.forEach(form => {
-                    form.classList.add('hidden');
-                });
-                document.getElementById(tab + '-form').classList.remove('hidden');
-                
-                // Update hidden input
-                selectedRoleInput.value = tab;
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Show terms modal
+        function showTerms() {
+            console.log('showTerms function called');
+            const termsModal = document.getElementById('termsModal');
+            if (termsModal) {
+                console.log('Terms modal found, showing...');
+                $('#termsModal').modal('show');
+            } else {
+                console.error('Terms modal not found!');
+            }
+        }
+
+        // Auto-generate full name for admin form
+        document.getElementById('adminFirstName').addEventListener('input', updateAdminFullName);
+        document.getElementById('adminLastName').addEventListener('input', updateAdminFullName);
+
+        function updateAdminFullName() {
+            const firstName = document.getElementById('adminFirstName').value;
+            const lastName = document.getElementById('adminLastName').value;
+            const fullName = `${firstName} ${lastName}`.trim();
+            document.getElementById('adminFullName').value = fullName;
+        }
+
+        // Auto-generate full name for farmer form
+        document.getElementById('farmerFirstName').addEventListener('input', updateFarmerFullName);
+        document.getElementById('farmerLastName').addEventListener('input', updateFarmerFullName);
+
+        function updateFarmerFullName() {
+            const firstName = document.getElementById('farmerFirstName').value;
+            const lastName = document.getElementById('farmerLastName').value;
+            const fullName = `${firstName} ${lastName}`.trim();
+            // Update the name field for farmer form
+            let nameInput = document.querySelector('#farmerForm input[name="name"]');
+            if (!nameInput) {
+                nameInput = document.createElement('input');
+                nameInput.type = 'hidden';
+                nameInput.name = 'name';
+                document.getElementById('farmerForm').appendChild(nameInput);
+            }
+            nameInput.value = fullName;
+        }
+
+        // Form validation and submission
+        document.getElementById('farmerForm').addEventListener('submit', function(e) {
+            if (!validateForm('farmer')) {
+                e.preventDefault();
+            }
+        });
+
+        document.getElementById('adminForm').addEventListener('submit', function(e) {
+            if (!validateForm('admin')) {
+                e.preventDefault();
+            }
+        });
+
+        function validateForm(type) {
+            const form = document.getElementById(type + 'Form');
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
             });
+
+            // Password confirmation validation
+            const password = form.querySelector('input[name="password"]');
+            const confirmPassword = form.querySelector('input[name="password_confirmation"]');
+            
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                confirmPassword.classList.remove('is-invalid');
+            }
+
+            return isValid;
+        }
+
+        // Remove validation styling on input
+        document.querySelectorAll('.form-control-user').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+
+        // Tab switching with form reset
+        document.querySelectorAll('[data-toggle="tab"]').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function(e) {
+                // Reset forms when switching tabs
+                document.getElementById('farmerForm').reset();
+                document.getElementById('adminForm').reset();
+                
+                // Remove validation styling
+                document.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+            });
+        });
+
+        // Initialize terms modal functionality
+        $(document).ready(function() {
+            console.log('DOM loaded, checking terms modal...');
+            const termsModal = document.getElementById('termsModal');
+            if (termsModal) {
+                console.log('Terms modal found in DOM');
+                console.log('jQuery and Bootstrap 4 modal ready');
+            } else {
+                console.error('Terms modal not found in DOM');
+            }
         });
     </script>
 </body>

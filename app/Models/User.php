@@ -24,6 +24,16 @@ class User extends Authenticatable
         'profile_image',
         'password',
         'is_active',
+        'admin_code',
+        'position',
+        'barangay',
+        'farmer_code',
+        'farm_name',
+        'farm_address',
+        'first_name',
+        'last_name',
+        'status',
+        'terms_accepted',
     ];
 
     /**
