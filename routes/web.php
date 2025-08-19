@@ -259,5 +259,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings/logs', [SuperAdminController::class, 'getSettingsLogs'])->name('settings.logs');
         Route::post('/settings/clear-logs', [SuperAdminController::class, 'clearSettingsLogs'])->name('settings.clear-logs');
         Route::get('/settings/export-logs', [SuperAdminController::class, 'exportSettingsLogs'])->name('settings.export-logs');
+        
+        // Notification routes
+        Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'getNotifications'])->name('notifications');
+        Route::post('/notifications/mark-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+        Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+
+        // Task board routes
+        Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
+        Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+        Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
+        Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
+        Route::post('/tasks/reorder', [App\Http\Controllers\TaskController::class, 'reorder'])->name('tasks.reorder');
+        Route::post('/tasks/{task}/move', [App\Http\Controllers\TaskController::class, 'move'])->name('tasks.move');
     });
 });

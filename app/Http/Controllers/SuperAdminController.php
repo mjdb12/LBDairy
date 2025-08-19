@@ -18,6 +18,7 @@ class SuperAdminController extends Controller
      */
     public function updateProfile(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         
         $request->validate([
@@ -49,6 +50,7 @@ class SuperAdminController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->update([
             'password' => Hash::make($request->password),
@@ -244,12 +246,21 @@ class SuperAdminController extends Controller
     public function clearOldLogs(Request $request)
     {
         try {
-            $days = $request->get('days', 90);
-            $deleted = AuditLog::where('created_at', '<', now()->subDays($days))->delete();
+            $days = (int) $request->get('days', 90);
+
+            if ($days === 0) {
+                // Clear all logs
+                $deleted = AuditLog::query()->delete();
+                $message = "Cleared all audit logs";
+            } else {
+                // Clear logs older than N days
+                $deleted = AuditLog::where('created_at', '<', now()->subDays($days))->delete();
+                $message = "Cleared {$deleted} audit logs older than {$days} days";
+            }
             
             return response()->json([
                 'success' => true,
-                'message' => "Cleared {$deleted} old audit logs",
+                'message' => $message,
                 'deleted_count' => $deleted
             ]);
         } catch (\Exception $e) {

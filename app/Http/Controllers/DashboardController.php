@@ -70,6 +70,12 @@ class DashboardController extends Controller
         $totalSales = Sale::sum('total_amount');
         $totalExpenses = Expense::sum('amount');
         $openIssues = Issue::where('status', 'open')->count();
+
+        // Accurate superadmin dashboard KPIs
+        $totalAdmins = \App\Models\User::where('role', 'admin')->count();
+        $totalFarmers = \App\Models\User::where('role', 'farmer')->count();
+        $pendingAdminRequests = \App\Models\User::where('role', 'admin')->where('status', 'pending')->count();
+        $serviceAreasCount = Farm::query()->distinct('location')->count('location');
         
         $usersByRole = \App\Models\User::selectRaw('role, count(*) as count')
             ->groupBy('role')
@@ -81,7 +87,8 @@ class DashboardController extends Controller
         return view('dashboard.superadmin', compact(
             'totalUsers', 'totalFarms', 'totalLivestock', 'totalProduction',
             'totalSales', 'totalExpenses', 'openIssues', 'usersByRole',
-            'recentAuditLogs', 'recentIssues'
+            'recentAuditLogs', 'recentIssues',
+            'totalAdmins', 'totalFarmers', 'pendingAdminRequests', 'serviceAreasCount'
         ));
     }
 

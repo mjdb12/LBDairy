@@ -62,9 +62,9 @@
                             </button>
                         </div>
                         <div class="col-md-3">
-                            <button class="btn btn-warning btn-block" onclick="clearOldLogs()">
+                            <button id="clearLogsBtn" class="btn btn-warning btn-block" onclick="clearOldLogs()">
                                 <i class="fas fa-trash"></i>
-                                Clear Old Logs
+                                Clear Logs
                             </button>
                         </div>
                     </div>
@@ -462,7 +462,7 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Initialize charts and DataTable when page loads
@@ -588,18 +588,28 @@ function openFilterModal() {
 }
 
 function clearOldLogs() {
-    if (confirm('Are you sure you want to clear logs older than 90 days? This action cannot be undone.')) {
-        $.post('{{ route("superadmin.audit-logs.clear") }}', {
-            _token: '{{ csrf_token() }}'
-        }, function(response) {
-            if (response.success) {
-                alert('Old logs cleared successfully');
-                location.reload();
-            } else {
-                alert('Error clearing old logs');
-            }
-        });
-    }
+    if (!confirm('Are you absolutely sure you want to CLEAR ALL audit logs? This cannot be undone.')) return;
+
+    const $btn = $('#clearLogsBtn');
+    const originalHtml = $btn.html();
+    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Clearing...');
+
+    $.post('{{ route("superadmin.audit-logs.clear") }}', {
+        _token: '{{ csrf_token() }}',
+        days: 0
+    }, function(response) {
+        if (response.success) {
+            alert(response.message || 'Logs cleared successfully');
+            location.reload();
+        } else {
+            alert(response.message || 'Error clearing logs');
+            $btn.prop('disabled', false).html(originalHtml);
+        }
+    }).fail(function(xhr) {
+        const msg = (xhr && xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Request failed while clearing logs';
+        alert(msg);
+        $btn.prop('disabled', false).html(originalHtml);
+    });
 }
 
 // Form submission
@@ -657,4 +667,4 @@ function printChart(chartType) {
     win.print();
 }
 </script>
-@endsection
+@endpush

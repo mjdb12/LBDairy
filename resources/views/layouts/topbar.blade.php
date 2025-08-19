@@ -6,45 +6,8 @@
         <i class="fa fa-bars"></i>
     </button>
 
-    <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-        <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                aria-label="Search" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                    <i class="fas fa-search fa-sm"></i>
-                </button>
-            </div>
-        </div>
-    </form>
-
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
-
-        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-        <li class="nav-item dropdown no-arrow d-sm-none">
-            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-            </a>
-            <!-- Dropdown - Messages -->
-            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
-                    <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small"
-                            placeholder="Search for..." aria-label="Search"
-                            aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </li>
 
         <!-- Nav Item - Alerts -->
         <li class="nav-item dropdown no-arrow mx-1">
@@ -52,114 +15,20 @@
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">3+</span>
+                <span class="badge badge-danger badge-counter" id="notificationCount">0</span>
             </a>
             <!-- Dropdown - Alerts -->
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
-                    Alerts Center
+                    System Notifications
                 </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-primary">
-                            <i class="fas fa-file-alt text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 12, 2019</div>
-                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                    </div>
+                <div id="notificationsList">
+                    <!-- Notifications will be loaded here -->
+                </div>
+                <a class="dropdown-item text-center small text-gray-500" href="#" id="markAllRead">
+                    Mark All as Read
                 </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-success">
-                            <i class="fas fa-donate text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 7, 2019</div>
-                        $290.29 has been deposited into your account!
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-warning">
-                            <i class="fas fa-exclamation-triangle text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 2, 2019</div>
-                        Spending Alert: We've noticed unusually high spending for your account.
-                    </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-            </div>
-        </li>
-
-        <!-- Nav Item - Messages -->
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-envelope fa-fw"></i>
-                <!-- Counter - Messages -->
-                <span class="badge badge-danger badge-counter">7</span>
-            </a>
-            <!-- Dropdown - Messages -->
-            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="messagesDropdown">
-                <h6 class="dropdown-header">
-                    Message Center
-                </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hJEU5t_s/60x60"
-                            alt="">
-                        <div class="status-indicator bg-success"></div>
-                    </div>
-                    <div class="font-weight-bold">
-                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
-                            problem I've been having.</div>
-                        <div class="small text-gray-500">Emily Fowler · 58m</div>
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="https://source.unsplash.com/CS2uCrpNzJY/60x60"
-                            alt="">
-                        <div class="status-indicator"></div>
-                    </div>
-                    <div>
-                        <div class="text-truncate">I have the photos that you ordered last month, how
-                            would you like them sent to you?</div>
-                        <div class="small text-gray-500">Jae Chun · 1d</div>
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="https://source.unsplash.com/1vMSuULgqbc/60x60"
-                            alt="">
-                        <div class="status-indicator bg-warning"></div>
-                    </div>
-                    <div>
-                        <div class="text-truncate">Last month's report looks great, I am very happy with
-                            the progress so far, keep up the good work!</div>
-                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="https://source.unsplash.com/1vMSuULgqbc/60x60"
-                            alt="">
-                        <div class="status-indicator bg-success"></div>
-                    </div>
-                    <div>
-                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
-                            told me that people say this to all dogs, even if they aren't good...</div>
-                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
-                    </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
             </div>
         </li>
 
@@ -199,3 +68,324 @@
 
 </nav>
 <!-- End of Topbar -->
+
+@if(Auth::user() && Auth::user()->role === 'superadmin')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load notifications on page load
+    loadNotifications();
+    
+    // Refresh notifications every 30 seconds
+    setInterval(loadNotifications, 30000);
+    
+    // Mark all as read functionality
+    document.getElementById('markAllRead').addEventListener('click', function(e) {
+        e.preventDefault();
+        markAllAsRead();
+    });
+    
+    // Hide notification count when dropdown is opened
+    const alertsDropdown = document.getElementById('alertsDropdown');
+    const notificationCount = document.getElementById('notificationCount');
+    
+    alertsDropdown.addEventListener('show.bs.dropdown', function() {
+        // Hide the notification count when dropdown opens
+        notificationCount.style.display = 'none';
+    });
+    
+    alertsDropdown.addEventListener('hide.bs.dropdown', function() {
+        // Show the notification count again when dropdown closes
+        if (parseInt(notificationCount.textContent) > 0) {
+            notificationCount.style.display = 'inline';
+        }
+    });
+});
+
+let suppressNotifications = false;
+
+function loadNotifications() {
+    if (suppressNotifications) {
+        updateNotificationCount(0);
+        updateNotificationsList([]);
+        return;
+    }
+    // Show loading state
+    const container = document.getElementById('notificationsList');
+    container.innerHTML = '<div class="dropdown-item text-center small text-gray-500"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    
+    fetch('/superadmin/notifications', {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                updateNotificationCount(data.unread_count);
+                updateNotificationsList(data.notifications);
+            } else {
+                throw new Error(data.error || 'Failed to load notifications');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading notifications:', error);
+            container.innerHTML = `
+                <div class="dropdown-item text-center small text-gray-500">
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    <div>Failed to load notifications</div>
+                    <small class="text-muted">Click to retry</small>
+                </div>
+            `;
+            
+            // Make it clickable to retry
+            container.querySelector('.dropdown-item').addEventListener('click', loadNotifications);
+        });
+}
+
+function updateNotificationCount(count) {
+    const badge = document.getElementById('notificationCount');
+    if (count > 0) {
+        badge.textContent = count > 99 ? '99+' : count;
+        badge.style.display = 'inline';
+        
+        // Add pulse animation for new notifications
+        badge.classList.add('badge-pulse');
+    } else {
+        badge.textContent = '0';
+        badge.style.display = 'none';
+        badge.classList.remove('badge-pulse');
+    }
+}
+
+function updateNotificationsList(notifications) {
+    const container = document.getElementById('notificationsList');
+    
+    if (notifications.length === 0) {
+        container.innerHTML = '<div class="dropdown-item text-center small text-gray-500"><i class="fas fa-check-circle text-success"></i> No new notifications</div>';
+        return;
+    }
+    
+    let html = '';
+    notifications.forEach(notification => {
+        const typeClass = getNotificationTypeClass(notification.type);
+        const iconClass = notification.icon;
+        
+        html += `
+            <a class="dropdown-item d-flex align-items-center notification-item" href="${notification.action_url}" onclick="markNotificationAsRead('${notification.id}')">
+                <div class="mr-3">
+                    <div class="icon-circle ${typeClass}">
+                        <i class="${iconClass} text-white"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="small text-gray-500">${notification.time}</div>
+                    <span class="font-weight-bold">${notification.title}</span>
+                    <div class="small text-gray-600">${notification.message}</div>
+                </div>
+                <div class="ml-2">
+                    <i class="fas fa-chevron-right text-gray-400 fa-xs"></i>
+                </div>
+            </a>
+        `;
+    });
+    
+    container.innerHTML = html;
+    
+    // Add hover effects
+    const notificationItems = container.querySelectorAll('.notification-item');
+    notificationItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#f8f9fc';
+        });
+        item.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+        });
+    });
+}
+
+function getNotificationTypeClass(type) {
+    switch(type) {
+        case 'critical':
+        case 'danger':
+            return 'bg-danger';
+        case 'warning':
+            return 'bg-warning';
+        case 'info':
+            return 'bg-info';
+        case 'success':
+            return 'bg-success';
+        default:
+            return 'bg-primary';
+    }
+}
+
+function markNotificationAsRead(notificationId) {
+    // Optimistic update - hide the notification immediately
+    const notificationItem = document.querySelector(`[onclick*="${notificationId}"]`);
+    if (notificationItem) {
+        notificationItem.style.opacity = '0.5';
+        notificationItem.style.pointerEvents = 'none';
+    }
+    
+    fetch('/superadmin/notifications/mark-read', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            notification_id: notificationId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Reload notifications to update the count
+            loadNotifications();
+        } else {
+            throw new Error(data.error || 'Failed to mark notification as read');
+        }
+    })
+    .catch(error => {
+        console.error('Error marking notification as read:', error);
+        
+        // Restore the notification if marking as read failed
+        if (notificationItem) {
+            notificationItem.style.opacity = '1';
+            notificationItem.style.pointerEvents = 'auto';
+        }
+        
+        // Show error message
+        showNotificationError('Failed to mark notification as read');
+    });
+}
+
+function markAllAsRead() {
+    const markAllBtn = document.getElementById('markAllRead');
+    const originalText = markAllBtn.innerHTML;
+    
+    // Show loading state
+    markAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Marking...';
+    markAllBtn.style.pointerEvents = 'none';
+    
+    fetch('/superadmin/notifications/mark-all-read', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Reload notifications
+            suppressNotifications = true;
+            updateNotificationCount(0);
+            updateNotificationsList([]);
+            
+            // Show success feedback
+            markAllBtn.innerHTML = '<i class="fas fa-check"></i> Marked!';
+            markAllBtn.classList.add('text-success');
+            
+            setTimeout(() => {
+                markAllBtn.innerHTML = originalText;
+                markAllBtn.classList.remove('text-success');
+                markAllBtn.style.pointerEvents = 'auto';
+            }, 2000);
+        } else {
+            throw new Error(data.error || 'Failed to mark all notifications as read');
+        }
+    })
+    .catch(error => {
+        console.error('Error marking all notifications as read:', error);
+        
+        // Restore button state
+        markAllBtn.innerHTML = originalText;
+        markAllBtn.style.pointerEvents = 'auto';
+        
+        // Show error message
+        showNotificationError('Failed to mark all notifications as read');
+    });
+}
+
+function showNotificationError(message) {
+    // Create a temporary error notification
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+    errorDiv.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
+    errorDiv.innerHTML = `
+        <i class="fas fa-exclamation-triangle"></i>
+        ${message}
+        <button type="button" class="close" data-dismiss="alert">
+            <span>&times;</span>
+        </button>
+    `;
+    
+    document.body.appendChild(errorDiv);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.remove();
+        }
+    }, 5000);
+}
+</script>
+
+<style>
+.badge-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.notification-item {
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.notification-item:hover {
+    border-left-color: var(--primary-color);
+    transform: translateX(2px);
+}
+
+.icon-circle {
+    transition: all 0.2s ease;
+}
+
+.notification-item:hover .icon-circle {
+    transform: scale(1.1);
+}
+</style>
+@endif
