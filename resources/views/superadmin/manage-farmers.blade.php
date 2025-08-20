@@ -26,9 +26,7 @@
                     <i class="fas fa-users fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-info small d-flex justify-content-between align-items-center">
-                View All <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
     <!-- Active Farmers -->
@@ -43,9 +41,7 @@
                     <i class="fas fa-user-check fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-success small d-flex justify-content-between align-items-center">
-                View Active <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
     <!-- Pending Approvals -->
@@ -60,9 +56,7 @@
                     <i class="fas fa-user-clock fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-warning small d-flex justify-content-between align-items-center">
-                Review Pending <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
     <!-- New This Month -->
@@ -77,9 +71,7 @@
                     <i class="fas fa-user-plus fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-primary small d-flex justify-content-between align-items-center">
-                View New <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
 </div>
@@ -175,7 +167,7 @@
 <!-- Add Farmer Modal -->
 <div class="modal fade" id="addFarmerModal" tabindex="-1" role="dialog" aria-labelledby="addFarmerLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <form class="modal-content" method="POST" action="#">
+        <form class="modal-content" id="addFarmerForm">
             @csrf
             <div class="modal-header">
                 <h5 class="modal-title" id="addFarmerLabel">
@@ -186,11 +178,18 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div id="addFarmerErrors" class="alert alert-danger" style="display:none;"></div>
                 <div class="form-group">
                     <label for="farmerName">
                         <i class="fas fa-user"></i>Full Name
                     </label>
                     <input type="text" class="form-control" id="farmerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="farmerUsername">
+                        <i class="fas fa-id-badge"></i>Username
+                    </label>
+                    <input type="text" class="form-control" id="farmerUsername" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="farmerEmail">
@@ -209,6 +208,20 @@
                         <i class="fas fa-map-marker-alt"></i>Address
                     </label>
                     <textarea class="form-control" id="farmerAddress" name="address" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="farmerPassword">
+                            <i class="fas fa-key"></i>Password
+                        </label>
+                        <input type="password" class="form-control" id="farmerPassword" name="password" required minlength="8">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="farmerPasswordConfirmation">
+                            <i class="fas fa-lock"></i>Confirm Password
+                        </label>
+                        <input type="password" class="form-control" id="farmerPasswordConfirmation" name="password_confirmation" required minlength="8">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -412,5 +425,48 @@
             observer.observe(el);
         });
     });
+
+    // Add Farmer submission
+    const addFarmerForm = document.getElementById('addFarmerForm');
+    if (addFarmerForm) {
+        addFarmerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(addFarmerForm);
+            fetch('{{ route("superadmin.farmers.store") }}', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(async (r) => {
+                let data = null;
+                try { data = await r.json(); } catch (_) {}
+                if (!r.ok) {
+                    const errorsBox = document.getElementById('addFarmerErrors');
+                    let message = data?.message || 'Failed to add farmer';
+                    if (data?.errors) {
+                        const list = Object.values(data.errors).map(arr => `<li>${arr[0]}</li>`).join('');
+                        message = `<ul class="mb-0">${list}</ul>`;
+                    }
+                    errorsBox.innerHTML = message;
+                    errorsBox.style.display = 'block';
+                    return;
+                }
+                if (data?.success) {
+                    document.getElementById('addFarmerErrors').style.display = 'none';
+                    $('#addFarmerModal').modal('hide');
+                    location.reload();
+                } else {
+                    const errorsBox = document.getElementById('addFarmerErrors');
+                    errorsBox.textContent = data?.message || 'Failed to add farmer';
+                    errorsBox.style.display = 'block';
+                }
+            })
+            .catch(() => alert('Network error while adding farmer'));
+        });
+    }
 </script>
 @endpush

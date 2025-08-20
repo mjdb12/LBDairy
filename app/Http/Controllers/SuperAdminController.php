@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\AuditLog;
 use App\Models\Farm;
 use App\Models\Livestock;
+use App\Models\ProductionRecord;
 use Illuminate\Support\Facades\DB;
 
 class SuperAdminController extends Controller
@@ -414,6 +415,7 @@ class SuperAdminController extends Controller
                 'total' => User::where('role', 'admin')->count(),
                 'active' => User::where('role', 'admin')->where('status', 'approved')->count(),
                 'pending' => User::where('role', 'admin')->where('status', 'pending')->count(),
+                'rejected' => User::where('role', 'admin')->where('status', 'rejected')->count(),
             ];
             
             return response()->json(['success' => true, 'data' => $stats]);
@@ -487,23 +489,65 @@ class SuperAdminController extends Controller
     public function getFarmStats()
     {
         try {
-            $stats = [
-                'total_farms' => Farm::count(),
-                'active_farms' => Farm::where('status', 'active')->count(),
-                'inactive_farms' => Farm::where('status', 'inactive')->count(),
-            ];
-            
-            return response()->json(['success' => true, 'stats' => $stats]);
+            return response()->json([
+                'success' => true,
+                'total' => Farm::count(),
+                'active' => Farm::where('status', 'active')->count(),
+                'inactive' => Farm::where('status', 'inactive')->count(),
+                'barangays' => Farm::query()->distinct('location')->count('location'),
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to get farm stats'], 500);
+        }
+    }
+
+    /**
+     * List farms with owner data for superadmin UI
+     */
+    public function getFarmsList()
+    {
+        try {
+            $farms = Farm::with('owner')->get()->map(function ($farm) {
+                return [
+                    'id' => $farm->id,
+                    'farm_id' => $farm->id,
+                    'name' => $farm->name,
+                    'barangay' => $farm->location,
+                    'status' => $farm->status,
+                    'created_at' => $farm->created_at,
+                    'owner' => [
+                        'name' => $farm->owner->name ?? trim(($farm->owner->first_name ?? '') . ' ' . ($farm->owner->last_name ?? '')),
+                        'email' => $farm->owner->email ?? null,
+                        'phone' => $farm->owner->phone ?? null,
+                    ],
+                ];
+            });
+
+            return response()->json(['success' => true, 'data' => $farms]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load farms'], 500);
         }
     }
 
     public function showFarm($id)
     {
         try {
-            $farm = Farm::findOrFail($id);
-            return response()->json(['success' => true, 'farm' => $farm]);
+            $farm = Farm::with('owner')->findOrFail($id);
+            $payload = [
+                'id' => $farm->id,
+                'farm_id' => $farm->id,
+                'name' => $farm->name,
+                'barangay' => $farm->location,
+                'status' => $farm->status,
+                'description' => $farm->description,
+                'created_at' => $farm->created_at,
+                'owner' => [
+                    'name' => $farm->owner->name ?? trim(($farm->owner->first_name ?? '') . ' ' . ($farm->owner->last_name ?? '')),
+                    'email' => $farm->owner->email ?? null,
+                    'phone' => $farm->owner->phone ?? null,
+                ],
+            ];
+            return response()->json(['success' => true, 'data' => $payload]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Farm not found'], 404);
         }
@@ -513,7 +557,11 @@ class SuperAdminController extends Controller
     {
         try {
             $farm = Farm::findOrFail($id);
-            $farm->update(['status' => $farm->status === 'active' ? 'inactive' : 'active']);
+            $newStatus = request('status');
+            if (!in_array($newStatus, ['active', 'inactive'])) {
+                return response()->json(['success' => false, 'message' => 'Invalid status'], 422);
+            }
+            $farm->update(['status' => $newStatus]);
             
             return response()->json([
                 'success' => true, 
@@ -541,12 +589,12 @@ class SuperAdminController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|mimes:csv,xlsx',
+                'csv_file' => 'required|file|mimes:csv,txt',
             ]);
 
-            // This would typically process the uploaded file
-            // For now, just return success
-            return response()->json(['success' => true, 'message' => 'Farms imported successfully']);
+            // Placeholder import logic
+            $imported = 0;
+            return response()->json(['success' => true, 'imported' => $imported]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to import farms'], 500);
         }
@@ -674,6 +722,183 @@ class SuperAdminController extends Controller
             return response()->json(['success' => true, 'message' => 'Settings logs exported successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to export settings logs'], 500);
+        }
+    }
+
+    /**
+     * Analysis summary for superadmin dashboard (totals, monthly production, efficiency)
+     */
+    public function getAnalysisSummary()
+    {
+        try {
+            $startOfMonth = now()->startOfMonth();
+            $endDate = now();
+
+            $monthlyProduction = (float) ProductionRecord::whereBetween('production_date', [$startOfMonth, $endDate])
+                ->sum('milk_quantity');
+
+            $totalFarms = Farm::count();
+            $activeFarmsWithProduction = ProductionRecord::whereBetween('production_date', [$startOfMonth, $endDate])
+                ->distinct('farm_id')
+                ->count('farm_id');
+            $efficiency = $totalFarms > 0 ? round(($activeFarmsWithProduction / $totalFarms) * 100) : 0;
+
+            return response()->json([
+                'success' => true,
+                'totals' => [
+                    'farms' => $totalFarms,
+                    'livestock' => Livestock::count(),
+                    'monthly_production_liters' => $monthlyProduction,
+                    'efficiency_percent' => $efficiency,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load summary'], 500);
+        }
+    }
+
+    /**
+     * Farm performance over time (sum production per day)
+     */
+    public function getFarmPerformanceData(Request $request)
+    {
+        try {
+            $days = (int) $request->get('days', 30);
+            if ($days < 1 || $days > 365) { $days = 30; }
+            $startDate = now()->subDays($days - 1)->startOfDay();
+            $endDate = now()->endOfDay();
+
+            $rows = ProductionRecord::selectRaw('production_date, SUM(milk_quantity) as liters')
+                ->whereBetween('production_date', [$startDate->toDateString(), $endDate->toDateString()])
+                ->groupBy('production_date')
+                ->orderBy('production_date')
+                ->get();
+
+            $labels = [];
+            $data = [];
+            $cursor = $startDate->copy();
+            $map = $rows->keyBy(function ($r) { return (string) $r->production_date; });
+            while ($cursor->lte($endDate)) {
+                $key = $cursor->toDateString();
+                $labels[] = $cursor->format('M d');
+                $data[] = (float) (($map[$key]->liters ?? 0));
+                $cursor->addDay();
+            }
+
+            return response()->json([
+                'success' => true,
+                'labels' => $labels,
+                'dataset' => [
+                    'label' => 'Production (L)',
+                    'data' => $data,
+                    'borderColor' => '#4e73df',
+                    'backgroundColor' => 'rgba(78, 115, 223, 0.1)',
+                    'fill' => true,
+                    'tension' => 0.4,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load performance'], 500);
+        }
+    }
+
+    /**
+     * Livestock distribution by type
+     */
+    public function getLivestockDistributionData()
+    {
+        try {
+            $rows = Livestock::selectRaw('type, COUNT(*) as count')->groupBy('type')->get();
+            $labels = $rows->pluck('type');
+            $data = $rows->pluck('count')->map(fn($v) => (int) $v);
+            return response()->json([
+                'success' => true,
+                'labels' => $labels,
+                'data' => $data,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load distribution'], 500);
+        }
+    }
+
+    /**
+     * Production trends (last 4 weeks totals)
+     */
+    public function getProductionTrendsData()
+    {
+        try {
+            $start = now()->subWeeks(3)->startOfWeek();
+            $rows = ProductionRecord::selectRaw("YEARWEEK(production_date, 3) as yw, SUM(milk_quantity) as liters")
+                ->where('production_date', '>=', $start->toDateString())
+                ->groupBy('yw')
+                ->orderBy('yw')
+                ->get();
+
+            $labels = [];
+            $data = [];
+            $cursor = $start->copy();
+            for ($i = 0; $i < 4; $i++) {
+                $labels[] = 'Week ' . $cursor->format('W');
+                $yw = $cursor->format('oW');
+                $match = $rows->first(function ($r) use ($cursor) {
+                    return $r->yw == (int) $cursor->format('oW');
+                });
+                $data[] = (float) ($match->liters ?? 0);
+                $cursor->addWeek();
+            }
+
+            return response()->json([
+                'success' => true,
+                'labels' => $labels,
+                'data' => $data,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load trends'], 500);
+        }
+    }
+    /**
+     * Create a farmer (Super Admin scope)
+     */
+    public function storeFarmer(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users,username',
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'nullable|string|max:20',
+                'address' => 'nullable|string|max:500',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+
+            $farmer = User::create([
+                'name' => $request->name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+                'role' => 'farmer',
+                'is_active' => true,
+                'status' => 'approved',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Farmer created successfully!',
+                'farmer' => $farmer
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $ve->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create farmer',
+            ], 500);
         }
     }
 

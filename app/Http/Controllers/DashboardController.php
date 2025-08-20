@@ -73,6 +73,7 @@ class DashboardController extends Controller
 
         // Accurate superadmin dashboard KPIs
         $totalAdmins = \App\Models\User::where('role', 'admin')->count();
+        $activeAdmins = \App\Models\User::where('role', 'admin')->where('status', 'approved')->count();
         $totalFarmers = \App\Models\User::where('role', 'farmer')->count();
         $pendingAdminRequests = \App\Models\User::where('role', 'admin')->where('status', 'pending')->count();
         $serviceAreasCount = Farm::query()->distinct('location')->count('location');
@@ -88,7 +89,7 @@ class DashboardController extends Controller
             'totalUsers', 'totalFarms', 'totalLivestock', 'totalProduction',
             'totalSales', 'totalExpenses', 'openIssues', 'usersByRole',
             'recentAuditLogs', 'recentIssues',
-            'totalAdmins', 'totalFarmers', 'pendingAdminRequests', 'serviceAreasCount'
+            'totalAdmins', 'activeAdmins', 'totalFarmers', 'pendingAdminRequests', 'serviceAreasCount'
         ));
     }
 

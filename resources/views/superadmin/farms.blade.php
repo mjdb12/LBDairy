@@ -220,18 +220,18 @@ function initializeDataTables() {
 function loadFarms() {
     // Load farms from the database via AJAX
     $.ajax({
-        url: '{{ route("superadmin.farms.index") }}',
+        url: '{{ route("superadmin.farms.list") }}',
         method: 'GET',
         success: function(response) {
             farmsTable.clear();
-            
-            response.data.forEach(farm => {
+            const items = response.data || [];
+            items.forEach(farm => {
                 const rowData = [
                     `<a href="#" class="farm-id-link" onclick="openDetailsModal('${farm.id}')">${farm.farm_id}</a>`,
-                    `${farm.owner.first_name} ${farm.owner.last_name}`,
-                    farm.owner.email,
-                    farm.owner.contact_number,
-                    farm.barangay,
+                    `${farm.owner?.name || ''}`,
+                    `${farm.owner?.email || ''}`,
+                    `${farm.owner?.phone || ''}`,
+                    `${farm.barangay || ''}`,
                     `<select class="form-control" onchange="updateActivity(this, '${farm.id}')">
                         <option value="active" ${farm.status === 'active' ? 'selected' : ''}>Active</option>
                         <option value="inactive" ${farm.status === 'inactive' ? 'selected' : ''}>Inactive</option>
@@ -280,14 +280,14 @@ function openDetailsModal(farmId) {
                         <h6 class="mb-3 text-primary">Farm Information</h6>
                         <p><strong>Farm ID:</strong> ${farm.farm_id}</p>
                         <p><strong>Farm Name:</strong> ${farm.name || 'N/A'}</p>
-                        <p><strong>Barangay:</strong> ${farm.barangay}</p>
+                        <p><strong>Barangay:</strong> ${farm.barangay || ''}</p>
                         <p><strong>Status:</strong> <span class="badge badge-${farm.status === 'active' ? 'success' : 'danger'}">${farm.status}</span></p>
                     </div>
                     <div class="col-md-6">
                         <h6 class="mb-3 text-primary">Owner Information</h6>
-                        <p><strong>Owner Name:</strong> ${farm.owner.first_name} ${farm.owner.last_name}</p>
-                        <p><strong>Email:</strong> ${farm.owner.email}</p>
-                        <p><strong>Contact Number:</strong> ${farm.owner.contact_number}</p>
+                        <p><strong>Owner Name:</strong> ${farm.owner?.name || ''}</p>
+                        <p><strong>Email:</strong> ${farm.owner?.email || ''}</p>
+                        <p><strong>Contact Number:</strong> ${farm.owner?.phone || ''}</p>
                         <p><strong>Registration Date:</strong> ${new Date(farm.created_at).toLocaleDateString()}</p>
                     </div>
                 </div>

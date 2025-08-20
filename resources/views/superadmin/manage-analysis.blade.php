@@ -20,15 +20,13 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farms</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Farm::count() }}</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFarmsStat">0</div>
                 </div>
                 <div class="icon text-info">
                     <i class="fas fa-university fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-info small d-flex justify-content-between align-items-center">
-                View Farms <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
     <!-- Total Livestock -->
@@ -37,15 +35,13 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Livestock</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Livestock::count() }}</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalLivestockStat">0</div>
                 </div>
                 <div class="icon text-success">
                     <i class="fas fa-cow fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-success small d-flex justify-content-between align-items-center">
-                View Livestock <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
     <!-- Monthly Production -->
@@ -54,15 +50,13 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Monthly Production</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\ProductionRecord::whereMonth('created_at', now()->month)->sum('milk_quantity') ?? 0 }} L</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="monthlyProductionStat">0</span> L</div>
                 </div>
                 <div class="icon text-warning">
                     <i class="fas fa-chart-line fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-warning small d-flex justify-content-between align-items-center">
-                View Production <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
     <!-- Efficiency Rate -->
@@ -71,15 +65,13 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Efficiency Rate</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">85<sup>%</sup></div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="efficiencyStat">0</span><sup>%</sup></div>
                 </div>
                 <div class="icon text-primary">
                     <i class="fas fa-percentage fa-2x"></i>
                 </div>
             </div>
-            <a href="#" class="card-footer text-primary small d-flex justify-content-between align-items-center">
-                View Details <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            
         </div>
     </div>
 </div>
@@ -438,129 +430,67 @@
 
         // Farm Performance Chart
         const farmCtx = document.getElementById('farmPerformanceChart').getContext('2d');
-        new Chart(farmCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Production (L)',
-                    borderColor: '#4e73df',
-                    backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                    data: [1200, 1350, 1500, 1600, 1800, 2000],
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#4e73df',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }, {
-                    label: 'Efficiency (%)',
-                    borderColor: '#1cc88a',
-                    backgroundColor: 'rgba(28, 200, 138, 0.1)',
-                    data: [75, 78, 82, 85, 87, 90],
-                    fill: true,
-                    tension: 0.4,
-                    yAxisID: 'y1'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
+        fetch('{{ route('superadmin.analysis.farm-performance') }}?days=' + document.getElementById('chartPeriod').value)
+            .then(r => r.json())
+            .then(payload => {
+                if (!payload?.success) return;
+                new Chart(farmCtx, {
+                    type: 'line',
+                    data: {
+                        labels: payload.labels,
+                        datasets: [payload.dataset]
                     },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        beginAtZero: true,
-                        max: 100,
-                        grid: {
-                            drawOnChartArea: false,
-                        },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { position: 'top' } }
                     }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                }
-            }
-        });
+                });
+            });
 
         // Livestock Distribution Chart
         const livestockCtx = document.getElementById('livestockChart').getContext('2d');
-        new Chart(livestockCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Cattle', 'Goats', 'Sheep', 'Pigs'],
-                datasets: [{
-                    data: [65, 20, 10, 5],
-                    backgroundColor: [
-                        '#4e73df',
-                        '#1cc88a',
-                        '#f6c23e',
-                        '#e74a3b'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#ffffff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    }
-                }
-            }
-        });
+        fetch('{{ route('superadmin.analysis.livestock-distribution') }}')
+            .then(r => r.json())
+            .then(payload => {
+                if (!payload?.success) return;
+                new Chart(livestockCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: payload.labels,
+                        datasets: [{
+                            data: payload.data,
+                            backgroundColor: ['#4e73df','#1cc88a','#f6c23e','#e74a3b','#36b9cc','#858796'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            });
 
         // Production Trends Chart
         const productionCtx = document.getElementById('productionChart').getContext('2d');
-        new Chart(productionCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                datasets: [{
-                    label: 'Milk Production (L)',
-                    backgroundColor: 'rgba(78, 115, 223, 0.8)',
-                    data: [450, 520, 480, 600],
-                    borderRadius: 8,
-                    borderSkipped: false,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                }
-            }
-        });
+        fetch('{{ route('superadmin.analysis.production-trends') }}')
+            .then(r => r.json())
+            .then(payload => {
+                if (!payload?.success) return;
+                new Chart(productionCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: payload.labels,
+                        datasets: [{
+                            label: 'Milk Production (L)',
+                            backgroundColor: 'rgba(78, 115, 223, 0.8)',
+                            data: payload.data,
+                            borderRadius: 8,
+                            borderSkipped: false,
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                });
+            });
 
         // Add fade-in animation
         const observerOptions = {
@@ -584,10 +514,32 @@
             observer.observe(el);
         });
 
+        // Load top KPI stats
+        fetch('{{ route('superadmin.analysis.summary') }}')
+            .then(r => r.json())
+            .then(payload => {
+                if (!payload?.success) return;
+                const t = payload.totals || {};
+                document.getElementById('totalFarmsStat').textContent = t.farms ?? 0;
+                document.getElementById('totalLivestockStat').textContent = t.livestock ?? 0;
+                document.getElementById('monthlyProductionStat').textContent = (t.monthly_production_liters ?? 0);
+                document.getElementById('efficiencyStat').textContent = (t.efficiency_percent ?? 0);
+            });
+
         // Chart period change handler
         $('#chartPeriod').change(function() {
-            // Here you would typically reload chart data based on selected period
-            console.log('Period changed to:', $(this).val());
+            const days = $(this).val();
+            fetch('{{ route('superadmin.analysis.farm-performance') }}?days=' + days)
+                .then(r => r.json())
+                .then(payload => {
+                    if (!payload?.success) return;
+                    // simple refresh by re-rendering
+                    new Chart(farmCtx, {
+                        type: 'line',
+                        data: { labels: payload.labels, datasets: [payload.dataset] },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                });
         });
     });
 </script>

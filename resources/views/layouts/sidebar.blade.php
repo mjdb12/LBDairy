@@ -258,6 +258,13 @@
             </div>
 
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.users') }}">
+                    <i class="fas fa-fw fa-users-cog"></i>
+                    <span>User Management</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('superadmin.admins') }}">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Manage Admins</span>

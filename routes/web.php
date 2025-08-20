@@ -239,16 +239,23 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/admins/{id}/deactivate', [SuperAdminController::class, 'deactivateAdmin'])->name('admins.deactivate');
         Route::post('/admins/contact', [SuperAdminController::class, 'contactAdmin'])->name('admins.contact');
         
-        Route::get('/farms/index', function () { return view('superadmin.farms'); })->name('farms.index');
+        Route::get('/farms/index', [function () { return view('superadmin.farms'); }])->name('farms.index');
+        Route::get('/farms/list', [SuperAdminController::class, 'getFarmsList'])->name('farms.list');
         Route::get('/farms/stats', [SuperAdminController::class, 'getFarmStats'])->name('farms.stats');
         Route::get('/farms/{id}', [SuperAdminController::class, 'showFarm'])->name('farms.show');
-        Route::patch('/farms/{id}/update-status', [SuperAdminController::class, 'updateFarmStatus'])->name('farms.update-status');
+        Route::post('/farms/{id}/update-status', [SuperAdminController::class, 'updateFarmStatus'])->name('farms.update-status');
         Route::delete('/farms/{id}', [SuperAdminController::class, 'destroyFarm'])->name('farms.destroy');
         Route::post('/farms/import', [SuperAdminController::class, 'importFarms'])->name('farms.import');
         
         // Additional superadmin routes to match static website
         Route::get('/manage-farmers', function () { return view('superadmin.manage-farmers'); })->name('manage-farmers');
+        Route::post('/farmers', [SuperAdminController::class, 'storeFarmer'])->name('farmers.store');
         Route::get('/manage-analysis', function () { return view('superadmin.manage-analysis'); })->name('manage-analysis');
+        // Analysis data endpoints
+        Route::get('/analysis/summary', [SuperAdminController::class, 'getAnalysisSummary'])->name('analysis.summary');
+        Route::get('/analysis/farm-performance', [SuperAdminController::class, 'getFarmPerformanceData'])->name('analysis.farm-performance');
+        Route::get('/analysis/livestock-distribution', [SuperAdminController::class, 'getLivestockDistributionData'])->name('analysis.livestock-distribution');
+        Route::get('/analysis/production-trends', [SuperAdminController::class, 'getProductionTrendsData'])->name('analysis.production-trends');
         
         Route::get('/settings/get', [SuperAdminController::class, 'getSettings'])->name('settings.get');
         Route::post('/settings/general', [SuperAdminController::class, 'updateGeneralSettings'])->name('settings.general');

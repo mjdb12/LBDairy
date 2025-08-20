@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <br><br><br><br>
     
     <!-- Page Header -->
     <div class="page-header fade-in">
@@ -24,6 +23,10 @@
         <div class="stat-card">
             <div class="stat-number" style="color: var(--success-color);" id="activeCount">0</div>
             <div class="stat-label">Active Admins</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color: var(--danger-color);" id="rejectedCount">0</div>
+            <div class="stat-label">Rejected</div>
         </div>
         <div class="stat-card">
             <div class="stat-number" style="color: var(--info-color);" id="totalCount">0</div>
@@ -452,6 +455,9 @@ function updateStats() {
             if (response.success && response.data) {
                 document.getElementById('pendingCount').textContent = response.data.pending;
                 document.getElementById('activeCount').textContent = response.data.active;
+                if (document.getElementById('rejectedCount')) {
+                    document.getElementById('rejectedCount').textContent = response.data.rejected || 0;
+                }
                 document.getElementById('totalCount').textContent = response.data.total;
             }
         },
