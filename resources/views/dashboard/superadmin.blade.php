@@ -126,51 +126,7 @@
     </div>
 </div>
 
-<!-- System Overview -->
-<div class="row fade-in-up mt-4">
-    <div class="col-12">
-        <div class="card shadow">
-            <div class="card-header">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-database"></i>
-                    System Overview
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 text-center mb-3">
-                        <div class="border rounded p-3">
-                            <i class="fas fa-server fa-3x text-primary mb-2"></i>
-                            <h5>{{ \App\Models\Farm::count() }}</h5>
-                            <small class="text-muted">Total Farms</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-center mb-3">
-                        <div class="border rounded p-3">
-                            <i class="fas fa-cow fa-3x text-success mb-2"></i>
-                            <h5>{{ \App\Models\Livestock::count() }}</h5>
-                            <small class="text-muted">Total Livestock</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-center mb-3">
-                        <div class="border rounded p-3">
-                            <i class="fas fa-chart-bar fa-3x text-info mb-2"></i>
-                            <h5>{{ \App\Models\ProductionRecord::count() }}</h5>
-                            <small class="text-muted">Production Records</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-center mb-3">
-                        <div class="border rounded p-3">
-                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-2"></i>
-                            <h5>{{ \App\Models\Issue::where('status', 'open')->count() }}</h5>
-                            <small class="text-muted">Open Issues</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Recent System Activity -->
 <div class="row fade-in-up mt-4">
@@ -439,51 +395,56 @@ document.addEventListener('DOMContentLoaded', function () {
         hideTaskForm();
     });
     fetchTasks();
-    // Initialize chart with enhanced styling
+    // Initialize chart with real data
     const ctxLine = document.getElementById('lineChart').getContext('2d');
-    new Chart(ctxLine, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Cattle',
-                data: [65, 59, 80, 81, 56, 55],
-                borderColor: '#007bff',
-                backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                tension: 0.4,
-                fill: true
-            }, {
-                label: 'Goats',
-                data: [28, 48, 40, 19, 86, 27],
-                borderColor: '#28a745',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0,0,0,0.1)'
-                    }
+    let trendsChart = null;
+    fetch("{{ route('superadmin.livestock-trends') }}", { credentials: 'same-origin', headers: { 'Accept': 'application/json' }})
+        .then(r => r.json())
+        .then(payload => {
+            if (!payload || !payload.success) return;
+            const config = {
+                type: 'line',
+                data: {
+                    labels: payload.labels,
+                    datasets: payload.datasets
                 },
-                x: {
-                    grid: {
-                        color: 'rgba(0,0,0,0.1)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { grid: { color: 'rgba(0,0,0,0.1)' } }
                     }
                 }
-            }
-        }
-    });
+            };
+            trendsChart = new Chart(ctxLine, config);
+        })
+        .catch(() => {
+            // fallback to placeholder data if request fails
+            trendsChart = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Cattle',
+                        data: [0, 0, 0, 0, 0, 0],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Goats',
+                        data: [0, 0, 0, 0, 0, 0],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        });
 });
 </script>
 @endpush

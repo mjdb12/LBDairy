@@ -207,6 +207,8 @@ Route::middleware(['auth'])->group(function () {
     // Super Admin routes
     Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'superAdminDashboard'])->name('dashboard');
+        // Livestock trends API for dashboard chart
+        Route::get('/livestock-trends', [SuperAdminController::class, 'getLivestockTrends'])->name('livestock-trends');
         Route::get('/profile', function () { return view('superadmin.profile'); })->name('profile');
         Route::put('/profile', [SuperAdminController::class, 'updateProfile'])->name('profile.update');
         Route::put('/profile/password', [SuperAdminController::class, 'changePassword'])->name('profile.password');

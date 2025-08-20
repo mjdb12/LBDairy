@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Models\AuditLog;
 use App\Models\Farm;
+use App\Models\Livestock;
 use Illuminate\Support\Facades\DB;
 
 class SuperAdminController extends Controller
@@ -673,6 +674,77 @@ class SuperAdminController extends Controller
             return response()->json(['success' => true, 'message' => 'Settings logs exported successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to export settings logs'], 500);
+        }
+    }
+
+    /**
+     * Get livestock population trends (last N months) for super admin dashboard.
+     */
+    public function getLivestockTrends(Request $request)
+    {
+        try {
+            $months = (int) $request->get('months', 6);
+            if ($months < 1 || $months > 24) {
+                $months = 6;
+            }
+
+            $startDate = now()->startOfMonth()->subMonths($months - 1);
+
+            $aggregates = Livestock::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as ym, type, COUNT(*) as cnt")
+                ->where('created_at', '>=', $startDate)
+                ->groupBy('ym', 'type')
+                ->orderBy('ym')
+                ->get();
+
+            // Build month keys and labels
+            $labels = [];
+            $ymKeys = [];
+            $cursor = $startDate->copy();
+            for ($i = 0; $i < $months; $i++) {
+                $labels[] = $cursor->format('M');
+                $ymKeys[] = $cursor->format('Y-m');
+                $cursor->addMonth();
+            }
+
+            $seriesCow = array_fill(0, $months, 0);
+            $seriesGoat = array_fill(0, $months, 0);
+
+            foreach ($aggregates as $row) {
+                $index = array_search($row->ym, $ymKeys, true);
+                if ($index === false) {
+                    continue;
+                }
+                if ($row->type === 'cow') {
+                    $seriesCow[$index] = (int) $row->cnt;
+                } elseif ($row->type === 'goat') {
+                    $seriesGoat[$index] = (int) $row->cnt;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'labels' => $labels,
+                'datasets' => [
+                    [
+                        'label' => 'Cattle',
+                        'data' => $seriesCow,
+                        'borderColor' => '#007bff',
+                        'backgroundColor' => 'rgba(0, 123, 255, 0.1)',
+                        'tension' => 0.4,
+                        'fill' => true,
+                    ],
+                    [
+                        'label' => 'Goats',
+                        'data' => $seriesGoat,
+                        'borderColor' => '#28a745',
+                        'backgroundColor' => 'rgba(40, 167, 69, 0.1)',
+                        'tension' => 0.4,
+                        'fill' => true,
+                    ],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load livestock trends'], 500);
         }
     }
 }
