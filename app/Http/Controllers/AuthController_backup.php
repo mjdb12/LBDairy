@@ -10,11 +10,17 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    /**
+     * Show the login form.
+     */
     public function showLogin()
     {
         return view('auth.login');
     }
 
+    /**
+     * Handle login request.
+     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -32,14 +38,15 @@ class AuthController extends Controller
                    ->where('role', $request->role)
                    ->first();
 
+        // Check if user exists and is approved
         if (!$user) {
             return back()->withErrors([
                 'username' => 'The provided credentials do not match our records.',
             ])->withInput();
         }
 
-        // Superadmin and admin users should not need approval
-        if ($user->status !== 'approved' && !in_array($user->role, ['superadmin', 'admin'])) {
+        // Check if user is approved
+        if ($user->status !== 'approved') {
             if ($user->status === 'pending') {
                 return back()->withErrors([
                     'username' => 'Your account is pending approval. Please wait for admin approval.',
@@ -51,6 +58,7 @@ class AuthController extends Controller
             }
         }
 
+        // Check if user is active
         if (!$user->is_active) {
             return back()->withErrors([
                 'username' => 'Your account has been deactivated. Please contact support.',
@@ -59,6 +67,10 @@ class AuthController extends Controller
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
             Auth::login($user);
+            
+            // Log the login action
+            $this->logAuditAction('login', 'users', $user->id);
+            
             return redirect()->intended($this->getDashboardRoute($user->role));
         }
 
@@ -67,9 +79,13 @@ class AuthController extends Controller
         ])->withInput();
     }
 
+    /**
+     * Handle logout request.
+     */
     public function logout(Request $request)
     {
         if (Auth::check()) {
+            $this->logAuditAction('logout', 'users', Auth::id());
             Auth::logout();
         }
 
@@ -79,49 +95,65 @@ class AuthController extends Controller
         return redirect('/login');
     }
 
+    /**
+     * Show the registration form.
+     */
     public function showRegister()
     {
         return view('auth.register');
     }
 
+    /**
+     * Handle registration request.
+     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
             'role' => 'required|in:farmer,admin',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string|max:500',
-            'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'barangay' => 'nullable|string|max:255',
-            'admin_code' => 'nullable|string|max:255|unique:users',
-            'position' => 'nullable|string|max:255',
-            'farm_name' => 'nullable|string|max:255',
-            'farm_address' => 'nullable|string|max:500',
-            'terms_accepted' => 'nullable',
+            'password' => 'required|string|min:8|confirmed',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'barangay' => 'required|string|max:255',
+            'terms_accepted' => 'required|accepted',
         ]);
+
+        // Add role-specific validation
+        if ($request->role === 'admin') {
+            $validator->addRules([
+                'admin_code' => 'required|string|max:255|unique:users',
+                'position' => 'required|string|max:255',
+            ]);
+        } elseif ($request->role === 'farmer') {
+            $validator->addRules([
+                'farmer_code' => 'required|string|max:255|unique:users',
+                'farm_name' => 'required|string|max:255',
+                'farm_address' => 'required|string|max:500',
+            ]);
+        }
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
+        // Prepare user data
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
             'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
             'phone' => $request->phone,
             'address' => $request->address,
+            'role' => $request->role,
+            'password' => Hash::make($request->password),
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'barangay' => $request->barangay,
-            'status' => 'pending',
-            'is_active' => true,
-            'terms_accepted' => $request->terms_accepted ? 'accepted' : null,
+            'terms_accepted' => $request->terms_accepted,
+            'status' => 'pending', // Default status for new registrations
         ];
 
         // Add role-specific fields
@@ -129,27 +161,51 @@ class AuthController extends Controller
             $userData['admin_code'] = $request->admin_code;
             $userData['position'] = $request->position;
         } elseif ($request->role === 'farmer') {
-            $userData['farmer_code'] = 'F' . strtoupper(substr(md5(uniqid()), 0, 3));
+            $userData['farmer_code'] = $request->farmer_code;
             $userData['farm_name'] = $request->farm_name;
             $userData['farm_address'] = $request->farm_address;
         }
 
         $user = User::create($userData);
 
-        return redirect('/login')->with('success', 'Registration successful! Please wait for admin approval.');
+        // Log the registration action
+        $this->logAuditAction('create', 'users', $user->id);
+
+        // Don't auto-login for new registrations, require approval
+        return redirect()->route('login')->with('success', 'Registration successful! Your account is pending approval. You will be notified via email once approved.');
     }
 
+    /**
+     * Get the dashboard route based on user role.
+     */
     private function getDashboardRoute($role)
     {
         switch ($role) {
-            case 'superadmin':
-                return '/superadmin/dashboard';
-            case 'admin':
-                return '/admin/dashboard';
             case 'farmer':
-                return '/farmer/dashboard';
+                return route('farmer.dashboard');
+            case 'admin':
+                return route('admin.dashboard');
+            case 'superadmin':
+                return route('superadmin.dashboard');
             default:
-                return '/dashboard';
+                return route('dashboard');
+        }
+    }
+
+    /**
+     * Log audit action.
+     */
+    private function logAuditAction($action, $tableName, $recordId)
+    {
+        if (Auth::check()) {
+            \App\Models\AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => $action,
+                'table_name' => $tableName,
+                'record_id' => $recordId,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
         }
     }
 }

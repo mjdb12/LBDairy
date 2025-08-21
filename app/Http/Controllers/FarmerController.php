@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use App\Models\Livestock;
 use App\Models\Farm;
@@ -70,7 +71,7 @@ class FarmerController extends Controller
         // Get issues for the farmer's farms
         $issues = Issue::whereHas('farm', function($query) use ($user) {
             $query->where('owner_id', $user->id);
-        })->orderBy('reported_date', 'desc')->get();
+        })->orderBy('date_reported', 'desc')->get();
 
         // Get livestock for the farmer's farms
         $livestock = Livestock::whereHas('farm', function($query) use ($user) {
@@ -81,9 +82,9 @@ class FarmerController extends Controller
         $farms = Farm::where('owner_id', $user->id)->get();
 
         $totalIssues = $issues->count();
-        $pendingIssues = $issues->where('status', 'open')->count();
-        $urgentIssues = $issues->where('priority', 'high')->where('status', '!=', 'resolved')->count();
-        $resolvedIssues = $issues->where('status', 'resolved')->count();
+        $pendingIssues = $issues->where('status', 'Pending')->count();
+        $urgentIssues = $issues->where('priority', 'High')->where('status', '!=', 'Resolved')->count();
+        $resolvedIssues = $issues->where('status', 'Resolved')->count();
 
         // Ensure we always have valid numbers
         $totalIssues = $totalIssues ?: 0;
@@ -108,9 +109,9 @@ class FarmerController extends Controller
     public function storeIssue(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'issue_type' => 'required|string|max:255',
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high,critical',
+            'priority' => 'required|in:Low,Medium,High,Urgent',
             'livestock_id' => 'required|exists:livestock,id',
         ]);
 
@@ -122,18 +123,18 @@ class FarmerController extends Controller
         })->findOrFail($request->livestock_id);
 
         // Map the form fields to database fields
-        $priority = strtolower($request->priority);
-        $category = $this->mapIssueTypeToCategory($request->issue_type);
+        $priority = $request->priority;
+        $issueType = $request->issue_type;
 
         $issue = Issue::create([
-            'title' => $request->title,
+            'livestock_id' => $request->livestock_id,
+            'farm_id' => $livestock->farm_id,
+            'issue_type' => $issueType,
             'description' => $request->description,
             'priority' => $priority,
-            'status' => 'open',
-            'category' => $category,
-            'farm_id' => $livestock->farm_id,
+            'status' => 'Pending',
+            'date_reported' => $request->reported_date ?? now(),
             'reported_by' => $user->id,
-            'reported_date' => $request->reported_date ?? now(),
         ]);
 
         return redirect()->route('farmer.issues')->with('success', 'Issue reported successfully!');
@@ -166,7 +167,20 @@ class FarmerController extends Controller
             $query->where('owner_id', $user->id);
         })->findOrFail($id);
 
-        return view('farmer.issues.show', compact('issue'));
+        return response()->json(['success' => true, 'issue' => $issue]);
+    }
+
+    /**
+     * Show the form for editing the specified issue.
+     */
+    public function editIssue($id)
+    {
+        $user = Auth::user();
+        $issue = Issue::whereHas('farm', function($query) use ($user) {
+            $query->where('owner_id', $user->id);
+        })->findOrFail($id);
+
+        return response()->json(['success' => true, 'issue' => $issue]);
     }
 
     /**
@@ -175,10 +189,10 @@ class FarmerController extends Controller
     public function updateIssue(Request $request, $id)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'issue_type' => 'required|string|max:255',
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high,critical',
-            'category' => 'required|in:health,equipment,feed,management,other',
+            'priority' => 'required|in:Low,Medium,High,Urgent',
+            'status' => 'required|in:Pending,In Progress,Resolved,Closed',
         ]);
 
         $user = Auth::user();
@@ -187,10 +201,10 @@ class FarmerController extends Controller
         })->findOrFail($id);
 
         $issue->update([
-            'title' => $request->title,
+            'issue_type' => $request->issue_type,
             'description' => $request->description,
             'priority' => $request->priority,
-            'category' => $request->category,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('farmer.issues')->with('success', 'Issue updated successfully!');
@@ -263,10 +277,13 @@ class FarmerController extends Controller
             $farm = $user->farms->first();
             
             if (!$farm) {
-                return redirect()->back()->with('error', 'You need to have a farm to add livestock.');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You need to have a farm to add livestock.'
+                ], 400);
             }
 
-            Livestock::create([
+            $livestock = Livestock::create([
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
                 'type' => $request->type,
@@ -280,9 +297,17 @@ class FarmerController extends Controller
                 'owner_id' => $user->id,
             ]);
 
-            return redirect()->route('farmer.livestock')->with('success', 'Livestock added successfully!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Livestock added successfully!',
+                'livestock' => $livestock
+            ]);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to add livestock. Please try again.')->withInput();
+            \Log::error('Livestock creation error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add livestock. Please try again.'
+            ], 500);
         }
     }
 
@@ -406,6 +431,7 @@ class FarmerController extends Controller
                 'message' => 'Livestock updated successfully!'
             ]);
         } catch (\Exception $e) {
+            Log::error('Livestock update error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update livestock. Please try again.'

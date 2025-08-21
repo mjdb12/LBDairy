@@ -146,6 +146,7 @@
                                     <th>Breed</th>
                                     <th>Issue Type</th>
                                     <th>Description</th>
+                                    <th>Priority</th>
                                     <th>Date Reported</th>
                                     <th>Status</th>
                                     <th>Actions</th>
@@ -153,7 +154,7 @@
                             </thead>
                             <tbody>
                                 @forelse($issues as $issue)
-                                <tr class="{{ $issue->status === 'Urgent' ? 'table-danger' : ($issue->status === 'Pending' ? 'table-warning' : 'table-success') }}">
+                                <tr class="{{ $issue->priority === 'Urgent' ? 'table-danger' : ($issue->status === 'Pending' ? 'table-warning' : ($issue->status === 'Resolved' ? 'table-success' : '')) }}">
                                     <td>
                                         <strong>{{ $issue->livestock->livestock_id ?? 'N/A' }}</strong>
                                     </td>
@@ -165,12 +166,18 @@
                                         </span>
                                     </td>
                                     <td>{{ Str::limit($issue->description, 50) }}</td>
-                                    <td>{{ $issue->created_at->format('M d, Y') }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $issue->priority === 'Urgent' ? 'danger' : ($issue->priority === 'High' ? 'warning' : ($issue->priority === 'Medium' ? 'info' : 'success')) }}">
+                                            {{ $issue->priority }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $issue->date_reported ? $issue->date_reported->format('M d, Y') : $issue->created_at->format('M d, Y') }}</td>
                                     <td>
                                         <select class="form-control form-control-sm" onchange="updateIssueStatus(this, '{{ $issue->id }}')">
                                             <option value="Pending" {{ $issue->status === 'Pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="In Progress" {{ $issue->status === 'In Progress' ? 'selected' : '' }}>In Progress</option>
                                             <option value="Resolved" {{ $issue->status === 'Resolved' ? 'selected' : '' }}>Resolved</option>
-                                            <option value="Urgent" {{ $issue->status === 'Urgent' ? 'selected' : '' }}>Urgent</option>
+                                            <option value="Closed" {{ $issue->status === 'Closed' ? 'selected' : '' }}>Closed</option>
                                         </select>
                                     </td>
                                     <td>
@@ -189,7 +196,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="9" class="text-center text-muted py-4">
                                         <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
                                         <p>No issues reported. Your livestock are healthy and well-managed!</p>
                                         <button class="btn btn-primary" onclick="openAddIssueModal()">
@@ -276,28 +283,39 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="title">Issue Title</label>
-                        <input type="text" class="form-control" id="title" name="title" required placeholder="Brief description of the issue">
+                        <label for="issue_type">Issue Type</label>
+                        <input type="text" class="form-control" id="issue_type" name="issue_type" required placeholder="Brief description of the issue">
                     </div>
                     <div class="form-group">
                         <label for="description">Detailed Description</label>
                         <textarea class="form-control" id="description" name="description" rows="4" required placeholder="Provide detailed information about the issue, symptoms, and any observations"></textarea>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="reported_date">Date Reported</label>
                                 <input type="date" class="form-control" id="reported_date" name="reported_date" value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="priority">Priority</label>
                                 <select class="form-control" id="priority" name="priority" required>
                                     <option value="Low">Low</option>
-                                    <option value="Normal">Normal</option>
+                                    <option value="Medium">Medium</option>
                                     <option value="High">High</option>
-                                    <option value="Emergency">Emergency</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select class="form-control" id="status" name="status" required>
+                                    <option value="Pending">Pending</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Resolved">Resolved</option>
+                                    <option value="Closed">Closed</option>
                                 </select>
                             </div>
                         </div>
@@ -381,7 +399,7 @@ $(document).ready(function() {
     $('#issuesTable').DataTable({
         responsive: true,
         pageLength: 25,
-        order: [[5, 'desc']], // Sort by date reported
+        order: [[6, 'desc']], // Sort by date reported
         language: {
             search: "_INPUT_",
             searchPlaceholder: "Search issues...",
@@ -439,11 +457,9 @@ function loadIssueData(issueId) {
                 const issue = response.issue;
                 $('#livestock_id').val(issue.livestock_id);
                 $('#issue_type').val(issue.issue_type);
-                $('#severity').val(issue.severity);
                 $('#status').val(issue.status);
-                $('#title').val(issue.title);
                 $('#description').val(issue.description);
-                $('#reported_date').val(issue.reported_date);
+                $('#reported_date').val(issue.date_reported);
                 $('#priority').val(issue.priority);
                 $('#notes').val(issue.notes);
             }
@@ -470,12 +486,10 @@ function loadIssueDetails(issueId) {
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-borderless">
-                                        <tr><td><strong>Title:</strong></td><td>${issue.title}</td></tr>
                                         <tr><td><strong>Type:</strong></td><td><span class="issue-type-badge issue-${issue.issue_type.toLowerCase()}">${issue.issue_type}</span></td></tr>
-                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${getSeverityColor(issue.severity)}">${issue.severity}</span></td></tr>
                                         <tr><td><strong>Status:</strong></td><td><span class="badge badge-${getStatusColor(issue.status)}">${issue.status}</span></td></tr>
                                         <tr><td><strong>Priority:</strong></td><td><span class="badge badge-${getPriorityColor(issue.priority)}">${issue.priority}</span></td></tr>
-                                        <tr><td><strong>Reported:</strong></td><td>${issue.reported_date}</td></tr>
+                                        <tr><td><strong>Reported:</strong></td><td>${issue.date_reported}</td></tr>
                                     </table>
                                 </div>
                             </div>
@@ -543,9 +557,9 @@ function getStatusColor(status) {
 function getPriorityColor(priority) {
     switch(priority) {
         case 'Low': return 'success';
-        case 'Normal': return 'info';
+        case 'Medium': return 'info';
         case 'High': return 'warning';
-        case 'Emergency': return 'danger';
+        case 'Urgent': return 'danger';
         default: return 'secondary';
     }
 }

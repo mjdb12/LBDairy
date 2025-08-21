@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '+1234567890',
             'address' => '123 Main St, City, Country',
             'is_active' => true,
+            'status' => 'approved',
         ]);
 
         // Create admin users
@@ -41,6 +42,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '+1234567891',
             'address' => '456 Admin St, City, Country',
             'is_active' => true,
+            'status' => 'approved',
         ]);
 
         $admin2 = User::create([
@@ -52,6 +54,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '+1234567892',
             'address' => '789 Manager Ave, City, Country',
             'is_active' => true,
+            'status' => 'approved',
         ]);
 
         // Create farmer users

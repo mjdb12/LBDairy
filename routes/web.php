@@ -11,6 +11,7 @@ use App\Http\Controllers\IssueController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\AdminApprovalController;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,9 @@ use App\Http\Controllers\AdminApprovalController;
 Route::get('/', function () {
     return redirect('/login');
 });
+
+// Test route - temporarily disabled
+// Route::get('/test', [TestController::class, 'index']);
 
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -77,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/issues', [FarmerController::class, 'issues'])->name('issues');
         Route::post('/issues', [FarmerController::class, 'storeIssue'])->name('issues.store');
         Route::get('/issues/{id}', [FarmerController::class, 'showIssue'])->name('issues.show');
+        Route::get('/issues/{id}/edit', [FarmerController::class, 'editIssue'])->name('issues.edit');
         Route::put('/issues/{id}', [FarmerController::class, 'updateIssue'])->name('issues.update');
         Route::delete('/issues/{id}', [FarmerController::class, 'deleteIssue'])->name('issues.destroy');
         Route::get('/issue-alerts', function () { return view('farmer.issue-alerts'); })->name('issue-alerts');

@@ -436,6 +436,7 @@
                                              <option value="Tiawe">Tiawe</option>
                                              <option value="Tinamnan">Tinamnan</option>
                                          </datalist>
+                                         <input type="hidden" name="address" id="farmerAddress">
                                      </div>
 
                                     <div class="form-group">
@@ -570,6 +571,7 @@
                                              <option value="Tiawe">Tiawe</option>
                                              <option value="Tinamnan">Tinamnan</option>
                                          </datalist>
+                                         <input type="hidden" name="address" id="adminAddress">
                                      </div>
 
                                     <div class="form-group">
@@ -709,6 +711,17 @@
             document.getElementById('adminFullName').value = fullName;
         }
 
+        // Auto-populate address field from barangay selection for admin form
+        document.getElementById('adminBarangay').addEventListener('input', updateAdminAddress);
+
+        function updateAdminAddress() {
+            const barangay = document.getElementById('adminBarangay').value;
+            if (barangay) {
+                const address = `Brgy. ${barangay}, Lucban, Quezon`;
+                document.getElementById('adminAddress').value = address;
+            }
+        }
+
         // Auto-generate full name for farmer form
         document.getElementById('farmerFirstName').addEventListener('input', updateFarmerFullName);
         document.getElementById('farmerLastName').addEventListener('input', updateFarmerFullName);
@@ -726,6 +739,17 @@
                 document.getElementById('farmerForm').appendChild(nameInput);
             }
             nameInput.value = fullName;
+        }
+
+        // Auto-populate address field from barangay selection for farmer form
+        document.getElementById('farmerBarangay').addEventListener('input', updateFarmerAddress);
+
+        function updateFarmerAddress() {
+            const barangay = document.getElementById('farmerBarangay').value;
+            if (barangay) {
+                const address = `Brgy. ${barangay}, Lucban, Quezon`;
+                document.getElementById('farmerAddress').value = address;
+            }
         }
 
         // Form validation and submission

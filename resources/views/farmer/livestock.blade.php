@@ -125,7 +125,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
+                                    <td class="text-center text-muted py-4">
                                         @if($farms->count() > 0)
                                             <i class="fas fa-inbox fa-3x mb-3"></i>
                                             <p>No livestock records found. Add your first livestock to get started.</p>
@@ -140,6 +140,10 @@
                                             </a>
                                         @endif
                                     </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -170,53 +174,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="owned_by">Owned By</label>
-                                <input type="text" class="form-control" id="owned_by" name="owned_by" value="{{ auth()->user()->name }}" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dispersal_from">Dispersal From</label>
-                                <input type="text" class="form-control" id="dispersal_from" name="dispersal_from">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="registry_id">Registry ID</label>
-                                <input type="text" class="form-control" id="registry_id" name="registry_id">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="tag_number">Tag ID</label>
+                                <label for="tag_number">Tag Number *</label>
                                 <input type="text" class="form-control" id="tag_number" name="tag_number" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="name">Name</label>
+                                <label for="name">Name *</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="birth_date">Date of Birth</label>
-                                <input type="date" class="form-control" id="birth_date" name="birth_date" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="gender">Sex</label>
-                                <select class="form-control" id="gender" name="gender" required>
-                                    <option value="">Select Sex</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="type">Type</label>
+                                <label for="type">Type *</label>
                                 <select class="form-control" id="type" name="type" required>
                                     <option value="">Select Type</option>
                                     <option value="cow">Cow</option>
@@ -228,7 +198,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="breed">Breed</label>
+                                <label for="breed">Breed *</label>
                                 <select class="form-control" id="breed" name="breed" required>
                                     <option value="">Select Breed</option>
                                     <option value="holstein">Holstein</option>
@@ -242,25 +212,18 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="natural_marks">Natural Marks</label>
-                                <select class="form-control" id="natural_marks" name="natural_marks">
-                                    <option value="">Select Side</option>
-                                    <option value="right_side">Right Side</option>
-                                    <option value="front_side">Front Side</option>
-                                    <option value="left_side">Left Side</option>
+                                <label for="birth_date">Date of Birth *</label>
+                                <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="gender">Gender *</label>
+                                <select class="form-control" id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="acquisition_date">Date Acquired</label>
-                                <input type="date" class="form-control" id="acquisition_date" name="acquisition_date">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="acquisition_cost">Acquisition Cost</label>
-                                <input type="number" class="form-control" id="acquisition_cost" name="acquisition_cost" min="0" step="0.01">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -271,7 +234,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="health_status">Health Status</label>
+                                <label for="health_status">Health Status *</label>
                                 <select class="form-control" id="health_status" name="health_status" required>
                                     <option value="healthy">Healthy</option>
                                     <option value="sick">Sick</option>
@@ -282,17 +245,11 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="status">Status</label>
+                                <label for="status">Status *</label>
                                 <select class="form-control" id="status" name="status" required>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="remarks">Remarks</label>
-                                <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
                             </div>
                         </div>
                     </div>
@@ -377,23 +334,35 @@ let currentLivestockId = null;
 $(document).ready(function() {
     // Initialize DataTable only if the table exists
     if ($('#livestockTable').length > 0) {
-        $('#livestockTable').DataTable({
-            responsive: true,
-            pageLength: 25,
-            order: [[0, 'asc']],
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Search livestock...",
-                lengthMenu: "_MENU_ records per page",
-                info: "Showing _START_ to _END_ of _TOTAL_ records",
-                paginate: {
-                    first: "First",
-                    last: "Last",
-                    next: "Next",
-                    previous: "Previous"
-                }
-            }
-        });
+        try {
+            $('#livestockTable').DataTable({
+                responsive: true,
+                pageLength: 25,
+                order: [[0, 'asc']],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search livestock...",
+                    lengthMenu: "_MENU_ records per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ records",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    },
+                    emptyTable: "No livestock records found"
+                },
+                columnDefs: [
+                    {
+                        targets: -1, // Actions column
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            });
+        } catch (error) {
+            console.error('DataTables initialization error:', error);
+        }
     }
     
     // Handle form submission
@@ -688,6 +657,16 @@ function submitLivestockForm() {
     const formData = new FormData($('#livestockForm')[0]);
     const method = $('#livestockForm').attr('method');
     
+    // Debug: Log form data
+    console.log('Form action:', $('#livestockForm').attr('action'));
+    console.log('Form method:', method);
+    console.log('CSRF token:', $('meta[name="csrf-token"]').attr('content'));
+    
+    // Log form data entries
+    for (let [key, value] of formData.entries()) {
+        console.log(key + ': ' + value);
+    }
+    
     // Add method override for PUT requests
     if (method === 'POST' && $('#livestockForm').find('input[name="_method"]').length > 0) {
         formData.append('_method', 'PUT');
@@ -703,6 +682,7 @@ function submitLivestockForm() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
+            console.log('Success response:', response);
             if (response.success) {
                 showToast(response.message, 'success');
                 $('#livestockModal').modal('hide');
@@ -711,14 +691,18 @@ function submitLivestockForm() {
                 showToast(response.message || 'Error saving livestock', 'error');
             }
         },
-        error: function(xhr) {
+        error: function(xhr, status, error) {
+            console.log('Error response:', xhr.responseText);
+            console.log('Status:', status);
+            console.log('Error:', error);
+            
             if (xhr.status === 422) {
                 const errors = xhr.responseJSON.errors;
                 Object.keys(errors).forEach(field => {
                     showToast(errors[field][0], 'error');
                 });
             } else {
-                showToast('Error saving livestock', 'error');
+                showToast('Error saving livestock: ' + (xhr.responseJSON?.message || error), 'error');
             }
         }
     });
