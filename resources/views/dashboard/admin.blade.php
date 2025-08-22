@@ -13,341 +13,155 @@
 <!-- Statistics Grid -->
 <div class="row fade-in">
     <!-- Active Farms -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card border-left-info">
-            <div class="d-flex justify-content-between align-items-start">
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2 dashboard-card stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="stat-title text-info">Active Farms</div>
-                    <div class="stat-value">{{ \App\Models\Farm::where('status', 'active')->count() }}</div>
-                    <div class="mt-2">
-                        <span class="text-success font-weight-bold small">
-                            <i class="fas fa-arrow-up mr-1"></i>+12%
-                        </span>
-                        <span class="text-muted small ml-1">from last month</span>
-                    </div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Active Farms</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Farm::where('status', 'active')->count() }}</div>
                 </div>
-                <div class="stat-icon">
-                    <i class="fas fa-building"></i>
+                <div class="icon text-info">
+                    <i class="fas fa-building fa-2x"></i>
                 </div>
-            </div>
-            <div class="stat-footer">
-                <a href="#" class="d-flex justify-content-between align-items-center">
-                    <span>More info</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
             </div>
         </div>
     </div>
 
-    <!-- Efficiency Rate -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card border-left-success">
-            <div class="d-flex justify-content-between align-items-start">
+    <!-- Total Farmers -->
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2 dashboard-card stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="stat-title text-success">Efficiency Rate</div>
-                    <div class="stat-value">53<sup class="font-size-4">%</sup></div>
-                    <div class="mt-2">
-                        <span class="text-success font-weight-bold small">
-                            <i class="fas fa-arrow-up mr-1"></i>+5%
-                        </span>
-                        <span class="text-muted small ml-1">from last month</span>
-                    </div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Farmers</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->count() }}</div>
                 </div>
-                <div class="stat-icon">
-                    <i class="fas fa-chart-line"></i>
+                <div class="icon text-success">
+                    <i class="fas fa-users fa-2x"></i>
                 </div>
-            </div>
-            <div class="stat-footer">
-                <a href="#" class="d-flex justify-content-between align-items-center">
-                    <span>More info</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
             </div>
         </div>
     </div>
 
     <!-- New Requests -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card border-left-warning">
-            <div class="d-flex justify-content-between align-items-start">
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2 dashboard-card stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="stat-title text-warning">New Requests</div>
-                    <div class="stat-value">{{ \App\Models\Issue::where('status', 'pending')->count() }}</div>
-                    <div class="mt-2">
-                        <span class="text-danger font-weight-bold small">
-                            <i class="fas fa-arrow-down mr-1"></i>-8%
-                        </span>
-                        <span class="text-muted small ml-1">from last month</span>
-                    </div>
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">New Requests</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'pending')->count() }}</div>
                 </div>
-                <div class="stat-icon">
-                    <i class="fas fa-user-plus"></i>
+                <div class="icon text-warning">
+                    <i class="fas fa-user-plus fa-2x"></i>
                 </div>
-            </div>
-            <div class="stat-footer">
-                <a href="#" class="d-flex justify-content-between align-items-center">
-                    <span>More info</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
             </div>
         </div>
     </div>
 
     <!-- Service Areas -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card border-left-danger">
-            <div class="d-flex justify-content-between align-items-start">
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2 dashboard-card stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="stat-title text-danger">Service Areas</div>
-                    <div class="stat-value">{{ \App\Models\Farm::distinct('location')->count() }}</div>
-                    <div class="mt-2">
-                        <span class="text-success font-weight-bold small">
-                            <i class="fas fa-arrow-up mr-1"></i>+3%
-                        </span>
-                        <span class="text-muted small ml-1">from last month</span>
-                    </div>
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Service Areas</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Farm::distinct('location')->count() }}</div>
                 </div>
-                <div class="stat-icon">
-                    <i class="fas fa-map-marker-alt"></i>
+                <div class="icon text-danger">
+                    <i class="fas fa-map-marker-alt fa-2x"></i>
                 </div>
-            </div>
-            <div class="stat-footer">
-                <a href="#" class="d-flex justify-content-between align-items-center">
-                    <span>More info</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Quick Actions -->
-<div class="row fade-in-up mb-4">
-    <div class="col-12">
-        <div class="modern-card">
-            <div class="modern-card-header">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-bolt"></i>
-                    <span>Quick Actions</span>
+    <!-- Total Livestock -->
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Livestock</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Livestock::count() }}</div>
+                </div>
+                <div class="icon text-primary">
+                    <i class="fas fa-cow fa-2x"></i>
                 </div>
             </div>
-            <div class="modern-card-body">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{{ route('admin.livestock.index') }}" class="quick-action-card">
-                            <div class="quick-action-icon">
-                                <i class="fas fa-cow"></i>
-                            </div>
-                            <div class="quick-action-text">
-                                <h6>Manage Livestock</h6>
-                                <p>View and manage livestock inventory</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{{ route('admin.issues.index') }}" class="quick-action-card">
-                            <div class="quick-action-icon">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="quick-action-text">
-                                <h6>Manage Issues</h6>
-                                <p>Track and resolve farm issues</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{{ route('admin.analysis.index') }}" class="quick-action-card">
-                            <div class="quick-action-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="quick-action-text">
-                                <h6>Productivity Analysis</h6>
-                                <p>Analyze farm performance metrics</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{{ route('admin.farms.index') }}" class="quick-action-card">
-                            <div class="quick-action-icon">
-                                <i class="fas fa-university"></i>
-                            </div>
-                            <div class="quick-action-text">
-                                <h6>Manage Farms</h6>
-                                <p>Monitor and manage farm operations</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{{ route('admin.manage-farmers') }}" class="quick-action-card">
-                            <div class="quick-action-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="quick-action-text">
-                                <h6>Manage Farmers</h6>
-                                <p>Oversee farmer accounts and farms</p>
-                            </div>
-                        </a>
-                    </div>
+        </div>
+    </div>
+
+    <!-- Efficiency Rate -->
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2 dashboard-card stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Efficiency Rate</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">53<sup class="font-size-4">%</sup></div>
+                </div>
+                <div class="icon text-secondary">
+                    <i class="fas fa-chart-line fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Content Grid -->
-<div class="row fade-in-up">
-    <!-- To-Do List -->
-    <div class="col-12 col-xl-6">
-        <div class="modern-card">
-            <div class="modern-card-header">
-                <div class="d-flex align-items-center">
+<!-- Task Board Row -->
+<div class="row fade-in">
+    <!-- Task Board -->
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h6 class="mb-0">
                     <i class="fas fa-tasks"></i>
-                    <span>To-Do List</span>
-                </div>
-                <button class="btn btn-sm btn-light">
-                    <i class="fas fa-plus mr-1"></i>Add Task
+                    Task Board
+                </h6>
+                <button class="btn btn-sm btn-primary" id="addTaskBtn">
+                    <i class="fas fa-plus"></i> New Task
                 </button>
             </div>
-            <div class="modern-card-body">
-                <!-- Todo Items -->
-                <div class="todo-item">
-                    <div class="todo-content">
-                        <input type="checkbox" class="todo-checkbox form-check-input">
-                        <span class="todo-text">Make a report about the overall operation</span>
-                    </div>
-                    <div class="todo-actions">
-                        <span class="todo-badge badge-danger">
-                            <i class="far fa-clock"></i>2 hours
-                        </span>
-                        <button class="action-btn">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="todo-item">
-                    <div class="todo-content">
-                        <input type="checkbox" class="todo-checkbox form-check-input" checked>
-                        <span class="todo-text text-decoration-line-through text-muted">Address Service Requests in Zone Y</span>
-                    </div>
-                    <div class="todo-actions">
-                        <span class="todo-badge badge-info">
-                            <i class="far fa-clock"></i>4 hours
-                        </span>
-                        <button class="action-btn">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="todo-item">
-                    <div class="todo-content">
-                        <input type="checkbox" class="todo-checkbox form-check-input">
-                        <span class="todo-text">Inspect Farm Performance Reports</span>
-                    </div>
-                    <div class="todo-actions">
-                        <span class="todo-badge badge-warning">
-                            <i class="far fa-clock"></i>1 day
-                        </span>
-                        <button class="action-btn">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="todo-item">
-                    <div class="todo-content">
-                        <input type="checkbox" class="todo-checkbox form-check-input">
-                        <span class="todo-text">Schedule Maintenance for Zone X</span>
-                    </div>
-                    <div class="todo-actions">
-                        <span class="todo-badge badge-success">
-                            <i class="far fa-clock"></i>3 days
-                        </span>
-                        <button class="action-btn">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="todo-item">
-                    <div class="todo-content">
-                        <input type="checkbox" class="todo-checkbox form-check-input">
-                        <span class="todo-text">Check your messages and notifications</span>
-                    </div>
-                    <div class="todo-actions">
-                        <span class="todo-badge badge-primary">
-                            <i class="far fa-clock"></i>1 week
-                        </span>
-                        <button class="action-btn">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Line Chart -->
-    <div class="col-12 col-xl-6">
-        <div class="modern-card">
-            <div class="modern-card-header">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Livestock Population Trends</span>
-                </div>
-            </div>
-            <div class="modern-card-body">
-                <div class="chart-container">
-                    <canvas id="lineChart"></canvas>
-                </div>
-                <div class="d-flex justify-content-center mt-3">
-                    <div class="d-flex align-items-center mr-4">
-                        <div class="rounded-circle mr-2" style="width: 12px; height: 12px; background: #007bff;"></div>
-                        <span class="small text-muted">Cattle</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="rounded-circle mr-2" style="width: 12px; height: 12px; background: #28a745;"></div>
-                        <span class="small text-muted">Goats</span>
-                    </div>
-                </div>
+            <div class="card-body">
+                <ul class="list-group" id="taskList"></ul>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Recent Activity -->
-<div class="row fade-in-up mt-4">
-    <div class="col-12">
-        <div class="modern-card">
-            <div class="modern-card-header">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-history"></i>
-                    <span>Recent Activity</span>
-                </div>
+<!-- Livestock Trends Chart Row -->
+<div class="row fade-in">
+    <!-- Livestock Trends Chart -->
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-chart-line"></i>
+                    Livestock Population Trends
+                </h6>
             </div>
-            <div class="modern-card-body">
+            <div class="card-body">
+                <canvas id="lineChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Recent System Activity -->
+<div class="row fade-in">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-history"></i>
+                    Recent System Activity
+                </h6>
+            </div>
+            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Activity</th>
+                                <th>Action</th>
                                 <th>User</th>
+                                <th>Details</th>
                                 <th>Time</th>
                                 <th>Status</th>
                             </tr>
@@ -355,10 +169,17 @@
                         <tbody>
                             @foreach(\App\Models\AuditLog::latest()->take(10)->get() as $log)
                             <tr>
-                                <td>{{ $log->action }}</td>
+                                <td>
+                                    <span class="badge badge-{{ $log->severity === 'critical' ? 'danger' : ($log->severity === 'warning' ? 'warning' : 'info') }}">
+                                        {{ $log->action }}
+                                    </span>
+                                </td>
                                 <td>{{ $log->user->name ?? 'System' }}</td>
+                                <td>{{ Str::limit($log->description ?? 'No details', 60) }}</td>
                                 <td>{{ $log->created_at->diffForHumans() }}</td>
-                                <td><span class="badge badge-success">Completed</span></td>
+                                <td>
+                                    <span class="badge badge-success">Completed</span>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -368,107 +189,344 @@
         </div>
     </div>
 </div>
+
+<!-- Task Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form class="modal-content" id="taskForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalTitle">New Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="taskId">
+                <div class="form-group">
+                    <label for="taskTitle">Title</label>
+                    <input type="text" class="form-control" id="taskTitle" required maxlength="255">
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taskPriority">Priority</label>
+                        <select class="form-control" id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="date" class="form-control" id="taskDueDate">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="taskSubmitBtn">Add Task</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @push('styles')
 <style>
-    .quick-action-card {
-        display: block;
-        padding: 1.5rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-        text-decoration: none;
-        color: inherit;
-        transition: all 0.3s ease;
-        border: 1px solid #e3e6f0;
-    }
+.dashboard-card {
+    transition: transform 0.2s ease-in-out;
+}
 
-    .quick-action-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-        text-decoration: none;
-        color: inherit;
-    }
+.dashboard-card:hover {
+    transform: translateY(-2px);
+}
 
-    .quick-action-icon {
-        text-align: center;
-        margin-bottom: 1rem;
-    }
+.stat-card {
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-    .quick-action-icon i {
-        font-size: 2.5rem;
-        color: #4e73df;
-        background: rgba(78, 115, 223, 0.1);
-        width: 80px;
-        height: 80px;
-        line-height: 80px;
-        border-radius: 50%;
-        display: inline-block;
-    }
+.stat-card .card-body {
+    padding: 1.5rem;
+}
 
-    .quick-action-text {
-        text-align: center;
-    }
+.stat-card .icon {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
 
-    .quick-action-text h6 {
-        margin: 0 0 0.5rem 0;
-        font-weight: 600;
-        color: #5a5c69;
-    }
+.stat-card:hover .icon {
+    opacity: 1;
+}
 
-    .quick-action-text p {
-        margin: 0;
-        font-size: 0.875rem;
-        color: #858796;
-        line-height: 1.4;
-    }
 
-    .font-size-4 {
-        font-size: 0.6em;
-    }
+
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.font-size-4 {
+    font-size: 0.6em;
+}
 </style>
 @endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Line Chart
-    const ctx = document.getElementById('lineChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Cattle',
-                data: [65, 59, 80, 81, 56, 55],
-                borderColor: '#007bff',
-                backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                tension: 0.4
-            }, {
-                label: 'Goats',
-                data: [28, 48, 40, 19, 86, 27],
-                borderColor: '#28a745',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+document.addEventListener('DOMContentLoaded', function () {
+    // Task board logic
+    const taskList = document.getElementById('taskList');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+
+    function fetchTasks() {
+        fetch('/admin/tasks', { credentials: 'same-origin', headers: { 'Accept': 'application/json' }})
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) return;
+                renderTasks(data.tasks);
+            })
+            .catch(() => {
+                // Fallback to empty task list if endpoint doesn't exist
+                renderTasks([]);
+            });
+    }
+
+    function renderTasks(tasks) {
+        taskList.innerHTML = '';
+        if (!tasks || tasks.length === 0) {
+            const li = document.createElement('li');
+            li.className = 'list-group-item text-muted';
+            li.textContent = 'No tasks yet';
+            taskList.appendChild(li);
+            return;
         }
+        tasks.forEach(task => taskList.appendChild(taskItem(task)));
+    }
+
+    function taskItem(task) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between';
+        li.dataset.id = task.id;
+        li.innerHTML = `
+            <div class="d-flex align-items-start">
+                <input type="checkbox" class="mr-2" ${task.status === 'done' ? 'checked' : ''}>
+                <div>
+                    <div class="font-weight-bold">${escapeHtml(task.title)}</div>
+                    <small class="text-muted">${escapeHtml(task.description || '')}</small>
+                </div>
+            </div>
+            <div class="mt-2 mt-md-0 d-flex align-items-center">
+                <span class="badge badge-${priorityBadge(task.priority)} mr-2"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
+                <button class="btn btn-sm btn-light mr-2 edit-task"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-sm btn-light text-danger delete-task"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+
+        li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+            updateTask(task.id, { status: e.target.checked ? 'done' : 'todo' });
+        });
+        li.querySelector('.edit-task').addEventListener('click', () => startEditTask(task));
+        li.querySelector('.delete-task').addEventListener('click', () => deleteTask(task.id));
+        return li;
+    }
+
+    function escapeHtml(s) {
+        return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    }
+
+    function priorityBadge(p) {
+        if (p === 'high') return 'danger';
+        if (p === 'low') return 'secondary';
+        return 'warning';
+    }
+
+    function formatDue(dateStr) {
+        if (!dateStr) return 'No due';
+        try { return new Date(dateStr).toLocaleDateString(); } catch { return 'No due'; }
+    }
+
+    function startNewTask() {
+        document.getElementById('taskId').value = '';
+        document.getElementById('taskTitle').value = '';
+        document.getElementById('taskDescription').value = '';
+        document.getElementById('taskPriority').value = 'medium';
+        document.getElementById('taskDueDate').value = '';
+        document.getElementById('taskSubmitBtn').textContent = 'Add Task';
+        document.getElementById('taskModalTitle').textContent = 'New Task';
+        $('#taskModal').modal('show');
+    }
+
+    function startEditTask(task) {
+        document.getElementById('taskId').value = task.id;
+        document.getElementById('taskTitle').value = task.title || '';
+        document.getElementById('taskDescription').value = task.description || '';
+        document.getElementById('taskPriority').value = task.priority || 'medium';
+        document.getElementById('taskDueDate').value = task.due_date ? task.due_date.substring(0,10) : '';
+        document.getElementById('taskSubmitBtn').textContent = 'Update Task';
+        document.getElementById('taskModalTitle').textContent = 'Edit Task';
+        document.getElementById('taskTitle').focus();
+        $('#taskModal').modal('show');
+    }
+
+    function hideTaskForm() {
+        $('#taskModal').modal('hide');
+    }
+
+    function createTask(payload) {
+        fetch('/admin/tasks', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(payload)
+        }).then(async r => {
+            let data = null;
+            try { data = await r.json(); } catch (e) {}
+            if (!r.ok) {
+                const msg = (data && (data.message || (data.errors && Object.values(data.errors)[0][0]))) || `Request failed (${r.status})`;
+                alert(`Failed to create task: ${msg}`);
+                return;
+            }
+            if (data && data.success) {
+                fetchTasks();
+            } else {
+                alert('Failed to create task');
+            }
+        }).catch(() => alert('Failed to create task: network error'));
+    }
+
+    function updateTask(id, payload) {
+        fetch(`/admin/tasks/${id}`, {
+            method: 'PUT',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(payload)
+        }).then(async r => {
+            let data = null;
+            try { data = await r.json(); } catch (e) {}
+            if (!r.ok) {
+                const msg = (data && (data.message || (data.errors && Object.values(data.errors)[0][0]))) || `Request failed (${r.status})`;
+                alert(`Failed to update task: ${msg}`);
+                return;
+            }
+            if (data && data.success) {
+                fetchTasks();
+            } else {
+                alert('Failed to update task');
+            }
+        }).catch(() => alert('Failed to update task: network error'));
+    }
+
+    function deleteTask(id) {
+        if (!confirm('Delete this task?')) return;
+        fetch(`/admin/tasks/${id}`, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        }).then(r => r.json()).then(data => {
+            if (data.success) fetchTasks(); else alert('Failed to delete task');
+        });
+    }
+
+    addTaskBtn?.addEventListener('click', () => startNewTask());
+    document.getElementById('taskForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('taskId').value;
+        const payload = {
+            title: document.getElementById('taskTitle').value.trim(),
+            description: document.getElementById('taskDescription').value.trim(),
+            priority: document.getElementById('taskPriority').value,
+            due_date: document.getElementById('taskDueDate').value || null
+        };
+        if (!payload.title) { alert('Title is required'); return; }
+        if (id) {
+            updateTask(id, payload);
+        } else {
+            createTask(payload);
+        }
+        hideTaskForm();
     });
+    fetchTasks();
+
+    // Initialize chart with real data
+    const ctxLine = document.getElementById('lineChart').getContext('2d');
+    let trendsChart = null;
+    fetch("{{ route('admin.livestock-trends') }}", { credentials: 'same-origin', headers: { 'Accept': 'application/json' }})
+        .then(r => r.json())
+        .then(payload => {
+            if (!payload || !payload.success) return;
+            const config = {
+                type: 'line',
+                data: {
+                    labels: payload.labels,
+                    datasets: payload.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { grid: { color: 'rgba(0,0,0,0.1)' } }
+                    }
+                }
+            };
+            trendsChart = new Chart(ctxLine, config);
+        })
+        .catch(() => {
+            // fallback to placeholder data if request fails
+            trendsChart = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Cattle',
+                        data: [65, 59, 80, 81, 56, 55],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Goats',
+                        data: [28, 48, 40, 19, 86, 27],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        });
 });
 </script>
 @endpush

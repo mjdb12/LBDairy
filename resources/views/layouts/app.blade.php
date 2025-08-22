@@ -687,6 +687,17 @@
     
     <!-- Additional JavaScript for functionality -->
     <script>
+        // Global function to update topbar profile picture
+        function updateTopbarProfilePicture(imageFilename) {
+            const topbarProfilePic = document.querySelector('.topbar .img-profile');
+            if (topbarProfilePic && imageFilename) {
+                // Add cache-busting parameter to ensure the image updates
+                const timestamp = new Date().getTime();
+                topbarProfilePic.src = '{{ asset("img/") }}/' + imageFilename + '?t=' + timestamp;
+                console.log('Topbar profile picture updated to:', imageFilename);
+            }
+        }
+        
         $(document).ready(function() {
             // Enhanced sidebar toggle functionality
             $('#sidebarToggle').on('click', function(e) {

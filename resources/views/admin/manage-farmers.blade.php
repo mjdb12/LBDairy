@@ -2,10 +2,102 @@
 
 @section('title', 'LBDAIRY: Admin - Manage Farmers')
 
+@push('styles')
+<style>
+    /* Custom styles for farmer management */
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    /* Status badges */
+    .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-approved {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-active {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid">
-    <br><br><br><br>
-    
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -16,34 +108,82 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-container fade-in">
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--warning-color);" id="pendingCount">0</div>
-            <div class="stat-label">Pending Approvals</div>
+    <div class="row fade-in">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Approvals</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingCount">0</div>
+                    </div>
+                    <div class="icon text-warning">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--success-color);" id="activeCount">0</div>
-            <div class="stat-label">Active Farmers</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Farmers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeCount">0</div>
+                    </div>
+                    <div class="icon text-success">
+                        <i class="fas fa-user-check fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--info-color);" id="totalCount">0</div>
-            <div class="stat-label">Total Farmers</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farmers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCount">0</div>
+                    </div>
+                    <div class="icon text-info">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Rejected</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="rejectedCount">0</div>
+                    </div>
+                    <div class="icon text-danger">
+                        <i class="fas fa-user-times fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Pending Farmers Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header">
-            <h6>
-                <i class="fas fa-clock"></i>
-                Pending Farmer Registrations
-            </h6>
-            <div class="table-controls">
-                <div class="search-container">
-                    <input type="text" class="form-control custom-search" placeholder="Search pending farmers...">
-                </div>
-                <div class="export-controls">
-                    <div class="btn-group">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h6 class="mb-0 mb-md-0">
+                    <i class="fas fa-clock"></i>
+                    Pending Farmer Registrations
+                </h6>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                    <div class="input-group" style="max-width: 300px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
+                    </div>
+                    <div class="btn-group" role="group">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-download"></i> Export
                         </button>
@@ -59,16 +199,19 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn btn-secondary btn-sm" onclick="printTable('pendingFarmersTable')" title="Print">
                         <i class="fas fa-print"></i>
+                    </button>
+                    <button class="btn btn-info btn-sm" onclick="refreshPendingData()" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="pendingFarmersTable" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-bordered table-hover" id="pendingFarmersTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Name</th>
                             <th>Farm Name</th>
@@ -90,17 +233,22 @@
 
     <!-- Active Farmers Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header">
-            <h6>
-                <i class="fas fa-user-check"></i>
-                Active Farmers
-            </h6>
-            <div class="table-controls">
-                <div class="search-container">
-                    <input type="text" class="form-control custom-search" placeholder="Search active farmers...">
-                </div>
-                <div class="export-controls">
-                    <div class="btn-group">
+        <div class="card-header bg-success text-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h6 class="mb-0 mb-md-0">
+                    <i class="fas fa-user-check"></i>
+                    Active Farmers
+                </h6>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                    <div class="input-group" style="max-width: 300px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search active farmers..." id="activeSearch">
+                    </div>
+                    <div class="btn-group" role="group">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-download"></i> Export
                         </button>
@@ -116,16 +264,19 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable('activeFarmersTable')">
+                    <button class="btn btn-secondary btn-sm" onclick="printTable('activeFarmersTable')" title="Print">
                         <i class="fas fa-print"></i>
+                    </button>
+                    <button class="btn btn-info btn-sm" onclick="refreshActiveData()" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="activeFarmersTable" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-bordered table-hover" id="activeFarmersTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Name</th>
                             <th>Farm Name</th>
@@ -272,10 +423,12 @@ $(document).ready(function () {
     updateStats();
 
     // Custom search functionality
-    $('.custom-search').on('keyup', function() {
-        const tableId = $(this).closest('.card').find('table').attr('id');
-        const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
-        table.search(this.value).draw();
+    $('#pendingSearch').on('keyup', function() {
+        pendingFarmersTable.search(this.value).draw();
+    });
+    
+    $('#activeSearch').on('keyup', function() {
+        activeFarmersTable.search(this.value).draw();
     });
 });
 
@@ -288,6 +441,8 @@ function initializeDataTables() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        processing: true,
+        serverSide: false,
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -306,8 +461,16 @@ function initializeDataTables() {
         ],
         language: {
             search: "",
-            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>'
-        }
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>',
+            processing: '<i class="fas fa-spinner fa-spin"></i> Loading...'
+        },
+        columnDefs: [
+            {
+                targets: -1, // Last column (Actions)
+                orderable: false,
+                searchable: false
+            }
+        ]
     };
 
     pendingFarmersTable = $('#pendingFarmersTable').DataTable({
@@ -362,25 +525,27 @@ function initializeDataTables() {
 }
 
 function loadPendingFarmers() {
+    // Show loading state
+    const tableBody = $('#pendingFarmersBody');
+    tableBody.html('<tr><td colspan="8" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading pending farmers...</td></tr>');
+    
     // Load pending farmers from the database via AJAX
     $.ajax({
         url: '{{ route("admin.farmers.pending") }}',
         method: 'GET',
         success: function(response) {
-            console.log('Pending farmers response:', response);
             pendingFarmersTable.clear();
             
-            if (response.success && response.data) {
-                response.data.forEach((farmer, index) => {
-                    console.log(`Farmer ${index}:`, farmer);
+            if (response.success && response.data && response.data.length > 0) {
+                response.data.forEach((farmer) => {
                     const rowData = [
                         `${farmer.first_name || ''} ${farmer.last_name || ''}`,
-                        farmer.farm_name || '',
-                        farmer.barangay || '',
-                        farmer.phone || '',
-                        farmer.email || '',
-                        farmer.username || '',
-                        farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : '',
+                        farmer.farm_name || 'N/A',
+                        farmer.barangay || 'N/A',
+                        farmer.phone || 'N/A',
+                        farmer.email || 'N/A',
+                        farmer.username || 'N/A',
+                        farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
                         `<div class="btn-group" role="group">
                             <button class="btn btn-success btn-sm" onclick="approveFarmer('${farmer.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
@@ -391,63 +556,71 @@ function loadPendingFarmers() {
                         </div>`
                     ];
                     
-                    console.log(`Row data for farmer ${index}:`, rowData);
-                    const row = pendingFarmersTable.row.add(rowData).draw(false);
-                    
-                    // Add click handler for row details (excluding action buttons)
-                    $(row.node()).on('click', function(e) {
-                        if (!$(e.target).closest('button').length) {
-                            showFarmerDetails(farmer);
-                        }
-                    });
+                    pendingFarmersTable.row.add(rowData);
                 });
+                pendingFarmersTable.draw();
+            } else {
+                // Handle empty data properly
+                pendingFarmersTable.clear().draw();
+                $('#pendingFarmersBody').html('<tr><td colspan="8" class="text-center">No pending farmers found</td></tr>');
             }
         },
         error: function(xhr) {
             console.error('Error loading pending farmers:', xhr);
+            pendingFarmersTable.clear().draw();
+            $('#pendingFarmersBody').html('<tr><td colspan="8" class="text-center text-danger"><i class="fas fa-exclamation-triangle"></i> Error loading pending farmers</td></tr>');
         }
     });
 }
 
 function loadActiveFarmers() {
+    // Show loading state
+    const tableBody = $('#activeFarmersBody');
+    tableBody.html('<tr><td colspan="8" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading active farmers...</td></tr>');
+    
     // Load active farmers from the database via AJAX
     $.ajax({
         url: '{{ route("admin.farmers.active") }}',
         method: 'GET',
         success: function(response) {
-            console.log('Active farmers response:', response);
             activeFarmersTable.clear();
             
-            if (response.success && response.data) {
-                response.data.forEach((farmer, index) => {
-                    console.log(`Active farmer ${index}:`, farmer);
+            if (response.success && response.data && response.data.length > 0) {
+                response.data.forEach((farmer) => {
                     const rowData = [
                         `${farmer.first_name || ''} ${farmer.last_name || ''}`,
-                        farmer.farm_name || '',
-                        farmer.barangay || '',
-                        farmer.phone || '',
-                        farmer.email || '',
-                        farmer.username || '',
-                        farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : '',
-                        `<button class="btn btn-danger btn-sm" onclick="deactivateFarmer('${farmer.id}')" title="Deactivate">
-                            <i class="fas fa-user-slash"></i>
-                        </button>`
+                        farmer.farm_name || 'N/A',
+                        farmer.barangay || 'N/A',
+                        farmer.phone || 'N/A',
+                        farmer.email || 'N/A',
+                        farmer.username || 'N/A',
+                        farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
+                        `<div class="btn-group" role="group">
+                            <button class="btn btn-info btn-sm" onclick="showFarmerDetails(${JSON.stringify(farmer).replace(/"/g, '&quot;')})" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-warning btn-sm" onclick="openContactModal()" title="Contact">
+                                <i class="fas fa-envelope"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deactivateFarmer('${farmer.id}')" title="Deactivate">
+                                <i class="fas fa-user-slash"></i>
+                            </button>
+                        </div>`
                     ];
                     
-                    console.log(`Row data for active farmer ${index}:`, rowData);
-                    const row = activeFarmersTable.row.add(rowData).draw(false);
-                    
-                    // Add click handler for row details (excluding action buttons)
-                    $(row.node()).on('click', function(e) {
-                        if (!$(e.target).closest('button').length) {
-                            showFarmerDetails(farmer);
-                        }
-                    });
+                    activeFarmersTable.row.add(rowData);
                 });
+                activeFarmersTable.draw();
+            } else {
+                // Handle empty data properly
+                activeFarmersTable.clear().draw();
+                $('#activeFarmersBody').html('<tr><td colspan="8" class="text-center">No active farmers found</td></tr>');
             }
         },
         error: function(xhr) {
             console.error('Error loading active farmers:', xhr);
+            activeFarmersTable.clear().draw();
+            $('#activeFarmersBody').html('<tr><td colspan="8" class="text-center text-danger"><i class="fas fa-exclamation-triangle"></i> Error loading active farmers</td></tr>');
         }
     });
 }
@@ -458,11 +631,11 @@ function updateStats() {
         url: '{{ route("admin.farmers.stats") }}',
         method: 'GET',
         success: function(response) {
-            console.log('Stats response:', response);
             if (response.success && response.data) {
-                document.getElementById('pendingCount').textContent = response.data.pending;
-                document.getElementById('activeCount').textContent = response.data.active;
-                document.getElementById('totalCount').textContent = response.data.total;
+                document.getElementById('pendingCount').textContent = response.data.pending || 0;
+                document.getElementById('activeCount').textContent = response.data.active || 0;
+                document.getElementById('totalCount').textContent = response.data.total || 0;
+                document.getElementById('rejectedCount').textContent = response.data.rejected || 0;
             }
         },
         error: function(xhr) {
@@ -477,16 +650,16 @@ function showFarmerDetails(farmer) {
             <div class="col-md-6">
                 <h6 class="mb-3 text-primary">Personal Information</h6>
                 <p><strong>Full Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
-                <p><strong>Email:</strong> ${farmer.email || ''}</p>
-                <p><strong>Contact Number:</strong> ${farmer.phone || ''}</p>
-                <p><strong>Barangay:</strong> ${farmer.barangay || ''}</p>
+                <p><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
+                <p><strong>Contact Number:</strong> ${farmer.phone || 'N/A'}</p>
+                <p><strong>Barangay:</strong> ${farmer.barangay || 'N/A'}</p>
             </div>
             <div class="col-md-6">
                 <h6 class="mb-3 text-primary">Farm Information</h6>
-                <p><strong>Farm Name:</strong> ${farmer.farm_name || ''}</p>
-                <p><strong>Farm Address:</strong> ${farmer.farm_address || ''}</p>
-                <p><strong>Username:</strong> ${farmer.username || ''}</p>
-                <p><strong>Registration Date:</strong> ${farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : ''}</p>
+                <p><strong>Farm Name:</strong> ${farmer.farm_name || 'N/A'}</p>
+                <p><strong>Farm Address:</strong> ${farmer.farm_address || 'N/A'}</p>
+                <p><strong>Username:</strong> ${farmer.username || 'N/A'}</p>
+                <p><strong>Registration Date:</strong> ${farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A'}</p>
                 ${farmer.status ? `<p><strong>Status:</strong> <span class="status-badge status-${farmer.status}">${farmer.status}</span></p>` : ''}
             </div>
         </div>
@@ -498,6 +671,8 @@ function showFarmerDetails(farmer) {
 }
 
 function approveFarmer(farmerId) {
+    if (!confirm('Are you sure you want to approve this farmer?')) return;
+    
     $.ajax({
         url: `{{ route("admin.farmers.approve", ":id") }}`.replace(':id', farmerId),
         method: 'POST',
@@ -505,10 +680,14 @@ function approveFarmer(farmerId) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
-            loadPendingFarmers();
-            loadActiveFarmers();
-            updateStats();
-            showNotification('Farmer approved successfully!', 'success');
+            if (response.success) {
+                loadPendingFarmers();
+                loadActiveFarmers();
+                updateStats();
+                showNotification('Farmer approved successfully!', 'success');
+            } else {
+                showNotification(response.message || 'Error approving farmer', 'danger');
+            }
         },
         error: function(xhr) {
             showNotification('Error approving farmer', 'danger');
@@ -536,11 +715,15 @@ function submitRejection(event) {
             rejection_reason: reason
         },
         success: function(response) {
-            $('#rejectionModal').modal('hide');
-            document.getElementById('rejectionReason').value = '';
-            loadPendingFarmers();
-            updateStats();
-            showNotification('Farmer registration rejected.', 'warning');
+            if (response.success) {
+                $('#rejectionModal').modal('hide');
+                document.getElementById('rejectionReason').value = '';
+                loadPendingFarmers();
+                updateStats();
+                showNotification('Farmer registration rejected.', 'warning');
+            } else {
+                showNotification(response.message || 'Error rejecting farmer', 'danger');
+            }
         },
         error: function(xhr) {
             showNotification('Error rejecting farmer', 'danger');
@@ -558,9 +741,13 @@ function deactivateFarmer(farmerId) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
-            loadActiveFarmers();
-            updateStats();
-            showNotification('Farmer deactivated successfully.', 'danger');
+            if (response.success) {
+                loadActiveFarmers();
+                updateStats();
+                showNotification('Farmer deactivated successfully.', 'warning');
+            } else {
+                showNotification(response.message || 'Error deactivating farmer', 'danger');
+            }
         },
         error: function(xhr) {
             showNotification('Error deactivating farmer', 'danger');
@@ -592,16 +779,31 @@ function sendMessage(event) {
             message: message
         },
         success: function(response) {
-            document.getElementById('messageNotification').innerHTML = `
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i>
-                    Message sent to <strong>${name}</strong> successfully!
-                </div>
-            `;
-            document.getElementById('messageNotification').style.display = 'block';
+            if (response.success) {
+                document.getElementById('messageNotification').innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        Message sent to <strong>${name}</strong> successfully!
+                    </div>
+                `;
+                document.getElementById('messageNotification').style.display = 'block';
 
-            document.getElementById('messageSubject').value = '';
-            document.getElementById('messageBody').value = '';
+                document.getElementById('messageSubject').value = '';
+                document.getElementById('messageBody').value = '';
+                
+                setTimeout(() => {
+                    $('#contactModal').modal('hide');
+                    document.getElementById('messageNotification').style.display = 'none';
+                }, 2000);
+            } else {
+                document.getElementById('messageNotification').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ${response.message || 'Error sending message. Please try again.'}
+                    </div>
+                `;
+                document.getElementById('messageNotification').style.display = 'block';
+            }
         },
         error: function(xhr) {
             document.getElementById('messageNotification').innerHTML = `
@@ -613,6 +815,38 @@ function sendMessage(event) {
             document.getElementById('messageNotification').style.display = 'block';
         }
     });
+}
+
+function refreshPendingData() {
+    const refreshBtn = $('button[onclick="refreshPendingData()"]');
+    const originalIcon = refreshBtn.html();
+    refreshBtn.html('<i class="fas fa-spinner fa-spin"></i>');
+    refreshBtn.prop('disabled', true);
+    
+    loadPendingFarmers();
+    updateStats();
+    
+    setTimeout(() => {
+        refreshBtn.html(originalIcon);
+        refreshBtn.prop('disabled', false);
+        showNotification('Pending farmers data refreshed', 'success');
+    }, 1000);
+}
+
+function refreshActiveData() {
+    const refreshBtn = $('button[onclick="refreshActiveData()"]');
+    const originalIcon = refreshBtn.html();
+    refreshBtn.html('<i class="fas fa-spinner fa-spin"></i>');
+    refreshBtn.prop('disabled', true);
+    
+    loadActiveFarmers();
+    updateStats();
+    
+    setTimeout(() => {
+        refreshBtn.html(originalIcon);
+        refreshBtn.prop('disabled', false);
+        showNotification('Active farmers data refreshed', 'success');
+    }, 1000);
 }
 
 function showNotification(message, type) {

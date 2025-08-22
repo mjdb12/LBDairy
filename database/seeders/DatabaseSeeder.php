@@ -206,6 +206,33 @@ class DatabaseSeeder extends Seeder
             'recorded_by' => $farmer2->id,
         ]);
 
+        // Create some recent users for testing notifications
+        User::create([
+            'name' => 'Recent User 1',
+            'email' => 'recent1@lbdairy.com',
+            'username' => 'recent1',
+            'password' => Hash::make('password123'),
+            'role' => 'farmer',
+            'phone' => '+1234567895',
+            'address' => 'Recent Farm 1',
+            'is_active' => true,
+            'status' => 'approved',
+            'created_at' => now()->subHours(2), // Created 2 hours ago
+        ]);
+
+        User::create([
+            'name' => 'Recent User 2',
+            'email' => 'recent2@lbdairy.com',
+            'username' => 'recent2',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+            'phone' => '+1234567896',
+            'address' => 'Recent Admin 1',
+            'is_active' => false,
+            'status' => 'pending',
+            'created_at' => now()->subHours(1), // Created 1 hour ago
+        ]);
+
         // Audit logs will be created automatically by the system
 
         $this->command->info('Database seeded successfully!');

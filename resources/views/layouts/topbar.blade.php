@@ -39,7 +39,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name ?? 'User' }}</span>
-                <img class="img-profile rounded-circle" src="{{ asset('img/logo.png') }}">
+                <img class="img-profile rounded-circle" src="{{ asset('img/' . (Auth::user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" alt="Profile Picture">
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -78,6 +78,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Refresh notifications every 30 seconds
     setInterval(loadNotifications, 30000);
     
+    // Update topbar profile picture with user's actual profile image
+    updateTopbarProfilePicture();
+    
     // Mark all as read functionality
     document.getElementById('markAllRead').addEventListener('click', function(e) {
         e.preventDefault();
@@ -102,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 let suppressNotifications = false;
+let lastNotificationCount = 0;
 
 function loadNotifications() {
     if (suppressNotifications) {
@@ -109,6 +113,7 @@ function loadNotifications() {
         updateNotificationsList([]);
         return;
     }
+    
     // Show loading state
     const container = document.getElementById('notificationsList');
     container.innerHTML = '<div class="dropdown-item text-center small text-gray-500"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
@@ -117,7 +122,8 @@ function loadNotifications() {
         method: 'GET',
         credentials: 'same-origin',
         headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache'
         }
     })
         .then(response => {
@@ -128,8 +134,21 @@ function loadNotifications() {
         })
         .then(data => {
             if (data.success) {
-                updateNotificationCount(data.unread_count);
-                updateNotificationsList(data.notifications);
+                const newCount = data.unread_count;
+                
+                // Only update if count has changed
+                if (newCount !== lastNotificationCount) {
+                    updateNotificationCount(newCount);
+                    updateNotificationsList(data.notifications);
+                    lastNotificationCount = newCount;
+                    
+                    // Log for debugging
+                    console.log('Notifications updated:', {
+                        count: newCount,
+                        notifications: data.notifications.length,
+                        timestamp: new Date().toISOString()
+                    });
+                }
             } else {
                 throw new Error(data.error || 'Failed to load notifications');
             }
@@ -243,7 +262,7 @@ function markNotificationAsRead(notificationId) {
         },
         credentials: 'same-origin',
         body: JSON.stringify({
-            notification_id: notificationId
+            notification_id: parseInt(notificationId)
         })
     })
     .then(response => {
@@ -254,6 +273,11 @@ function markNotificationAsRead(notificationId) {
     })
     .then(data => {
         if (data.success) {
+            // Remove the notification from the list immediately
+            if (notificationItem) {
+                notificationItem.remove();
+            }
+            
             // Reload notifications to update the count
             loadNotifications();
         } else {
@@ -299,10 +323,12 @@ function markAllAsRead() {
     })
     .then(data => {
         if (data.success) {
-            // Reload notifications
-            suppressNotifications = true;
+            // Clear all notifications from the list
+            const notificationsList = document.getElementById('notificationsList');
+            notificationsList.innerHTML = '<div class="dropdown-item text-center small text-gray-500"><i class="fas fa-check-circle text-success"></i> All notifications marked as read</div>';
+            
+            // Update notification count
             updateNotificationCount(0);
-            updateNotificationsList([]);
             
             // Show success feedback
             markAllBtn.innerHTML = '<i class="fas fa-check"></i> Marked!';
@@ -329,6 +355,12 @@ function markAllAsRead() {
     });
 }
 
+function updateTopbarProfilePicture() {
+    // The profile picture is already set correctly in the blade template
+    // This function is kept for future use if needed
+    console.log('Topbar profile picture updated');
+}
+
 function showNotificationError(message) {
     // Create a temporary error notification
     const errorDiv = document.createElement('div');
@@ -350,6 +382,43 @@ function showNotificationError(message) {
             errorDiv.remove();
         }
     }, 5000);
+}
+
+// Function to test notification system and show real-time stats
+function testNotificationSystem() {
+    fetch('/superadmin/notifications/user-stats', {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Real-time User Statistics:', data.data);
+            
+            // Show a test notification with current stats
+            const stats = data.data;
+            const testNotification = {
+                id: 'test_stats',
+                type: 'info',
+                icon: 'fas fa-chart-bar',
+                title: 'Real-time User Statistics',
+                message: `Total: ${stats.total_users}, New (24h): ${stats.new_users_24h}, Pending Admins: ${stats.pending_admins}`,
+                time: 'Just now',
+                action_url: '#',
+                is_read: false
+            };
+            
+            updateNotificationCount(1);
+            updateNotificationsList([testNotification]);
+        }
+    })
+    .catch(error => {
+        console.error('Error testing notification system:', error);
+    });
 }
 </script>
 

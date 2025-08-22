@@ -2,9 +2,74 @@
 
 @section('title', 'LBDAIRY: SuperAdmin - Manage Admins')
 
+@push('styles')
+<style>
+    /* Custom styles for admin management */
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid">
-    
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -15,38 +80,82 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-container fade-in">
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--warning-color);" id="pendingCount">0</div>
-            <div class="stat-label">Pending Approvals</div>
+    <div class="row fade-in">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Approvals</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingCount">0</div>
+                    </div>
+                    <div class="icon text-warning">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--success-color);" id="activeCount">0</div>
-            <div class="stat-label">Active Admins</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Admins</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeCount">0</div>
+                    </div>
+                    <div class="icon text-success">
+                        <i class="fas fa-user-check fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--danger-color);" id="rejectedCount">0</div>
-            <div class="stat-label">Rejected</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Rejected</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="rejectedCount">0</div>
+                    </div>
+                    <div class="icon text-danger">
+                        <i class="fas fa-user-times fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--info-color);" id="totalCount">0</div>
-            <div class="stat-label">Total Admins</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Admins</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCount">0</div>
+                    </div>
+                    <div class="icon text-info">
+                        <i class="fas fa-users-cog fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Pending Admins Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header">
-            <h6>
-                <i class="fas fa-clock"></i>
-                Pending Admin Registrations
-            </h6>
-            <div class="table-controls">
-                <div class="search-container">
-                    <input type="text" class="form-control custom-search" placeholder="Search pending admins...">
-                </div>
-                <div class="export-controls">
-                    <div class="btn-group">
+        <div class="card-header bg-warning text-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h6 class="mb-0 mb-md-0">
+                    <i class="fas fa-clock"></i>
+                    Pending Admin Registrations
+                </h6>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                    <div class="input-group" style="max-width: 300px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search pending admins..." id="pendingSearch">
+                    </div>
+                    <div class="btn-group" role="group">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-download"></i> Export
                         </button>
@@ -62,7 +171,7 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable('pendingAdminsTable')">
+                    <button class="btn btn-secondary btn-sm" onclick="printTable('pendingAdminsTable')" title="Print">
                         <i class="fas fa-print"></i>
                     </button>
                 </div>
@@ -70,8 +179,8 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="pendingAdminsTable" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-bordered table-hover" id="pendingAdminsTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Name</th>
                             <th>Barangay</th>
@@ -92,17 +201,22 @@
 
     <!-- Active Admins Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header">
-            <h6>
-                <i class="fas fa-user-check"></i>
-                Active Admins
-            </h6>
-            <div class="table-controls">
-                <div class="search-container">
-                    <input type="text" class="form-control custom-search" placeholder="Search active admins...">
-                </div>
-                <div class="export-controls">
-                    <div class="btn-group">
+        <div class="card-header bg-success text-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h6 class="mb-0 mb-md-0">
+                    <i class="fas fa-user-check"></i>
+                    Active Admins
+                </h6>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                    <div class="input-group" style="max-width: 300px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search active admins..." id="activeSearch">
+                    </div>
+                    <div class="btn-group" role="group">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-download"></i> Export
                         </button>
@@ -118,7 +232,7 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable('activeAdminsTable')">
+                    <button class="btn btn-secondary btn-sm" onclick="printTable('activeAdminsTable')" title="Print">
                         <i class="fas fa-print"></i>
                     </button>
                 </div>
@@ -126,15 +240,16 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="activeAdminsTable" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-bordered table-hover" id="activeAdminsTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Name</th>
                             <th>Barangay</th>
                             <th>Contact</th>
                             <th>Email</th>
                             <th>Username</th>
-                            <th>Registration Date</th>
+                            <th>Approval Date</th>
+                            <th>Last Login</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -267,10 +382,11 @@ $(document).ready(function () {
     updateStats();
 
     // Custom search functionality
-    $('.custom-search').on('keyup', function() {
-        const tableId = $(this).closest('.card').find('table').attr('id');
-        const table = tableId === 'pendingAdminsTable' ? pendingAdminsTable : activeAdminsTable;
-        table.search(this.value).draw();
+    $('#pendingSearch').on('keyup', function() {
+        pendingAdminsTable.search(this.value).draw();
+    });
+    $('#activeSearch').on('keyup', function() {
+        activeAdminsTable.search(this.value).draw();
     });
 });
 
@@ -422,9 +538,15 @@ function loadActiveAdmins() {
                         admin.email || '',
                         admin.username || '',
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
-                        `<button class="btn btn-danger btn-sm" onclick="deactivateAdmin('${admin.id}')" title="Deactivate">
-                            <i class="fas fa-user-slash"></i>
-                        </button>`
+                        admin.last_login_at ? new Date(admin.last_login_at).toLocaleDateString() : 'Never',
+                        `<div class="btn-group" role="group">
+                            <button class="btn btn-danger btn-sm" onclick="deactivateAdmin('${admin.id}')" title="Deactivate">
+                                <i class="fas fa-user-slash"></i>
+                            </button>
+                            <button class="btn btn-info btn-sm" onclick="contactAdmin('${admin.id}')" title="Contact">
+                                <i class="fas fa-envelope"></i>
+                            </button>
+                        </div>`
                     ];
                     
                     console.log(`Row data for active admin ${index}:`, rowData);

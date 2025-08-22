@@ -1,44 +1,163 @@
 @extends('layouts.app')
 
-@section('title', 'LBDAIRY: SuperAdmin-Profile')
+@section('title', 'LBDAIRY: SuperAdmin - Profile')
 
+@push('styles')
 <style>
-    /* Ensure select dropdown text is visible */
-    #editBarangay {
-        color: #333 !important;
-        background-color: white !important;
+    /* Custom styles for superadmin profile */
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
     }
     
-    #editBarangay option {
-        color: #333 !important;
-        background-color: white !important;
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
     }
     
-    #editBarangay option:checked {
-        color: #333 !important;
-        background-color: #e3f2fd !important;
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
     }
     
-    #editBarangay option:hover {
-        color: #333 !important;
-        background-color: #f5f5f5 !important;
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
     }
     
-    /* Ensure the selected value text is visible */
-    #editBarangay:focus {
-        color: #333 !important;
-        background-color: white !important;
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
     }
     
-    /* Make sure the profile table text is visible */
+    /* Profile Picture Enhancement */
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .img-profile {
+        border: 6px solid white;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .img-profile:hover {
+        transform: scale(1.08);
+        box-shadow: 0 1.5rem 4rem rgba(78, 115, 223, 0.25);
+    }
+
+    /* Profile Card Thick Blue Border */
+    .profile-card-bordered {
+        background: #4e73df;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 4px 32px rgba(78, 115, 223, 0.10);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    /* Card Headers */
+    .card-header {
+        background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+        color: white;
+        border-bottom: none;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h6 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* Profile Info Table */
     .profile-info-table td {
         color: #333 !important;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f8f9fc;
     }
     
     .profile-info-table th {
         color: #333 !important;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f8f9fc;
+        font-weight: 600;
+        width: 180px;
+    }
+
+    /* Stagger Animation */
+    .stagger-animation .col-12 {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .stagger-animation .col-12:nth-child(1) { animation-delay: 0.1s; }
+    .stagger-animation .col-12:nth-child(2) { animation-delay: 0.2s; }
+    .stagger-animation .col-12:nth-child(3) { animation-delay: 0.3s; }
+    .stagger-animation .col-12:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Notification Styles */
+    .notification {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease-out;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .card-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
     }
 </style>
+@endpush
 
 @section('content')
 <!-- Page Header -->
@@ -49,6 +168,42 @@
     </h1>
     <p>Manage your administrative profile and system settings</p>
 </div>
+
+<!-- Success/Error Messages -->
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle mr-2"></i>
+    {{ session('success') }}
+    <button type="button" class="close" data-dismiss="alert">
+        <span>&times;</span>
+    </button>
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle mr-2"></i>
+    {{ session('error') }}
+    <button type="button" class="close" data-dismiss="alert">
+        <span>&times;</span>
+    </button>
+</div>
+@endif
+
+@if($errors->any())
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle mr-2"></i>
+    <strong>Please fix the following errors:</strong>
+    <ul class="mb-0 mt-2">
+        @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="close" data-dismiss="alert">
+        <span>&times;</span>
+    </button>
+</div>
+@endif
 
 <!-- Stats Cards -->
 <div class="row fade-in stagger-animation">
@@ -103,13 +258,13 @@
             </a>
         </div>
     </div>
-    <!-- Years as Admin -->
+    <!-- Days as Admin -->
     <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Years as Super Admin</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \Carbon\Carbon::parse(auth()->user()->created_at)->diffInYears(now()) }}</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Days as Super Admin</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format(\Carbon\Carbon::parse(auth()->user()->created_at)->diffInDays(now()), 2) }}</div>
                 </div>
                 <div class="icon text-primary">
                     <i class="fas fa-user-shield fa-2x"></i>
@@ -130,7 +285,7 @@
             <div class="card shadow profile-card">
                 <div class="card-body text-center">
                     <div class="profile-picture-container">
-                        <img id="profilePicture" src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}" alt="Profile Picture" class="img-profile rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;">
+                        <img id="profilePicture" src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" alt="Profile Picture" class="img-profile rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;">
                     </div>
                     <h5 class="font-weight-bold mb-1">{{ auth()->user()->name }}</h5>
                     <p class="text-muted mb-3">{{ auth()->user()->email }}</p>
@@ -168,7 +323,7 @@
                     <table class="table table-borderless mb-0 profile-info-table">
                         <tbody>
                             <tr>
-                                <th scope="row" style="width:180px;">
+                                <th scope="row">
                                     <i class="fas fa-user text-primary"></i>Full Name
                                 </th>
                                 <td>{{ auth()->user()->name }}</td>
@@ -183,31 +338,37 @@
                                 <th scope="row">
                                     <i class="fas fa-phone text-success"></i>Phone
                                 </th>
-                                <td>{{ auth()->user()->phone ?? '+63 912 345 6789' }}</td>
+                                <td>{{ auth()->user()->phone ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
                                     <i class="fas fa-user-shield text-warning"></i>Position
                                 </th>
-                                <td>Super Admin III</td>
+                                <td>{{ auth()->user()->position ?? 'Super Admin' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
                                     <i class="fas fa-map-marker-alt text-info"></i>Barangay
                                 </th>
-                                <td>{{ auth()->user()->barangay ?? 'N/A' }}</td>
+                                <td>{{ auth()->user()->barangay ?? 'Not specified' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-map-marker-alt text-danger"></i>Farm Address
+                                    <i class="fas fa-map-marker-alt text-danger"></i>Address
                                 </th>
-                                <td>{{ auth()->user()->address ?? 'Brgy. Palola, Lucban, Quezon' }}</td>
+                                <td>{{ auth()->user()->address ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
                                     <i class="fas fa-calendar text-secondary"></i>Member Since
                                 </th>
-                                <td>{{ auth()->user()->created_at->format('F Y') }}</td>
+                                <td>{{ auth()->user()->created_at ? auth()->user()->created_at->format('F Y') : 'Unknown' }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <i class="fas fa-clock text-primary"></i>Last Updated
+                                </th>
+                                <td>{{ auth()->user()->updated_at ? auth()->user()->updated_at->format('F j, Y g:i A') : 'Never' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -220,7 +381,7 @@
 <!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form class="modal-content" method="POST" action="{{ route('superadmin.profile.update') }}">
+    <form class="modal-content" method="POST" action="{{ route('superadmin.profile.update') }}" id="editProfileForm">
       @csrf
       @method('PUT')
       <div class="modal-header">
@@ -236,71 +397,89 @@
               <label for="editFullName">
                   <i class="fas fa-user"></i>Full Name
               </label>
-              <input type="text" class="form-control" id="editFullName" name="name" value="{{ auth()->user()->name }}" required>
+              <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name) }}" required>
+              @error('name')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="editEmail">
                   <i class="fas fa-envelope"></i>Email
               </label>
-              <input type="email" class="form-control" id="editEmail" name="email" value="{{ auth()->user()->email }}" required>
-          </div>
-          <div class="form-group">
-              <label for="editPosition">
-                  <i class="fas fa-user-shield"></i>Position
-              </label>
-              <input type="text" class="form-control" id="editPosition" name="position" value="Super Admin III" readonly>
-          </div>
-          <div class="form-group">
-              <label for="editBarangay">
-                  <i class="fas fa-map-marker-alt"></i>Barangay
-              </label>
-              <select class="form-control" id="editBarangay" name="barangay" required style="color: #333; background-color: white;">
-                  <option value="" style="color: #333;">Select Barangay</option>
-                  <option value="Abang" {{ auth()->user()->barangay == 'Abang' ? 'selected' : '' }} style="color: #333;">Abang</option>
-                  <option value="Aliliw" {{ auth()->user()->barangay == 'Aliliw' ? 'selected' : '' }} style="color: #333;">Aliliw</option>
-                  <option value="Atulinao" {{ auth()->user()->barangay == 'Atulinao' ? 'selected' : '' }} style="color: #333;">Atulinao</option>
-                  <option value="Ayuti (Poblacion)" {{ auth()->user()->barangay == 'Ayuti (Poblacion)' ? 'selected' : '' }} style="color: #333;">Ayuti (Poblacion)</option>
-                  <option value="Barangay 1 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 1 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 1 (Poblacion)</option>
-                  <option value="Barangay 2 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 2 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 2 (Poblacion)</option>
-                  <option value="Barangay 3 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 3 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 3 (Poblacion)</option>
-                  <option value="Barangay 4 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 4 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 4 (Poblacion)</option>
-                  <option value="Barangay 5 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 5 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 5 (Poblacion)</option>
-                  <option value="Barangay 6 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 6 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 6 (Poblacion)</option>
-                  <option value="Barangay 7 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 7 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 7 (Poblacion)</option>
-                  <option value="Barangay 8 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 8 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 8 (Poblacion)</option>
-                  <option value="Barangay 9 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 9 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 9 (Poblacion)</option>
-                  <option value="Barangay 10 (Poblacion)" {{ auth()->user()->barangay == 'Barangay 10 (Poblacion)' ? 'selected' : '' }} style="color: #333;">Barangay 10 (Poblacion)</option>
-                  <option value="Igang" {{ auth()->user()->barangay == 'Igang' ? 'selected' : '' }} style="color: #333;">Igang</option>
-                  <option value="Kabatete" {{ auth()->user()->barangay == 'Kabatete' ? 'selected' : '' }} style="color: #333;">Kabatete</option>
-                  <option value="Kakawit" {{ auth()->user()->barangay == 'Kakawit' ? 'selected' : '' }} style="color: #333;">Kakawit</option>
-                  <option value="Kalangay" {{ auth()->user()->barangay == 'Kalangay' ? 'selected' : '' }} style="color: #333;">Kalangay</option>
-                  <option value="Kalyaat" {{ auth()->user()->barangay == 'Kalyaat' ? 'selected' : '' }} style="color: #333;">Kalyaat</option>
-                  <option value="Kilib" {{ auth()->user()->barangay == 'Kilib' ? 'selected' : '' }} style="color: #333;">Kilib</option>
-                  <option value="Kulapi" {{ auth()->user()->barangay == 'Kulapi' ? 'selected' : '' }} style="color: #333;">Kulapi</option>
-                  <option value="Mahabang Parang" {{ auth()->user()->barangay == 'Mahabang Parang' ? 'selected' : '' }} style="color: #333;">Mahabang Parang</option>
-                  <option value="Malupak" {{ auth()->user()->barangay == 'Malupak' ? 'selected' : '' }} style="color: #333;">Malupak</option>
-                  <option value="Manasa" {{ auth()->user()->barangay == 'Manasa' ? 'selected' : '' }} style="color: #333;">Manasa</option>
-                  <option value="May-It" {{ auth()->user()->barangay == 'May-It' ? 'selected' : '' }} style="color: #333;">May-It</option>
-                  <option value="Nagsinamo" {{ auth()->user()->barangay == 'Nagsinamo' ? 'selected' : '' }} style="color: #333;">Nagsinamo</option>
-                  <option value="Nalunao" {{ auth()->user()->barangay == 'Nalunao' ? 'selected' : '' }} style="color: #333;">Nalunao</option>
-                  <option value="Palola" {{ auth()->user()->barangay == 'Palola' ? 'selected' : '' }} style="color: #333;">Palola</option>
-                  <option value="Piis" {{ auth()->user()->barangay == 'Piis' ? 'selected' : '' }} style="color: #333;">Piis</option>
-                  <option value="Samil" {{ auth()->user()->barangay == 'Samil' ? 'selected' : '' }} style="color: #333;">Samil</option>
-                  <option value="Tiawe" {{ auth()->user()->barangay == 'Tiawe' ? 'selected' : '' }} style="color: #333;">Tiawe</option>
-                  <option value="Tinamnan" {{ auth()->user()->barangay == 'Tinamnan' ? 'selected' : '' }} style="color: #333;">Tinamnan</option>
-              </select>
+              <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email) }}" required>
+              @error('email')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="editPhone">
                   <i class="fas fa-phone"></i>Contact Number
               </label>
-              <input type="text" class="form-control" id="editPhone" name="phone" value="{{ auth()->user()->phone ?? '+63 912 345 6789' }}">
+              <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone) }}">
+              @error('phone')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
-              <label for="editFarmAddress">
+              <label for="editBarangay">
+                  <i class="fas fa-map-marker-alt"></i>Barangay
+              </label>
+              <select class="form-control @error('barangay') is-invalid @enderror" id="editBarangay" name="barangay" required>
+                  <option value="">Select Barangay</option>
+                  <option value="Abang" {{ old('barangay', auth()->user()->barangay) == 'Abang' ? 'selected' : '' }}>Abang</option>
+                  <option value="Aliliw" {{ old('barangay', auth()->user()->barangay) == 'Aliliw' ? 'selected' : '' }}>Aliliw</option>
+                  <option value="Atulinao" {{ old('barangay', auth()->user()->barangay) == 'Atulinao' ? 'selected' : '' }}>Atulinao</option>
+                  <option value="Ayuti (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Ayuti (Poblacion)' ? 'selected' : '' }}>Ayuti (Poblacion)</option>
+                  <option value="Barangay 1 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 1 (Poblacion)' ? 'selected' : '' }}>Barangay 1 (Poblacion)</option>
+                  <option value="Barangay 2 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 2 (Poblacion)' ? 'selected' : '' }}>Barangay 2 (Poblacion)</option>
+                  <option value="Barangay 3 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 3 (Poblacion)' ? 'selected' : '' }}>Barangay 3 (Poblacion)</option>
+                  <option value="Barangay 4 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 4 (Poblacion)' ? 'selected' : '' }}>Barangay 4 (Poblacion)</option>
+                  <option value="Barangay 5 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 5 (Poblacion)' ? 'selected' : '' }}>Barangay 5 (Poblacion)</option>
+                  <option value="Barangay 6 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 6 (Poblacion)' ? 'selected' : '' }}>Barangay 6 (Poblacion)</option>
+                  <option value="Barangay 7 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 7 (Poblacion)' ? 'selected' : '' }}>Barangay 7 (Poblacion)</option>
+                  <option value="Barangay 8 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 8 (Poblacion)' ? 'selected' : '' }}>Barangay 8 (Poblacion)</option>
+                  <option value="Barangay 9 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 9 (Poblacion)' ? 'selected' : '' }}>Barangay 9 (Poblacion)</option>
+                  <option value="Barangay 10 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 10 (Poblacion)' ? 'selected' : '' }}>Barangay 10 (Poblacion)</option>
+                  <option value="Igang" {{ old('barangay', auth()->user()->barangay) == 'Igang' ? 'selected' : '' }}>Igang</option>
+                  <option value="Kabatete" {{ old('barangay', auth()->user()->barangay) == 'Kabatete' ? 'selected' : '' }}>Kabatete</option>
+                  <option value="Kakawit" {{ old('barangay', auth()->user()->barangay) == 'Kakawit' ? 'selected' : '' }}>Kakawit</option>
+                  <option value="Kalangay" {{ old('barangay', auth()->user()->barangay) == 'Kalangay' ? 'selected' : '' }}>Kalangay</option>
+                  <option value="Kalyaat" {{ old('barangay', auth()->user()->barangay) == 'Kalyaat' ? 'selected' : '' }}>Kalyaat</option>
+                  <option value="Kilib" {{ old('barangay', auth()->user()->barangay) == 'Kilib' ? 'selected' : '' }}>Kilib</option>
+                  <option value="Kulapi" {{ old('barangay', auth()->user()->barangay) == 'Kulapi' ? 'selected' : '' }}>Kulapi</option>
+                  <option value="Mahabang Parang" {{ old('barangay', auth()->user()->barangay) == 'Mahabang Parang' ? 'selected' : '' }}>Mahabang Parang</option>
+                  <option value="Malupak" {{ old('barangay', auth()->user()->barangay) == 'Malupak' ? 'selected' : '' }}>Malupak</option>
+                  <option value="Manasa" {{ old('barangay', auth()->user()->barangay) == 'Manasa' ? 'selected' : '' }}>Manasa</option>
+                  <option value="May-It" {{ old('barangay', auth()->user()->barangay) == 'May-It' ? 'selected' : '' }}>May-It</option>
+                  <option value="Nagsinamo" {{ old('barangay', auth()->user()->barangay) == 'Nagsinamo' ? 'selected' : '' }}>Nagsinamo</option>
+                  <option value="Nalunao" {{ old('barangay', auth()->user()->barangay) == 'Nalunao' ? 'selected' : '' }}>Nalunao</option>
+                  <option value="Palola" {{ old('barangay', auth()->user()->barangay) == 'Palola' ? 'selected' : '' }}>Palola</option>
+                  <option value="Piis" {{ old('barangay', auth()->user()->barangay) == 'Piis' ? 'selected' : '' }}>Piis</option>
+                  <option value="Samil" {{ old('barangay', auth()->user()->barangay) == 'Samil' ? 'selected' : '' }}>Samil</option>
+                  <option value="Tiawe" {{ old('barangay', auth()->user()->barangay) == 'Tiawe' ? 'selected' : '' }}>Tiawe</option>
+                  <option value="Tinamnan" {{ old('barangay', auth()->user()->barangay) == 'Tinamnan' ? 'selected' : '' }}>Tinamnan</option>
+              </select>
+              @error('barangay')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+          </div>
+          <div class="form-group">
+              <label for="editPosition">
+                  <i class="fas fa-user-shield"></i>Position
+              </label>
+              <input type="text" class="form-control @error('position') is-invalid @enderror" id="editPosition" name="position" value="{{ old('position', auth()->user()->position ?? 'Super Admin') }}">
+              @error('position')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+          </div>
+          <div class="form-group">
+              <label for="editAddress">
                   <i class="fas fa-map-marker-alt"></i>Address
               </label>
-              <input type="text" class="form-control" id="editFarmAddress" name="address" value="{{ auth()->user()->address ?? 'Brgy. Palola, Lucban, Quezon' }}">
+              <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address) }}">
+              @error('address')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
       </div>
       <div class="modal-footer">
@@ -318,7 +497,7 @@
 <!-- Change Password Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form class="modal-content" method="POST" action="{{ route('superadmin.profile.password') }}">
+    <form class="modal-content" method="POST" action="{{ route('superadmin.profile.password') }}" id="changePasswordForm">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title" id="changePasswordLabel">
@@ -333,19 +512,28 @@
               <label for="currentPassword">
                   <i class="fas fa-lock"></i>Current Password
               </label>
-              <input type="password" class="form-control" id="currentPassword" name="current_password" required>
+              <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
+              @error('current_password')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="newPassword">
                   <i class="fas fa-key"></i>New Password
               </label>
-              <input type="password" class="form-control" id="newPassword" name="password" required>
+              <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
+              @error('password')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="confirmPassword">
                   <i class="fas fa-check-circle"></i>Confirm New Password
               </label>
-              <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
+              <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="confirmPassword" name="password_confirmation" required>
+              @error('password_confirmation')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
       </div>
       <div class="modal-footer">
@@ -361,86 +549,73 @@
 </div>
 @endsection
 
-@push('styles')
-<style>
-    /* Profile Picture Enhancement */
-    .profile-picture-container {
-        position: relative;
-        display: inline-block;
-    }
-
-    .img-profile {
-        border: 6px solid white;
-        box-shadow: var(--shadow-lg);
-        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-    }
-
-    .img-profile:hover {
-        transform: scale(1.08);
-        box-shadow: 0 1.5rem 4rem rgba(78, 115, 223, 0.25);
-    }
-
-    /* Profile Card Thick Blue Border */
-    .profile-card-bordered {
-        background: var(--primary-color);
-        border-radius: 18px;
-        padding: 18px;
-        box-shadow: 0 4px 32px rgba(78, 115, 223, 0.10);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .profile-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        width: 100%;
-        max-width: 420px;
-        margin: 0 auto;
-    }
-
-    /* Stagger Animation */
-    .stagger-animation .col-12 {
-        animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .stagger-animation .col-12:nth-child(1) { animation-delay: 0.1s; }
-    .stagger-animation .col-12:nth-child(2) { animation-delay: 0.2s; }
-    .stagger-animation .col-12:nth-child(3) { animation-delay: 0.3s; }
-    .stagger-animation .col-12:nth-child(4) { animation-delay: 0.4s; }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
-@endpush
-
 @push('scripts')
 <script>
     function changeProfilePicture(event) {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profilePicture').src = e.target.result;
-                showNotification('Profile picture updated successfully!', 'success');
-            };
-            reader.readAsDataURL(file);
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select a valid image file!', 'danger');
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Image size should be less than 5MB!', 'danger');
+                return;
+            }
+            
+            // Create FormData for file upload
+            const formData = new FormData();
+            formData.append('profile_picture', file);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            
+            // Show loading state
+            const profilePicture = document.getElementById('profilePicture');
+            const originalSrc = profilePicture.src;
+            profilePicture.style.opacity = '0.5';
+            
+            // Upload file to server
+            fetch('{{ route("superadmin.profile.picture") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the image source with the new filename (with cache-busting)
+                    const timestamp = new Date().getTime();
+                    profilePicture.src = '{{ asset("img/") }}/' + data.filename + '?t=' + timestamp;
+                    
+                    // Update the topbar profile picture using the global function
+                    if (typeof updateTopbarProfilePicture === 'function') {
+                        updateTopbarProfilePicture(data.filename);
+                        console.log('Topbar profile picture update called with:', data.filename);
+                    } else {
+                        console.warn('updateTopbarProfilePicture function not found');
+                    }
+                    
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.message || 'Failed to upload profile picture!', 'danger');
+                    profilePicture.src = originalSrc;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Failed to upload profile picture!', 'danger');
+                profilePicture.src = originalSrc;
+            })
+            .finally(() => {
+                profilePicture.style.opacity = '1';
+            });
         }
     }
 
     function showNotification(message, type) {
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} notification`;
+        notification.className = `alert alert-${type} alert-dismissible fade show notification`;
         notification.innerHTML = `
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'} mr-2"></i>
             ${message}
@@ -458,25 +633,96 @@
         }, 5000);
     }
 
-    // Handle form submissions
-    document.querySelector('#editProfileModal form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Submit form via AJAX or let it submit normally
-        this.submit();
+    // Form validation
+    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+        const name = document.getElementById('editFullName').value.trim();
+        const email = document.getElementById('editEmail').value.trim();
+        const barangay = document.getElementById('editBarangay').value;
+        
+        if (!name) {
+            e.preventDefault();
+            showNotification('Full name is required!', 'danger');
+            return;
+        }
+        
+        if (!email) {
+            e.preventDefault();
+            showNotification('Email is required!', 'danger');
+            return;
+        }
+        
+        if (!barangay) {
+            e.preventDefault();
+            showNotification('Please select a barangay!', 'danger');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        submitBtn.disabled = true;
+        
+        // Re-enable after a delay in case of validation errors
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 3000);
     });
 
-    document.querySelector('#changePasswordModal form').addEventListener('submit', function(e) {
-        e.preventDefault();
+    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+        const currentPassword = document.getElementById('currentPassword').value;
         const newPassword = document.getElementById('newPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         
+        if (!currentPassword) {
+            e.preventDefault();
+            showNotification('Current password is required!', 'danger');
+            return;
+        }
+        
+        if (!newPassword) {
+            e.preventDefault();
+            showNotification('New password is required!', 'danger');
+            return;
+        }
+        
+        if (newPassword.length < 8) {
+            e.preventDefault();
+            showNotification('New password must be at least 8 characters long!', 'danger');
+            return;
+        }
+        
         if (newPassword !== confirmPassword) {
+            e.preventDefault();
             showNotification('Passwords do not match!', 'danger');
             return;
         }
         
-        // Submit form
-        this.submit();
+        // Show loading state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Changing...';
+        submitBtn.disabled = true;
+        
+        // Re-enable after a delay in case of validation errors
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 3000);
     });
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            if (alert.classList.contains('alert-dismissible')) {
+                const closeButton = alert.querySelector('.close');
+                if (closeButton) {
+                    closeButton.click();
+                }
+            }
+        });
+    }, 5000);
 </script>
 @endpush

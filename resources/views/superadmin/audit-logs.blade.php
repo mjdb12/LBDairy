@@ -1,6 +1,93 @@
 @extends('layouts.app')
 
-@section('title', 'Audit Logs')
+@section('title', 'LBDAIRY: SuperAdmin - Audit Logs')
+
+@push('styles')
+<style>
+    /* Custom styles for audit logs */
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    .log-id-link {
+        color: #4e73df;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .log-id-link:hover {
+        color: #2e59d9;
+        text-decoration: underline;
+    }
+    
+    .quick-actions .btn {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .quick-actions .btn {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+@endpush
 
 @section('content')
 <div class="container-fluid">
@@ -14,26 +101,61 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-container fade-in">
-        <div class="stat-card">
-            <i class="fas fa-list stat-icon"></i>
-            <h3>{{ $totalLogs ?? 0 }}</h3>
-            <p>Total Logs</p>
+    <div class="row fade-in">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Logs</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLogs ?? 0 }}</div>
+                    </div>
+                    <div class="icon text-info">
+                        <i class="fas fa-list fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <i class="fas fa-calendar stat-icon"></i>
-            <h3>{{ $todayLogs ?? 0 }}</h3>
-            <p>Today's Logs</p>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Today's Logs</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $todayLogs ?? 0 }}</div>
+                    </div>
+                    <div class="icon text-success">
+                        <i class="fas fa-calendar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <i class="fas fa-exclamation-triangle stat-icon"></i>
-            <h3>{{ $criticalEvents ?? 0 }}</h3>
-            <p>Critical Events</p>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Critical Events</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalEvents ?? 0 }}</div>
+                    </div>
+                    <div class="icon text-danger">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <i class="fas fa-users stat-icon"></i>
-            <h3>{{ $activeUsers ?? 0 }}</h3>
-            <p>Active Users</p>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Active Users</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeUsers ?? 0 }}</div>
+                    </div>
+                    <div class="icon text-warning">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -41,27 +163,33 @@
     <div class="row mb-4 fade-in">
         <div class="col-12">
             <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-tools"></i>
+                        Quick Actions
+                    </h6>
+                </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
+                    <div class="row quick-actions">
+                        <div class="col-lg-3 col-md-6 mb-2">
                             <button class="btn btn-primary btn-block" onclick="exportLogs()">
                                 <i class="fas fa-download"></i>
                                 Export Logs
                             </button>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-md-6 mb-2">
                             <button class="btn btn-success btn-block" onclick="generateReport()">
                                 <i class="fas fa-file-alt"></i>
                                 Generate Report
                             </button>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-md-6 mb-2">
                             <button class="btn btn-info btn-block" onclick="openFilterModal()">
                                 <i class="fas fa-filter"></i>
                                 Advanced Filter
                             </button>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-md-6 mb-2">
                             <button id="clearLogsBtn" class="btn btn-warning btn-block" onclick="clearOldLogs()">
                                 <i class="fas fa-trash"></i>
                                 Clear Logs
@@ -75,17 +203,22 @@
 
     <!-- Audit Logs Table -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-                <i class="fas fa-table"></i>
-                System Activity Logs
-            </h6>
-            <div class="table-controls">
-                <div class="search-container">
-                    <input type="text" class="form-control custom-search" placeholder="Search logs...">
-                </div>
-                <div class="export-controls">
-                    <div class="btn-group">
+        <div class="card-header bg-secondary text-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h6 class="mb-0 mb-md-0">
+                    <i class="fas fa-table"></i>
+                    System Activity Logs
+                </h6>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                    <div class="input-group" style="max-width: 300px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
+                    </div>
+                    <div class="btn-group" role="group">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-download"></i> Export
                         </button>
@@ -101,7 +234,7 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable()">
+                    <button class="btn btn-light btn-sm" onclick="printTable()" title="Print">
                         <i class="fas fa-print"></i>
                     </button>
                 </div>
@@ -109,8 +242,8 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="auditDataTable" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-bordered table-hover" id="auditDataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Log ID</th>
                             <th>Timestamp</th>
@@ -127,7 +260,7 @@
                         @forelse($auditLogs ?? [] as $log)
                         <tr class="{{ $log->severity === 'critical' ? 'table-danger' : ($log->severity === 'warning' ? 'table-warning' : '') }}">
                             <td>
-                                <a href="#" onclick="openLogDetails('{{ $log->id }}')">
+                                <a href="#" class="log-id-link" onclick="openLogDetails('{{ $log->id }}')">
                                     {{ $log->log_id ?? 'L' . str_pad($log->id, 3, '0', STR_PAD_LEFT) }}
                                 </a>
                             </td>
@@ -171,13 +304,13 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-info" onclick="viewLogDetails('{{ $log->id }}')">
+                                    <button class="btn btn-sm btn-info" onclick="viewLogDetails('{{ $log->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-warning" onclick="investigateLog('{{ $log->id }}')">
+                                    <button class="btn btn-sm btn-warning" onclick="investigateLog('{{ $log->id }}')" title="Investigate">
                                         <i class="fas fa-search"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger" onclick="flagLog('{{ $log->id }}')">
+                                    <button class="btn btn-sm btn-danger" onclick="flagLog('{{ $log->id }}')" title="Flag">
                                         <i class="fas fa-flag"></i>
                                     </button>
                                 </div>
@@ -202,20 +335,11 @@
         <!-- Activity Timeline Chart -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
                         <i class="fas fa-chart-line"></i>
                         System Activity Timeline (Last 24 Hours)
                     </h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in">
-                            <a class="dropdown-item" href="#" onclick="exportChart('activityTimeline')">Export Chart</a>
-                            <a class="dropdown-item" href="#" onclick="printChart('activityTimeline')">Print Chart</a>
-                        </div>
-                    </div>
                 </div>
                 <div class="card-body">
                     <canvas id="activityTimelineChart" width="100%" height="40"></canvas>
@@ -226,8 +350,8 @@
         <!-- Severity Distribution -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                <div class="card-header bg-warning text-white">
+                    <h6 class="mb-0">
                         <i class="fas fa-chart-pie"></i>
                         Events by Severity
                     </h6>
@@ -241,16 +365,16 @@
 
     <!-- Security Alerts -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-danger">
+        <div class="card-header bg-danger text-white">
+            <h6 class="mb-0">
                 <i class="fas fa-shield-alt"></i>
                 Security Alerts & Critical Events
             </h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-sm table-danger">
-                    <thead>
+                <table class="table table-sm table-hover">
+                    <thead class="thead-light">
                         <tr>
                             <th>Timestamp</th>
                             <th>User</th>
@@ -292,16 +416,16 @@
 
     <!-- User Activity Summary -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+        <div class="card-header bg-success text-white">
+            <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 User Activity Summary
             </h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-sm">
-                    <thead>
+                <table class="table table-sm table-hover">
+                    <thead class="thead-light">
                         <tr>
                             <th>User</th>
                             <th>Last Activity</th>
@@ -530,6 +654,11 @@ function initializeDataTable() {
             lengthMenu: "Show _MENU_ logs per page",
             info: "Showing _START_ to _END_ of _TOTAL_ logs"
         }
+    });
+
+    // Custom search functionality
+    $('#logSearch').on('keyup', function() {
+        $('#auditDataTable').DataTable().search(this.value).draw();
     });
 }
 

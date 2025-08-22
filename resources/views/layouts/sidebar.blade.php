@@ -134,6 +134,21 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
+                System
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('farmer.audit-logs') }}">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Audit Logs</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
                 Manage Profile
             </div>
 
@@ -295,7 +310,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('superadmin.audit-logs') }}">
                     <i class="fas fa-fw fa-file-alt"></i>
-                    <span>Logs</span>
+                    <span>Audit Logs</span>
                 </a>
             </li>
 

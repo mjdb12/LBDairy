@@ -89,6 +89,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/livestock-analysis', function () { return view('farmer.livestock-analysis'); })->name('livestock-analysis');
         Route::get('/clients', function () { return view('farmer.clients'); })->name('clients');
         Route::get('/inventory', function () { return view('farmer.inventory'); })->name('inventory');
+        
+        // Audit logs routes for farmer
+        Route::get('/audit-logs', [FarmerController::class, 'auditLogs'])->name('audit-logs');
+        Route::get('/audit-logs/{id}/details', [FarmerController::class, 'getAuditLogDetails'])->name('audit-logs.details');
+        Route::get('/audit-logs/export', [FarmerController::class, 'exportAuditLogs'])->name('audit-logs.export');
     });
     
     // Admin routes
@@ -97,6 +102,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile', function () { return view('admin.profile'); })->name('profile');
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
         Route::put('/profile/password', [AdminController::class, 'changePassword'])->name('profile.password');
+        Route::post('/profile/picture', [AdminController::class, 'uploadProfilePicture'])->name('profile.picture');
+        Route::get('/profile/picture/current', [AdminController::class, 'getCurrentProfilePicture'])->name('profile.picture.current');
         Route::get('/farms', function () { return view('admin.farms'); })->name('farms');
         // Farmer management routes
         Route::get('/manage-farmers', [App\Http\Controllers\AdminController::class, 'manageFarmers'])->name('manage-farmers');
@@ -135,6 +142,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/manage-issues', [App\Http\Controllers\IssueController::class, 'index'])->name('issues.index');
         Route::get('/issues/create', [App\Http\Controllers\IssueController::class, 'create'])->name('issues.create');
         Route::post('/issues', [App\Http\Controllers\IssueController::class, 'store'])->name('issues.store');
+        
+        // New farmer-specific issue routes (must come before parameterized routes)
+        Route::get('/issues/farmers', [App\Http\Controllers\IssueController::class, 'getFarmers'])->name('issues.farmers');
+        Route::get('/issues/farmer/{id}/livestock', [App\Http\Controllers\IssueController::class, 'getFarmerLivestock'])->name('issues.farmer-livestock');
+        
+        // Parameterized issue routes (must come after specific routes)
         Route::get('/issues/{id}', [App\Http\Controllers\IssueController::class, 'show'])->name('issues.show');
         Route::get('/issues/{id}/edit', [App\Http\Controllers\IssueController::class, 'edit'])->name('issues.edit');
         Route::put('/issues/{id}', [App\Http\Controllers\IssueController::class, 'update'])->name('issues.update');
@@ -185,12 +198,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/manage-livestock', [App\Http\Controllers\LivestockController::class, 'index'])->name('livestock.index');
         Route::get('/livestock/create', [App\Http\Controllers\LivestockController::class, 'create'])->name('livestock.create');
         Route::post('/livestock', [App\Http\Controllers\LivestockController::class, 'store'])->name('livestock.store');
+        Route::get('/livestock/export', [App\Http\Controllers\LivestockController::class, 'export'])->name('livestock.export');
+        
+        // New farmer-specific livestock routes (must come before parameterized routes)
+        Route::get('/livestock/farmers', [App\Http\Controllers\LivestockController::class, 'getFarmers'])->name('livestock.farmers');
+        Route::get('/livestock/farmer/{id}/livestock', [App\Http\Controllers\LivestockController::class, 'getFarmerLivestock'])->name('livestock.farmer-livestock');
+        Route::get('/livestock/farmer/{id}/farms', [App\Http\Controllers\LivestockController::class, 'getFarmerFarms'])->name('livestock.farmer-farms');
+        
+        // Parameterized livestock routes (must come after specific routes)
         Route::get('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'show'])->name('livestock.show');
         Route::get('/livestock/{id}/edit', [App\Http\Controllers\LivestockController::class, 'edit'])->name('livestock.edit');
         Route::put('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'update'])->name('livestock.update');
         Route::delete('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'destroy'])->name('livestock.destroy');
         Route::post('/livestock/{id}/status', [App\Http\Controllers\LivestockController::class, 'updateStatus'])->name('livestock.update-status');
-        Route::get('/livestock/export', [App\Http\Controllers\LivestockController::class, 'export'])->name('livestock.export');
+        
+
         
         Route::get('/production', [App\Http\Controllers\AdminController::class, 'production'])->name('production');
         Route::get('/sales', [App\Http\Controllers\AdminController::class, 'sales'])->name('sales');
@@ -201,12 +223,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/issues', function () { return view('admin.issues'); })->name('issues');
         Route::get('/analysis', [App\Http\Controllers\AdminController::class, 'analysis'])->name('analysis');
         
+        // Livestock trends API for dashboard chart
+        Route::get('/livestock-trends', [App\Http\Controllers\AdminController::class, 'getLivestockTrends'])->name('livestock-trends');
+        
         // Additional admin routes for missing functionality
         Route::get('/clients', function () { return view('admin.clients'); })->name('clients');
         Route::get('/inventory', function () { return view('admin.inventory'); })->name('inventory');
         Route::get('/farm-analysis', function () { return view('admin.farm-analysis'); })->name('farm-analysis');
         Route::get('/livestock-analysis', function () { return view('admin.livestock-analysis'); })->name('livestock-analysis');
-        Route::get('/audit-logs', function () { return view('admin.audit-logs'); })->name('audit-logs');
+        Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit-logs');
+        Route::get('/audit-logs/{id}/details', [AdminController::class, 'getAuditLogDetails'])->name('audit-logs.details');
+        Route::get('/audit-logs/export', [AdminController::class, 'exportAuditLogs'])->name('audit-logs.export');
     });
     
     // Super Admin routes
@@ -217,9 +244,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile', function () { return view('superadmin.profile'); })->name('profile');
         Route::put('/profile', [SuperAdminController::class, 'updateProfile'])->name('profile.update');
         Route::put('/profile/password', [SuperAdminController::class, 'changePassword'])->name('profile.password');
+        Route::post('/profile/picture', [SuperAdminController::class, 'uploadProfilePicture'])->name('profile.picture');
+        Route::get('/profile/picture/current', [SuperAdminController::class, 'getCurrentProfilePicture'])->name('profile.picture.current');
         Route::get('/users', function () { return view('superadmin.users'); })->name('users');
         Route::get('/admins', function () { return view('superadmin.admins'); })->name('admins');
         // Route::get('/farms', function () { return view('superadmin.farms'); })->name('farms');
+        // Audit logs routes for super admin (can see all logs)
         Route::get('/audit-logs', [SuperAdminController::class, 'auditLogs'])->name('audit-logs');
         Route::get('/audit-logs/{id}/details', [SuperAdminController::class, 'getAuditLogDetails'])->name('audit-logs.details');
         Route::get('/audit-logs/export', [SuperAdminController::class, 'exportAuditLogs'])->name('audit-logs.export');
@@ -229,6 +259,7 @@ Route::middleware(['auth'])->group(function () {
         
         // Additional routes for superadmin functionality
         Route::get('/users/index', function () { return view('superadmin.users'); })->name('users.index');
+        Route::get('/users/list', [SuperAdminController::class, 'getUsersList'])->name('users.list');
         Route::get('/users/stats', [SuperAdminController::class, 'getUserStats'])->name('users.stats');
         Route::get('/users/{id}', [SuperAdminController::class, 'showUser'])->name('users.show');
         Route::post('/users', [SuperAdminController::class, 'storeUser'])->name('users.store');
@@ -276,6 +307,7 @@ Route::middleware(['auth'])->group(function () {
         
         // Notification routes
         Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'getNotifications'])->name('notifications');
+        Route::get('/notifications/user-stats', [App\Http\Controllers\NotificationController::class, 'getUserStats'])->name('notifications.user-stats');
         Route::post('/notifications/mark-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
         Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 

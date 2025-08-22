@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LivestockController extends Controller
 {
@@ -75,7 +76,7 @@ class LivestockController extends Controller
                 'weight' => $request->weight,
                 'health_status' => $request->notes ?? 'healthy',
                 'status' => 'active',
-                'owner_id' => Auth::user()->id,
+                'owner_id' => $request->farmer_id ?? Auth::user()->id,
             ]);
 
             return redirect()->route('admin.livestock.index')
@@ -240,6 +241,133 @@ class LivestockController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch statistics'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all farmers with their livestock count.
+     */
+    public function getFarmers()
+    {
+        try {
+            Log::info('getFarmers method called');
+            
+            // Check if user is authenticated
+            if (!Auth::check()) {
+                Log::error('User not authenticated');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not authenticated'
+                ], 401);
+            }
+            
+            $user = Auth::user();
+            Log::info('Authenticated user: ' . $user->name . ' with role: ' . $user->role);
+            
+            if ($user->role !== 'admin') {
+                Log::error('User does not have admin role');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized access'
+                ], 403);
+            }
+            
+            // First, let's check if there are any users with farmer role
+            $farmerCount = \App\Models\User::where('role', 'farmer')->count();
+            Log::info('Farmer count: ' . $farmerCount);
+            
+            if ($farmerCount === 0) {
+                Log::info('No farmers found');
+                return response()->json([
+                    'success' => true,
+                    'data' => [],
+                    'message' => 'No farmers found'
+                ]);
+            }
+            
+            $farmers = \App\Models\User::where('role', 'farmer')
+                ->withCount('livestock')
+                ->get()
+                ->map(function ($farmer) {
+                    return [
+                        'id' => $farmer->id,
+                        'first_name' => $farmer->first_name,
+                        'last_name' => $farmer->last_name,
+                        'name' => $farmer->name,
+                        'email' => $farmer->email,
+                        'contact_number' => $farmer->contact_number,
+                        'barangay' => $farmer->barangay,
+                        'status' => $farmer->status,
+                        'livestock_count' => $farmer->livestock_count
+                    ];
+                });
+
+            Log::info('Farmers data prepared: ' . count($farmers) . ' farmers');
+            return response()->json([
+                'success' => true,
+                'data' => $farmers
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in getFarmers: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch farmers: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get livestock for a specific farmer.
+     */
+    public function getFarmerLivestock($farmerId)
+    {
+        try {
+            $farmer = \App\Models\User::findOrFail($farmerId);
+            $livestock = Livestock::where('owner_id', $farmerId)
+                ->with('farm')
+                ->get();
+
+            $stats = [
+                'total' => $livestock->count(),
+                'active' => $livestock->where('status', 'active')->count(),
+                'inactive' => $livestock->where('status', 'inactive')->count(),
+                'farms' => $livestock->pluck('farm_id')->unique()->count()
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'farmer' => $farmer,
+                    'livestock' => $livestock,
+                    'stats' => $stats
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch farmer livestock'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get farms for a specific farmer.
+     */
+    public function getFarmerFarms($farmerId)
+    {
+        try {
+            $farms = Farm::where('owner_id', $farmerId)->get();
+            
+            return response()->json([
+                'success' => true,
+                'data' => $farms
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch farmer farms'
             ], 500);
         }
     }

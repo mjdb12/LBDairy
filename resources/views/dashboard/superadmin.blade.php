@@ -13,8 +13,8 @@
 <!-- Statistics Grid -->
 <div class="row fade-in">
     <!-- Total Admins -->
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Admins</div>
@@ -24,13 +24,12 @@
                     <i class="fas fa-user-shield fa-2x"></i>
                 </div>
             </div>
-            
         </div>
     </div>
 
     <!-- Active Admins -->
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Admins</div>
@@ -40,29 +39,27 @@
                     <i class="fas fa-user-check fa-2x"></i>
                 </div>
             </div>
-            
         </div>
     </div>
 
     <!-- Total Farmers -->
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Farmers</div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farmers</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalFarmers ?? 0 }}</div>
                 </div>
-                <div class="icon text-success">
+                <div class="icon text-info">
                     <i class="fas fa-users fa-2x"></i>
                 </div>
             </div>
-            
         </div>
     </div>
 
     <!-- New Requests -->
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">New Requests</div>
@@ -72,13 +69,12 @@
                     <i class="fas fa-user-plus fa-2x"></i>
                 </div>
             </div>
-            
         </div>
     </div>
 
-    <!-- Service Areas Covered -->
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
+    <!-- Service Areas -->
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Service Areas</div>
@@ -88,43 +84,61 @@
                     <i class="fas fa-map-marker-alt fa-2x"></i>
                 </div>
             </div>
-            
+        </div>
+    </div>
+
+    <!-- Total Users -->
+    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2 dashboard-card stat-card">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Total Users</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUsers ?? 0 }}</div>
+                </div>
+                <div class="icon text-secondary">
+                    <i class="fas fa-user-friends fa-2x"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Row 2: To-Do List and Line Chart Side by Side -->
+
+
+<!-- Task Board Row -->
 <div class="row fade-in">
     <!-- Task Board -->
-    <div class="col-12 col-lg-6 mb-4">
-        <div class="card shadow-sm">
+    <div class="col-12 mb-4">
+        <div class="card shadow">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h6 class="mb-0">
                     <i class="fas fa-tasks"></i>
                     Task Board
                 </h6>
-                <button class="btn btn-sm btn-primary" id="addTaskBtn"><i class="fas fa-plus"></i> New Task</button>
+                <button class="btn btn-sm btn-primary" id="addTaskBtn">
+                    <i class="fas fa-plus"></i> New Task
+                </button>
             </div>
             <div class="card-body">
-                <div class="row" id="taskBoard">
-                    <div class="col-12">
-                        <ul class="list-group" id="taskList"></ul>
-                    </div>
-                </div>
+                <ul class="list-group" id="taskList"></ul>
             </div>
         </div>
     </div>
-    <!-- Line Chart -->
-    <div class="col-12 col-lg-6 mb-4">
-        <div class="card shadow mb-4">
+</div>
+
+<!-- Livestock Trends Chart Row -->
+<div class="row fade-in">
+    <!-- Livestock Trends Chart -->
+    <div class="col-12 mb-4">
+        <div class="card shadow">
             <div class="card-header bg-success text-white">
-                <h6>
+                <h6 class="mb-0">
                     <i class="fas fa-chart-line"></i>
                     Livestock Population Trends
                 </h6>
             </div>
             <div class="card-body">
-                <canvas id="lineChart" height="135"></canvas>
+                <canvas id="lineChart" height="100"></canvas>
             </div>
         </div>
     </div>
@@ -133,7 +147,7 @@
 
 
 <!-- Recent System Activity -->
-<div class="row fade-in-up mt-4">
+<div class="row fade-in">
     <div class="col-12">
         <div class="card shadow">
             <div class="card-header">
@@ -155,13 +169,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(\App\Models\AuditLog::latest()->take(15)->get() as $log)
+                            @foreach(\App\Models\AuditLog::latest()->take(10)->get() as $log)
                             <tr>
-                                <td>{{ $log->action }}</td>
+                                <td>
+                                    <span class="badge badge-{{ $log->severity === 'critical' ? 'danger' : ($log->severity === 'warning' ? 'warning' : 'info') }}">
+                                        {{ $log->action }}
+                                    </span>
+                                </td>
                                 <td>{{ $log->user->name ?? 'System' }}</td>
-                                <td>{{ Str::limit($log->details ?? 'No details', 50) }}</td>
+                                <td>{{ Str::limit($log->description ?? 'No details', 60) }}</td>
                                 <td>{{ $log->created_at->diffForHumans() }}</td>
-                                <td><span class="badge badge-success">Completed</span></td>
+                                <td>
+                                    <span class="badge badge-success">Completed</span>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -170,50 +190,102 @@
             </div>
         </div>
     </div>
-    <!-- Task Modal -->
-    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form class="modal-content" id="taskForm">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="taskModalTitle">New Task</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+</div>
+
+<!-- Task Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form class="modal-content" id="taskForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalTitle">New Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="taskId">
+                <div class="form-group">
+                    <label for="taskTitle">Title</label>
+                    <input type="text" class="form-control" id="taskTitle" required maxlength="255">
                 </div>
-                <div class="modal-body">
-                    <input type="hidden" id="taskId">
-                    <div class="form-group">
-                        <label for="taskTitle">Title</label>
-                        <input type="text" class="form-control" id="taskTitle" required maxlength="255">
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="taskPriority">Priority</label>
+                        <select class="form-control" id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label for="taskDescription">Description</label>
-                        <textarea class="form-control" id="taskDescription" rows="3"></textarea>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="taskPriority">Priority</label>
-                            <select class="form-control" id="taskPriority">
-                                <option value="low">Low</option>
-                                <option value="medium" selected>Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="taskDueDate">Due Date</label>
-                            <input type="date" class="form-control" id="taskDueDate">
-                        </div>
+                    <div class="form-group col-md-6">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="date" class="form-control" id="taskDueDate">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="taskSubmitBtn">Add Task</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="taskSubmitBtn">Add Task</button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+.dashboard-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+}
+
+
+
+.stat-card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.stat-card .card-body {
+    padding: 1.5rem;
+}
+
+.stat-card .icon {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card:hover .icon {
+    opacity: 1;
+}
+
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+@endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -12,6 +12,7 @@ use App\Models\Livestock;
 use App\Models\ProductionRecord;
 use App\Models\Sale;
 use App\Models\Expense;
+use App\Models\AuditLog;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -1159,6 +1160,329 @@ class AdminController extends Controller
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
             ]);
+        }
+    }
+
+    /**
+     * Get livestock population trends (last N months) for admin dashboard.
+     */
+    public function getLivestockTrends(Request $request)
+    {
+        try {
+            $months = (int) $request->get('months', 6);
+            if ($months < 1 || $months > 24) {
+                $months = 6;
+            }
+
+            $startDate = now()->startOfMonth()->subMonths($months - 1);
+
+            $aggregates = Livestock::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as ym, type, COUNT(*) as cnt")
+                ->where('created_at', '>=', $startDate)
+                ->groupBy('ym', 'type')
+                ->orderBy('ym')
+                ->get();
+
+            // Build month keys and labels
+            $labels = [];
+            $ymKeys = [];
+            $cursor = $startDate->copy();
+            for ($i = 0; $i < $months; $i++) {
+                $labels[] = $cursor->format('M');
+                $ymKeys[] = $cursor->format('Y-m');
+                $cursor->addMonth();
+            }
+
+            $seriesCow = array_fill(0, $months, 0);
+            $seriesGoat = array_fill(0, $months, 0);
+
+            foreach ($aggregates as $row) {
+                $index = array_search($row->ym, $ymKeys, true);
+                if ($index === false) {
+                    continue;
+                }
+                if ($row->type === 'cow') {
+                    $seriesCow[$index] = (int) $row->cnt;
+                } elseif ($row->type === 'goat') {
+                    $seriesGoat[$index] = (int) $row->cnt;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'labels' => $labels,
+                'datasets' => [
+                    [
+                        'label' => 'Cattle',
+                        'data' => $seriesCow,
+                        'borderColor' => '#007bff',
+                        'backgroundColor' => 'rgba(0, 123, 255, 0.1)',
+                        'tension' => 0.4,
+                        'fill' => true,
+                    ],
+                    [
+                        'label' => 'Goats',
+                        'data' => $seriesGoat,
+                        'borderColor' => '#28a745',
+                        'backgroundColor' => 'rgba(40, 167, 69, 0.1)',
+                        'tension' => 0.4,
+                        'fill' => true,
+                    ],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load livestock trends'], 500);
+        }
+    }
+
+    /**
+     * Display audit logs for the admin (can see admin and farmer logs, but not super admin).
+     */
+    public function auditLogs()
+    {
+        // Get audit logs for admin and farmer roles only (exclude super admin)
+        $auditLogs = AuditLog::with(['user'])
+                            ->whereHas('user', function($query) {
+                                $query->whereIn('role', ['admin', 'farmer']);
+                            })
+                            ->orWhereNull('user_id') // Include system logs
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(20);
+
+        // Get stats for admin and farmer logs only
+        $totalLogs = AuditLog::whereHas('user', function($query) {
+                            $query->whereIn('role', ['admin', 'farmer']);
+                        })
+                        ->orWhereNull('user_id')
+                        ->count();
+        
+        $todayLogs = AuditLog::whereHas('user', function($query) {
+                            $query->whereIn('role', ['admin', 'farmer']);
+                        })
+                        ->orWhereNull('user_id')
+                        ->whereDate('created_at', today())
+                        ->count();
+        
+        $criticalEvents = AuditLog::whereHas('user', function($query) {
+                            $query->whereIn('role', ['admin', 'farmer']);
+                        })
+                        ->orWhereNull('user_id')
+                        ->whereIn('severity', ['error', 'critical'])
+                        ->count();
+
+        return view('admin.audit-logs', compact(
+            'auditLogs',
+            'totalLogs',
+            'todayLogs',
+            'criticalEvents'
+        ));
+    }
+
+    /**
+     * Get audit log details (exclude super admin logs)
+     */
+    public function getAuditLogDetails($id)
+    {
+        try {
+            $auditLog = AuditLog::with(['user'])
+                                ->whereHas('user', function($query) {
+                                    $query->whereIn('role', ['admin', 'farmer']);
+                                })
+                                ->orWhereNull('user_id')
+                                ->findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'auditLog' => $auditLog
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load audit log details'
+            ], 500);
+        }
+    }
+
+    /**
+     * Export audit logs (exclude super admin logs)
+     */
+    public function exportAuditLogs(Request $request)
+    {
+        try {
+            $format = $request->get('format', 'csv');
+            $startDate = $request->get('start_date');
+            $endDate = $request->get('end_date');
+            $severity = $request->get('severity');
+            
+            $query = AuditLog::with(['user'])
+                            ->whereHas('user', function($query) {
+                                $query->whereIn('role', ['admin', 'farmer']);
+                            })
+                            ->orWhereNull('user_id');
+            
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
+            
+            if ($severity) {
+                $query->where('severity', $severity);
+            }
+            
+            $auditLogs = $query->get();
+            
+            if ($format === 'csv') {
+                return $this->exportToCSV($auditLogs);
+            } elseif ($format === 'pdf') {
+                return $this->exportToPDF($auditLogs);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Unsupported format'], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Export failed'], 500);
+        }
+    }
+
+    /**
+     * Export to CSV
+     */
+    private function exportToCSV($auditLogs)
+    {
+        $filename = 'admin_audit_logs_' . date('Y-m-d_H-i-s') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($auditLogs) {
+            $file = fopen('php://output', 'w');
+            
+            // Add CSV headers
+            fputcsv($file, [
+                'Log ID',
+                'User',
+                'Action',
+                'Description',
+                'Severity',
+                'IP Address',
+                'User Agent',
+                'Created At'
+            ]);
+
+            foreach ($auditLogs as $log) {
+                fputcsv($file, [
+                    $log->id,
+                    $log->user->name ?? 'System',
+                    $log->action,
+                    $log->description,
+                    $log->severity,
+                    $log->ip_address,
+                    $log->user_agent,
+                    $log->created_at
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export to PDF
+     */
+    private function exportToPDF($auditLogs)
+    {
+        // For now, return a simple text response
+        // In a real implementation, you would use a PDF library like DomPDF
+        $content = "Admin Audit Logs Report\n";
+        $content .= "Generated on: " . now() . "\n\n";
+        
+        foreach ($auditLogs as $log) {
+            $content .= "Log ID: {$log->id}\n";
+            $content .= "User: " . ($log->user->name ?? 'System') . "\n";
+            $content .= "Action: {$log->action}\n";
+            $content .= "Description: {$log->description}\n";
+            $content .= "Severity: {$log->severity}\n";
+            $content .= "Created: {$log->created_at}\n";
+            $content .= "---\n";
+        }
+
+        return response($content)
+            ->header('Content-Type', 'text/plain')
+            ->header('Content-Disposition', 'attachment; filename="admin_audit_logs_' . date('Y-m-d_H-i-s') . '.txt"');
+    }
+
+    /**
+     * Get current profile picture for admin.
+     */
+    public function getCurrentProfilePicture()
+    {
+        try {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            
+            return response()->json([
+                'success' => true,
+                'profile_image' => $user->profile_image ?? null
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get profile picture'
+            ], 500);
+        }
+    }
+
+    /**
+     * Upload profile picture for admin.
+     */
+    public function uploadProfilePicture(Request $request)
+    {
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        try {
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Store the file in the public/img directory
+                $file->move(public_path('img'), $filename);
+                
+                // Update user's profile_image field
+                $user->update(['profile_image' => $filename]);
+                
+                // Log the profile picture upload
+                AuditLog::create([
+                    'user_id' => $user->id,
+                    'action' => 'profile_picture_uploaded',
+                    'description' => 'Admin profile picture uploaded',
+                    'severity' => 'info',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Profile picture uploaded successfully!',
+                    'filename' => $filename
+                ]);
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'No file uploaded'
+            ], 400);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to upload profile picture: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

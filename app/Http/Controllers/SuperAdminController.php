@@ -28,18 +28,34 @@ class SuperAdminController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|string|max:20',
             'barangay' => 'required|string|max:255',
+            'position' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
         ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'barangay' => $request->barangay,
-            'address' => $request->address,
-        ]);
+        try {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'barangay' => $request->barangay,
+                'position' => $request->position,
+                'address' => $request->address,
+            ]);
 
-        return redirect()->back()->with('success', 'Profile updated successfully!');
+            // Log the profile update
+            AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'profile_updated',
+                'description' => 'Super admin profile updated',
+                'severity' => 'info',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            return redirect()->back()->with('success', 'Profile updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
     }
 
     /**
@@ -54,25 +70,114 @@ class SuperAdminController extends Controller
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
+        
+        try {
+            $user->update([
+                'password' => Hash::make($request->password),
+            ]);
 
-        return redirect()->back()->with('success', 'Password changed successfully!');
+            // Log the password change
+            AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'password_changed',
+                'description' => 'Super admin password changed',
+                'severity' => 'warning',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            return redirect()->back()->with('success', 'Password changed successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to change password. Please try again.');
+        }
     }
 
     /**
-     * Display audit logs dashboard
+     * Get current profile picture for super admin.
+     */
+    public function getCurrentProfilePicture()
+    {
+        try {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            
+            return response()->json([
+                'success' => true,
+                'profile_image' => $user->profile_image ?? null
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get profile picture'
+            ], 500);
+        }
+    }
+
+    /**
+     * Upload profile picture for super admin.
+     */
+    public function uploadProfilePicture(Request $request)
+    {
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        try {
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Store the file in the public/img directory
+                $file->move(public_path('img'), $filename);
+                
+                // Update user's profile_image field
+                $user->update(['profile_image' => $filename]);
+                
+                // Log the profile picture upload
+                AuditLog::create([
+                    'user_id' => $user->id,
+                    'action' => 'profile_picture_uploaded',
+                    'description' => 'Super admin profile picture uploaded',
+                    'severity' => 'info',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Profile picture uploaded successfully!',
+                    'filename' => $filename
+                ]);
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'No file uploaded'
+            ], 400);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to upload profile picture: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Display audit logs dashboard for super admin (can see all logs)
      */
     public function auditLogs()
     {
         // Get audit log statistics
         $stats = $this->getAuditLogStats();
         
-        // Get audit logs with user information
+        // Get all audit logs with user information
         $auditLogs = AuditLog::with(['user'])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(20);
 
         return view('superadmin.audit-logs', [
             'totalLogs' => $stats['total_logs'],
@@ -167,7 +272,7 @@ class SuperAdminController extends Controller
      */
     private function exportToCSV($auditLogs)
     {
-        $filename = 'audit_logs_' . date('Y-m-d_H-i-s') . '.csv';
+        $filename = 'superadmin_audit_logs_' . date('Y-m-d_H-i-s') . '.csv';
         
         $headers = [
             'Content-Type' => 'text/csv',
@@ -178,13 +283,14 @@ class SuperAdminController extends Controller
             $file = fopen('php://output', 'w');
             
             // CSV headers
-            fputcsv($file, ['ID', 'User', 'Action', 'Severity', 'Description', 'IP Address', 'Timestamp']);
+            fputcsv($file, ['ID', 'User', 'Role', 'Action', 'Severity', 'Description', 'IP Address', 'Timestamp']);
             
             // CSV data
             foreach ($auditLogs as $log) {
                 fputcsv($file, [
                     $log->id,
                     $log->user->name ?? 'System',
+                    $log->user->role ?? 'System',
                     $log->action,
                     $log->severity,
                     $log->description,
@@ -207,6 +313,34 @@ class SuperAdminController extends Controller
         // This would require a PDF library like DomPDF or similar
         // For now, return a placeholder response
         return response()->json(['success' => false, 'message' => 'PDF export not implemented yet'], 501);
+    }
+
+    /**
+     * Clear old audit logs
+     */
+    public function clearOldLogs(Request $request)
+    {
+        try {
+            $days = (int) $request->get('days', 90);
+
+            if ($days === 0) {
+                // Clear all logs
+                $deleted = AuditLog::query()->delete();
+                $message = "Cleared all audit logs";
+            } else {
+                // Clear logs older than N days
+                $deleted = AuditLog::where('created_at', '<', now()->subDays($days))->delete();
+                $message = "Cleared {$deleted} audit logs older than {$days} days";
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'deleted_count' => $deleted
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to clear old logs'], 500);
+        }
     }
 
     /**
@@ -242,48 +376,45 @@ class SuperAdminController extends Controller
         return '99.9%';
     }
 
-    /**
-     * Clear old audit logs
-     */
-    public function clearOldLogs(Request $request)
+    // clearOldLogs method removed - audit logs now exclusive to admin and farmer only
+
+    // User Management Methods
+    public function getUsersList()
     {
         try {
-            $days = (int) $request->get('days', 90);
+            $users = User::select([
+                'id',
+                'name',
+                'first_name',
+                'last_name',
+                'email',
+                'username',
+                'role',
+                'status',
+                'is_active',
+                'phone',
+                'barangay',
+                'created_at',
+                'updated_at'
+            ])->get();
 
-            if ($days === 0) {
-                // Clear all logs
-                $deleted = AuditLog::query()->delete();
-                $message = "Cleared all audit logs";
-            } else {
-                // Clear logs older than N days
-                $deleted = AuditLog::where('created_at', '<', now()->subDays($days))->delete();
-                $message = "Cleared {$deleted} audit logs older than {$days} days";
-            }
-            
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'deleted_count' => $deleted
-            ]);
+            return response()->json(['success' => true, 'data' => $users]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to clear old logs'], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to get users list'], 500);
         }
     }
 
-    // User Management Methods
     public function getUserStats()
     {
         try {
             $stats = [
-                'total_users' => User::count(),
-                'active_users' => User::where('is_active', true)->count(),
-                'inactive_users' => User::where('is_active', false)->count(),
-                'farmers' => User::where('role', 'farmer')->count(),
-                'admins' => User::where('role', 'admin')->count(),
-                'superadmins' => User::where('role', 'superadmin')->count(),
+                'total' => User::count(),
+                'active' => User::where('is_active', true)->count(),
+                'pending' => User::where('status', 'pending')->count(),
+                'suspended' => User::where('is_active', false)->count(),
             ];
             
-            return response()->json(['success' => true, 'stats' => $stats]);
+            return response()->json(['success' => true, 'data' => $stats]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to get user stats'], 500);
         }
@@ -292,8 +423,24 @@ class SuperAdminController extends Controller
     public function showUser($id)
     {
         try {
-            $user = User::findOrFail($id);
-            return response()->json(['success' => true, 'user' => $user]);
+            $user = User::select([
+                'id',
+                'name',
+                'first_name',
+                'last_name',
+                'email',
+                'username',
+                'role',
+                'status',
+                'is_active',
+                'phone',
+                'barangay',
+                'address',
+                'created_at',
+                'updated_at'
+            ])->findOrFail($id);
+            
+            return response()->json(['success' => true, 'data' => $user]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'User not found'], 404);
         }
@@ -303,24 +450,43 @@ class SuperAdminController extends Controller
     {
         try {
             $request->validate([
-                'name' => 'required|string|max:255',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users',
+                'username' => 'required|string|max:255|unique:users',
                 'role' => 'required|in:farmer,admin,superadmin',
                 'phone' => 'nullable|string|max:20',
+                'barangay' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
+                'password' => 'required|string|min:8|confirmed',
             ]);
 
             $user = User::create([
-                'name' => $request->name,
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
                 'email' => $request->email,
+                'username' => $request->username,
                 'role' => $request->role,
                 'phone' => $request->phone,
+                'barangay' => $request->barangay,
                 'address' => $request->address,
-                'password' => Hash::make('password123'), // Default password
+                'password' => Hash::make($request->password),
                 'is_active' => true,
+                'status' => 'approved',
             ]);
 
-            return response()->json(['success' => true, 'user' => $user, 'message' => 'User created successfully']);
+            // Log the action
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'user_created',
+                'description' => "Created user: {$user->name} ({$user->email})",
+                'severity' => 'info',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            return response()->json(['success' => true, 'data' => $user, 'message' => 'User created successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to create user'], 500);
         }
@@ -332,19 +498,44 @@ class SuperAdminController extends Controller
             $user = User::findOrFail($id);
             
             $request->validate([
-                'name' => 'required|string|max:255',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
                 'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
+                'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($id)],
                 'role' => 'required|in:farmer,admin,superadmin',
                 'phone' => 'nullable|string|max:20',
+                'barangay' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
+                'password' => 'nullable|string|min:8|confirmed',
             ]);
 
-            $user->update([
-                'name' => $request->name,
+            $updateData = [
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
                 'email' => $request->email,
+                'username' => $request->username,
                 'role' => $request->role,
                 'phone' => $request->phone,
+                'barangay' => $request->barangay,
                 'address' => $request->address,
+            ];
+
+            // Only update password if provided
+            if ($request->filled('password')) {
+                $updateData['password'] = Hash::make($request->password);
+            }
+
+            $user->update($updateData);
+
+            // Log the action
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'user_updated',
+                'description' => "Updated user: {$user->name} ({$user->email})",
+                'severity' => 'info',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
             ]);
 
             return response()->json(['success' => true, 'message' => 'User updated successfully']);
@@ -357,12 +548,29 @@ class SuperAdminController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            $user->update(['is_active' => !$user->is_active]);
+            $newStatus = $user->status === 'approved' ? 'suspended' : 'approved';
+            $newActiveStatus = $newStatus === 'approved';
+            
+            $user->update([
+                'status' => $newStatus,
+                'is_active' => $newActiveStatus
+            ]);
+
+            // Log the action
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'user_status_changed',
+                'description' => "Changed status of user {$user->name} ({$user->email}) to {$newStatus}",
+                'severity' => 'warning',
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
             
             return response()->json([
                 'success' => true, 
                 'message' => 'User status updated successfully',
-                'is_active' => $user->is_active
+                'status' => $newStatus,
+                'is_active' => $newActiveStatus
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update user status'], 500);
@@ -373,7 +581,19 @@ class SuperAdminController extends Controller
     {
         try {
             $user = User::findOrFail($id);
+            $userName = $user->name;
+            $userEmail = $user->email;
             $user->delete();
+
+            // Log the action
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'user_deleted',
+                'description' => "Deleted user: {$userName} ({$userEmail})",
+                'severity' => 'danger',
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
             
             return response()->json(['success' => true, 'message' => 'User deleted successfully']);
         } catch (\Exception $e) {

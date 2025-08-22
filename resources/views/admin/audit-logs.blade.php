@@ -16,21 +16,21 @@
         <div class="stat-icon">
             <i class="fas fa-clipboard-list"></i>
         </div>
-        <h3>{{ \App\Models\AuditLog::count() }}</h3>
+        <h3>{{ $totalLogs ?? 0 }}</h3>
         <p>Total Logs</p>
     </div>
     <div class="stat-card">
         <div class="stat-icon">
             <i class="fas fa-calendar-day"></i>
         </div>
-        <h3>{{ \App\Models\AuditLog::whereDate('created_at', today())->count() }}</h3>
+        <h3>{{ $todayLogs ?? 0 }}</h3>
         <p>Today's Activity</p>
     </div>
     <div class="stat-card">
         <div class="stat-icon">
             <i class="fas fa-exclamation-triangle"></i>
         </div>
-        <h3>{{ \App\Models\AuditLog::where('action', 'like', '%delete%')->orWhere('action', 'like', '%critical%')->count() }}</h3>
+        <h3>{{ $criticalEvents ?? 0 }}</h3>
         <p>Critical Actions</p>
     </div>
     <div class="stat-card">
@@ -134,7 +134,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(\App\Models\AuditLog::latest()->take(50)->get() as $log)
+                    @forelse($auditLogs as $log)
                     <tr>
                         <td><code class="small">LOG{{ str_pad($log->id, 3, '0', STR_PAD_LEFT) }}</code></td>
                         <td>
@@ -153,13 +153,30 @@
                                 {{ ucfirst($log->action) }}
                             </span>
                         </td>
-                        <td>{{ $log->details ?? 'No details available' }}</td>
+                        <td>{{ $log->description ?? 'No details available' }}</td>
                         <td>{{ $log->created_at->format('M d, Y H:i:s') }}</td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <h5>No audit logs found</h5>
+                                <p>There are no audit logs to display at this time.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination -->
+        @if($auditLogs->hasPages())
+        <div class="d-flex justify-content-center mt-3">
+            {{ $auditLogs->links() }}
+        </div>
+        @endif
     </div>
 </div>
 @endsection

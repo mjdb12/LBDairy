@@ -7,6 +7,7 @@ use App\Models\Livestock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class IssueController extends Controller
 {
@@ -39,6 +40,93 @@ class IssueController extends Controller
     {
         $livestock = Livestock::all();
         return view('admin.issues.create', compact('livestock'));
+    }
+
+    /**
+     * Get all farmers for issue reporting.
+     */
+    public function getFarmers()
+    {
+        try {
+            Log::info('getFarmers method called for issues');
+            
+            // Check if user is authenticated
+            if (!\Illuminate\Support\Facades\Auth::check()) {
+                Log::error('User not authenticated');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not authenticated'
+                ], 401);
+            }
+            
+            $user = \Illuminate\Support\Facades\Auth::user();
+            Log::info('Authenticated user: ' . $user->name . ' with role: ' . $user->role);
+            
+            if ($user->role !== 'admin') {
+                Log::error('User does not have admin role');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized access'
+                ], 403);
+            }
+            
+            // Get farmers with their livestock counts
+            $farmers = \App\Models\User::where('role', 'farmer')
+                ->withCount('livestock')
+                ->get()
+                ->map(function ($farmer) {
+                    return [
+                        'id' => $farmer->id,
+                        'first_name' => $farmer->first_name,
+                        'last_name' => $farmer->last_name,
+                        'name' => $farmer->name,
+                        'email' => $farmer->email,
+                        'contact_number' => $farmer->contact_number,
+                        'barangay' => $farmer->barangay,
+                        'status' => $farmer->status,
+                        'livestock_count' => $farmer->livestock_count
+                    ];
+                });
+
+            Log::info('Farmers data prepared for issues: ' . count($farmers) . ' farmers');
+            return response()->json([
+                'success' => true,
+                'data' => $farmers
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in getFarmers for issues: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch farmers: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get livestock for a specific farmer for issue reporting.
+     */
+    public function getFarmerLivestock($farmerId)
+    {
+        try {
+            $farmer = \App\Models\User::findOrFail($farmerId);
+            $livestock = Livestock::where('owner_id', $farmerId)
+                ->with('farm')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'farmer' => $farmer,
+                    'livestock' => $livestock
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch farmer livestock'
+            ], 500);
+        }
     }
 
     /**

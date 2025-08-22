@@ -9,6 +9,7 @@ use App\Models\AuditLog;
 use App\Models\Issue;
 use App\Models\User;
 use App\Models\Farm;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
@@ -25,24 +26,52 @@ class NotificationController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // If user has cleared notifications this session, return empty
-            if (session('notifications_cleared', false) === true) {
-                return response()->json([
-                    'success' => true,
-                    'notifications' => [],
-                    'unread_count' => 0
-                ]);
-            }
+            // Get unread notifications from database
+            $notifications = Notification::unread()
+                ->recent()
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($notification) {
+                    return [
+                        'id' => $notification->id,
+                        'type' => $notification->severity,
+                        'icon' => $notification->icon,
+                        'title' => $notification->title,
+                        'message' => $notification->message,
+                        'time' => $notification->created_at->diffForHumans(),
+                        'action_url' => $notification->action_url,
+                        'is_read' => $notification->is_read
+                    ];
+                });
 
-            $notifications = $this->generateNotifications();
+            // Generate system notifications if none exist
+            if ($notifications->isEmpty()) {
+                $this->generateSystemNotifications();
+                $notifications = Notification::unread()
+                    ->recent()
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+                    ->map(function ($notification) {
+                        return [
+                            'id' => $notification->id,
+                            'type' => $notification->severity,
+                            'icon' => $notification->icon,
+                            'title' => $notification->title,
+                            'message' => $notification->message,
+                            'time' => $notification->created_at->diffForHumans(),
+                            'action_url' => $notification->action_url,
+                            'is_read' => $notification->is_read
+                        ];
+                    });
+            }
             
             return response()->json([
                 'success' => true,
                 'notifications' => $notifications,
-                'unread_count' => count($notifications)
+                'unread_count' => $notifications->count()
             ]);
         } catch (\Exception $e) {
-            Log::error('Error generating notifications: ' . $e->getMessage());
+            Log::error('Error getting notifications: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'error' => 'Failed to load notifications',
@@ -53,146 +82,230 @@ class NotificationController extends Controller
     }
 
     /**
-     * Generate system notifications for super admin
+     * Generate system notifications for super admin and store in database
      */
-    private function generateNotifications()
+    private function generateSystemNotifications()
     {
-        $notifications = [];
-
         try {
-            // Critical system alerts
-            $criticalLogs = AuditLog::where('severity', 'critical')
-                ->whereDate('created_at', '>=', now()->subDays(7))
-                ->count();
+            // Only generate notifications if there are no existing unread notifications
+            $existingUnreadCount = Notification::unread()->count();
             
-            if ($criticalLogs > 0) {
-                $notifications[] = [
-                    'id' => 'critical_logs',
-                    'type' => 'critical',
-                    'icon' => 'fas fa-exclamation-triangle',
-                    'title' => 'Critical System Events',
-                    'message' => "{$criticalLogs} critical system events detected in the last 7 days",
-                    'time' => now()->diffForHumans(),
-                    'action_url' => route('superadmin.audit-logs'),
-                    'is_read' => false
-                ];
+            if ($existingUnreadCount > 0) {
+                // If there are already unread notifications, don't generate new ones
+                return;
             }
 
-            // Pending admin approvals
-            $pendingAdmins = User::where('role', 'admin')
-                ->where('status', 'pending')
-                ->count();
+            // Critical system alerts - only if there are new critical logs since last notification
+            $lastCriticalNotification = Notification::where('metadata->identifier', 'critical_logs')
+                ->orderBy('created_at', 'desc')
+                ->first();
             
-            if ($pendingAdmins > 0) {
-                $notifications[] = [
-                    'id' => 'pending_admins',
-                    'type' => 'warning',
-                    'icon' => 'fas fa-user-clock',
-                    'title' => 'Pending Admin Approvals',
-                    'message' => "{$pendingAdmins} admin registration(s) awaiting approval",
-                    'time' => now()->diffForHumans(),
-                    'action_url' => route('superadmin.admins'),
-                    'is_read' => false
-                ];
+            $criticalLogsQuery = AuditLog::where('severity', 'critical');
+            if ($lastCriticalNotification) {
+                $criticalLogsQuery->where('created_at', '>', $lastCriticalNotification->created_at);
+            } else {
+                $criticalLogsQuery->whereDate('created_at', '>=', now()->subDays(7));
+            }
+            
+            $newCriticalLogs = $criticalLogsQuery->count();
+            
+            if ($newCriticalLogs > 0) {
+                $this->createOrUpdateNotification(
+                    'critical_logs',
+                    'system',
+                    'Critical System Events',
+                    "{$newCriticalLogs} new critical system events detected",
+                    'fas fa-exclamation-triangle',
+                    route('superadmin.audit-logs'),
+                    'danger'
+                );
             }
 
-            // New user registrations
-            $newUsers = User::whereDate('created_at', today())->count();
+            // Pending admin approvals - only if there are new pending admins
+            $lastPendingAdminsNotification = Notification::where('metadata->identifier', 'pending_admins')
+                ->orderBy('created_at', 'desc')
+                ->first();
+            
+            $pendingAdminsQuery = User::where('role', 'admin')->where('status', 'pending');
+            if ($lastPendingAdminsNotification) {
+                $pendingAdminsQuery->where('created_at', '>', $lastPendingAdminsNotification->created_at);
+            }
+            
+            $newPendingAdmins = $pendingAdminsQuery->count();
+            
+            if ($newPendingAdmins > 0) {
+                $this->createOrUpdateNotification(
+                    'pending_admins',
+                    'admin',
+                    'Pending Admin Approvals',
+                    "{$newPendingAdmins} new admin registration(s) awaiting approval",
+                    'fas fa-user-clock',
+                    route('superadmin.admins'),
+                    'warning'
+                );
+            }
+
+            // New user registrations - only if there are new users since last notification
+            $lastNewUsersNotification = Notification::where('metadata->identifier', 'new_users')
+                ->orderBy('created_at', 'desc')
+                ->first();
+            
+            $newUsersQuery = User::query();
+            if ($lastNewUsersNotification) {
+                $newUsersQuery->where('created_at', '>', $lastNewUsersNotification->created_at);
+            } else {
+                $newUsersQuery->where('created_at', '>=', now()->subDay());
+            }
+            
+            $newUsers = $newUsersQuery->count();
             
             if ($newUsers > 0) {
-                $notifications[] = [
-                    'id' => 'new_users',
-                    'type' => 'info',
-                    'icon' => 'fas fa-user-plus',
-                    'title' => 'New User Registrations',
-                    'message' => "{$newUsers} new user(s) registered today",
-                    'time' => now()->diffForHumans(),
-                    'action_url' => route('superadmin.users'),
-                    'is_read' => false
-                ];
+                $this->createOrUpdateNotification(
+                    'new_users',
+                    'user',
+                    'New User Registrations',
+                    "{$newUsers} new user(s) registered",
+                    'fas fa-user-plus',
+                    route('superadmin.users'),
+                    'info'
+                );
             }
 
-            // High priority issues
-            $urgentIssues = Issue::where('priority', 'High')
-                ->whereIn('status', ['Pending', 'In Progress'])
-                ->count();
+            // High priority issues - only if there are new urgent issues
+            $lastUrgentIssuesNotification = Notification::where('metadata->identifier', 'urgent_issues')
+                ->orderBy('created_at', 'desc')
+                ->first();
             
-            if ($urgentIssues > 0) {
-                $notifications[] = [
-                    'id' => 'urgent_issues',
-                    'type' => 'danger',
-                    'icon' => 'fas fa-exclamation-circle',
-                    'title' => 'Urgent Issues',
-                    'message' => "{$urgentIssues} high priority issue(s) require attention",
-                    'time' => now()->diffForHumans(),
-                    'action_url' => route('admin.manage-issues'),
-                    'is_read' => false
-                ];
+            $urgentIssuesQuery = Issue::where('priority', 'High')->whereIn('status', ['Pending', 'In Progress']);
+            if ($lastUrgentIssuesNotification) {
+                $urgentIssuesQuery->where('created_at', '>', $lastUrgentIssuesNotification->created_at);
             }
-
-            // System performance alerts
-            $recentLogs = AuditLog::whereDate('created_at', today())->count();
             
-            if ($recentLogs > 100) {
-                $notifications[] = [
-                    'id' => 'high_activity',
-                    'type' => 'warning',
-                    'icon' => 'fas fa-chart-line',
-                    'title' => 'High System Activity',
-                    'message' => "{$recentLogs} system events logged today - unusual activity detected",
-                    'time' => now()->diffForHumans(),
-                    'action_url' => route('superadmin.audit-logs'),
-                    'is_read' => false
-                ];
-            }
-
-            // Farm registration alerts
-            $pendingFarms = Farm::where('status', 'pending')->count();
+            $newUrgentIssues = $urgentIssuesQuery->count();
             
-            if ($pendingFarms > 0) {
-                $notifications[] = [
-                    'id' => 'pending_farms',
-                    'type' => 'info',
-                    'icon' => 'fas fa-tractor',
-                    'title' => 'Pending Farm Registrations',
-                    'message' => "{$pendingFarms} farm registration(s) awaiting approval",
-                    'time' => now()->diffForHumans(),
-                    'action_url' => route('superadmin.farms.index'),
-                    'is_read' => false
-                ];
+            if ($newUrgentIssues > 0) {
+                $this->createOrUpdateNotification(
+                    'urgent_issues',
+                    'issue',
+                    'Urgent Issues',
+                    "{$newUrgentIssues} new high priority issue(s) require attention",
+                    'fas fa-exclamation-circle',
+                    route('admin.manage-issues'),
+                    'danger'
+                );
             }
 
-            // Database performance
+            // System performance alerts - only if there's unusual activity
+            $lastHighActivityNotification = Notification::where('metadata->identifier', 'high_activity')
+                ->orderBy('created_at', 'desc')
+                ->first();
+            
+            $recentLogs = AuditLog::where('created_at', '>=', now()->subDay())->count();
+            
+            if ($recentLogs > 100 && !$lastHighActivityNotification) {
+                $this->createOrUpdateNotification(
+                    'high_activity',
+                    'system',
+                    'High System Activity',
+                    "{$recentLogs} system events logged in the last 24 hours - unusual activity detected",
+                    'fas fa-chart-line',
+                    route('superadmin.audit-logs'),
+                    'warning'
+                );
+            }
+
+            // Farm registration alerts - only if there are new pending farms
+            $lastPendingFarmsNotification = Notification::where('metadata->identifier', 'pending_farms')
+                ->orderBy('created_at', 'desc')
+                ->first();
+            
+            $pendingFarmsQuery = Farm::where('status', 'pending');
+            if ($lastPendingFarmsNotification) {
+                $pendingFarmsQuery->where('created_at', '>', $lastPendingFarmsNotification->created_at);
+            }
+            
+            $newPendingFarms = $pendingFarmsQuery->count();
+            
+            if ($newPendingFarms > 0) {
+                $this->createOrUpdateNotification(
+                    'pending_farms',
+                    'farm',
+                    'Pending Farm Registrations',
+                    "{$newPendingFarms} new farm registration(s) awaiting approval",
+                    'fas fa-tractor',
+                    route('superadmin.farms.index'),
+                    'info'
+                );
+            }
+
+            // Database performance - only if size has increased significantly
+            $lastDbSizeNotification = Notification::where('metadata->identifier', 'db_size')
+                ->orderBy('created_at', 'desc')
+                ->first();
+            
             $dbSize = $this->getDatabaseSize();
-            if ($dbSize > 100) { // MB
-                $notifications[] = [
-                    'id' => 'db_size',
-                    'type' => 'warning',
-                    'icon' => 'fas fa-database',
-                    'title' => 'Database Size Alert',
-                    'message' => "Database size is {$dbSize} MB - consider optimization",
-                    'time' => now()->diffForHumans(),
-                    'action_url' => route('superadmin.settings'),
-                    'is_read' => false
-                ];
+            if ($dbSize > 100 && !$lastDbSizeNotification) { // MB
+                $this->createOrUpdateNotification(
+                    'db_size',
+                    'system',
+                    'Database Size Alert',
+                    "Database size is {$dbSize} MB - consider optimization",
+                    'fas fa-database',
+                    route('superadmin.settings'),
+                    'warning'
+                );
             }
 
         } catch (\Exception $e) {
             Log::error('Error generating specific notifications: ' . $e->getMessage());
-            // Return basic notification if there's an error
-            $notifications[] = [
-                'id' => 'system_error',
-                'type' => 'danger',
-                'icon' => 'fas fa-exclamation-triangle',
-                'title' => 'System Error',
-                'message' => 'Unable to load system notifications - check system logs',
-                'time' => now()->diffForHumans(),
-                'action_url' => route('superadmin.audit-logs'),
-                'is_read' => false
-            ];
+            // Create error notification if there's an error
+            $this->createOrUpdateNotification(
+                'system_error',
+                'system',
+                'System Error',
+                'Unable to load system notifications - check system logs',
+                'fas fa-exclamation-triangle',
+                route('superadmin.audit-logs'),
+                'danger'
+            );
         }
+    }
 
-        return $notifications;
+    /**
+     * Create or update a notification in the database
+     */
+    private function createOrUpdateNotification($identifier, $type, $title, $message, $icon, $actionUrl, $severity)
+    {
+        // Check if notification already exists (read or unread)
+        $existingNotification = Notification::where('metadata->identifier', $identifier)
+            ->first();
+
+        if (!$existingNotification) {
+            // Create new notification only if none exists
+            Notification::create([
+                'type' => $type,
+                'title' => $title,
+                'message' => $message,
+                'icon' => $icon,
+                'action_url' => $actionUrl,
+                'severity' => $severity,
+                'is_read' => false,
+                'metadata' => ['identifier' => $identifier]
+            ]);
+        } else {
+            // Only update if the notification is unread
+            if (!$existingNotification->is_read) {
+                $existingNotification->update([
+                    'title' => $title,
+                    'message' => $message,
+                    'icon' => $icon,
+                    'action_url' => $actionUrl,
+                    'severity' => $severity,
+                    'updated_at' => now()
+                ]);
+            }
+            // If notification is already read, don't create a new one or update it
+        }
     }
 
     /**
@@ -221,7 +334,7 @@ class NotificationController extends Controller
     {
         try {
             $request->validate([
-                'notification_id' => 'required|string'
+                'notification_id' => 'required|integer'
             ]);
 
             $user = Auth::user();
@@ -229,8 +342,17 @@ class NotificationController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // In a real system, you'd store read status in database
-            // For now, we'll just return success
+            $notification = Notification::find($request->notification_id);
+            
+            if (!$notification) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Notification not found'
+                ], 404);
+            }
+
+            $notification->markAsRead($user->id);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Notification marked as read'
@@ -255,8 +377,12 @@ class NotificationController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // Persist a session flag to suppress notifications for this session
-            session(['notifications_cleared' => true]);
+            // Mark all unread notifications as read
+            Notification::unread()->update([
+                'is_read' => true,
+                'read_at' => now(),
+                'read_by' => $user->id
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -267,6 +393,48 @@ class NotificationController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => 'Failed to mark all notifications as read'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get real-time user statistics for notifications
+     */
+    public function getUserStats()
+    {
+        try {
+            $stats = [
+                'total_users' => User::count(),
+                'new_users_today' => User::whereDate('created_at', today())->count(),
+                'new_users_24h' => User::where('created_at', '>=', now()->subDay())->count(),
+                'pending_admins' => User::where('role', 'admin')->where('status', 'pending')->count(),
+                'pending_farmers' => User::where('role', 'farmer')->where('status', 'pending')->count(),
+                'active_users' => User::where('is_active', true)->count(),
+                'inactive_users' => User::where('is_active', false)->count(),
+            ];
+            
+            return response()->json(['success' => true, 'data' => $stats]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to get user stats'], 500);
+        }
+    }
+
+    /**
+     * Clean up old notifications (older than 30 days)
+     */
+    public function cleanupOldNotifications()
+    {
+        try {
+            $deleted = Notification::where('created_at', '<', now()->subDays(30))->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Cleaned up {$deleted} old notifications"
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to cleanup old notifications'
             ], 500);
         }
     }

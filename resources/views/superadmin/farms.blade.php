@@ -2,10 +2,85 @@
 
 @section('title', 'LBDAIRY: SuperAdmin - Manage Farms')
 
+@push('styles')
+<style>
+    /* Custom styles for farm management */
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    .farm-id-link {
+        color: #4e73df;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .farm-id-link:hover {
+        color: #2e59d9;
+        text-decoration: underline;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid">
-    <br><br><br><br>
-    
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -16,38 +91,82 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-container fade-in">
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--success-color);" id="activeFarmsCount">0</div>
-            <div class="stat-label">Active Farms</div>
+    <div class="row fade-in">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Farms</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeFarmsCount">0</div>
+                    </div>
+                    <div class="icon text-success">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--danger-color);" id="inactiveFarmsCount">0</div>
-            <div class="stat-label">Inactive Farms</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Inactive Farms</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="inactiveFarmsCount">0</div>
+                    </div>
+                    <div class="icon text-danger">
+                        <i class="fas fa-times-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--info-color);" id="totalFarmsCount">0</div>
-            <div class="stat-label">Total Farms</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farms</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFarmsCount">0</div>
+                    </div>
+                    <div class="icon text-info">
+                        <i class="fas fa-university fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--warning-color);" id="barangayCount">0</div>
-            <div class="stat-label">Barangays Covered</div>
+        
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Barangays Covered</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="barangayCount">0</div>
+                    </div>
+                    <div class="icon text-warning">
+                        <i class="fas fa-map-marker-alt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Farm Management Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header">
-            <h6>
-                <i class="fas fa-list"></i>
-                Farm Directory
-            </h6>
-            <div class="table-controls">
-                <div class="search-container">
-                    <input type="text" class="form-control custom-search" placeholder="Search farms...">
-                </div>
-                <div class="export-controls">
-                    <div class="btn-group">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h6 class="mb-0 mb-md-0">
+                    <i class="fas fa-list"></i>
+                    Farm Directory
+                </h6>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                    <div class="input-group" style="max-width: 300px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search farms..." id="farmSearch">
+                    </div>
+                    <div class="btn-group" role="group">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
@@ -63,10 +182,10 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable()">
+                    <button class="btn btn-secondary btn-sm" onclick="printTable()" title="Print">
                         <i class="fas fa-print"></i>
                     </button>
-                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('csvInput').click()">
+                    <button class="btn btn-success btn-sm" onclick="document.getElementById('csvInput').click()" title="Import CSV">
                         <i class="fas fa-file-import"></i> Import CSV
                     </button>
                     <input type="file" id="csvInput" accept=".csv" style="display: none;" onchange="importCSV(event)">
@@ -75,8 +194,8 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Farm ID</th>
                             <th>Owner Name</th>
@@ -84,7 +203,7 @@
                             <th>Phone</th>
                             <th>Barangay</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="farmsTableBody">
@@ -173,7 +292,7 @@ $(document).ready(function () {
     updateStats();
 
     // Custom search functionality
-    $('.custom-search').on('keyup', function() {
+    $('#farmSearch').on('keyup', function() {
         farmsTable.search(this.value).draw();
     });
 });
@@ -232,13 +351,18 @@ function loadFarms() {
                     `${farm.owner?.email || ''}`,
                     `${farm.owner?.phone || ''}`,
                     `${farm.barangay || ''}`,
-                    `<select class="form-control" onchange="updateActivity(this, '${farm.id}')">
-                        <option value="active" ${farm.status === 'active' ? 'selected' : ''}>Active</option>
-                        <option value="inactive" ${farm.status === 'inactive' ? 'selected' : ''}>Inactive</option>
-                    </select>`,
-                    `<button class="btn btn-danger btn-sm" onclick="confirmDelete('${farm.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>`
+                    `<span class="badge badge-${farm.status === 'active' ? 'success' : 'danger'}">${farm.status}</span>`,
+                    `<div class="btn-group" role="group">
+                        <button class="btn btn-primary btn-sm" onclick="openDetailsModal('${farm.id}')" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="toggleFarmStatus('${farm.id}', '${farm.status}')" title="Toggle Status">
+                            <i class="fas fa-${farm.status === 'active' ? 'pause' : 'play'}"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${farm.id}')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>`
                 ];
                 
                 farmsTable.row.add(rowData).draw(false);
@@ -306,6 +430,29 @@ function openDetailsModal(farmId) {
         },
         error: function(xhr) {
             console.error('Error loading farm details:', xhr);
+        }
+    });
+}
+
+function toggleFarmStatus(farmId, currentStatus) {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    
+    $.ajax({
+        url: `{{ route("superadmin.farms.update-status", ":id") }}`.replace(':id', farmId),
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            status: newStatus
+        },
+        success: function(response) {
+            loadFarms();
+            updateStats();
+            showNotification(`Farm status updated to ${newStatus}`, 'success');
+        },
+        error: function(xhr) {
+            showNotification('Error updating farm status', 'danger');
         }
     });
 }

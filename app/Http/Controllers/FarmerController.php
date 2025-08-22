@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Livestock;
 use App\Models\Farm;
 use App\Models\Issue;
+use App\Models\AuditLog;
 
 class FarmerController extends Controller
 {
@@ -853,5 +854,161 @@ class FarmerController extends Controller
         $livestock = $farm->livestock()->orderBy('created_at', 'desc')->get();
 
         return view('farmer.farm-details', compact('farm', 'livestock'));
+    }
+
+    /**
+     * Display audit logs for the farmer.
+     */
+    public function auditLogs()
+    {
+        $user = Auth::user();
+        
+        // Get audit logs for the farmer's actions only
+        $auditLogs = AuditLog::where('user_id', $user->id)
+                            ->orderBy('created_at', 'desc')
+                            ->paginate(20);
+
+        // Get stats
+        $totalLogs = AuditLog::where('user_id', $user->id)->count();
+        $todayLogs = AuditLog::where('user_id', $user->id)
+                            ->whereDate('created_at', today())
+                            ->count();
+        $criticalEvents = AuditLog::where('user_id', $user->id)
+                                 ->whereIn('severity', ['error', 'critical'])
+                                 ->count();
+
+        return view('farmer.audit-logs', compact(
+            'auditLogs',
+            'totalLogs',
+            'todayLogs',
+            'criticalEvents'
+        ));
+    }
+
+    /**
+     * Get audit log details
+     */
+    public function getAuditLogDetails($id)
+    {
+        try {
+            $user = Auth::user();
+            $auditLog = AuditLog::where('user_id', $user->id)
+                               ->with(['user'])
+                               ->findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'auditLog' => $auditLog
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load audit log details'
+            ], 500);
+        }
+    }
+
+    /**
+     * Export audit logs
+     */
+    public function exportAuditLogs(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $format = $request->get('format', 'csv');
+            $startDate = $request->get('start_date');
+            $endDate = $request->get('end_date');
+            $severity = $request->get('severity');
+            
+            $query = AuditLog::where('user_id', $user->id)->with(['user']);
+            
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
+            
+            if ($severity) {
+                $query->where('severity', $severity);
+            }
+            
+            $auditLogs = $query->get();
+            
+            if ($format === 'csv') {
+                return $this->exportToCSV($auditLogs);
+            } elseif ($format === 'pdf') {
+                return $this->exportToPDF($auditLogs);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Unsupported format'], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Export failed'], 500);
+        }
+    }
+
+    /**
+     * Export to CSV
+     */
+    private function exportToCSV($auditLogs)
+    {
+        $filename = 'farmer_audit_logs_' . date('Y-m-d_H-i-s') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($auditLogs) {
+            $file = fopen('php://output', 'w');
+            
+            // Add CSV headers
+            fputcsv($file, [
+                'Log ID',
+                'Action',
+                'Description',
+                'Severity',
+                'IP Address',
+                'User Agent',
+                'Created At'
+            ]);
+
+            foreach ($auditLogs as $log) {
+                fputcsv($file, [
+                    $log->id,
+                    $log->action,
+                    $log->description,
+                    $log->severity,
+                    $log->ip_address,
+                    $log->user_agent,
+                    $log->created_at
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export to PDF
+     */
+    private function exportToPDF($auditLogs)
+    {
+        // For now, return a simple text response
+        // In a real implementation, you would use a PDF library like DomPDF
+        $content = "Farmer Audit Logs Report\n";
+        $content .= "Generated on: " . now() . "\n\n";
+        
+        foreach ($auditLogs as $log) {
+            $content .= "Log ID: {$log->id}\n";
+            $content .= "Action: {$log->action}\n";
+            $content .= "Description: {$log->description}\n";
+            $content .= "Severity: {$log->severity}\n";
+            $content .= "Created: {$log->created_at}\n";
+            $content .= "---\n";
+        }
+
+        return response($content)
+            ->header('Content-Type', 'text/plain')
+            ->header('Content-Disposition', 'attachment; filename="farmer_audit_logs_' . date('Y-m-d_H-i-s') . '.txt"');
     }
 }
