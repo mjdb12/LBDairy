@@ -18,7 +18,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Sales</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">₱171,200</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($totalSales) }}</div>
             </div>
             <div class="icon text-primary">
                 <i class="fas fa-dollar-sign fa-2x"></i>
@@ -30,7 +30,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">This Month</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">₱45,800</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($monthlySales) }}</div>
             </div>
             <div class="icon text-success">
                 <i class="fas fa-calendar fa-2x"></i>
@@ -42,7 +42,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Transactions</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">24</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalTransactions }}</div>
             </div>
             <div class="icon text-info">
                 <i class="fas fa-receipt fa-2x"></i>
@@ -54,7 +54,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Average Price</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">₱7,133</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($averagePrice) }}</div>
             </div>
             <div class="icon text-warning">
                 <i class="fas fa-chart-bar fa-2x"></i>
@@ -109,91 +109,45 @@
                         <thead>
                             <tr>
                                 <th>Sale ID</th>
-                                <th>Date Sold</th>
-                                <th>Type</th>
-                                <th>Amount Sold (₱)</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Quantity (L)</th>
+                                <th>Unit Price (₱)</th>
+                                <th>Total Amount (₱)</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="salesTableBody">
+                            @forelse($salesData as $sale)
                             <tr>
-                                <td>SL001</td>
-                                <td>2024-06-01</td>
-                                <td>Goat</td>
-                                <td>8,500</td>
+                                <td>{{ $sale['sale_id'] }}</td>
+                                <td>{{ $sale['sale_date'] }}</td>
+                                <td>{{ $sale['customer_name'] }}</td>
+                                <td>{{ number_format($sale['quantity'], 2) }}</td>
+                                <td>₱{{ number_format($sale['unit_price'], 2) }}</td>
+                                <td>₱{{ number_format($sale['amount']) }}</td>
+                                <td>
+                                    <span class="badge badge-{{ $sale['payment_status'] == 'paid' ? 'success' : ($sale['payment_status'] == 'partial' ? 'warning' : 'secondary') }}">
+                                        {{ ucfirst($sale['payment_status']) }}
+                                    </span>
+                                </td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $sale['id'] }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
+                            @empty
                             <tr>
-                                <td>SL002</td>
-                                <td>2024-06-03</td>
-                                <td>Cow</td>
-                                <td>35,000</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="fas fa-chart-line fa-3x mb-3 text-muted"></i>
+                                    <p>No sales records available.</p>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>SL003</td>
-                                <td>2024-06-05</td>
-                                <td>Carabao</td>
-                                <td>42,000</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>SL004</td>
-                                <td>2024-06-07</td>
-                                <td>Goat</td>
-                                <td>9,200</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>SL005</td>
-                                <td>2024-06-10</td>
-                                <td>Cow</td>
-                                <td>36,500</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>SL006</td>
-                                <td>2024-06-12</td>
-                                <td>Carabao</td>
-                                <td>41,000</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -244,25 +198,57 @@
             <div class="modal-body">
                 <form id="addLivestockDetailsForm">
                     <div class="form-group">
-                        <label for="add_saleId">Sale ID</label>
-                        <input type="text" class="form-control" id="add_saleId" name="saleId" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_dateSold">Date Sold</label>
-                        <input type="date" class="form-control" id="add_dateSold" name="dateSold" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_type">Type</label>
-                        <select class="form-control" id="add_type" name="type" required>
-                            <option value="" disabled selected>Select Type</option>
-                            <option value="Goat">Goat</option>
-                            <option value="Cow">Cow</option>
-                            <option value="Carabao">Carabao</option>
+                        <label for="add_farm_id">Select Farm</label>
+                        <select class="form-control" id="add_farm_id" name="farm_id" required>
+                            <option value="" disabled selected>Select Farm</option>
+                            @foreach($farms ?? [] as $farm)
+                                <option value="{{ $farm->id }}">{{ $farm->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="add_amountSold">Amount Sold (₱)</label>
-                        <input type="number" class="form-control" id="add_amountSold" name="amountSold" min="0" required>
+                        <label for="add_customer_name">Customer Name</label>
+                        <input type="text" class="form-control" id="add_customer_name" name="customer_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_customer_phone">Customer Phone</label>
+                        <input type="text" class="form-control" id="add_customer_phone" name="customer_phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="add_customer_email">Customer Email</label>
+                        <input type="email" class="form-control" id="add_customer_email" name="customer_email">
+                    </div>
+                    <div class="form-group">
+                        <label for="add_quantity">Quantity (Liters)</label>
+                        <input type="number" class="form-control" id="add_quantity" name="quantity" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_unit_price">Unit Price (₱/Liter)</label>
+                        <input type="number" class="form-control" id="add_unit_price" name="unit_price" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_sale_date">Sale Date</label>
+                        <input type="date" class="form-control" id="add_sale_date" name="sale_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_payment_method">Payment Method</label>
+                        <select class="form-control" id="add_payment_method" name="payment_method">
+                            <option value="cash">Cash</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="mobile_money">Mobile Money</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_payment_status">Payment Status</label>
+                        <select class="form-control" id="add_payment_status" name="payment_status">
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="partial">Partial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_notes">Notes</label>
+                        <textarea class="form-control" id="add_notes" name="notes" rows="3" placeholder="Additional notes about the sale..."></textarea>
                     </div>
                 </form>
             </div>
@@ -312,10 +298,10 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Sale ID</th>
-                                <th>Type</th>
-                                <th>Amount Sold (₱)</th>
+                                <th>Month</th>
+                                <th>Transactions</th>
+                                <th>Total Sales (₱)</th>
+                                <th>Average Sale (₱)</th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody">
@@ -397,13 +383,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 <script>
-let dataTable;
 let saleToDelete = null;
 
 $(document).ready(function () {
-    // Initialize DataTable
-    initializeDataTable();
-    
     // Initialize history data
     renderSalesHistory();
 
@@ -414,82 +396,57 @@ $(document).ready(function () {
     });
 });
 
-function initializeDataTable() {
-    dataTable = $('#salesTable').DataTable({
-        dom: 'Bfrtip',
-        searching: true,
-        paging: true,
-        info: true,
-        ordering: true,
-        lengthChange: false,
-        pageLength: 10,
-        buttons: [
-            {
-                extend: 'csvHtml5',
-                title: 'Sales_Report',
-                className: 'd-none'
-            },
-            {
-                extend: 'pdfHtml5',
-                title: 'Sales_Report',
-                orientation: 'landscape',
-                pageSize: 'Letter',
-                className: 'd-none'
-            },
-            {
-                extend: 'print',
-                title: 'Sales Report',
-                className: 'd-none'
-            }
-        ],
-        language: {
-            search: "",
-            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No sales records</h5><p>There are no sales records to display at this time.</p></div>'
-        }
-    });
 
-    // Hide default DataTables elements
-    $('.dataTables_filter').hide();
-    $('.dt-buttons').hide();
-}
 
 function addNewSale() {
-    const saleId = document.getElementById('add_saleId').value;
-    const dateSold = document.getElementById('add_dateSold').value;
-    const type = document.getElementById('add_type').value;
-    const amountSold = document.getElementById('add_amountSold').value;
+    const formData = new FormData(document.getElementById('addLivestockDetailsForm'));
     
-    if (!saleId || !dateSold || !type || !amountSold) {
-        showNotification('Please fill in all fields', 'error');
+    // Validate required fields
+    if (!formData.get('farm_id') || !formData.get('customer_name') || !formData.get('quantity') || !formData.get('unit_price') || !formData.get('sale_date')) {
+        showNotification('Please fill in all required fields', 'error');
         return;
     }
     
-    // Add to table
-    const newRow = dataTable.row.add([
-        saleId,
-        dateSold,
-        type,
-        '₱' + parseInt(amountSold).toLocaleString(),
-        `<div class="btn-group" role="group">
-            <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>`
-    ]).draw().node();
-    
-    // Close modal and reset form
-    $('#addLivestockDetailsModal').modal('hide');
-    document.getElementById('addLivestockDetailsForm').reset();
-    
-    showNotification('Sale record added successfully!', 'success');
-    updateStats();
+    // Send AJAX request
+    fetch('{{ route("farmer.sales.store") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            farm_id: formData.get('farm_id'),
+            customer_name: formData.get('customer_name'),
+            customer_phone: formData.get('customer_phone'),
+            customer_email: formData.get('customer_email'),
+            quantity: formData.get('quantity'),
+            unit_price: formData.get('unit_price'),
+            sale_date: formData.get('sale_date'),
+            payment_method: formData.get('payment_method'),
+            payment_status: formData.get('payment_status'),
+            notes: formData.get('notes')
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification(data.message, 'success');
+            $('#addLivestockDetailsModal').modal('hide');
+            document.getElementById('addLivestockDetailsForm').reset();
+            // Reload the page to refresh the data
+            location.reload();
+        } else {
+            showNotification(data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while saving the sale record', 'error');
+    });
 }
 
-function confirmDelete(button) {
-    const row = button.closest('tr');
-    const saleId = row.cells[0].textContent;
-    saleToDelete = row;
-    
+function confirmDelete(saleId) {
+    saleToDelete = saleId;
     $('#confirmDeleteModal').modal('show');
     
     // Set up delete button
@@ -500,34 +457,59 @@ function confirmDelete(button) {
 
 function deleteSale() {
     if (saleToDelete) {
-        dataTable.row(saleToDelete).remove().draw();
+        // Send AJAX request to delete
+        fetch(`/farmer/sales/${saleToDelete}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+                $('#confirmDeleteModal').modal('hide');
+                // Reload the page to refresh the data
+                location.reload();
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred while deleting the sale record', 'error');
+        });
+        
         saleToDelete = null;
-        $('#confirmDeleteModal').modal('hide');
-        showNotification('Sale record deleted successfully!', 'success');
-        updateStats();
     }
 }
 
 function renderSalesHistory() {
-    const historyData = [
-        { date: '2024-06-01', saleId: 'SL001', type: 'Goat', amount: '8,500' },
-        { date: '2024-06-03', saleId: 'SL002', type: 'Cow', amount: '35,000' },
-        { date: '2024-06-05', saleId: 'SL003', type: 'Carabao', amount: '42,000' },
-        { date: '2024-06-07', saleId: 'SL004', type: 'Goat', amount: '9,200' },
-        { date: '2024-06-10', saleId: 'SL005', type: 'Cow', amount: '36,500' },
-        { date: '2024-06-12', saleId: 'SL006', type: 'Carabao', amount: '41,000' }
-    ];
+    const historyData = @json($salesHistory);
     
     const tbody = document.getElementById('historyTableBody');
     tbody.innerHTML = '';
     
+    if (historyData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                    <i class="fas fa-chart-line fa-3x mb-3 text-muted"></i>
+                    <p>No sales history available.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
     historyData.forEach(sale => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${sale.date}</td>
-            <td>${sale.saleId}</td>
-            <td>${sale.type}</td>
-            <td>₱${sale.amount}</td>
+            <td>${sale.month}</td>
+            <td>${sale.transaction_count}</td>
+            <td>₱${parseInt(sale.total_sales).toLocaleString()}</td>
+            <td>₱${parseInt(sale.total_sales / sale.transaction_count).toLocaleString()}</td>
         `;
         tbody.appendChild(row);
     });

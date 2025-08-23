@@ -21,7 +21,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total Clients</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">45</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalClients }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -38,7 +38,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Active Clients</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">38</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeClients }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-user-check fa-2x text-gray-300"></i>
@@ -55,7 +55,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                             Monthly Revenue</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">₱45,200</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($monthlyRevenue) }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -72,7 +72,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             New This Month</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">7</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $newThisMonth }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-user-plus fa-2x text-gray-300"></i>
@@ -107,94 +107,37 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse($clientsData as $client)
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
                                         <div>
-                                            <div class="font-weight-bold">Juan Dela Cruz</div>
-                                            <small class="text-muted">Regular Customer</small>
+                                            <div class="font-weight-bold">{{ $client['name'] }}</div>
+                                            <small class="text-muted">{{ $client['type_label'] }}</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>09123456789</div>
-                                    <small class="text-muted">juan@email.com</small>
+                                    <div>{{ $client['phone'] ?? 'N/A' }}</div>
+                                    <small class="text-muted">{{ $client['email'] ?? 'N/A' }}</small>
                                 </td>
-                                <td><span class="badge badge-primary">Retail</span></td>
-                                <td><span class="badge badge-success">Active</span></td>
-                                <td>15</td>
+                                <td><span class="badge {{ $client['type_badge'] }}">{{ $client['type_label'] }}</span></td>
+                                <td><span class="badge {{ $client['status_badge'] }}">{{ $client['status_label'] }}</span></td>
+                                <td>{{ $client['total_orders'] }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewClient('{{ $client['name'] }}')">View</button>
+                                    <button class="btn btn-sm btn-outline-info" onclick="editClient('{{ $client['name'] }}')">Edit</button>
                                 </td>
                             </tr>
+                            @empty
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
-                                        <div>
-                                            <div class="font-weight-bold">Maria Santos</div>
-                                            <small class="text-muted">Wholesale Buyer</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>09234567890</div>
-                                    <small class="text-muted">maria@email.com</small>
-                                </td>
-                                <td><span class="badge badge-info">Wholesale</span></td>
-                                <td><span class="badge badge-success">Active</span></td>
-                                <td>28</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fas fa-users fa-3x mb-3 text-muted"></i>
+                                    <p>No clients found. Start making sales to see your clients here.</p>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
-                                        <div>
-                                            <div class="font-weight-bold">Pedro Garcia</div>
-                                            <small class="text-muted">Restaurant Owner</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>09345678901</div>
-                                    <small class="text-muted">pedro@email.com</small>
-                                </td>
-                                <td><span class="badge badge-warning">Business</span></td>
-                                <td><span class="badge badge-warning">Pending</span></td>
-                                <td>8</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
-                                        <div>
-                                            <div class="font-weight-bold">Ana Lopez</div>
-                                            <small class="text-muted">Local Market</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>09456789012</div>
-                                    <small class="text-muted">ana@email.com</small>
-                                </td>
-                                <td><span class="badge badge-secondary">Market</span></td>
-                                <td><span class="badge badge-success">Active</span></td>
-                                <td>32</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
-                                </td>
-                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -242,27 +185,20 @@
             </div>
             <div class="card-body">
                 <div class="list-group list-group-flush">
+                    @forelse($topClients as $client)
                     <div class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="font-weight-bold">Ana Lopez</div>
-                            <small class="text-muted">Local Market</small>
+                            <div class="font-weight-bold">{{ $client['name'] }}</div>
+                            <small class="text-muted">{{ $client['type'] }}</small>
                         </div>
-                        <span class="badge badge-primary badge-pill">₱12,500</span>
+                        <span class="badge badge-primary badge-pill">₱{{ number_format($client['total_spent']) }}</span>
                     </div>
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="font-weight-bold">Maria Santos</div>
-                            <small class="text-muted">Wholesale Buyer</small>
-                        </div>
-                        <span class="badge badge-primary badge-pill">₱9,800</span>
+                    @empty
+                    <div class="list-group-item text-center text-muted">
+                        <i class="fas fa-users fa-2x mb-2"></i>
+                        <p>No clients yet</p>
                     </div>
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="font-weight-bold">Juan Dela Cruz</div>
-                            <small class="text-muted">Regular Customer</small>
-                        </div>
-                        <span class="badge badge-primary badge-pill">₱7,200</span>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -368,7 +304,12 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: ['Retail', 'Wholesale', 'Business', 'Market'],
             datasets: [{
-                data: [20, 12, 8, 5],
+                data: [
+                    {{ $clientDistribution['retail'] ?? 0 }},
+                    {{ $clientDistribution['wholesale'] ?? 0 }},
+                    {{ $clientDistribution['business'] ?? 0 }},
+                    {{ $clientDistribution['market'] ?? 0 }}
+                ],
                 backgroundColor: ['#4e73df', '#36b9cc', '#f6c23e', '#6c757d'],
                 hoverBackgroundColor: ['#2e59d9', '#2c9faf', '#f4b619', '#545b62'],
                 hoverBorderColor: 'rgba(234, 236, 244, 1)',

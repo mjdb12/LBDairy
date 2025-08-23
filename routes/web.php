@@ -32,6 +32,18 @@ Route::get('/', function () {
 // Test route - temporarily disabled
 // Route::get('/test', [TestController::class, 'index']);
 
+// Test helper functions
+Route::get('/test-helpers', function() {
+    return response()->json([
+        'getActionBadgeClass' => function_exists('getActionBadgeClass'),
+        'getSeverityBadgeClass' => function_exists('getSeverityBadgeClass'),
+        'getActionDescription' => function_exists('getActionDescription'),
+        'test_action_badge' => getActionBadgeClass('create'),
+        'test_severity_badge' => getSeverityBadgeClass('info'),
+        'test_description' => getActionDescription('create', 'users')
+    ]);
+});
+
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -51,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile', function () { return view('farmer.profile'); })->name('profile');
         Route::put('/profile', [FarmerController::class, 'updateProfile'])->name('profile.update');
         Route::put('/profile/password', [FarmerController::class, 'changePassword'])->name('profile.password');
+        Route::post('/profile/picture', [FarmerController::class, 'uploadProfilePicture'])->name('profile.picture');
         Route::get('/livestock', [FarmerController::class, 'livestock'])->name('livestock');
         Route::post('/livestock', [FarmerController::class, 'storeLivestock'])->name('livestock.store');
         Route::get('/livestock/{id}', [FarmerController::class, 'showLivestock'])->name('livestock.show');
@@ -66,29 +79,30 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/production/{id}', [FarmerController::class, 'deleteProduction'])->name('production.destroy');
         Route::get('/production/history', [FarmerController::class, 'productionHistory'])->name('production.history');
         Route::get('/users', function () { return view('farmer.users'); })->name('users');
-        Route::get('/suppliers', function () { return view('farmer.suppliers'); })->name('suppliers');
+        Route::get('/suppliers', [App\Http\Controllers\FarmerController::class, 'suppliers'])->name('suppliers');
         Route::get('/schedule', function () { return view('farmer.schedule'); })->name('schedule');
         Route::get('/scan', function () { return view('farmer.scan'); })->name('scan');
         Route::get('/farms', [FarmerController::class, 'farms'])->name('farms');
         Route::post('/farms', [FarmerController::class, 'storeFarm'])->name('farms.store');
         Route::get('/farm-details/{id}', [FarmerController::class, 'farmDetails'])->name('farm-details');
-        Route::get('/sales', function () { return view('farmer.sales'); })->name('sales');
+        Route::get('/sales', [App\Http\Controllers\FarmerController::class, 'sales'])->name('sales');
+        Route::post('/sales', [App\Http\Controllers\FarmerController::class, 'storeSale'])->name('sales.store');
+        Route::delete('/sales/{id}', [App\Http\Controllers\FarmerController::class, 'deleteSale'])->name('sales.destroy');
         Route::get('/expenses', [FarmerController::class, 'expenses'])->name('expenses');
         Route::post('/expenses', [FarmerController::class, 'storeExpense'])->name('expenses.store');
         Route::get('/expenses/{id}', [FarmerController::class, 'showExpense'])->name('expenses.show');
         Route::put('/expenses/{id}', [FarmerController::class, 'updateExpense'])->name('expenses.update');
         Route::delete('/expenses/{id}', [FarmerController::class, 'deleteExpense'])->name('expenses.destroy');
         Route::get('/issues', [FarmerController::class, 'issues'])->name('issues');
-        Route::post('/issues', [FarmerController::class, 'storeIssue'])->name('issues.store');
         Route::get('/issues/{id}', [FarmerController::class, 'showIssue'])->name('issues.show');
-        Route::get('/issues/{id}/edit', [FarmerController::class, 'editIssue'])->name('issues.edit');
-        Route::put('/issues/{id}', [FarmerController::class, 'updateIssue'])->name('issues.update');
-        Route::delete('/issues/{id}', [FarmerController::class, 'deleteIssue'])->name('issues.destroy');
-        Route::get('/issue-alerts', function () { return view('farmer.issue-alerts'); })->name('issue-alerts');
-        Route::get('/farm-analysis', function () { return view('farmer.farm-analysis'); })->name('farm-analysis');
-        Route::get('/livestock-analysis', function () { return view('farmer.livestock-analysis'); })->name('livestock-analysis');
-        Route::get('/clients', function () { return view('farmer.clients'); })->name('clients');
-        Route::get('/inventory', function () { return view('farmer.inventory'); })->name('inventory');
+        Route::get('/issue-alerts', [FarmerController::class, 'issueAlerts'])->name('issue-alerts');
+        Route::post('/issue-alerts', [FarmerController::class, 'storeAlert'])->name('issue-alerts.store');
+        Route::get('/issue-alerts/{id}', [FarmerController::class, 'showAlert'])->name('issue-alerts.show');
+        Route::patch('/issue-alerts/{id}/status', [FarmerController::class, 'updateAlertStatus'])->name('issue-alerts.update-status');
+        Route::get('/farm-analysis', [App\Http\Controllers\FarmerController::class, 'farmAnalysis'])->name('farm-analysis');
+        Route::get('/livestock-analysis', [App\Http\Controllers\FarmerController::class, 'livestockAnalysis'])->name('livestock-analysis');
+        Route::get('/clients', [App\Http\Controllers\FarmerController::class, 'clients'])->name('clients');
+        Route::get('/inventory', [App\Http\Controllers\FarmerController::class, 'inventory'])->name('inventory');
         
         // Audit logs routes for farmer
         Route::get('/audit-logs', [FarmerController::class, 'auditLogs'])->name('audit-logs');
@@ -156,6 +170,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/issues-stats', [App\Http\Controllers\IssueController::class, 'getStats'])->name('issues.stats');
         Route::get('/issues-export', [App\Http\Controllers\IssueController::class, 'export'])->name('issues.export');
         Route::get('/urgent-issues', [App\Http\Controllers\IssueController::class, 'getUrgentIssues'])->name('issues.urgent');
+        
+        // Farmer Alerts routes
+        Route::get('/farmer-alerts', [App\Http\Controllers\AdminController::class, 'farmerAlerts'])->name('farmer-alerts');
+        Route::get('/farmer-alerts/{id}', [App\Http\Controllers\AdminController::class, 'showFarmerAlert'])->name('farmer-alerts.show');
+        Route::patch('/farmer-alerts/{id}/status', [App\Http\Controllers\AdminController::class, 'updateFarmerAlertStatus'])->name('farmer-alerts.update-status');
+        Route::get('/farmer-alerts-stats', [App\Http\Controllers\AdminController::class, 'getAlertStats'])->name('farmer-alerts.stats');
         
         // Analysis routes
         Route::get('/manage-analysis', [App\Http\Controllers\AnalysisController::class, 'index'])->name('analysis.index');
@@ -313,10 +333,15 @@ Route::middleware(['auth'])->group(function () {
 
         // Task board routes
         Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
-        Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
-        Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
-        Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
-        Route::post('/tasks/reorder', [App\Http\Controllers\TaskController::class, 'reorder'])->name('tasks.reorder');
-        Route::post('/tasks/{task}/move', [App\Http\Controllers\TaskController::class, 'move'])->name('tasks.move');
+Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
+Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
+Route::post('/tasks/reorder', [App\Http\Controllers\TaskController::class, 'reorder'])->name('tasks.reorder');
+Route::post('/tasks/{task}/move', [App\Http\Controllers\TaskController::class, 'move'])->name('tasks.move');
+
+// Calendar routes
+Route::get('/calendar/events', [App\Http\Controllers\TaskController::class, 'calendarEvents'])->name('calendar.events');
+Route::post('/calendar/events', [App\Http\Controllers\TaskController::class, 'storeCalendarEvent'])->name('calendar.store');
+Route::put('/calendar/events/{task}', [App\Http\Controllers\TaskController::class, 'updateCalendarEvent'])->name('calendar.update');
     });
 });

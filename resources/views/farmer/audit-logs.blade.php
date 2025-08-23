@@ -133,6 +133,82 @@
         </div>
     </div>
 
+    <!-- Filters Card -->
+    <div class="card shadow mb-4 fade-in">
+        <div class="card-header bg-light">
+            <h6 class="mb-0">
+                <i class="fas fa-filter"></i>
+                Filter Activities
+            </h6>
+        </div>
+        <div class="card-body">
+            <form id="filterForm" method="GET" action="{{ route('farmer.audit-logs') }}">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="search">Search</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   value="{{ request('search') }}" placeholder="Search activities...">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="action">Action</label>
+                            <select class="form-control" id="action" name="action">
+                                <option value="">All Actions</option>
+                                @foreach($actionOptions as $action)
+                                    <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
+                                        {{ ucfirst($action) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="severity">Severity</label>
+                            <select class="form-control" id="severity" name="severity">
+                                <option value="">All Severities</option>
+                                @foreach($severityOptions as $severity)
+                                    <option value="{{ $severity }}" {{ request('severity') == $severity ? 'selected' : '' }}>
+                                        {{ ucfirst($severity) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" 
+                                   value="{{ request('start_date') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="end_date">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" 
+                                   value="{{ request('end_date') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary btn-sm mr-1">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <a href="{{ route('farmer.audit-logs') }}" class="btn btn-secondary btn-sm" title="Clear Filters">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Audit Logs Card -->
     <div class="card shadow mb-4 fade-in">
         <div class="card-header bg-primary text-white">
@@ -140,16 +216,11 @@
                 <h6 class="mb-0 mb-md-0">
                     <i class="fas fa-clipboard-list"></i>
                     Activity History
+                    @if(request('search') || request('action') || request('severity') || request('start_date') || request('end_date'))
+                        <span class="badge badge-light ml-2">Filtered</span>
+                    @endif
                 </h6>
                 <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
-                    <div class="input-group" style="max-width: 300px;">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search activities..." id="logSearch">
-                    </div>
                     <div class="btn-group" role="group">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-download"></i> Export
@@ -189,17 +260,17 @@
                             <td>
                                 <code class="small">LOG{{ str_pad($log->id, 3, '0', STR_PAD_LEFT) }}</code>
                             </td>
-                            <td>
-                                <span class="badge badge-{{ getActionBadgeClass($log->action) }}">
-                                    {{ ucfirst($log->action) }}
-                                </span>
-                            </td>
-                            <td>{{ $log->description ?? 'No description available' }}</td>
-                            <td>
-                                <span class="badge badge-{{ getSeverityBadgeClass($log->severity) }}">
-                                    {{ ucfirst($log->severity ?? 'info') }}
-                                </span>
-                            </td>
+                                                         <td>
+                                 <span class="badge badge-{{ $getActionBadgeClass($log->action) }}">
+                                     {{ ucfirst($log->action) }}
+                                 </span>
+                             </td>
+                             <td>{{ $log->description ?? 'No description available' }}</td>
+                             <td>
+                                 <span class="badge badge-{{ $getSeverityBadgeClass($log->severity) }}">
+                                     {{ ucfirst($log->severity ?? 'info') }}
+                                 </span>
+                             </td>
                             <td>
                                 <code class="small">{{ $log->ip_address ?? 'N/A' }}</code>
                             </td>
@@ -269,15 +340,13 @@ $(document).ready(function () {
     // Initialize DataTable
     initializeDataTable();
     
-    // Custom search functionality
-    $('#logSearch').on('keyup', function() {
-        auditLogsTable.search(this.value).draw();
-    });
-
     // Auto-refresh data every 30 seconds
     setInterval(function() {
         refreshData();
     }, 30000);
+    
+    // Update last updated time
+    updateLastUpdated();
 });
 
 function initializeDataTable() {
@@ -348,7 +417,11 @@ function showLogDetails(logId) {
 }
 
 function exportLogs(format) {
-    const url = `{{ route("farmer.audit-logs.export") }}?format=${format}`;
+    // Get current filter parameters
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('format', format);
+    
+    const url = `{{ route("farmer.audit-logs.export") }}?${searchParams.toString()}`;
     window.open(url, '_blank');
 }
 
@@ -363,6 +436,12 @@ function refreshData() {
     location.reload();
 }
 
+function updateLastUpdated() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = timeString;
+}
+
 function getActionBadgeClass(action) {
     switch(action) {
         case 'create': return 'success';
@@ -370,6 +449,8 @@ function getActionBadgeClass(action) {
         case 'delete': return 'danger';
         case 'login': return 'info';
         case 'logout': return 'secondary';
+        case 'export': return 'warning';
+        case 'import': return 'info';
         default: return 'secondary';
     }
 }
@@ -380,6 +461,7 @@ function getSeverityBadgeClass(severity) {
         case 'error': return 'danger';
         case 'warning': return 'warning';
         case 'info': return 'info';
+        case 'debug': return 'secondary';
         default: return 'secondary';
     }
 }

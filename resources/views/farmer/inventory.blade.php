@@ -6,13 +6,13 @@
 <!-- Page Header -->
 <div class="page-header fade-in">
     <h1>
-        <i class="fa fa-list"></i>
+        <i class="fas fa-boxes"></i>
         Inventory Management
     </h1>
     <p>Track and manage your farm supplies, feed, and equipment inventory</p>
 </div>
 
-<div class="row">
+<div class="row mb-4">
     <!-- Inventory Statistics -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2 fade-in">
@@ -21,7 +21,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total Items</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">156</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalItems }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-boxes fa-2x text-gray-300"></i>
@@ -38,7 +38,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             In Stock</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">142</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $inStock }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-check-circle fa-2x text-gray-300"></i>
@@ -55,7 +55,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Low Stock</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">8</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $lowStock }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
@@ -72,7 +72,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                             Out of Stock</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">6</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $outOfStock }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-times-circle fa-2x text-gray-300"></i>
@@ -83,226 +83,132 @@
     </div>
 </div>
 
-<div class="row">
-    <!-- Inventory List -->
-    <div class="col-lg-8">
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Inventory Items</h6>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addItemModal">
-                    <i class="fas fa-plus"></i> Add New Item
-                </button>
+<!-- Inventory List -->
+<div class="card shadow mb-4 fade-in">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Inventory Items</h6>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addItemModal">
+                <i class="fas fa-plus"></i> Add New Item
+            </button>
+            <button class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn btn-outline-info btn-sm">
+                <i class="fas fa-bell"></i> Set Alerts
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($inventoryData as $item)
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="mr-3">
+                                    <i class="fas fa-{{ $item['icon'] }} fa-2x text-{{ $item['color'] }}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-weight-bold">{{ $item['name'] }}</div>
+                                    <small class="text-muted">{{ $item['description'] }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-{{ $item['color'] }}">{{ $item['category'] }}</span></td>
+                        <td>{{ number_format($item['quantity']) }}</td>
+                        <td>{{ $item['unit'] }}</td>
+                        <td>
+                            <span class="badge badge-{{ $item['status'] == 'In Stock' ? 'success' : ($item['status'] == 'Low Stock' ? 'warning' : 'danger') }}">
+                                {{ $item['status'] }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewItem('{{ $item['id'] }}')">View</button>
+                            <button class="btn btn-sm btn-outline-info" onclick="editItem('{{ $item['id'] }}')">Edit</button>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fas fa-boxes fa-3x mb-3 text-muted"></i>
+                            <p>No inventory items available.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Inventory by Category -->
+<div class="card shadow mb-4 fade-in">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-chart-pie"></i>
+            Inventory by Category
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="inventoryChart"></canvas>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Item Name</th>
-                                <th>Category</th>
-                                <th>Quantity</th>
-                                <th>Unit</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="mr-3">
-                                            <i class="fas fa-seedling fa-2x text-success"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold">Premium Feed Mix</div>
-                                            <small class="text-muted">High protein content</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge badge-primary">Feed</span></td>
-                                <td>250</td>
-                                <td>kg</td>
-                                <td><span class="badge badge-success">In Stock</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="mr-3">
-                                            <i class="fas fa-pills fa-2x text-info"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold">Vitamin Supplements</div>
-                                            <small class="text-muted">Multi-vitamin for livestock</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge badge-info">Medicine</span></td>
-                                <td>45</td>
-                                <td>packs</td>
-                                <td><span class="badge badge-warning">Low Stock</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="mr-3">
-                                            <i class="fas fa-tools fa-2x text-warning"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold">Milking Equipment</div>
-                                            <small class="text-muted">Automatic milking system</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge badge-warning">Equipment</span></td>
-                                <td>2</td>
-                                <td>units</td>
-                                <td><span class="badge badge-success">In Stock</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="mr-3">
-                                            <i class="fas fa-seedling fa-2x text-success"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold">Hay Bales</div>
-                                            <small class="text-muted">Fresh grass hay</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge badge-primary">Feed</span></td>
-                                <td>0</td>
-                                <td>bales</td>
-                                <td><span class="badge badge-danger">Out of Stock</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="mr-3">
-                                            <i class="fas fa-pills fa-2x text-info"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold">Antibiotics</div>
-                                            <small class="text-muted">Broad spectrum antibiotics</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge badge-info">Medicine</span></td>
-                                <td>12</td>
-                                <td>vials</td>
-                                <td><span class="badge badge-warning">Low Stock</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary">View</button>
-                                    <button class="btn btn-sm btn-outline-info">Edit</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="col-lg-6">
+                <div class="mt-4 text-center small">
+                    @foreach($inventoryStats['category_distribution'] as $category)
+                    <div class="mb-2">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-{{ $category['category'] == 'Feed' ? 'success' : ($category['category'] == 'Medicine' ? 'info' : 'warning') }}"></i> {{ $category['category'] }}
+                        </span>
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Inventory Analytics -->
-    <div class="col-lg-4">
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-chart-pie"></i>
-                    Inventory by Category
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="inventoryChart"></canvas>
+<!-- Low Stock Alerts -->
+<div class="card shadow mb-4 fade-in">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-exclamation-triangle"></i>
+            Low Stock Alerts
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="list-group list-group-flush">
+            @forelse($inventoryData->whereIn('status', ['Low Stock', 'Out of Stock']) as $item)
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="font-weight-bold">{{ $item['name'] }}</div>
+                    <small class="text-muted">{{ $item['quantity'] }} {{ $item['unit'] }} remaining</small>
                 </div>
-                <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Feed
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Medicine
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-warning"></i> Equipment
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-secondary"></i> Others
-                    </span>
-                </div>
+                <span class="badge badge-{{ $item['status'] == 'Out of Stock' ? 'danger' : 'warning' }} badge-pill">
+                    {{ $item['status'] == 'Out of Stock' ? 'Critical' : 'Low' }}
+                </span>
             </div>
-        </div>
-
-        <!-- Low Stock Alerts -->
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Low Stock Alerts
-                </h6>
+            @empty
+            <div class="list-group-item text-center text-muted">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <p>No low stock alerts</p>
             </div>
-            <div class="card-body">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="font-weight-bold">Vitamin Supplements</div>
-                            <small class="text-muted">45 packs remaining</small>
-                        </div>
-                        <span class="badge badge-warning badge-pill">Low</span>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="font-weight-bold">Antibiotics</div>
-                            <small class="text-muted">12 vials remaining</small>
-                        </div>
-                        <span class="badge badge-warning badge-pill">Low</span>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="font-weight-bold">Hay Bales</div>
-                            <small class="text-muted">Out of stock</small>
-                        </div>
-                        <span class="badge badge-danger badge-pill">Critical</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-tools"></i>
-                    Quick Actions
-                </h6>
-            </div>
-            <div class="card-body">
-                <button class="btn btn-primary btn-block mb-2">
-                    <i class="fas fa-plus"></i> Add New Item
-                </button>
-                <button class="btn btn-outline-secondary btn-block mb-2">
-                    <i class="fas fa-download"></i> Export Inventory
-                </button>
-                <button class="btn btn-outline-info btn-block">
-                    <i class="fas fa-bell"></i> Set Alerts
-                </button>
-            </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -417,6 +323,332 @@
 </div>
 @endsection
 
+@push('styles')
+<style>
+.page-header {
+    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.page-header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-header p {
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8f9fc 0%, #eaecf4 100%);
+    border-bottom: 1px solid #e3e6f0;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #5a5c69;
+    background-color: #f8f9fc;
+    padding: 1rem 0.75rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    vertical-align: middle;
+    border-color: #e3e6f0;
+    padding: 1rem 0.75rem;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(78, 115, 223, 0.05);
+    transform: scale(1.001);
+}
+
+.badge {
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+}
+
+.badge-primary {
+    background: linear-gradient(135deg, #4e73df, #3c5aa6);
+}
+
+.badge-success {
+    background: linear-gradient(135deg, #1cc88a, #17a673);
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, #f6c23e, #f4b619);
+}
+
+.badge-info {
+    background: linear-gradient(135deg, #36b9cc, #2a96a5);
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #e74a3b, #d52a1a);
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1rem;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.card-header .d-flex.gap-2 {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .card-header .d-flex.gap-2 {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .card-header .d-flex.gap-2 .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
+.chart-pie {
+    position: relative;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.chart-area {
+    position: relative;
+    height: 300px;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: rgba(78, 115, 223, 0.05);
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #5a5c69;
+    margin-bottom: 0.5rem;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header .close {
+    color: white;
+    opacity: 0.8;
+}
+
+.modal-header .close:hover {
+    opacity: 1;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #d1d3e2;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    transform: translateY(-1px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #858796;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h5 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.empty-state p {
+    opacity: 0.7;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .page-header p {
+        font-size: 1rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .col-xl-3 {
+        margin-bottom: 1rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .d-flex.align-items-center {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .d-flex.align-items-center .mr-3 {
+        margin-right: 0 !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .chart-pie {
+        height: 250px;
+    }
+    
+    .col-lg-6 {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        padding: 1.5rem;
+    }
+    
+    .page-header h1 {
+        font-size: 1.25rem;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+</style>
+@endpush
+
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -426,11 +658,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const inventoryChart = new Chart(inventoryCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Feed', 'Medicine', 'Equipment', 'Others'],
+            labels: {!! json_encode($inventoryStats['category_distribution']->pluck('category')) !!},
             datasets: [{
-                data: [65, 25, 8, 2],
-                backgroundColor: ['#4e73df', '#36b9cc', '#f6c23e', '#6c757d'],
-                hoverBackgroundColor: ['#2e59d9', '#2c9faf', '#f4b619', '#545b62'],
+                data: {!! json_encode($inventoryStats['category_distribution']->pluck('count')) !!},
+                backgroundColor: ['#1cc88a', '#36b9cc', '#f6c23e', '#6c757d'],
+                hoverBackgroundColor: ['#17a673', '#2c9faf', '#f4b619', '#545b62'],
                 hoverBorderColor: 'rgba(234, 236, 244, 1)',
             }]
         },

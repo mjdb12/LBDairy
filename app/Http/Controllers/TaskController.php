@@ -100,6 +100,108 @@ class TaskController extends Controller
         return response()->json(['success' => true, 'task' => $task]);
     }
 
+    public function calendarEvents()
+    {
+        $user = Auth::user();
+        
+        // Get tasks for the current user or all tasks if superadmin
+        $query = Task::with(['assignedUser', 'creator']);
+        
+        if ($user->role !== 'superadmin') {
+            $query->where('assigned_to', $user->id);
+        }
+        
+        $tasks = $query->whereNotNull('due_date')
+            ->orderBy('due_date')
+            ->get();
+
+        $events = $tasks->map(function ($task) {
+            $color = $this->getPriorityColor($task->priority);
+            $status = $task->status;
+            
+            return [
+                'id' => $task->id,
+                'title' => $task->title,
+                'start' => $task->due_date->format('Y-m-d H:i:s'),
+                'end' => $task->due_date->addHours(1)->format('Y-m-d H:i:s'), // Default 1 hour duration
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+                'textColor' => '#ffffff',
+                'extendedProps' => [
+                    'description' => $task->description,
+                    'priority' => $task->priority,
+                    'status' => $status,
+                    'assigned_to' => $task->assignedUser ? $task->assignedUser->name : null,
+                    'created_by' => $task->creator ? $task->creator->name : null,
+                    'type' => 'task'
+                ]
+            ];
+        });
+
+        return response()->json($events);
+    }
+
+    public function storeCalendarEvent(Request $request)
+    {
+        $user = Auth::user();
+        
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'priority' => 'required|in:low,medium,high',
+            'start' => 'required|date',
+            'end' => 'nullable|date|after:start',
+            'category' => 'nullable|string',
+        ]);
+
+        $task = Task::create([
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'priority' => $data['priority'],
+            'due_date' => $data['start'],
+            'assigned_to' => $user->id,
+            'created_by' => $user->id,
+            'status' => 'todo',
+            'sort_order' => Task::max('sort_order') + 1,
+        ]);
+
+        return response()->json(['success' => true, 'task' => $task]);
+    }
+
+    public function updateCalendarEvent(Request $request, Task $task)
+    {
+        $user = Auth::user();
+        
+        // Check if user can update this task
+        if ($user->role !== 'superadmin' && $task->assigned_to !== $user->id) {
+            abort(403);
+        }
+
+        $data = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'priority' => 'sometimes|required|in:low,medium,high',
+            'start' => 'sometimes|required|date',
+            'end' => 'nullable|date|after:start',
+            'status' => 'sometimes|required|in:todo,in_progress,done',
+        ]);
+
+        $task->update($data);
+
+        return response()->json(['success' => true, 'task' => $task]);
+    }
+
+    private function getPriorityColor($priority)
+    {
+        $colors = [
+            'low' => '#28a745',
+            'medium' => '#ffc107',
+            'high' => '#dc3545'
+        ];
+        
+        return $colors[$priority] ?? '#6c757d';
+    }
+
     private function authorizeSuperAdmin(): void
     {
         $user = Auth::user();

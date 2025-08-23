@@ -21,7 +21,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total Livestock</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">156</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-cow fa-2x text-gray-300"></i>
@@ -38,7 +38,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Healthy Animals</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">142</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $healthyAnimals }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-heart fa-2x text-gray-300"></i>
@@ -55,7 +55,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                             Breeding Age</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">89</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $breedingAge }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-heart fa-2x text-gray-300"></i>
@@ -72,7 +72,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Under Treatment</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $underTreatment }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-stethoscope fa-2x text-gray-300"></i>
@@ -175,56 +175,39 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse($livestockData as $livestock)
                             <tr>
-                                <td>LS001</td>
-                                <td>Dairy Cow</td>
-                                <td>3 years</td>
-                                <td>95%</td>
-                                <td>25.5</td>
-                                <td>450</td>
-                                <td><span class="badge badge-success">Healthy</span></td>
-                                <td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
+                                <td>{{ $livestock['livestock_id'] }}</td>
+                                <td>{{ $livestock['type'] }}</td>
+                                <td>{{ $livestock['age'] }} years</td>
+                                <td>{{ $livestock['health_score'] }}%</td>
+                                <td>{{ $livestock['avg_production'] }}</td>
+                                <td>{{ $livestock['weight'] }}</td>
+                                <td>
+                                    @if($livestock['health_status'] === 'Healthy')
+                                        <span class="badge badge-success">Healthy</span>
+                                    @elseif($livestock['health_status'] === 'Under Treatment')
+                                        <span class="badge badge-warning">Under Treatment</span>
+                                    @elseif($livestock['health_status'] === 'Critical')
+                                        <span class="badge badge-danger">Critical</span>
+                                    @elseif($livestock['health_status'] === 'Recovering')
+                                        <span class="badge badge-info">Recovering</span>
+                                    @else
+                                        <span class="badge badge-secondary">{{ $livestock['health_status'] }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewLivestockDetails('{{ $livestock['id'] }}')">View Details</button>
+                                </td>
                             </tr>
+                            @empty
                             <tr>
-                                <td>LS002</td>
-                                <td>Dairy Cow</td>
-                                <td>4 years</td>
-                                <td>88%</td>
-                                <td>22.0</td>
-                                <td>480</td>
-                                <td><span class="badge badge-warning">Under Treatment</span></td>
-                                <td><button class="btn btn-sm btn-outline-warning">View Details</button></td>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="fas fa-cow fa-3x mb-3 text-muted"></i>
+                                    <p>No livestock data available.</p>
+                                </td>
                             </tr>
-                            <tr>
-                                <td>LS003</td>
-                                <td>Goat</td>
-                                <td>2 years</td>
-                                <td>92%</td>
-                                <td>3.2</td>
-                                <td>45</td>
-                                <td><span class="badge badge-success">Healthy</span></td>
-                                <td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
-                            </tr>
-                            <tr>
-                                <td>LS004</td>
-                                <td>Carabao</td>
-                                <td>5 years</td>
-                                <td>78%</td>
-                                <td>8.5</td>
-                                <td>650</td>
-                                <td><span class="badge badge-info">Recovering</span></td>
-                                <td><button class="btn btn-sm btn-outline-info">View Details</button></td>
-                            </tr>
-                            <tr>
-                                <td>LS005</td>
-                                <td>Dairy Cow</td>
-                                <td>2 years</td>
-                                <td>96%</td>
-                                <td>28.0</td>
-                                <td>420</td>
-                                <td><span class="badge badge-success">Healthy</span></td>
-                                <td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
-                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -333,10 +316,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const performanceChart = new Chart(performanceCtx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: {!! json_encode(array_keys($performanceMetrics['production'])) !!},
             datasets: [{
                 label: 'Average Milk Production (L/day)',
-                data: [22.5, 23.1, 24.2, 23.8, 24.5, 25.1, 24.8, 25.3, 25.7, 25.2, 24.9, 25.5],
+                data: {!! json_encode(array_values($performanceMetrics['production'])) !!},
                 borderColor: '#4e73df',
                 backgroundColor: 'rgba(78, 115, 223, 0.05)',
                 borderWidth: 2,
@@ -344,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tension: 0.4
             }, {
                 label: 'Health Score (%)',
-                data: [88, 89, 90, 89, 91, 92, 91, 93, 92, 94, 93, 95],
+                data: {!! json_encode(array_values($performanceMetrics['health_score'])) !!},
                 borderColor: '#1cc88a',
                 backgroundColor: 'rgba(28, 200, 138, 0.05)',
                 borderWidth: 2,
@@ -381,11 +364,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const healthChart = new Chart(healthCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Healthy', 'Under Treatment', 'Critical'],
+            labels: {!! json_encode(array_keys($healthDistribution)) !!},
             datasets: [{
-                data: [142, 5, 2],
-                backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b'],
-                hoverBackgroundColor: ['#17a673', '#f4b619', '#e02424'],
+                data: {!! json_encode(array_values($healthDistribution)) !!},
+                backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b', '#36b9cc'],
+                hoverBackgroundColor: ['#17a673', '#f4b619', '#e02424', '#2c9faf'],
                 hoverBorderColor: 'rgba(234, 236, 244, 1)',
             }]
         },
@@ -408,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: ['Pregnant', 'Ready to Breed', 'Under Observation'],
             datasets: [{
-                data: [45, 32, 12],
+                data: [{{ $breedingData['pregnant'] }}, {{ $breedingData['ready_to_breed'] }}, {{ $breedingData['under_observation'] }}],
                 backgroundColor: ['#1cc88a', '#36b9cc', '#f6c23e'],
                 hoverBackgroundColor: ['#17a673', '#2c9faf', '#f4b619'],
                 hoverBorderColor: 'rgba(234, 236, 244, 1)',
@@ -431,10 +414,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const growthChart = new Chart(growthCtx, {
         type: 'line',
         data: {
-            labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
+            labels: {!! json_encode(array_keys($growthData)) !!},
             datasets: [{
                 label: 'Average Weight (kg)',
-                data: [350, 380, 410, 440, 470, 500],
+                data: {!! json_encode(array_values($growthData)) !!},
                 borderColor: '#f6c23e',
                 backgroundColor: 'rgba(246, 194, 62, 0.05)',
                 borderWidth: 2,

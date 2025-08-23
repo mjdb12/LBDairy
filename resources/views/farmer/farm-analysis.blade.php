@@ -21,7 +21,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total Livestock</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">156</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-cow fa-2x text-gray-300"></i>
@@ -38,7 +38,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Monthly Production</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">2,450 L</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($monthlyProduction) }} L</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-tint fa-2x text-gray-300"></i>
@@ -55,7 +55,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                             Revenue This Month</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">₱45,200</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($monthlyRevenue) }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -72,7 +72,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Active Issues</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">3</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeIssues }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
@@ -154,7 +154,7 @@
 
 <div class="row">
     <!-- Farm Performance Table -->
-    <div class="col-lg-12">
+    <div class="col-12">
         <div class="card shadow mb-4 fade-in">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Farm Performance Summary</h6>
@@ -164,48 +164,88 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Metric</th>
-                                <th>Current Month</th>
-                                <th>Previous Month</th>
-                                <th>Change</th>
-                                <th>Trend</th>
+                                <th style="width: 25%;">Metric</th>
+                                <th style="width: 20%;">Current Month</th>
+                                <th style="width: 20%;">Previous Month</th>
+                                <th style="width: 20%;">Change</th>
+                                <th style="width: 15%;">Trend</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Milk Production (L)</td>
-                                <td>2,450</td>
-                                <td>2,180</td>
-                                <td class="text-success">+12.4%</td>
-                                <td><i class="fas fa-arrow-up text-success"></i></td>
+                                <td>{{ number_format($performanceMetrics['milk_production']['current']) }}</td>
+                                <td>{{ number_format($performanceMetrics['milk_production']['previous']) }}</td>
+                                <td class="{{ $performanceMetrics['milk_production']['change'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ $performanceMetrics['milk_production']['change'] >= 0 ? '+' : '' }}{{ $performanceMetrics['milk_production']['change'] }}%
+                                </td>
+                                <td class="text-center">
+                                    @if($performanceMetrics['milk_production']['change'] >= 0)
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                    @else
+                                        <i class="fas fa-arrow-down text-danger"></i>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
-                                <td>Feed Consumption (kg)</td>
-                                <td>1,850</td>
-                                <td>1,920</td>
-                                <td class="text-success">-3.6%</td>
-                                <td><i class="fas fa-arrow-down text-success"></i></td>
+                                <td>Feed Consumption (₱)</td>
+                                <td>₱{{ number_format($performanceMetrics['feed_consumption']['current']) }}</td>
+                                <td>₱{{ number_format($performanceMetrics['feed_consumption']['previous']) }}</td>
+                                <td class="{{ $performanceMetrics['feed_consumption']['change'] <= 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ $performanceMetrics['feed_consumption']['change'] >= 0 ? '+' : '' }}{{ $performanceMetrics['feed_consumption']['change'] }}%
+                                </td>
+                                <td class="text-center">
+                                    @if($performanceMetrics['feed_consumption']['change'] <= 0)
+                                        <i class="fas fa-arrow-down text-success"></i>
+                                    @else
+                                        <i class="fas fa-arrow-up text-danger"></i>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>Veterinary Costs (₱)</td>
-                                <td>8,500</td>
-                                <td>7,200</td>
-                                <td class="text-warning">+18.1%</td>
-                                <td><i class="fas fa-arrow-up text-warning"></i></td>
+                                <td>₱{{ number_format($performanceMetrics['veterinary_costs']['current']) }}</td>
+                                <td>₱{{ number_format($performanceMetrics['veterinary_costs']['previous']) }}</td>
+                                <td class="{{ $performanceMetrics['veterinary_costs']['change'] <= 0 ? 'text-success' : 'text-warning' }}">
+                                    {{ $performanceMetrics['veterinary_costs']['change'] >= 0 ? '+' : '' }}{{ $performanceMetrics['veterinary_costs']['change'] }}%
+                                </td>
+                                <td class="text-center">
+                                    @if($performanceMetrics['veterinary_costs']['change'] <= 0)
+                                        <i class="fas fa-arrow-down text-success"></i>
+                                    @else
+                                        <i class="fas fa-arrow-up text-warning"></i>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>Livestock Health Score</td>
-                                <td>92%</td>
-                                <td>89%</td>
-                                <td class="text-success">+3.4%</td>
-                                <td><i class="fas fa-arrow-up text-success"></i></td>
+                                <td>{{ $performanceMetrics['health_score']['current'] }}%</td>
+                                <td>{{ $performanceMetrics['health_score']['previous'] }}%</td>
+                                <td class="{{ $performanceMetrics['health_score']['change'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ $performanceMetrics['health_score']['change'] >= 0 ? '+' : '' }}{{ $performanceMetrics['health_score']['change'] }}%
+                                </td>
+                                <td class="text-center">
+                                    @if($performanceMetrics['health_score']['change'] >= 0)
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                    @else
+                                        <i class="fas fa-arrow-down text-danger"></i>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>Breeding Success Rate</td>
-                                <td>78%</td>
-                                <td>75%</td>
-                                <td class="text-success">+4.0%</td>
-                                <td><i class="fas fa-arrow-up text-success"></i></td>
+                                <td>{{ $performanceMetrics['breeding_success']['current'] }}%</td>
+                                <td>{{ $performanceMetrics['breeding_success']['previous'] }}%</td>
+                                <td class="{{ $performanceMetrics['breeding_success']['change'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                    {{ $performanceMetrics['breeding_success']['change'] >= 0 ? '+' : '' }}{{ $performanceMetrics['breeding_success']['change'] }}%
+                                </td>
+                                <td class="text-center">
+                                    @if($performanceMetrics['breeding_success']['change'] >= 0)
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                    @else
+                                        <i class="fas fa-arrow-down text-danger"></i>
+                                    @endif
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -215,49 +255,7 @@
     </div>
 </div>
 
-<!-- Recommendations Section -->
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-lightbulb"></i>
-                    Recommendations
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="alert alert-info">
-                            <h6><i class="fas fa-chart-line"></i> Production Optimization</h6>
-                            <p class="mb-0">Consider adjusting feeding schedules during peak production periods to maximize milk yield.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="alert alert-warning">
-                            <h6><i class="fas fa-exclamation-triangle"></i> Cost Management</h6>
-                            <p class="mb-0">Veterinary costs have increased. Review preventive care strategies to reduce emergency treatments.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="alert alert-success">
-                            <h6><i class="fas fa-heart"></i> Health Improvement</h6>
-                            <p class="mb-0">Livestock health score is improving. Continue current vaccination and nutrition programs.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="alert alert-primary">
-                            <h6><i class="fas fa-seedling"></i> Feed Efficiency</h6>
-                            <p class="mb-0">Feed consumption has decreased while production increased. This indicates improved feed efficiency.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 @endsection
 
 @push('scripts')
@@ -269,10 +267,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const productionChart = new Chart(productionCtx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: {!! json_encode(array_keys($productionData)) !!},
             datasets: [{
                 label: 'Milk Production (L)',
-                data: [2100, 1950, 2200, 2350, 2180, 2450, 2300, 2400, 2250, 2350, 2180, 2450],
+                data: {!! json_encode(array_values($productionData)) !!},
                 borderColor: '#4e73df',
                 backgroundColor: 'rgba(78, 115, 223, 0.05)',
                 borderWidth: 2,
@@ -309,11 +307,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const livestockChart = new Chart(livestockCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Dairy Cows', 'Goats', 'Carabaos'],
+            labels: {!! json_encode(array_keys($livestockDistribution)) !!},
             datasets: [{
-                data: [65, 25, 10],
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                data: {!! json_encode(array_values($livestockDistribution)) !!},
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#f4b619', '#e74a3b'],
                 hoverBorderColor: 'rgba(234, 236, 244, 1)',
             }]
         },

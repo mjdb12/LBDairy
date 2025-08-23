@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Issue Management')
+@section('title', 'Farmer Alerts')
 
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
-            <i class="fas fa-exclamation-triangle"></i>
-            Issue Management
+            <i class="fas fa-bell"></i>
+            Farmer Alerts
         </h1>
-        <p>View issues reported by administrators for your livestock</p>
+        <p>Monitor and respond to alerts issued by farmers about livestock issues</p>
     </div>
 
     <!-- Statistics Cards -->
@@ -21,11 +21,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Issues</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalIssues }}</div>
+                                Total Alerts</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAlerts }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                            <i class="fas fa-bell fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -38,8 +38,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingIssues }}</div>
+                                Active Alerts</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeAlerts }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-clock fa-2x text-gray-300"></i>
@@ -55,8 +55,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Urgent</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $urgentIssues }}</div>
+                                Critical Alerts</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalAlerts }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-fire fa-2x text-gray-300"></i>
@@ -73,7 +73,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Resolved</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $resolvedIssues }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $resolvedAlerts }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-check-circle fa-2x text-gray-300"></i>
@@ -84,23 +84,21 @@
         </div>
     </div>
 
-
-
     <!-- Alerts Section -->
-    @if($urgentIssues > 0)
+    @if($criticalAlerts > 0)
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="fas fa-exclamation-triangle"></i>
-        <strong>Urgent Issues Detected!</strong> You have {{ $urgentIssues }} urgent issues that require immediate attention.
+        <strong>Critical Alerts!</strong> You have {{ $criticalAlerts }} critical alerts that require immediate attention.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     @endif
 
-    @if($pendingIssues > 0)
+    @if($activeAlerts > 0)
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
         <i class="fas fa-clock"></i>
-        <strong>Pending Issues:</strong> You have {{ $pendingIssues }} issues awaiting resolution.
+        <strong>Active Alerts:</strong> You have {{ $activeAlerts }} active alerts awaiting your response.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -114,7 +112,7 @@
                 <div class="card-header">
                     <h6 class="m-0 font-weight-bold text-white">
                         <i class="fas fa-list"></i>
-                        Issues Reported by Administrators
+                        All Farmer Alerts
                     </h6>
                     <div class="d-flex align-items-center">
                         <div class="export-controls">
@@ -137,64 +135,66 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="issuesTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered" id="alertsTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th>Farmer</th>
                                     <th>Livestock ID</th>
-                                    <th>Animal Type</th>
-                                    <th>Breed</th>
-                                    <th>Issue Type</th>
+                                    <th>Topic</th>
                                     <th>Description</th>
-                                    <th>Priority</th>
-                                    <th>Date Reported</th>
+                                    <th>Severity</th>
+                                    <th>Date Created</th>
                                     <th>Status</th>
-                                    <th>Reported By</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($issues as $issue)
-                                <tr class="{{ $issue->priority === 'Urgent' ? 'table-danger' : ($issue->status === 'Pending' ? 'table-warning' : ($issue->status === 'Resolved' ? 'table-success' : '')) }}">
+                                @forelse($alerts as $alert)
+                                <tr class="{{ $alert->severity === 'critical' ? 'table-danger' : ($alert->severity === 'high' ? 'table-warning' : ($alert->status === 'resolved' ? 'table-success' : '')) }}">
                                     <td>
-                                        <strong>{{ $issue->livestock->livestock_id ?? 'N/A' }}</strong>
+                                        <strong>{{ $alert->issuedBy->name ?? 'Unknown' }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ $alert->issuedBy->email ?? '' }}</small>
                                     </td>
-                                    <td>{{ $issue->livestock->type ?? 'N/A' }}</td>
-                                    <td>{{ $issue->livestock->breed ?? 'N/A' }}</td>
                                     <td>
-                                        <span class="issue-type-badge issue-{{ strtolower($issue->issue_type) }}">
-                                            {{ $issue->issue_type }}
+                                        <strong>{{ $alert->livestock->livestock_id ?? 'N/A' }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ $alert->livestock->type ?? '' }} ({{ $alert->livestock->breed ?? '' }})</small>
+                                    </td>
+                                    <td>{{ $alert->topic }}</td>
+                                    <td>{{ Str::limit($alert->description, 50) }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $alert->severity_badge_class }}">
+                                            {{ ucfirst($alert->severity) }}
                                         </span>
                                     </td>
-                                    <td>{{ Str::limit($issue->description, 50) }}</td>
+                                    <td>{{ $alert->alert_date ? $alert->alert_date->format('M d, Y') : $alert->created_at->format('M d, Y') }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $issue->priority === 'Urgent' ? 'danger' : ($issue->priority === 'High' ? 'warning' : ($issue->priority === 'Medium' ? 'info' : 'success')) }}">
-                                            {{ $issue->priority }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $issue->date_reported ? $issue->date_reported->format('M d, Y') : $issue->created_at->format('M d, Y') }}</td>
-                                    <td>
-                                        <span class="badge badge-{{ $issue->status === 'Pending' ? 'warning' : ($issue->status === 'In Progress' ? 'info' : ($issue->status === 'Resolved' ? 'success' : 'secondary')) }}">
-                                            {{ $issue->status }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-primary">
-                                            {{ $issue->reportedBy->name ?? 'Admin' }}
+                                        <span class="badge badge-{{ $alert->status_badge_class }}">
+                                            {{ ucfirst($alert->status) }}
                                         </span>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-info" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
+                                            <button class="btn btn-sm btn-info" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                             </button>
+                                            @if($alert->status === 'active')
+                                            <button class="btn btn-sm btn-success" onclick="markAsResolved('{{ $alert->id }}')" title="Mark as Resolved">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-secondary" onclick="dismissAlert('{{ $alert->id }}')" title="Dismiss Alert">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="10" class="text-center text-muted py-4">
-                                        <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
-                                        <p>No issues reported by administrators. Your livestock are healthy and well-managed!</p>
+                                    <td colspan="8" class="text-center text-muted py-4">
+                                        <i class="fas fa-bell-slash fa-3x mb-3 text-muted"></i>
+                                        <p>No alerts have been issued by farmers yet.</p>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -207,22 +207,20 @@
     </div>
 </div>
 
-
-
-<!-- Issue Details Modal -->
-<div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
+<!-- Alert Details Modal -->
+<div class="modal fade" id="alertDetailsModal" tabindex="-1" role="dialog" aria-labelledby="alertDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="issueDetailsLabel">
+                <h5 class="modal-title" id="alertDetailsLabel">
                     <i class="fas fa-info-circle"></i>
-                    Issue Details
+                    Alert Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" id="issueDetailsContent">
+            <div class="modal-body" id="alertDetailsContent">
                 <!-- Content will be loaded dynamically -->
             </div>
             <div class="modal-footer">
@@ -232,23 +230,55 @@
     </div>
 </div>
 
-
+<!-- Status Update Modal -->
+<div class="modal fade" id="statusUpdateModal" tabindex="-1" role="dialog" aria-labelledby="statusUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusUpdateLabel">
+                    <i class="fas fa-edit"></i>
+                    Update Alert Status
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="statusUpdateForm" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="resolution_notes">Response Notes</label>
+                        <textarea class="form-control" id="resolution_notes" name="resolution_notes" rows="3" placeholder="Add your response or resolution notes for the farmer"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Status
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @endsection
 
 @push('scripts')
 <script>
-let currentIssueId = null;
+let currentAlertId = null;
+let currentAction = null;
 
 $(document).ready(function() {
     // Initialize DataTable
-    $('#issuesTable').DataTable({
+    $('#alertsTable').DataTable({
         responsive: true,
         pageLength: 25,
-        order: [[6, 'desc']], // Sort by date reported
+        order: [[5, 'desc']], // Sort by date created
         language: {
             search: "_INPUT_",
-            searchPlaceholder: "Search issues...",
+            searchPlaceholder: "Search alerts...",
             lengthMenu: "_MENU_ records per page",
             info: "Showing _START_ to _END_ of _TOTAL_ records",
             paginate: {
@@ -259,35 +289,40 @@ $(document).ready(function() {
             }
         }
     });
+
+    $('#statusUpdateForm').on('submit', function(e) {
+        e.preventDefault();
+        submitStatusUpdate();
+    });
 });
 
-function viewIssueDetails(issueId) {
-    currentIssueId = issueId;
-    loadIssueDetails(issueId);
-    $('#issueDetailsModal').modal('show');
+function viewAlertDetails(alertId) {
+    currentAlertId = alertId;
+    loadAlertDetails(alertId);
+    $('#alertDetailsModal').modal('show');
 }
 
-function loadIssueDetails(issueId) {
+function loadAlertDetails(alertId) {
     $.ajax({
-        url: `/farmer/issues/${issueId}`,
+        url: `/admin/farmer-alerts/${alertId}`,
         method: 'GET',
         success: function(response) {
             if (response.success) {
-                const issue = response.issue;
-                $('#issueDetailsContent').html(`
+                const alert = response.alert;
+                $('#alertDetailsContent').html(`
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Issue Information</h6>
+                                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Alert Information</h6>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-borderless">
-                                        <tr><td><strong>Type:</strong></td><td><span class="issue-type-badge issue-${issue.issue_type.toLowerCase()}">${issue.issue_type}</span></td></tr>
-                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${getStatusColor(issue.status)}">${issue.status}</span></td></tr>
-                                        <tr><td><strong>Priority:</strong></td><td><span class="badge badge-${getPriorityColor(issue.priority)}">${issue.priority}</span></td></tr>
-                                        <tr><td><strong>Reported:</strong></td><td>${issue.date_reported}</td></tr>
-                                        <tr><td><strong>Reported By:</strong></td><td><span class="badge badge-primary">${issue.reported_by ? issue.reported_by.name : 'Admin'}</span></td></tr>
+                                        <tr><td><strong>Topic:</strong></td><td>${alert.topic}</td></tr>
+                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${alert.status_badge_class}">${alert.status}</span></td></tr>
+                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${alert.severity_badge_class}">${alert.severity}</span></td></tr>
+                                        <tr><td><strong>Created:</strong></td><td>${alert.alert_date}</td></tr>
+                                        ${alert.resolved_at ? `<tr><td><strong>Resolved:</strong></td><td>${alert.resolved_at}</td></tr>` : ''}
                                     </table>
                                 </div>
                             </div>
@@ -295,30 +330,45 @@ function loadIssueDetails(issueId) {
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0"><i class="fas fa-paw"></i> Livestock Information</h6>
+                                    <h6 class="mb-0"><i class="fas fa-user"></i> Farmer Information</h6>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-borderless">
-                                        <tr><td><strong>ID:</strong></td><td>${issue.livestock ? issue.livestock.livestock_id : 'N/A'}</td></tr>
-                                        <tr><td><strong>Type:</strong></td><td>${issue.livestock ? issue.livestock.type : 'N/A'}</td></tr>
-                                        <tr><td><strong>Breed:</strong></td><td>${issue.livestock ? issue.livestock.breed : 'N/A'}</td></tr>
-                                        <tr><td><strong>Age:</strong></td><td>${issue.livestock ? issue.livestock.age + ' years' : 'N/A'}</td></tr>
-                                        <tr><td><strong>Health Status:</strong></td><td>${issue.livestock ? issue.livestock.health_status : 'N/A'}</td></tr>
+                                        <tr><td><strong>Name:</strong></td><td>${alert.issued_by ? alert.issued_by.name : 'N/A'}</td></tr>
+                                        <tr><td><strong>Email:</strong></td><td>${alert.issued_by ? alert.issued_by.email : 'N/A'}</td></tr>
+                                        <tr><td><strong>Phone:</strong></td><td>${alert.issued_by ? alert.issued_by.phone : 'N/A'}</td></tr>
+                                        <tr><td><strong>Farm:</strong></td><td>${alert.livestock && alert.livestock.farm ? alert.livestock.farm.name : 'N/A'}</td></tr>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-12">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-warning text-white">
-                                    <h6 class="mb-0"><i class="fas fa-file-alt"></i> Issue Details</h6>
+                                    <h6 class="mb-0"><i class="fas fa-paw"></i> Livestock Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-borderless">
+                                        <tr><td><strong>ID:</strong></td><td>${alert.livestock ? alert.livestock.livestock_id : 'N/A'}</td></tr>
+                                        <tr><td><strong>Type:</strong></td><td>${alert.livestock ? alert.livestock.type : 'N/A'}</td></tr>
+                                        <tr><td><strong>Breed:</strong></td><td>${alert.livestock ? alert.livestock.breed : 'N/A'}</td></tr>
+                                        <tr><td><strong>Age:</strong></td><td>${alert.livestock ? alert.livestock.age + ' years' : 'N/A'}</td></tr>
+                                        <tr><td><strong>Health Status:</strong></td><td>${alert.livestock ? alert.livestock.health_status : 'N/A'}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="fas fa-file-alt"></i> Alert Details</h6>
                                 </div>
                                 <div class="card-body">
                                     <h6>Description:</h6>
-                                    <p>${issue.description}</p>
-                                    ${issue.notes ? `<h6>Additional Notes:</h6><p>${issue.notes}</p>` : ''}
+                                    <p>${alert.description}</p>
+                                    ${alert.resolution_notes ? `<h6>Resolution Notes:</h6><p>${alert.resolution_notes}</p>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -327,57 +377,70 @@ function loadIssueDetails(issueId) {
             }
         },
         error: function() {
-            showToast('Error loading issue details', 'error');
+            showToast('Error loading alert details', 'error');
         }
     });
 }
 
-function getSeverityColor(severity) {
-    switch(severity) {
-        case 'Low': return 'success';
-        case 'Medium': return 'warning';
-        case 'High': return 'danger';
-        case 'Critical': return 'dark';
-        default: return 'secondary';
-    }
+function markAsResolved(alertId) {
+    currentAlertId = alertId;
+    currentAction = 'resolved';
+    $('#statusUpdateForm').attr('action', `/admin/farmer-alerts/${alertId}/status`);
+    $('#statusUpdateForm').append('<input type="hidden" name="status" value="resolved">');
+    $('#statusUpdateLabel').html('<i class="fas fa-check"></i> Mark as Resolved');
+    $('#statusUpdateModal').modal('show');
 }
 
-function getStatusColor(status) {
-    switch(status) {
-        case 'Pending': return 'warning';
-        case 'In Progress': return 'info';
-        case 'Resolved': return 'success';
-        case 'Urgent': return 'danger';
-        default: return 'secondary';
-    }
+function dismissAlert(alertId) {
+    currentAlertId = alertId;
+    currentAction = 'dismissed';
+    $('#statusUpdateForm').attr('action', `/admin/farmer-alerts/${alertId}/status`);
+    $('#statusUpdateForm').append('<input type="hidden" name="status" value="dismissed">');
+    $('#statusUpdateLabel').html('<i class="fas fa-times"></i> Dismiss Alert');
+    $('#statusUpdateModal').modal('show');
 }
 
-function getPriorityColor(priority) {
-    switch(priority) {
-        case 'Low': return 'success';
-        case 'Medium': return 'info';
-        case 'High': return 'warning';
-        case 'Urgent': return 'danger';
-        default: return 'secondary';
-    }
+function submitStatusUpdate() {
+    const formData = new FormData($('#statusUpdateForm')[0]);
+    
+    $.ajax({
+        url: $('#statusUpdateForm').attr('action'),
+        method: 'PATCH',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            showToast('Alert status updated successfully!', 'success');
+            $('#statusUpdateModal').modal('hide');
+            location.reload();
+        },
+        error: function(xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+                Object.keys(errors).forEach(field => {
+                    showToast(errors[field][0], 'error');
+                });
+            } else {
+                showToast('Error updating alert status', 'error');
+            }
+        }
+    });
 }
-
-
 
 function exportToCSV() {
-    const table = $('#issuesTable').DataTable();
+    const table = $('#alertsTable').DataTable();
     const data = table.data().toArray();
     
-    let csv = 'Livestock ID,Animal Type,Breed,Issue Type,Description,Priority,Date Reported,Status,Reported By\n';
+    let csv = 'Farmer,Livestock ID,Topic,Description,Severity,Date Created,Status\n';
     data.forEach(row => {
-        csv += `${row[0]},${row[1]},${row[2]},${row[3]},${row[4]},${row[5]},${row[6]},${row[7]},${row[8]}\n`;
+        csv += `${row[0]},${row[1]},${row[2]},${row[3]},${row[4]},${row[5]},${row[6]}\n`;
     });
     
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'issues_report.csv';
+    a.download = 'farmer_alerts_report.csv';
     a.click();
     window.URL.revokeObjectURL(url);
 }
@@ -443,51 +506,6 @@ function showToast(message, type = 'info') {
     margin: 0.5rem 0 0 0;
     opacity: 0.9;
     font-size: 1.1rem;
-}
-
-.issue-type-badge {
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.issue-health {
-    background: rgba(231, 74, 59, 0.1);
-    color: #e74a3b;
-    border: 1px solid rgba(231, 74, 59, 0.3);
-}
-
-.issue-injury {
-    background: rgba(246, 194, 62, 0.1);
-    color: #f6c23e;
-    border: 1px solid rgba(246, 194, 62, 0.3);
-}
-
-.issue-production {
-    background: rgba(54, 185, 204, 0.1);
-    color: #36b9cc;
-    border: 1px solid rgba(54, 185, 204, 0.3);
-}
-
-.issue-behavioral {
-    background: rgba(102, 16, 242, 0.1);
-    color: #6610f2;
-    border: 1px solid rgba(102, 16, 242, 0.3);
-}
-
-.issue-environmental {
-    background: rgba(78, 115, 223, 0.1);
-    color: #4e73df;
-    border: 1px solid rgba(78, 115, 223, 0.3);
-}
-
-.issue-other {
-    background: rgba(108, 117, 125, 0.1);
-    color: #6c757d;
-    border: 1px solid rgba(108, 117, 125, 0.3);
 }
 
 .export-controls {

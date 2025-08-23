@@ -13,6 +13,7 @@ use App\Models\ProductionRecord;
 use App\Models\Sale;
 use App\Models\Expense;
 use App\Models\AuditLog;
+use App\Models\LivestockAlert;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -1482,6 +1483,124 @@ class AdminController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to upload profile picture: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Display all alerts issued by farmers.
+     */
+    public function farmerAlerts()
+    {
+        // Get all alerts issued by farmers
+        $alerts = LivestockAlert::with(['livestock.farm.owner', 'issuedBy'])
+            ->whereHas('issuedBy', function($query) {
+                $query->where('role', 'farmer');
+            })
+            ->orderBy('alert_date', 'desc')
+            ->get();
+
+        // Calculate statistics
+        $totalAlerts = $alerts->count();
+        $activeAlerts = $alerts->where('status', 'active')->count();
+        $criticalAlerts = $alerts->where('severity', 'critical')->where('status', 'active')->count();
+        $resolvedAlerts = $alerts->where('status', 'resolved')->count();
+
+        return view('admin.farmer-alerts', compact(
+            'alerts',
+            'totalAlerts',
+            'activeAlerts',
+            'criticalAlerts',
+            'resolvedAlerts'
+        ));
+    }
+
+    /**
+     * Show alert details.
+     */
+    public function showFarmerAlert($id)
+    {
+        $alert = LivestockAlert::with(['livestock.farm.owner', 'issuedBy'])
+            ->whereHas('issuedBy', function($query) {
+                $query->where('role', 'farmer');
+            })
+            ->findOrFail($id);
+
+        return response()->json(['success' => true, 'alert' => $alert]);
+    }
+
+    /**
+     * Update alert status (respond to farmer alert).
+     */
+    public function updateFarmerAlertStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:resolved,dismissed',
+            'resolution_notes' => 'nullable|string',
+        ]);
+
+        $alert = LivestockAlert::whereHas('issuedBy', function($query) {
+            $query->where('role', 'farmer');
+        })->findOrFail($id);
+
+        if ($request->status === 'resolved') {
+            $alert->markAsResolved($request->resolution_notes);
+        } else {
+            $alert->dismiss($request->resolution_notes);
+        }
+
+        // Log the action
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'alert_status_updated',
+            'description' => "Alert #{$alert->id} status updated to {$request->status}",
+            'severity' => 'info',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->route('admin.farmer-alerts')->with('success', 'Alert status updated successfully!');
+    }
+
+    /**
+     * Get alert statistics for dashboard.
+     */
+    public function getAlertStats()
+    {
+        try {
+            $stats = [
+                'total' => LivestockAlert::whereHas('issuedBy', function($query) {
+                    $query->where('role', 'farmer');
+                })->count(),
+                'active' => LivestockAlert::whereHas('issuedBy', function($query) {
+                    $query->where('role', 'farmer');
+                })->where('status', 'active')->count(),
+                'critical' => LivestockAlert::whereHas('issuedBy', function($query) {
+                    $query->where('role', 'farmer');
+                })->where('severity', 'critical')->where('status', 'active')->count(),
+                'resolved' => LivestockAlert::whereHas('issuedBy', function($query) {
+                    $query->where('role', 'farmer');
+                })->where('status', 'resolved')->count(),
+                'by_severity' => LivestockAlert::whereHas('issuedBy', function($query) {
+                    $query->where('role', 'farmer');
+                })->select('severity', DB::raw('count(*) as count'))
+                    ->groupBy('severity')
+                    ->get(),
+                'by_status' => LivestockAlert::whereHas('issuedBy', function($query) {
+                    $query->where('role', 'farmer');
+                })->select('status', DB::raw('count(*) as count'))
+                    ->groupBy('status')
+                    ->get()
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $stats
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get alert statistics'
             ], 500);
         }
     }

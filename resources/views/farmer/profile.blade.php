@@ -3,6 +3,42 @@
 @section('title', 'LBDAIRY: Farmers-Profile')
 
 @section('content')
+<!-- Success/Error Messages -->
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle mr-2"></i>
+    {{ session('success') }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-triangle mr-2"></i>
+    {{ session('error') }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
+@if($errors->any())
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-triangle mr-2"></i>
+    <strong>Please fix the following errors:</strong>
+    <ul class="mb-0 mt-2">
+        @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
 <!-- Page Header -->
 <div class="page-header fade-in">
     <h1>
@@ -65,16 +101,16 @@
             </a>
         </div>
     </div>
-    <!-- Years Farming -->
+    <!-- Age of Account -->
     <div class="col-12 col-sm-6 col-md-3 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Years Farming</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \Carbon\Carbon::parse(auth()->user()->created_at)->diffInYears(now()) }}</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Account Age</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \Carbon\Carbon::parse(auth()->user()->created_at)->diffForHumans() }}</div>
                 </div>
                 <div class="icon text-primary">
-                    <i class="fas fa-calendar-alt fa-2x"></i>
+                    <i class="fas fa-user-clock fa-2x"></i>
                 </div>
             </div>
             <a href="{{ route('farmer.profile') }}" class="card-footer text-primary small d-flex justify-content-between align-items-center">
@@ -98,7 +134,7 @@
                         <i class="fas fa-camera mr-2"></i>Change Picture
                     </button>
                 </div>
-                <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
+                <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="uploadProfilePicture(event)">
             </div>
         </div>
     </div>
@@ -136,15 +172,15 @@
                             </tr>
                             <tr>
                                 <th scope="row">Phone</th>
-                                <td>{{ auth()->user()->phone ?? '+63 912 345 6789' }}</td>
+                                <td>{{ auth()->user()->phone ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Farm Name</th>
-                                <td>{{ auth()->user()->farms->first()->name ?? 'Green Pastures Dairy' }}</td>
+                                <td>{{ auth()->user()->farms->first()->name ?? 'No farm registered' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Farm Address</th>
-                                <td>{{ auth()->user()->address ?? 'Brgy. Abang, Lucban, Quezon' }}</td>
+                                <td>{{ auth()->user()->address ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Member Since</th>
@@ -190,19 +226,19 @@
               <label for="editPhone">
                   <i class="fas fa-phone"></i>Contact Number
               </label>
-              <input type="text" class="form-control" id="editPhone" name="phone" value="{{ auth()->user()->phone ?? '+63 912 345 6789' }}">
+              <input type="text" class="form-control" id="editPhone" name="phone" value="{{ auth()->user()->phone ?? '' }}" placeholder="Enter your phone number">
           </div>
           <div class="form-group">
               <label for="editFarmName">
                   <i class="fas fa-seedling"></i>Farm Name
               </label>
-              <input type="text" class="form-control" id="editFarmName" name="farm_name" value="{{ auth()->user()->farms->first()->name ?? 'Green Pastures Dairy' }}">
+              <input type="text" class="form-control" id="editFarmName" name="farm_name" value="{{ auth()->user()->farms->first()->name ?? '' }}" placeholder="Enter your farm name">
           </div>
           <div class="form-group">
               <label for="editFarmAddress">
                   <i class="fas fa-map-marker-alt"></i>Farm Address
               </label>
-              <input type="text" class="form-control" id="editFarmAddress" name="address" value="{{ auth()->user()->address ?? 'Brgy. Abang, Lucban, Quezon' }}">
+              <input type="text" class="form-control" id="editFarmAddress" name="address" value="{{ auth()->user()->address ?? '' }}" placeholder="Enter your farm address">
           </div>
       </div>
       <div class="modal-footer">
@@ -662,16 +698,47 @@
 
 @push('scripts')
 <script>
-    function changeProfilePicture(event) {
+    function uploadProfilePicture(event) {
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profilePicture').src = e.target.result;
-                showNotification('Profile picture updated successfully!', 'success');
-            };
-            reader.readAsDataURL(file);
-        }
+        if (!file) return;
+
+        // Show loading state
+        const button = event.target.previousElementSibling.querySelector('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading...';
+        button.disabled = true;
+
+        // Create FormData
+        const formData = new FormData();
+        formData.append('profile_picture', file);
+        formData.append('_token', '{{ csrf_token() }}');
+
+        // Upload via AJAX
+        fetch('{{ route("farmer.profile.picture") }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the profile picture
+                document.getElementById('profilePicture').src = data.image_url;
+                showNotification(data.message, 'success');
+            } else {
+                showNotification(data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error uploading profile picture', 'danger');
+        })
+        .finally(() => {
+            // Reset button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+            // Clear the file input
+            event.target.value = '';
+        });
     }
 
     function showNotification(message, type) {

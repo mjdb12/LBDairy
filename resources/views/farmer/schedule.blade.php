@@ -67,40 +67,7 @@
             </div>
         </div>
 
-        <!-- External Events Card -->
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header">
-                <h6>
-                    <i class="fas fa-drag-handle"></i>
-                    Quick Activities
-                </h6>
-            </div>
-            <div class="card-body">
-                <div id="external-events">
-                    <div class="external-event bg-primary text-white mb-2 p-2 rounded" style="cursor: move;">
-                        <i class="fas fa-milk mr-2"></i> Milk Collection
-                    </div>
-                    <div class="external-event bg-success text-white mb-2 p-2 rounded" style="cursor: move;">
-                        <i class="fas fa-seedling mr-2"></i> Feed Livestock
-                    </div>
-                    <div class="external-event bg-warning text-white mb-2 p-2 rounded" style="cursor: move;">
-                        <i class="fas fa-broom mr-2"></i> Clean Barn
-                    </div>
-                    <div class="external-event bg-info text-white mb-2 p-2 rounded" style="cursor: move;">
-                        <i class="fas fa-heartbeat mr-2"></i> Health Check
-                    </div>
-                    <div class="external-event bg-danger text-white mb-2 p-2 rounded" style="cursor: move;">
-                        <i class="fas fa-syringe mr-2"></i> Vaccination
-                    </div>
-                </div>
-                <div class="form-check mt-3">
-                    <input class="form-check-input" type="checkbox" id="drop-remove">
-                    <label class="form-check-label" for="drop-remove">
-                        Remove after drop
-                    </label>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <!-- Calendar Section -->
@@ -186,7 +153,6 @@
                                     <option value="low">Low</option>
                                     <option value="medium" selected>Medium</option>
                                     <option value="high">High</option>
-                                    <option value="urgent">Urgent</option>
                                 </select>
                             </div>
                         </div>
@@ -227,8 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize quick notes
     initializeQuickNotes();
     
-    // Initialize external events
-    initializeExternalEvents();
+
     
     // Update stats
     updateStats();
@@ -240,9 +205,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeCalendar() {
     var calendarEl = document.getElementById('calendar');
     
-    // Sample events data
-    var calendarEvents = generateSampleEvents();
-    
     calendar = new FullCalendar.Calendar(calendarEl, {
         headerToolbar: {
             left: 'prev,next today',
@@ -251,9 +213,9 @@ function initializeCalendar() {
         },
         initialView: 'dayGridMonth',
         height: 'auto',
-        events: calendarEvents,
+        events: '/calendar/events',
         editable: true,
-        droppable: true,
+        droppable: false,
         eventResizableFromStart: true,
         eventDurationEditable: true,
         eventStartEditable: true,
@@ -264,111 +226,36 @@ function initializeCalendar() {
         },
         
         eventDrop: function(info) {
-            showNotification('Event moved successfully!', 'success');
+            updateEvent(info.event);
         },
         
         eventResize: function(info) {
-            showNotification('Event duration updated!', 'info');
-        },
-        
-        // Drop external events
-        drop: function(info) {
-            var checkbox = document.getElementById('drop-remove');
-            if (checkbox.checked) {
-                info.draggedEl.parentNode.removeChild(info.draggedEl);
-            }
-            showNotification('Event added to calendar!', 'success');
+            updateEvent(info.event);
         },
         
         // Date click
         dateClick: function(info) {
             openAddEventModal(info.dateStr);
+        },
+        
+        // Event loading
+        eventDidMount: function(info) {
+            // Add tooltip with event details
+            $(info.el).tooltip({
+                title: info.event.title + (info.event.extendedProps.description ? '<br>' + info.event.extendedProps.description : ''),
+                html: true,
+                placement: 'top',
+                trigger: 'hover'
+            });
         }
     });
     
     calendar.render();
 }
 
-function generateSampleEvents() {
-    var events = [];
-    var date = new Date();
-    var communities = [
-        { name: 'Tinamnan', color: '#8e44ad' },
-        { name: 'Dapdap', color: '#3498db' },
-        { name: 'Ayuti', color: '#f39c12' },
-        { name: 'Kulapi', color: '#e74c3c' },
-        { name: 'Kamias', color: '#2ecc71' },
-        { name: 'May-It', color: '#95a5a6' }
-    ];
-    
-    var activities = [
-        { name: "Milk Collection", icon: "🥛", color: "#3498db" },
-        { name: "Feed Livestock", icon: "🌾", color: "#27ae60" },
-        { name: "Clean Barn", icon: "🧹", color: "#f4ce14" },
-        { name: "Health Checkup", icon: "🩺", color: "#8e44ad" },
-        { name: "Vaccination", icon: "💉", color: "#e74c3c" },
-        { name: "Grooming", icon: "✂️", color: "#f39c12" }
-    ];
-    
-    // Generate events for the next 30 days
-    for (var i = 0; i < 30; i++) {
-        var eventDate = new Date(date);
-        eventDate.setDate(date.getDate() + i);
-        
-        // Add 1-3 random events per day
-        var numEvents = Math.floor(Math.random() * 3) + 1;
-        
-        for (var j = 0; j < numEvents; j++) {
-            var activity = activities[Math.floor(Math.random() * activities.length)];
-            var community = communities[Math.floor(Math.random() * communities.length)];
-            
-            var startHour = Math.floor(Math.random() * 8) + 6; // 6 AM to 2 PM
-            var startTime = new Date(eventDate);
-            startTime.setHours(startHour, Math.floor(Math.random() * 60));
-            
-            var endTime = new Date(startTime);
-            endTime.setHours(startTime.getHours() + Math.floor(Math.random() * 3) + 1);
-            
-            events.push({
-                title: `${activity.name} - ${community.name}`,
-                start: startTime,
-                end: endTime,
-                backgroundColor: activity.color,
-                borderColor: activity.color,
-                extendedProps: {
-                    community: community.name,
-                    activity: activity.name,
-                    icon: activity.icon,
-                    priority: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
-                    status: Math.random() > 0.7 ? 'completed' : 'pending'
-                }
-            });
-        }
-    }
-    
-    return events;
-}
 
-function initializeExternalEvents() {
-    var containerEl = document.getElementById('external-events');
-    
-    new FullCalendar.Draggable(containerEl, {
-        itemSelector: '.external-event',
-        eventData: function(eventEl) {
-            return {
-                id: 'ext-' + Date.now() + '-' + Math.floor(Math.random() * 10000), // Unique ID for deletion
-                title: eventEl.innerText.trim(),
-                backgroundColor: eventEl.style.backgroundColor,
-                borderColor: eventEl.style.backgroundColor,
-                textColor: eventEl.style.color,
-                extendedProps: {
-                    priority: 'medium',
-                    status: 'pending'
-                }
-            };
-        }
-    });
-}
+
+
 
 function initializeQuickNotes() {
     const form = document.getElementById('quickNoteForm');
@@ -444,47 +331,115 @@ function initializeEventForm() {
             return;
         }
         
-        // Add event to calendar
-        var newEvent = {
+        // Prepare data for API
+        var eventData = {
             title: title,
             start: start,
             end: end || start,
-            backgroundColor: getCategoryColor(category),
-            borderColor: getCategoryColor(category),
-            extendedProps: {
-                category: category,
-                priority: priority,
-                description: description,
-                status: 'pending'
-            }
+            priority: priority,
+            description: description,
+            category: category
         };
         
-        calendar.addEvent(newEvent);
-        
-        // Close modal and reset form
-        $('#addEventModal').modal('hide');
-        document.getElementById('eventForm').reset();
-        
-        showNotification('Event added successfully!', 'success');
-        updateStats();
+        // Send to API
+        fetch('/calendar/events', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(eventData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Refresh calendar
+                calendar.refetchEvents();
+                
+                // Close modal and reset form
+                $('#addEventModal').modal('hide');
+                document.getElementById('eventForm').reset();
+                
+                showNotification('Event added successfully!', 'success');
+                updateStats();
+            } else {
+                showNotification('Error adding event!', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error adding event!', 'error');
+        });
     });
 }
 
-function getCategoryColor(category) {
-    const colors = {
-        'feeding': '#27ae60',
-        'health': '#8e44ad',
-        'maintenance': '#f39c12',
-        'milking': '#3498db',
-        'breeding': '#e74c3c',
-        'other': '#95a5a6'
-    };
-    return colors[category] || '#95a5a6';
-}
+
 
 function handleEventClick(info) {
-    // Handle event click - could open edit modal
-    console.log('Event clicked:', info.event.title);
+    // Show event details in a modal or tooltip
+    var event = info.event;
+    var details = `
+        <strong>${event.title}</strong><br>
+        <small class="text-muted">${event.start.toLocaleString()}</small><br>
+        ${event.extendedProps.description ? '<br>' + event.extendedProps.description : ''}<br>
+        <span class="badge badge-${getPriorityBadgeClass(event.extendedProps.priority)}">${event.extendedProps.priority}</span>
+        <span class="badge badge-${getStatusBadgeClass(event.extendedProps.status)}">${event.extendedProps.status}</span>
+    `;
+    
+    showNotification(details, 'info');
+}
+
+function updateEvent(event) {
+    var eventData = {
+        title: event.title,
+        start: event.start.toISOString(),
+        end: event.end ? event.end.toISOString() : null,
+        priority: event.extendedProps.priority,
+        description: event.extendedProps.description,
+        status: event.extendedProps.status
+    };
+    
+    fetch(`/calendar/events/${event.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify(eventData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Event updated successfully!', 'success');
+            updateStats();
+        } else {
+            showNotification('Error updating event!', 'error');
+            calendar.refetchEvents(); // Refresh to revert changes
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error updating event!', 'error');
+        calendar.refetchEvents(); // Refresh to revert changes
+    });
+}
+
+function getPriorityBadgeClass(priority) {
+    const classes = {
+        'low': 'success',
+        'medium': 'warning',
+        'high': 'danger'
+    };
+    return classes[priority] || 'secondary';
+}
+
+function getStatusBadgeClass(status) {
+    const classes = {
+        'todo': 'secondary',
+        'in_progress': 'warning',
+        'done': 'success'
+    };
+    return classes[status] || 'secondary';
 }
 
 function openAddEventModal(dateStr) {
@@ -498,8 +453,8 @@ function updateStats() {
     today.setHours(0, 0, 0, 0);
     
     var total = events.length;
-    var completed = events.filter(e => e.extendedProps.status === 'completed').length;
-    var pending = events.filter(e => e.extendedProps.status === 'pending').length;
+    var completed = events.filter(e => e.extendedProps.status === 'done').length;
+    var pending = events.filter(e => e.extendedProps.status === 'todo' || e.extendedProps.status === 'in_progress').length;
     var todayCount = events.filter(e => {
         var eventDate = new Date(e.start);
         eventDate.setHours(0, 0, 0, 0);
@@ -517,16 +472,18 @@ function exportCalendar() {
     var events = calendar.getEvents();
     var data = events.map(e => ({
         title: e.title,
-        start: e.start,
-        end: e.end,
-        category: e.extendedProps.category,
+        start: e.start.toLocaleString(),
+        end: e.end ? e.end.toLocaleString() : '',
+        description: e.extendedProps.description || '',
         priority: e.extendedProps.priority,
-        status: e.extendedProps.status
+        status: e.extendedProps.status,
+        assigned_to: e.extendedProps.assigned_to || '',
+        created_by: e.extendedProps.created_by || ''
     }));
     
-    var csv = 'Title,Start,End,Category,Priority,Status\n';
+    var csv = 'Title,Start,End,Description,Priority,Status,Assigned To,Created By\n';
     data.forEach(row => {
-        csv += `"${row.title}","${row.start}","${row.end}","${row.category}","${row.priority}","${row.status}"\n`;
+        csv += `"${row.title}","${row.start}","${row.end}","${row.description}","${row.priority}","${row.status}","${row.assigned_to}","${row.created_by}"\n`;
     });
     
     var blob = new Blob([csv], { type: 'text/csv' });

@@ -150,14 +150,19 @@ class IssueController extends Controller
         }
 
         try {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $livestock = Livestock::findOrFail($request->livestock_id);
+            
             Issue::create([
                 'livestock_id' => $request->livestock_id,
+                'farm_id' => $livestock->farm_id,
                 'issue_type' => $request->issue_type,
                 'priority' => $request->priority,
                 'date_reported' => $request->date_reported,
                 'description' => $request->description,
                 'notes' => $request->notes,
                 'status' => 'Pending',
+                'reported_by' => $user->id,
             ]);
 
             return redirect()->route('admin.issues.index')

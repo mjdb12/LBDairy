@@ -223,6 +223,14 @@
                 </a>
             </li>
 
+            <!-- Nav Item - Farmer Alerts -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.farmer-alerts') }}">
+                    <i class="fas fa-fw fa-bell"></i>
+                    <span>Farmer Alerts</span>
+                </a>
+            </li>
+
             <!-- Nav Item - User Approvals -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.approvals') }}">
