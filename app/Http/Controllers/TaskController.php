@@ -10,53 +10,103 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $this->authorizeSuperAdmin();
-
-        $tasks = Task::orderBy('sort_order')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $user = Auth::user();
+        
+        if ($user->role === 'superadmin') {
+            $tasks = Task::orderBy('sort_order')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // Farmers can only see their own tasks
+            $tasks = Task::where('assigned_to', $user->id)
+                ->orderBy('sort_order')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
 
         return response()->json(['success' => true, 'tasks' => $tasks]);
     }
 
+    public function show(Task $task)
+    {
+        $user = Auth::user();
+        
+        // Check if user can view this task
+        if ($user->role !== 'superadmin' && $task->assigned_to !== $user->id) {
+            abort(403);
+        }
+
+        return response()->json(['success' => true, 'task' => $task]);
+    }
+
     public function store(Request $request)
     {
-        $this->authorizeSuperAdmin();
+        $user = Auth::user();
+        
+        // Allow superadmin to create tasks for anyone, farmers can only create tasks for themselves
+        if ($user->role !== 'superadmin') {
+            $data = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'priority' => 'required|in:low,medium,high',
+                'due_date' => 'nullable|date',
+            ]);
 
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'priority' => 'required|in:low,medium,high',
-            'due_date' => 'nullable|date',
-            'assigned_to' => 'nullable|exists:users,id',
-        ]);
+            $task = Task::create([
+                'title' => $data['title'],
+                'description' => $data['description'] ?? null,
+                'priority' => $data['priority'],
+                'due_date' => $data['due_date'] ?? null,
+                'assigned_to' => $user->id, // Farmers can only assign tasks to themselves
+                'created_by' => $user->id,
+                'status' => 'todo',
+                'sort_order' => Task::max('sort_order') + 1,
+            ]);
+        } else {
+            $data = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'priority' => 'required|in:low,medium,high',
+                'due_date' => 'nullable|date',
+                'assigned_to' => 'nullable|exists:users,id',
+            ]);
 
-        $task = Task::create([
-            'title' => $data['title'],
-            'description' => $data['description'] ?? null,
-            'priority' => $data['priority'],
-            'due_date' => $data['due_date'] ?? null,
-            'assigned_to' => $data['assigned_to'] ?? null,
-            'created_by' => Auth::id(),
-            'status' => 'todo',
-            'sort_order' => Task::max('sort_order') + 1,
-        ]);
+            $task = Task::create([
+                'title' => $data['title'],
+                'description' => $data['description'] ?? null,
+                'priority' => $data['priority'],
+                'due_date' => $data['due_date'] ?? null,
+                'assigned_to' => $data['assigned_to'] ?? null,
+                'created_by' => Auth::id(),
+                'status' => 'todo',
+                'sort_order' => Task::max('sort_order') + 1,
+            ]);
+        }
 
         return response()->json(['success' => true, 'task' => $task]);
     }
 
     public function update(Request $request, Task $task)
     {
-        $this->authorizeSuperAdmin();
+        $user = Auth::user();
+        
+        // Check if user can update this task
+        if ($user->role !== 'superadmin' && $task->assigned_to !== $user->id) {
+            abort(403);
+        }
 
         $data = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
             'priority' => 'sometimes|required|in:low,medium,high',
             'due_date' => 'nullable|date',
-            'assigned_to' => 'nullable|exists:users,id',
             'status' => 'sometimes|required|in:todo,in_progress,done',
         ]);
+
+        // Only superadmin can change assigned_to
+        if ($user->role === 'superadmin') {
+            $data['assigned_to'] = $request->input('assigned_to');
+        }
 
         $task->update($data);
 
@@ -65,7 +115,13 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        $this->authorizeSuperAdmin();
+        $user = Auth::user();
+        
+        // Check if user can delete this task
+        if ($user->role !== 'superadmin' && $task->assigned_to !== $user->id) {
+            abort(403);
+        }
+        
         $task->delete();
         return response()->json(['success' => true]);
     }

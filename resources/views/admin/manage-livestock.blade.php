@@ -214,6 +214,111 @@
         </div>
     </div>
 </div>
+
+<!-- Livestock Details Modal -->
+<div class="modal fade" id="livestockDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-cow"></i>
+                    Livestock Details
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="livestockDetailsContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QR Code Modal -->
+<div class="modal fade" id="qrCodeModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-qrcode"></i>
+                    QR Code
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="qrCodeContent"></div>
+                <p class="mt-3" id="qrCodeText"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="downloadQRCode()">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Issue Alert Modal -->
+<div class="modal fade" id="issueAlertModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Issue Alert
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form id="issueAlertForm">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" id="alertLivestockId">
+                    <div class="form-group">
+                        <label for="issueType">Issue Type</label>
+                        <select class="form-control" id="issueType" required>
+                            <option value="">Select Issue Type</option>
+                            <option value="health">Health Issue</option>
+                            <option value="injury">Injury</option>
+                            <option value="production">Production Issue</option>
+                            <option value="behavioral">Behavioral Issue</option>
+                            <option value="environmental">Environmental Issue</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="issuePriority">Priority</label>
+                        <select class="form-control" id="issuePriority" required>
+                            <option value="">Select Priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="issueDescription">Description</label>
+                        <textarea class="form-control" id="issueDescription" rows="4" required placeholder="Describe the issue in detail..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-exclamation-triangle"></i> Issue Alert
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('styles')
@@ -365,12 +470,23 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <button class="btn btn-info btn-sm" onclick="editLivestock('${animal.id}')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteLivestock('${animal.id}')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-info btn-sm" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-success btn-sm" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
+                                                <i class="fas fa-qrcode"></i>
+                                            </button>
+                                            <button class="btn btn-warning btn-sm" onclick="issueAlert('${animal.id}')" title="Issue Alert">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </button>
+                                            <button class="btn btn-primary btn-sm" onclick="editLivestock('${animal.id}')" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteLivestock('${animal.id}')" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             `;
@@ -492,5 +608,145 @@
             }
         });
     });
+
+    function viewLivestockDetails(livestockId) {
+        $.ajax({
+            url: `{{ route("admin.livestock.details", ":id") }}`.replace(':id', livestockId),
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const livestock = response.data;
+                    $('#livestockDetailsContent').html(`
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary">Basic Information</h6>
+                                <table class="table table-borderless">
+                                    <tr><td><strong>Tag Number:</strong></td><td>${livestock.tag_number}</td></tr>
+                                    <tr><td><strong>Type:</strong></td><td>${livestock.type}</td></tr>
+                                    <tr><td><strong>Breed:</strong></td><td>${livestock.breed}</td></tr>
+                                    <tr><td><strong>Gender:</strong></td><td>${livestock.gender}</td></tr>
+                                    <tr><td><strong>Birth Date:</strong></td><td>${livestock.birth_date}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary">Farm Information</h6>
+                                <table class="table table-borderless">
+                                    <tr><td><strong>Farm:</strong></td><td>${livestock.farm ? livestock.farm.name : 'N/A'}</td></tr>
+                                    <tr><td><strong>Status:</strong></td><td><span class="badge badge-${livestock.status === 'active' ? 'success' : 'danger'}">${livestock.status}</span></td></tr>
+                                    <tr><td><strong>Health Status:</strong></td><td>${livestock.health_status || 'N/A'}</td></tr>
+                                    <tr><td><strong>Weight:</strong></td><td>${livestock.weight || 'N/A'}</td></tr>
+                                    <tr><td><strong>Registration Date:</strong></td><td>${livestock.created_at}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        ${livestock.description ? `
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <h6 class="text-primary">Description</h6>
+                                <p>${livestock.description}</p>
+                            </div>
+                        </div>
+                        ` : ''}
+                    `);
+                    $('#livestockDetailsModal').modal('show');
+                } else {
+                    showNotification('Error loading livestock details', 'danger');
+                }
+            },
+            error: function() {
+                showNotification('Error loading livestock details', 'danger');
+            }
+        });
+    }
+
+    function generateQRCode(livestockId) {
+        $.ajax({
+            url: `{{ route("admin.livestock.qr-code", ":id") }}`.replace(':id', livestockId),
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    $('#qrCodeContent').html(`<img src="${response.qr_code}" alt="QR Code" class="img-fluid">`);
+                    $('#qrCodeText').text(`QR Code for ${response.livestock_id}`);
+                    $('#qrCodeModal').modal('show');
+                } else {
+                    showNotification('Error generating QR code', 'danger');
+                }
+            },
+            error: function() {
+                showNotification('Error generating QR code', 'danger');
+            }
+        });
+    }
+
+    function downloadQRCode() {
+        const img = $('#qrCodeContent img');
+        const link = document.createElement('a');
+        link.download = 'livestock_qr_code.png';
+        link.href = img.attr('src');
+        link.click();
+    }
+
+    function issueAlert(livestockId) {
+        $('#alertLivestockId').val(livestockId);
+        $('#issueAlertModal').modal('show');
+    }
+
+    $('#issueAlertForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const livestockId = $('#alertLivestockId').val();
+        const issueType = $('#issueType').val();
+        const priority = $('#issuePriority').val();
+        const description = $('#issueDescription').val();
+
+        $.ajax({
+            url: '{{ route("admin.livestock.issue-alert") }}',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                livestock_id: livestockId,
+                issue_type: issueType,
+                priority: priority,
+                description: description
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#issueAlertModal').modal('hide');
+                    // Reset form
+                    $('#issueType').val('');
+                    $('#issuePriority').val('');
+                    $('#issueDescription').val('');
+                    
+                    showNotification('Issue alert created successfully!', 'success');
+                } else {
+                    showNotification(response.message || 'Error creating issue alert', 'danger');
+                }
+            },
+            error: function() {
+                showNotification('Error creating issue alert', 'danger');
+            }
+        });
+    });
+
+    function showNotification(message, type) {
+        const notification = $(`
+            <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
+                 style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        setTimeout(() => {
+            notification.alert('close');
+        }, 5000);
+    }
 </script>
 @endpush

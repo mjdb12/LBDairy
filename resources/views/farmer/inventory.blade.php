@@ -153,35 +153,7 @@
     </div>
 </div>
 
-<!-- Inventory by Category -->
-<div class="card shadow mb-4 fade-in">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-chart-pie"></i>
-            Inventory by Category
-        </h6>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="inventoryChart"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="mt-4 text-center small">
-                    @foreach($inventoryStats['category_distribution'] as $category)
-                    <div class="mb-2">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-{{ $category['category'] == 'Feed' ? 'success' : ($category['category'] == 'Medicine' ? 'info' : 'warning') }}"></i> {{ $category['category'] }}
-                        </span>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Low Stock Alerts -->
 <div class="card shadow mb-4 fade-in">
@@ -653,31 +625,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Inventory Chart
-    const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
-    const inventoryChart = new Chart(inventoryCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode($inventoryStats['category_distribution']->pluck('category')) !!},
-            datasets: [{
-                data: {!! json_encode($inventoryStats['category_distribution']->pluck('count')) !!},
-                backgroundColor: ['#1cc88a', '#36b9cc', '#f6c23e', '#6c757d'],
-                hoverBackgroundColor: ['#17a673', '#2c9faf', '#f4b619', '#545b62'],
-                hoverBorderColor: 'rgba(234, 236, 244, 1)',
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            cutout: '70%'
-        }
-    });
-
     // Form submission
     document.getElementById('addItemForm').addEventListener('submit', function(e) {
         e.preventDefault();

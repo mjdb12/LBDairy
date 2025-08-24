@@ -205,6 +205,100 @@
             </div>
         </div>
     </div>
+
+    <!-- Scheduled Inspections Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow fade-in">
+                <div class="card-header bg-info text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-calendar-check"></i>
+                        Scheduled Farm Inspections
+                    </h6>
+                    <div class="d-flex align-items-center">
+                        <div class="export-controls">
+                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" onclick="exportInspectionsToCSV()">
+                                    <i class="fas fa-file-csv"></i> CSV
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportInspectionsToPDF()">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="printInspectionsTable()">
+                                    <i class="fas fa-print"></i> Print
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="inspectionsTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Inspection Date</th>
+                                    <th>Time</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Scheduled By</th>
+                                    <th>Notes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($scheduledInspections ?? [] as $inspection)
+                                <tr class="{{ $inspection->priority === 'urgent' ? 'table-danger' : ($inspection->priority === 'high' ? 'table-warning' : '') }}">
+                                    <td>
+                                        <strong>{{ $inspection->inspection_date ? $inspection->inspection_date->format('M d, Y') : 'N/A' }}</strong>
+                                    </td>
+                                    <td>{{ $inspection->inspection_time ? $inspection->inspection_time->format('h:i A') : 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $inspection->priority === 'urgent' ? 'danger' : ($inspection->priority === 'high' ? 'warning' : ($inspection->priority === 'medium' ? 'info' : 'success')) }}">
+                                            {{ ucfirst($inspection->priority) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-{{ $inspection->status === 'scheduled' ? 'primary' : ($inspection->status === 'completed' ? 'success' : ($inspection->status === 'cancelled' ? 'danger' : 'warning')) }}">
+                                            {{ ucfirst($inspection->status) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-secondary">
+                                            {{ $inspection->scheduledBy->name ?? 'Admin' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ Str::limit($inspection->notes, 50) }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-info" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            @if($inspection->status === 'scheduled')
+                                            <button class="btn btn-sm btn-success" onclick="markInspectionComplete('{{ $inspection->id }}')" title="Mark Complete">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        <i class="fas fa-calendar fa-3x mb-3 text-info"></i>
+                                        <p>No scheduled inspections at this time.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -232,6 +326,29 @@
     </div>
 </div>
 
+<!-- Inspection Details Modal -->
+<div class="modal fade" id="inspectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="inspectionDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inspectionDetailsLabel">
+                    <i class="fas fa-calendar-check"></i>
+                    Inspection Details
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="inspectionDetailsContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 @endsection
@@ -241,7 +358,7 @@
 let currentIssueId = null;
 
 $(document).ready(function() {
-    // Initialize DataTable
+    // Initialize DataTable for issues
     $('#issuesTable').DataTable({
         responsive: true,
         pageLength: 25,
@@ -249,6 +366,25 @@ $(document).ready(function() {
         language: {
             search: "_INPUT_",
             searchPlaceholder: "Search issues...",
+            lengthMenu: "_MENU_ records per page",
+            info: "Showing _START_ to _END_ of _TOTAL_ records",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        }
+    });
+
+    // Initialize DataTable for inspections
+    $('#inspectionsTable').DataTable({
+        responsive: true,
+        pageLength: 15,
+        order: [[0, 'asc']], // Sort by inspection date
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search inspections...",
             lengthMenu: "_MENU_ records per page",
             info: "Showing _START_ to _END_ of _TOTAL_ records",
             paginate: {
@@ -415,6 +551,125 @@ function showToast(message, type = 'info') {
     toastElement.addEventListener('hidden.bs.toast', () => {
         document.body.removeChild(toastContainer);
     });
+}
+
+// Inspection related functions
+function viewInspectionDetails(inspectionId) {
+    $.ajax({
+        url: `/farmer/inspections/${inspectionId}`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const inspection = response.inspection;
+                $('#inspectionDetailsContent').html(`
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="fas fa-calendar"></i> Inspection Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-borderless">
+                                        <tr><td><strong>Date:</strong></td><td>${inspection.inspection_date}</td></tr>
+                                        <tr><td><strong>Time:</strong></td><td>${inspection.inspection_time}</td></tr>
+                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${getInspectionStatusColor(inspection.status)}">${inspection.status}</span></td></tr>
+                                        <tr><td><strong>Priority:</strong></td><td><span class="badge badge-${getInspectionPriorityColor(inspection.priority)}">${inspection.priority}</span></td></tr>
+                                        <tr><td><strong>Scheduled By:</strong></td><td>${inspection.scheduled_by ? inspection.scheduled_by.name : 'Admin'}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-warning text-white">
+                                    <h6 class="mb-0"><i class="fas fa-file-alt"></i> Notes & Findings</h6>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Notes:</h6>
+                                    <p>${inspection.notes || 'No notes provided'}</p>
+                                    ${inspection.findings ? `<h6>Findings:</h6><p>${inspection.findings}</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                $('#inspectionDetailsModal').modal('show');
+            }
+        },
+        error: function() {
+            showToast('Error loading inspection details', 'error');
+        }
+    });
+}
+
+function markInspectionComplete(inspectionId) {
+    if (confirm('Mark this inspection as complete?')) {
+        $.ajax({
+            url: `/farmer/inspections/${inspectionId}/complete`,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    showToast('Inspection marked as complete', 'success');
+                    location.reload();
+                } else {
+                    showToast(response.message || 'Error completing inspection', 'error');
+                }
+            },
+            error: function() {
+                showToast('Error completing inspection', 'error');
+            }
+        });
+    }
+}
+
+function getInspectionStatusColor(status) {
+    switch(status) {
+        case 'scheduled': return 'primary';
+        case 'completed': return 'success';
+        case 'cancelled': return 'danger';
+        case 'rescheduled': return 'warning';
+        default: return 'secondary';
+    }
+}
+
+function getInspectionPriorityColor(priority) {
+    switch(priority) {
+        case 'low': return 'success';
+        case 'medium': return 'info';
+        case 'high': return 'warning';
+        case 'urgent': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+// Export functions for inspections
+function exportInspectionsToCSV() {
+    const table = $('#inspectionsTable').DataTable();
+    const data = table.data().toArray();
+    
+    let csv = 'Inspection Date,Time,Priority,Status,Scheduled By,Notes\n';
+    data.forEach(row => {
+        csv += `${row[0]},${row[1]},${row[2]},${row[3]},${row[4]},${row[5]}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'scheduled_inspections.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function exportInspectionsToPDF() {
+    showToast('PDF export feature coming soon!', 'info');
+}
+
+function printInspectionsTable() {
+    window.print();
 }
 </script>
 @endpush

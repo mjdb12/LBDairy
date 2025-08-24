@@ -438,4 +438,104 @@ class LivestockController extends Controller
         // For now, return a message
         return response()->json(['message' => 'PDF export not implemented yet']);
     }
+
+    /**
+     * Get detailed livestock information.
+     */
+    public function details($id)
+    {
+        try {
+            $livestock = Livestock::with('farm')->findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $livestock
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Livestock not found'
+            ], 404);
+        }
+    }
+
+    /**
+     * Generate QR code for livestock.
+     */
+    public function generateQRCode($id)
+    {
+        try {
+            $livestock = Livestock::findOrFail($id);
+            
+            // Generate QR code data
+            $qrData = json_encode([
+                'livestock_id' => $livestock->tag_number,
+                'type' => $livestock->type,
+                'breed' => $livestock->breed,
+                'farm_id' => $livestock->farm_id
+            ]);
+            
+            // For now, return a placeholder QR code URL
+            // In a real implementation, you would use a QR code library
+            $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($qrData);
+            
+            return response()->json([
+                'success' => true,
+                'qr_code' => $qrCodeUrl,
+                'livestock_id' => $livestock->tag_number
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate QR code'
+            ], 500);
+        }
+    }
+
+    /**
+     * Create issue alert for livestock.
+     */
+    public function issueAlert(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'livestock_id' => 'required|exists:livestock,id',
+            'issue_type' => 'required|string|max:255',
+            'priority' => 'required|in:low,medium,high,urgent',
+            'description' => 'required|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $livestock = Livestock::findOrFail($request->livestock_id);
+            
+            // Create issue record
+            $issue = \App\Models\Issue::create([
+                'livestock_id' => $request->livestock_id,
+                'issue_type' => $request->issue_type,
+                'priority' => $request->priority,
+                'description' => $request->description,
+                'status' => 'pending',
+                'reported_by' => Auth::id(),
+                'date_reported' => now(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Issue alert created successfully',
+                'issue' => $issue
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create issue alert'
+            ], 500);
+        }
+    }
 }

@@ -295,6 +295,8 @@
             </div>
         </div>
     </div>
+
+
 </div>
 
 <!-- Details Modal -->
@@ -387,6 +389,73 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-danger">
                         <i class="fas fa-times"></i> Reject Registration
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Inspection Modal -->
+<div class="modal fade" id="scheduleInspectionModal" tabindex="-1" role="dialog" aria-labelledby="scheduleInspectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scheduleInspectionModalLabel">
+                    <i class="fas fa-calendar-check"></i>
+                    Schedule Farm Inspection
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form onsubmit="submitInspectionSchedule(event)">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" id="inspectionFarmerIdHidden">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inspectionFarmerName">Farmer Name</label>
+                                <input type="text" class="form-control" id="inspectionFarmerName" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inspectionDate">Inspection Date</label>
+                                <input type="date" class="form-control" id="inspectionDate" required min="{{ date('Y-m-d') }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inspectionTime">Inspection Time</label>
+                                <input type="time" class="form-control" id="inspectionTime" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inspectionPriority">Priority Level</label>
+                                <select class="form-control" id="inspectionPriority" required>
+                                    <option value="">Select Priority</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inspectionNotes">Inspection Notes</label>
+                        <textarea class="form-control" id="inspectionNotes" rows="3" placeholder="Enter any specific notes or instructions for the inspection..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-calendar-check"></i> Schedule Inspection
                     </button>
                 </div>
             </form>
@@ -518,6 +587,8 @@ function initializeDataTables() {
             }
         ]
     });
+
+
 
     // Hide default DataTables elements
     $('.dataTables_filter').hide();
@@ -754,6 +825,8 @@ function deactivateFarmer(farmerId) {
         }
     });
 }
+
+
 
 function openContactModal() {
     $('#detailsModal').modal('hide');

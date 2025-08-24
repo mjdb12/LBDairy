@@ -101,6 +101,8 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/issue-alerts/{id}/status', [FarmerController::class, 'updateAlertStatus'])->name('issue-alerts.update-status');
         Route::get('/farm-analysis', [App\Http\Controllers\FarmerController::class, 'farmAnalysis'])->name('farm-analysis');
         Route::get('/livestock-analysis', [App\Http\Controllers\FarmerController::class, 'livestockAnalysis'])->name('livestock-analysis');
+        Route::get('/livestock/{id}/analysis', [App\Http\Controllers\FarmerController::class, 'getLivestockAnalysis'])->name('livestock.analysis');
+        Route::get('/livestock/{id}/history', [App\Http\Controllers\FarmerController::class, 'getLivestockHistory'])->name('livestock.history');
         Route::get('/clients', [App\Http\Controllers\FarmerController::class, 'clients'])->name('clients');
         Route::get('/inventory', [App\Http\Controllers\FarmerController::class, 'inventory'])->name('inventory');
         
@@ -108,6 +110,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/audit-logs', [FarmerController::class, 'auditLogs'])->name('audit-logs');
         Route::get('/audit-logs/{id}/details', [FarmerController::class, 'getAuditLogDetails'])->name('audit-logs.details');
         Route::get('/audit-logs/export', [FarmerController::class, 'exportAuditLogs'])->name('audit-logs.export');
+        
+        // Inspection routes for farmer
+        Route::get('/inspections/{id}', [FarmerController::class, 'showInspection'])->name('inspections.show');
+        Route::post('/inspections/{id}/complete', [FarmerController::class, 'completeInspection'])->name('inspections.complete');
+        
+        // Task routes for farmer
+        Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
+        Route::get('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'show'])->name('tasks.show');
+        Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+        Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
+        Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
     });
     
     // Admin routes
@@ -232,6 +245,21 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'destroy'])->name('livestock.destroy');
         Route::post('/livestock/{id}/status', [App\Http\Controllers\LivestockController::class, 'updateStatus'])->name('livestock.update-status');
         
+        // New livestock management routes
+        Route::get('/livestock/{id}/details', [App\Http\Controllers\LivestockController::class, 'details'])->name('livestock.details');
+        Route::get('/livestock/{id}/qr-code', [App\Http\Controllers\LivestockController::class, 'generateQRCode'])->name('livestock.qr-code');
+        Route::post('/livestock/issue-alert', [App\Http\Controllers\LivestockController::class, 'issueAlert'])->name('livestock.issue-alert');
+        
+        // Inspection management routes
+        Route::post('/inspections/schedule', [App\Http\Controllers\AdminController::class, 'scheduleInspection'])->name('inspections.schedule');
+        Route::get('/inspections/list', [App\Http\Controllers\AdminController::class, 'getInspectionsList'])->name('inspections.list');
+        Route::get('/inspections/{id}', [App\Http\Controllers\AdminController::class, 'showInspection'])->name('inspections.show');
+        Route::post('/inspections/{id}/cancel', [App\Http\Controllers\AdminController::class, 'cancelInspection'])->name('inspections.cancel');
+        Route::get('/inspections/stats', [App\Http\Controllers\AdminController::class, 'getInspectionStats'])->name('inspections.stats');
+        
+        // Schedule Inspections page
+        Route::get('/schedule-inspections', [App\Http\Controllers\AdminController::class, 'scheduleInspectionsPage'])->name('schedule-inspections');
+        
 
         
         Route::get('/production', [App\Http\Controllers\AdminController::class, 'production'])->name('production');
@@ -332,12 +360,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 
         // Task board routes
-        Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
-Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
-Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
-Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
-Route::post('/tasks/reorder', [App\Http\Controllers\TaskController::class, 'reorder'])->name('tasks.reorder');
-Route::post('/tasks/{task}/move', [App\Http\Controllers\TaskController::class, 'move'])->name('tasks.move');
+                Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
+        Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+        Route::get('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'show'])->name('tasks.show');
+        Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
+        Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
+        Route::post('/tasks/reorder', [App\Http\Controllers\TaskController::class, 'reorder'])->name('tasks.reorder');
+        Route::post('/tasks/{task}/move', [App\Http\Controllers\TaskController::class, 'move'])->name('tasks.move');
 
 // Calendar routes
 Route::get('/calendar/events', [App\Http\Controllers\TaskController::class, 'calendarEvents'])->name('calendar.events');

@@ -752,6 +752,11 @@
     
     @stack('scripts')
     
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <!-- Toast notifications will be dynamically added here -->
+    </div>
+    
     @include('layouts.logout-modal')
 </body>
 </html>

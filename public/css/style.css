@@ -3984,14 +3984,6 @@
     background-color: #b7b9cc;
   }
   
-  .custom-range:disabled::-webkit-slider-runnable-track {
-    cursor: default;
-  }
-  
-  .custom-range:disabled::-moz-range-thumb {
-    background-color: #b7b9cc;
-  }
-  
   .custom-range:disabled::-moz-range-track {
     cursor: default;
   }
@@ -11175,4 +11167,240 @@
   body.sidebar-toggled footer.sticky-footer {
     width: 100%;
   }
+
+/* Livestock Analysis Custom Styles */
+.livestock-analysis-container,
+.livestock-history-container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Improved table responsiveness */
+.table-responsive {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* Clean table styling */
+.table {
+    margin-bottom: 0;
+    border: none;
+}
+
+.table thead th {
+    border-top: none;
+    border-bottom: 2px solid #e3e6f0;
+    font-weight: 600;
+    color: #5a5c69;
+    background-color: #f8f9fc;
+    padding: 1rem 0.75rem;
+}
+
+.table tbody td {
+    border-top: 1px solid #e3e6f0;
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fc;
+    transition: background-color 0.2s ease;
+}
+
+/* DataTable specific styles */
+#livestockTable {
+    width: 100% !important;
+    table-layout: auto !important;
+    margin: 0 !important;
+    max-width: none !important;
+}
+
+/* Remove any container constraints */
+.container-fluid,
+.container {
+    max-width: none !important;
+    width: 100% !important;
+}
+
+/* Ensure table uses full width */
+.table-responsive {
+    width: 100% !important;
+    max-width: none !important;
+    overflow-x: auto !important;
+}
+
+/* Ensure table container expands fully */
+.card-body .table-responsive {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+}
+
+/* Force table to use full width */
+.table {
+    width: 100% !important;
+    margin-bottom: 0 !important;
+}
+
+#livestockTable th,
+#livestockTable td {
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Health score progress bar improvements */
+.health-score-progress {
+    min-width: 60px;
+    max-width: 80px;
+}
+
+/* Status badge improvements */
+.badge {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-size: 0.75rem;
+}
+
+/* Button group improvements */
+.btn-group-sm .btn {
+    margin: 0 1px;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Chart container improvements */
+.chart-area,
+.chart-pie {
+    position: relative;
+    height: 300px;
+}
+
+.chart-pie {
+    height: 250px;
+}
+
+/* Modal improvements */
+.modal-xl {
+    max-width: 95%;
+}
+
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    #livestockTable th,
+    #livestockTable td {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
+    
+    .chart-area,
+    .chart-pie {
+        height: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.75rem;
+    }
+    
+    .chart-area,
+    .chart-pie {
+        height: 150px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Health score display improvements */
+.health-score-display .progress {
+    border-radius: 15px;
+    background-color: #e9ecef;
+}
+
+.health-score-display .progress-bar {
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Hover effects */
+.livestock-row:hover {
+    background-color: #f8f9fc;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+/* Filter controls improvements */
+.form-control {
+    border-radius: 0.35rem;
+    border: 1px solid #d1d3e2;
+}
+
+.form-control:focus {
+    border-color: #bac8f3;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Card improvements */
+.card {
+    border: none;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+/* Toast container */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+/* Print styles */
+@media print {
+    .btn,
+    .dropdown,
+    .modal {
+        display: none !important;
+    }
+    
+    .table-responsive {
+        overflow: visible !important;
+    }
+    
+    #livestockTable {
+        min-width: auto !important;
+    }
+}
   

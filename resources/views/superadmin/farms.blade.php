@@ -198,6 +198,7 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Farm ID</th>
+                            <th>Farm Name</th>
                             <th>Owner Name</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -347,6 +348,7 @@ function loadFarms() {
             items.forEach(farm => {
                 const rowData = [
                     `<a href="#" class="farm-id-link" onclick="openDetailsModal('${farm.id}')">${farm.farm_id}</a>`,
+                    `${farm.name || 'N/A'}`,
                     `${farm.owner?.name || ''}`,
                     `${farm.owner?.email || ''}`,
                     `${farm.owner?.phone || ''}`,

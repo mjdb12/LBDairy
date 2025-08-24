@@ -223,6 +223,14 @@
                 </a>
             </li>
 
+            <!-- Nav Item - Schedule Inspections -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.schedule-inspections') }}">
+                    <i class="fas fa-fw fa-calendar-check"></i>
+                    <span>Schedule Inspections</span>
+                </a>
+            </li>
+
             <!-- Nav Item - Farmer Alerts -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.farmer-alerts') }}">

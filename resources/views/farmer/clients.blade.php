@@ -83,9 +83,9 @@
     </div>
 </div>
 
+<!-- 1. Client Directory -->
 <div class="row">
-    <!-- Client List -->
-    <div class="col-lg-8">
+    <div class="col-12">
         <div class="card shadow mb-4 fade-in">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Client Directory</h6>
@@ -144,9 +144,11 @@
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Client Analytics -->
-    <div class="col-lg-4">
+<!-- 2. Client Distribution -->
+<div class="row">
+    <div class="col-12">
         <div class="card shadow mb-4 fade-in">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
@@ -155,27 +157,49 @@
                 </h6>
             </div>
             <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="clientDistributionChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Retail
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Wholesale
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-warning"></i> Business
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-secondary"></i> Market
-                    </span>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="clientDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="mt-4 text-center small">
+                            <div class="mb-3">
+                                <span class="mr-2">
+                                    <i class="fas fa-circle text-primary"></i> Retail
+                                </span>
+                                <div class="font-weight-bold text-primary">{{ $clientDistribution['retail'] ?? 0 }} clients</div>
+                            </div>
+                            <div class="mb-3">
+                                <span class="mr-2">
+                                    <i class="fas fa-circle text-info"></i> Wholesale
+                                </span>
+                                <div class="font-weight-bold text-info">{{ $clientDistribution['wholesale'] ?? 0 }} clients</div>
+                            </div>
+                            <div class="mb-3">
+                                <span class="mr-2">
+                                    <i class="fas fa-circle text-warning"></i> Business
+                                </span>
+                                <div class="font-weight-bold text-warning">{{ $clientDistribution['business'] ?? 0 }} clients</div>
+                            </div>
+                            <div class="mb-3">
+                                <span class="mr-2">
+                                    <i class="fas fa-circle text-secondary"></i> Market
+                                </span>
+                                <div class="font-weight-bold text-secondary">{{ $clientDistribution['market'] ?? 0 }} clients</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Top Clients -->
+<!-- 3. Top Clients -->
+<div class="row">
+    <div class="col-12">
         <div class="card shadow mb-4 fade-in">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
@@ -184,19 +208,30 @@
                 </h6>
             </div>
             <div class="card-body">
-                <div class="list-group list-group-flush">
+                <div class="row">
                     @forelse($topClients as $client)
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="font-weight-bold">{{ $client['name'] }}</div>
-                            <small class="text-muted">{{ $client['type'] }}</small>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card border-left-primary h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="50">
+                                    <div class="flex-grow-1">
+                                        <div class="font-weight-bold text-primary">{{ $client['name'] }}</div>
+                                        <small class="text-muted">{{ $client['type'] }}</small>
+                                        <div class="mt-2">
+                                            <span class="badge badge-primary badge-pill">₱{{ number_format($client['total_spent']) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span class="badge badge-primary badge-pill">₱{{ number_format($client['total_spent']) }}</span>
                     </div>
                     @empty
-                    <div class="list-group-item text-center text-muted">
-                        <i class="fas fa-users fa-2x mb-2"></i>
-                        <p>No clients yet</p>
+                    <div class="col-12">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-trophy fa-3x mb-3 text-muted"></i>
+                            <p>No top clients data available yet.</p>
+                        </div>
                     </div>
                     @endforelse
                 </div>

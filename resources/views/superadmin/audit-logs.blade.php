@@ -76,16 +76,6 @@
         color: #2e59d9;
         text-decoration: underline;
     }
-    
-    .quick-actions .btn {
-        margin-bottom: 0.5rem;
-    }
-    
-    @media (max-width: 768px) {
-        .quick-actions .btn {
-            margin-bottom: 0.5rem;
-        }
-    }
 </style>
 @endpush
 
@@ -155,177 +145,6 @@
                         <i class="fas fa-users fa-2x"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="row mb-4 fade-in">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">
-                        <i class="fas fa-tools"></i>
-                        Quick Actions
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row quick-actions">
-                        <div class="col-lg-3 col-md-6 mb-2">
-                            <button class="btn btn-primary btn-block" onclick="exportLogs()">
-                                <i class="fas fa-download"></i>
-                                Export Logs
-                            </button>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-2">
-                            <button class="btn btn-success btn-block" onclick="generateReport()">
-                                <i class="fas fa-file-alt"></i>
-                                Generate Report
-                            </button>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-2">
-                            <button class="btn btn-info btn-block" onclick="openFilterModal()">
-                                <i class="fas fa-filter"></i>
-                                Advanced Filter
-                            </button>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-2">
-                            <button id="clearLogsBtn" class="btn btn-warning btn-block" onclick="clearOldLogs()">
-                                <i class="fas fa-trash"></i>
-                                Clear Logs
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Audit Logs Table -->
-    <div class="card shadow mb-4 fade-in">
-        <div class="card-header bg-secondary text-white">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                <h6 class="mb-0 mb-md-0">
-                    <i class="fas fa-table"></i>
-                    System Activity Logs
-                </h6>
-                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
-                    <div class="input-group" style="max-width: 300px;">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-download"></i> Export
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" onclick="exportCSV()">
-                                <i class="fas fa-file-csv"></i> CSV
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPNG()">
-                                <i class="fas fa-image"></i> PNG
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPDF()">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                        </div>
-                    </div>
-                    <button class="btn btn-light btn-sm" onclick="printTable()" title="Print">
-                        <i class="fas fa-print"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="auditDataTable" width="100%" cellspacing="0">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Log ID</th>
-                            <th>Timestamp</th>
-                            <th>User</th>
-                            <th>Action</th>
-                            <th>Module</th>
-                            <th>Details</th>
-                            <th>IP Address</th>
-                            <th>Severity</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($auditLogs ?? [] as $log)
-                        <tr class="{{ $log->severity === 'critical' ? 'table-danger' : ($log->severity === 'warning' ? 'table-warning' : '') }}">
-                            <td>
-                                <a href="#" class="log-id-link" onclick="openLogDetails('{{ $log->id }}')">
-                                    {{ $log->log_id ?? 'L' . str_pad($log->id, 3, '0', STR_PAD_LEFT) }}
-                                </a>
-                            </td>
-                            <td>{{ $log->timestamp ?? 'N/A' }}</td>
-                            <td>
-                                @if($log->user)
-                                    <span class="font-weight-bold">{{ $log->user->name ?? 'N/A' }}</span>
-                                    <br><small class="text-muted">{{ $log->user->email ?? 'N/A' }}</small>
-                                @else
-                                    <span class="text-muted">System</span>
-                                @endif
-                            </td>
-                            <td>
-                                @php
-                                    $action = $log->action ?? 'unknown';
-                                    $actionClass = $action === 'delete' ? 'danger' : 
-                                                  ($action === 'update' ? 'warning' : 
-                                                  ($action === 'create' ? 'success' : 'info'));
-                                @endphp
-                                <span class="badge badge-{{ $actionClass }}">
-                                    {{ ucfirst($action) }}
-                                </span>
-                            </td>
-                            <td>{{ $log->module ?? 'N/A' }}</td>
-                            <td>
-                                <span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ $log->details ?? 'N/A' }}">
-                                    {{ $log->details ?? 'N/A' }}
-                                </span>
-                            </td>
-                            <td>{{ $log->ip_address ?? 'N/A' }}</td>
-                            <td>
-                                @php
-                                    $severity = $log->severity ?? 'info';
-                                    $severityClass = $severity === 'critical' ? 'danger' : 
-                                                    ($severity === 'warning' ? 'warning' : 
-                                                    ($severity === 'error' ? 'danger' : 'info'));
-                                @endphp
-                                <span class="badge badge-{{ $severityClass }}">
-                                    {{ ucfirst($severity) }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-info" onclick="viewLogDetails('{{ $log->id }}')" title="View Details">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" onclick="investigateLog('{{ $log->id }}')" title="Investigate">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="flagLog('{{ $log->id }}')" title="Flag">
-                                        <i class="fas fa-flag"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="9" class="text-center text-muted">
-                                <i class="fas fa-info-circle"></i>
-                                No audit log data available
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -457,6 +276,147 @@
                             <td colspan="5" class="text-center text-muted">
                                 <i class="fas fa-info-circle"></i>
                                 No user activity data available
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Activity Logs Table (Moved to bottom) -->
+    <div class="card shadow mb-4 fade-in">
+        <div class="card-header bg-secondary text-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h6 class="mb-0 mb-md-0">
+                    <i class="fas fa-table"></i>
+                    System Activity Logs (Latest 30 Entries)
+                </h6>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                    <div class="input-group" style="max-width: 300px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-primary btn-sm" onclick="exportLogs()" title="Export Logs">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-success btn-sm" onclick="generateReport()" title="Generate Report">
+                            <i class="fas fa-file-alt"></i> Report
+                        </button>
+                        <button class="btn btn-info btn-sm" onclick="openFilterModal()" title="Advanced Filter">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="clearOldLogs()" title="Clear Logs">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown" title="Export Options">
+                            <i class="fas fa-download"></i> Export Options
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                <i class="fas fa-file-csv"></i> CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                <i class="fas fa-image"></i> PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                        </div>
+                        <button class="btn btn-light btn-sm" onclick="printTable()" title="Print">
+                            <i class="fas fa-print"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="auditDataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Log ID</th>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Module</th>
+                            <th>Details</th>
+                            <th>IP Address</th>
+                            <th>Severity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse(($auditLogs ?? [])->take(30) as $log)
+                        <tr class="{{ $log->severity === 'critical' ? 'table-danger' : ($log->severity === 'warning' ? 'table-warning' : '') }}">
+                            <td>
+                                <a href="#" class="log-id-link" onclick="openLogDetails('{{ $log->id }}')">
+                                    {{ $log->log_id ?? 'L' . str_pad($log->id, 3, '0', STR_PAD_LEFT) }}
+                                </a>
+                            </td>
+                            <td>{{ $log->timestamp ?? 'N/A' }}</td>
+                            <td>
+                                @if($log->user)
+                                    <span class="font-weight-bold">{{ $log->user->name ?? 'N/A' }}</span>
+                                    <br><small class="text-muted">{{ $log->user->email ?? 'N/A' }}</small>
+                                @else
+                                    <span class="text-muted">System</span>
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $action = $log->action ?? 'unknown';
+                                    $actionClass = $action === 'delete' ? 'danger' : 
+                                                  ($action === 'update' ? 'warning' : 
+                                                  ($action === 'create' ? 'success' : 'info'));
+                                @endphp
+                                <span class="badge badge-{{ $actionClass }}">
+                                    {{ ucfirst($action) }}
+                                </span>
+                            </td>
+                            <td>{{ $log->module ?? 'N/A' }}</td>
+                            <td>
+                                <span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ $log->details ?? 'N/A' }}">
+                                    {{ $log->details ?? 'N/A' }}
+                                </span>
+                            </td>
+                            <td>{{ $log->ip_address ?? 'N/A' }}</td>
+                            <td>
+                                @php
+                                    $severity = $log->severity ?? 'info';
+                                    $severityClass = $severity === 'critical' ? 'danger' : 
+                                                    ($severity === 'warning' ? 'warning' : 
+                                                    ($severity === 'error' ? 'danger' : 'info'));
+                                @endphp
+                                <span class="badge badge-{{ $severityClass }}">
+                                    {{ ucfirst($severity) }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-info" onclick="viewLogDetails('{{ $log->id }}')" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" onclick="investigateLog('{{ $log->id }}')" title="Investigate">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="flagLog('{{ $log->id }}')" title="Flag">
+                                        <i class="fas fa-flag"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="9" class="text-center text-muted">
+                                <i class="fas fa-info-circle"></i>
+                                No audit log data available
                             </td>
                         </tr>
                         @endforelse
@@ -709,7 +669,7 @@ function exportLogs() {
 }
 
 function generateReport() {
-            window.open('{{ route("superadmin.audit-logs.export") }}', '_blank');
+    window.open('{{ route("superadmin.audit-logs.export") }}', '_blank');
 }
 
 function openFilterModal() {
@@ -719,7 +679,7 @@ function openFilterModal() {
 function clearOldLogs() {
     if (!confirm('Are you absolutely sure you want to CLEAR ALL audit logs? This cannot be undone.')) return;
 
-    const $btn = $('#clearLogsBtn');
+    const $btn = $('.btn-warning[onclick="clearOldLogs()"]');
     const originalHtml = $btn.html();
     $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Clearing...');
 
@@ -747,7 +707,7 @@ $('#filterForm').on('submit', function(e) {
     
     // Apply filter and reload table
     const formData = $(this).serialize();
-            $.get('{{ route("superadmin.audit-logs.export") }}?' + formData, function(response) {
+    $.get('{{ route("superadmin.audit-logs.export") }}?' + formData, function(response) {
         if (response.success) {
             $('#filterModal').modal('hide');
             location.reload();

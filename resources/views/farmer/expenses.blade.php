@@ -102,7 +102,7 @@
 
     <!-- Expense Charts -->
     <div class="row mb-4">
-        <div class="col-xl-8 col-lg-7">
+        <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Monthly Expense Trend</h6>
@@ -110,18 +110,6 @@
                 <div class="card-body">
                     <div class="chart-area">
                         <canvas id="expenseTrendChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Expense Categories</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="expenseCategoryChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -184,7 +172,6 @@
                                     <th>Expense ID</th>
                                     <th>Date</th>
                                     <th>Expense Name</th>
-                                    <th>Category</th>
                                     <th>Amount</th>
                                     <th>Payment Status</th>
                                     <th>Payment Method</th>
@@ -200,14 +187,9 @@
                                     <td>{{ $expense['expense_date'] }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <i class="fas fa-{{ $expense['category'] == 'Feed' ? 'seedling' : ($expense['category'] == 'Medicine' ? 'stethoscope' : 'tools') }} text-{{ $expense['category'] == 'Feed' ? 'success' : ($expense['category'] == 'Medicine' ? 'info' : 'warning') }} mr-2"></i>
+                                            <i class="fas fa-receipt text-primary mr-2"></i>
                                             {{ $expense['expense_name'] }}
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-{{ $expense['category'] == 'Feed' ? 'success' : ($expense['category'] == 'Medicine' ? 'info' : 'warning') }}">
-                                            {{ $expense['category'] }}
-                                        </span>
                                     </td>
                                     <td><strong>₱{{ number_format($expense['amount'], 2) }}</strong></td>
                                     <td>
@@ -232,7 +214,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="7" class="text-center text-muted py-4">
                                         <i class="fas fa-receipt fa-3x mb-3 text-muted"></i>
                                         <p>No expenses recorded yet. Start tracking your farm expenses!</p>
                                         <button class="btn btn-primary" onclick="openAddExpenseModal()">
@@ -502,34 +484,7 @@ $(document).ready(function() {
         }
     });
 
-    // Expense Category Chart
-    const expenseCategoryCtx = document.getElementById('expenseCategoryChart').getContext('2d');
-    new Chart(expenseCategoryCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode($expenseStats['category_distribution']->pluck('category')) !!},
-            datasets: [{
-                data: {!! json_encode($expenseStats['category_distribution']->pluck('amount')) !!},
-                backgroundColor: [
-                    '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6f42c1',
-                    '#fd7e14', '#20c9a6', '#5a5c69', '#858796', '#4e73df'
-                ],
-                hoverBackgroundColor: [
-                    '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6f42c1',
-                    '#fd7e14', '#20c9a6', '#5a5c69', '#858796', '#4e73df'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
+
 });
 
 function openAddExpenseModal() {
@@ -767,9 +722,9 @@ function exportToCSV() {
     const table = $('#expensesTable').DataTable();
     const data = table.data().toArray();
     
-    let csv = 'Expense ID,Date,Expense Name,Category,Amount,Payment Status,Payment Method\n';
+    let csv = 'Expense ID,Date,Expense Name,Amount,Payment Status,Payment Method\n';
     data.forEach(row => {
-        csv += `${row[0]},${row[1]},${row[2]},${row[3]},${row[4]},${row[5]},${row[6]}\n`;
+        csv += `${row[0]},${row[1]},${row[2]},${row[3]},${row[4]},${row[5]}\n`;
     });
     
     const blob = new Blob([csv], { type: 'text/csv' });

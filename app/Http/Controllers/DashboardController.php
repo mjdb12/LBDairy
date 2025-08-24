@@ -19,7 +19,6 @@ class DashboardController extends Controller
     public function farmerDashboard()
     {
         $user = Auth::user();
-        $farms = $user->farms()->withCount('livestock')->get();
         $livestock = $user->livestock()->with('farm')->latest()->take(5)->get();
         $recentProduction = $user->productionRecords()->with('livestock')->latest()->take(5)->get();
         $recentSales = $user->sales()->latest()->take(5)->get();
@@ -29,9 +28,16 @@ class DashboardController extends Controller
         $totalSales = $user->sales()->sum('total_amount');
         $totalExpenses = $user->expenses()->sum('amount');
 
+        // Get tasks for the farmer
+        $tasks = \App\Models\Task::where('assigned_to', $user->id)
+            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
         return view('dashboard.farmer', compact(
-            'farms', 'livestock', 'recentProduction', 'recentSales',
-            'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses'
+            'livestock', 'recentProduction', 'recentSales',
+            'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses', 'tasks'
         ));
     }
 

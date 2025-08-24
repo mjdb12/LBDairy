@@ -149,6 +149,12 @@ class FarmerController extends Controller
         $urgentIssues = $urgentIssues ?: 0;
         $resolvedIssues = $resolvedIssues ?: 0;
 
+        // Get scheduled inspections for the farmer
+        $scheduledInspections = \App\Models\Inspection::with('scheduledBy')
+            ->where('farmer_id', $user->id)
+            ->orderBy('inspection_date', 'asc')
+            ->get();
+
         return view('farmer.issues', compact(
             'issues',
             'livestock',
@@ -156,7 +162,8 @@ class FarmerController extends Controller
             'totalIssues',
             'pendingIssues',
             'urgentIssues',
-            'resolvedIssues'
+            'resolvedIssues',
+            'scheduledInspections'
         ));
     }
 
@@ -2376,5 +2383,272 @@ class FarmerController extends Controller
         ));
     }
 
+    /**
+     * Show inspection details.
+     */
+    public function showInspection($id)
+    {
+        try {
+            $inspection = \App\Models\Inspection::with('scheduledBy')
+                ->where('farmer_id', Auth::id())
+                ->findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'inspection' => $inspection
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Inspection not found'
+            ], 404);
+        }
+    }
 
+    /**
+     * Mark inspection as complete.
+     */
+    public function completeInspection(Request $request, $id)
+    {
+        try {
+            $inspection = \App\Models\Inspection::where('farmer_id', Auth::id())
+                ->findOrFail($id);
+            
+            $inspection->update([
+                'status' => 'completed',
+                'findings' => $request->findings ?? 'Inspection completed successfully'
+            ]);
+
+            // Log the action
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'inspection_completed',
+                'description' => "Inspection #{$id} marked as completed",
+                'severity' => 'info',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Inspection marked as completed'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to complete inspection'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get individual livestock analysis data.
+     */
+    public function getLivestockAnalysis($id)
+    {
+        try {
+            $user = Auth::user();
+            
+            // Verify the livestock belongs to the farmer's farm
+            $livestock = Livestock::whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })->with(['farm', 'productionRecords'])->findOrFail($id);
+
+            // Calculate detailed metrics
+            $age = \Carbon\Carbon::parse($livestock->birth_date)->age;
+            $healthScore = $this->calculateLivestockHealthScore($livestock);
+            
+            // Get production data for the last 12 months
+            $productionData = $livestock->productionRecords()
+                ->where('production_date', '>=', now()->subMonths(12))
+                ->orderBy('production_date')
+                ->get()
+                ->groupBy(function($record) {
+                    return $record->production_date->format('Y-m');
+                })
+                ->map(function($group) {
+                    return $group->avg('milk_quantity');
+                });
+
+            // Calculate growth trend
+            $weightData = $livestock->productionRecords()
+                ->where('production_date', '>=', now()->subMonths(6))
+                ->orderBy('production_date')
+                ->get()
+                ->groupBy(function($record) {
+                    return $record->production_date->format('Y-m');
+                })
+                ->map(function($group) {
+                    return $group->avg('milk_quantity') * 0.1; // Simplified weight calculation
+                });
+
+            // Generate analysis insights
+            $insights = $this->generateLivestockInsights($livestock, $productionData, $healthScore);
+
+            $html = view('farmer.partials.livestock-analysis', compact(
+                'livestock',
+                'age',
+                'healthScore',
+                'productionData',
+                'weightData',
+                'insights'
+            ))->render();
+
+            return response()->json([
+                'success' => true,
+                'html' => $html,
+                'data' => [
+                    'livestock' => $livestock,
+                    'age' => $age,
+                    'health_score' => $healthScore,
+                    'production_data' => $productionData,
+                    'weight_data' => $weightData,
+                    'insights' => $insights
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load livestock analysis'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get individual livestock history.
+     */
+    public function getLivestockHistory($id)
+    {
+        try {
+            $user = Auth::user();
+            
+            // Verify the livestock belongs to the farmer's farm
+            $livestock = Livestock::whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })->with(['farm', 'productionRecords'])->findOrFail($id);
+
+            // Get production history
+            $productionHistory = $livestock->productionRecords()
+                ->orderBy('production_date', 'desc')
+                ->take(50)
+                ->get();
+
+            // Get health history (simplified - in real system you'd have health records)
+            $healthHistory = collect([
+                [
+                    'date' => now()->subDays(30),
+                    'status' => $livestock->health_status,
+                    'notes' => 'Regular health check'
+                ],
+                [
+                    'date' => now()->subDays(60),
+                    'status' => 'healthy',
+                    'notes' => 'Vaccination administered'
+                ],
+                [
+                    'date' => now()->subDays(90),
+                    'status' => 'healthy',
+                    'notes' => 'Routine examination'
+                ]
+            ]);
+
+            $html = view('farmer.partials.livestock-history', compact(
+                'livestock',
+                'productionHistory',
+                'healthHistory'
+            ))->render();
+
+            return response()->json([
+                'success' => true,
+                'html' => $html,
+                'data' => [
+                    'livestock' => $livestock,
+                    'production_history' => $productionHistory,
+                    'health_history' => $healthHistory
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load livestock history'
+            ], 500);
+        }
+    }
+
+    /**
+     * Generate insights for individual livestock.
+     */
+    private function generateLivestockInsights($livestock, $productionData, $healthScore)
+    {
+        $insights = [];
+
+        // Production insights
+        if ($productionData->count() > 0) {
+            $avgProduction = $productionData->avg();
+            $maxProduction = $productionData->max();
+            $minProduction = $productionData->min();
+            
+            if ($avgProduction > 20) {
+                $insights[] = [
+                    'type' => 'success',
+                    'icon' => 'fas fa-chart-line',
+                    'title' => 'High Production',
+                    'message' => "This livestock shows excellent production with an average of {$avgProduction}L per day."
+                ];
+            } elseif ($avgProduction < 10) {
+                $insights[] = [
+                    'type' => 'warning',
+                    'icon' => 'fas fa-exclamation-triangle',
+                    'title' => 'Low Production',
+                    'message' => "Production is below average. Consider reviewing feeding and health protocols."
+                ];
+            }
+
+            if (($maxProduction - $minProduction) / $avgProduction > 0.5) {
+                $insights[] = [
+                    'type' => 'info',
+                    'icon' => 'fas fa-chart-bar',
+                    'title' => 'Variable Production',
+                    'message' => "Production varies significantly. Monitor for consistency."
+                ];
+            }
+        }
+
+        // Health insights
+        if ($healthScore >= 90) {
+            $insights[] = [
+                'type' => 'success',
+                'icon' => 'fas fa-heart',
+                'title' => 'Excellent Health',
+                'message' => "Health score of {$healthScore}% indicates excellent condition."
+            ];
+        } elseif ($healthScore < 70) {
+            $insights[] = [
+                'type' => 'danger',
+                'icon' => 'fas fa-stethoscope',
+                'title' => 'Health Concern',
+                'message' => "Health score of {$healthScore}% requires attention. Consider veterinary consultation."
+            ];
+        }
+
+        // Age-based insights
+        $age = \Carbon\Carbon::parse($livestock->birth_date)->age;
+        if ($age >= 2 && $age <= 8) {
+            $insights[] = [
+                'type' => 'info',
+                'icon' => 'fas fa-heart',
+                'title' => 'Prime Breeding Age',
+                'message' => "At {$age} years old, this livestock is in prime breeding condition."
+            ];
+        } elseif ($age > 10) {
+            $insights[] = [
+                'type' => 'warning',
+                'icon' => 'fas fa-clock',
+                'title' => 'Senior Livestock',
+                'message' => "At {$age} years old, consider special care for senior livestock."
+            ];
+        }
+
+        return $insights;
+    }
 }
