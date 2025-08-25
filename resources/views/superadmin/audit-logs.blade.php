@@ -76,6 +76,163 @@
         color: #2e59d9;
         text-decoration: underline;
     }
+    
+    /* Fix DataTable length menu overlapping */
+    .dataTables_length {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_length select {
+        min-width: 80px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border: 1px solid #d1d3e2;
+        border-radius: 0.35rem;
+        background-color: #fff;
+        margin: 0 0.5rem;
+    }
+    
+    .dataTables_length label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+        font-weight: 500;
+        color: #5a5c69;
+    }
+    
+    /* Fix DataTable info overlapping */
+    .dataTables_info {
+        padding-top: 0.5rem;
+        font-weight: 500;
+        color: #5a5c69;
+    }
+    
+    /* Fix DataTable pagination */
+    .dataTables_paginate {
+        margin-top: 1rem;
+    }
+    
+    .dataTables_paginate .paginate_button {
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        border: 1px solid #d1d3e2;
+        border-radius: 0.35rem;
+        background-color: #fff;
+        color: #5a5c69;
+        text-decoration: none;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_paginate .paginate_button:hover {
+        background-color: #e3e6f0;
+        border-color: #bac8f3;
+        color: #4e73df;
+    }
+    
+    .dataTables_paginate .paginate_button.current {
+        background-color: #4e73df;
+        border-color: #4e73df;
+        color: #fff;
+    }
+    
+    .dataTables_paginate .paginate_button.disabled {
+        color: #858796;
+        cursor: not-allowed;
+        background-color: #f8f9fc;
+        border-color: #e3e6f0;
+    }
+    
+    /* Fix table header text wrapping */
+    .table thead th {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        vertical-align: middle;
+        background-color: #f8f9fc;
+        border-bottom: 2px solid #e3e6f0;
+        color: #5a5c69;
+    }
+    
+    /* Specific column width adjustments */
+    .table thead th:nth-child(1) { /* Log ID */
+        min-width: 80px;
+        max-width: 80px;
+    }
+    
+    .table thead th:nth-child(2) { /* Timestamp */
+        min-width: 120px;
+        max-width: 120px;
+    }
+    
+    .table thead th:nth-child(3) { /* User */
+        min-width: 120px;
+        max-width: 120px;
+    }
+    
+    .table thead th:nth-child(4) { /* Action */
+        min-width: 80px;
+        max-width: 80px;
+    }
+    
+    .table thead th:nth-child(5) { /* Module */
+        min-width: 100px;
+        max-width: 100px;
+    }
+    
+    .table thead th:nth-child(6) { /* Details */
+        min-width: 150px;
+        max-width: 200px;
+    }
+    
+    .table thead th:nth-child(7) { /* IP Address */
+        min-width: 100px;
+        max-width: 100px;
+    }
+    
+    .table thead th:nth-child(8) { /* Severity */
+        min-width: 80px;
+        max-width: 80px;
+    }
+    
+    .table thead th:nth-child(9) { /* Actions */
+        min-width: 100px;
+        max-width: 100px;
+    }
+    
+    /* Responsive fixes for DataTable */
+    @media (max-width: 768px) {
+        .dataTables_length,
+        .dataTables_filter,
+        .dataTables_info,
+        .dataTables_paginate {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dataTables_length label {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .dataTables_length select {
+            margin: 0;
+        }
+        
+        /* Mobile table header adjustments */
+        .table thead th {
+            font-size: 0.7rem;
+            padding: 0.5rem 0.25rem;
+            min-width: 60px;
+            max-width: 80px;
+        }
+    }
 </style>
 @endpush
 
@@ -609,8 +766,8 @@ function initializeDataTable() {
         responsive: true,
         order: [[1, 'desc']], // Sort by timestamp
         pageLength: 25,
+        searching: false, // Disable built-in search to remove duplicate
         language: {
-            search: "Search logs:",
             lengthMenu: "Show _MENU_ logs per page",
             info: "Showing _START_ to _END_ of _TOTAL_ logs"
         }
@@ -620,6 +777,7 @@ function initializeDataTable() {
     $('#logSearch').on('keyup', function() {
         $('#auditDataTable').DataTable().search(this.value).draw();
     });
+
 }
 
 function openLogDetails(logId) {
