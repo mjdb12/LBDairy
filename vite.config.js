@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
+import { resolve } from 'path';
 
 export default defineConfig({
     plugins: [
@@ -10,4 +11,17 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        rollupOptions: {
+            input: {
+                app: resolve(__dirname, 'resources/js/app.js'),
+                sw: resolve(__dirname, 'resources/js/sw.js'),
+            },
+            output: {
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                assetFileNames: '[name].[ext]'
+            }
+        }
+    }
 });

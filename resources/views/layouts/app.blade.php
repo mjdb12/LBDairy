@@ -7,6 +7,11 @@
     <meta name="description" content="LBDAIRY - Modern Dairy Management System">
     <meta name="author" content="LBDAIRY">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4e73df">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="LB Dairy">
 
     <title>@yield('title', 'LBDAIRY')</title>
 
@@ -759,5 +764,26 @@
     </div>
     
     @include('layouts.logout-modal')
+    
+    <!-- Service Worker Registration -->
+    <script>
+    console.log('Service worker script loaded!');
+    if ('serviceWorker' in navigator) {
+        console.log('Service Worker API is supported');
+        window.addEventListener('load', () => {
+            console.log('Page loaded, attempting to register service worker...');
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('SW registered successfully: ', registration);
+                })
+                .catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
+                    console.error('Registration error details:', registrationError);
+                });
+        });
+    } else {
+        console.log('Service Worker API is NOT supported');
+    }
+    </script>
 </body>
 </html>

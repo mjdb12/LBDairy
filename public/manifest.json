@@ -1,0 +1,18 @@
+{
+  "name": "LB Dairy Management System",
+  "short_name": "LB Dairy",
+  "description": "Livestock and dairy management system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/img/logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
