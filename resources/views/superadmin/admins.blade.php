@@ -491,12 +491,14 @@ function loadPendingAdmins() {
                         admin.email || '',
                         admin.username || '',
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
-                        `<div class="btn-group" role="group">
-                            <button class="btn btn-success btn-sm" onclick="approveAdmin('${admin.id}')" title="Approve">
+                        `<div class="action-buttons">
+                            <button class="btn-action btn-action-approve" onclick="approveAdmin('${admin.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
+                                <span>Approve</span>
                             </button>
-                            <button class="btn btn-danger btn-sm" onclick="rejectAdmin('${admin.id}')" title="Reject">
+                            <button class="btn-action btn-action-reject" onclick="rejectAdmin('${admin.id}')" title="Reject">
                                 <i class="fas fa-times"></i>
+                                <span>Reject</span>
                             </button>
                         </div>`
                     ];
@@ -539,12 +541,14 @@ function loadActiveAdmins() {
                         admin.username || '',
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
                         admin.last_login_at ? new Date(admin.last_login_at).toLocaleDateString() : 'Never',
-                        `<div class="btn-group" role="group">
-                            <button class="btn btn-danger btn-sm" onclick="deactivateAdmin('${admin.id}')" title="Deactivate">
+                        `<div class="action-buttons">
+                            <button class="btn-action btn-action-toggle" onclick="deactivateAdmin('${admin.id}')" title="Deactivate">
                                 <i class="fas fa-user-slash"></i>
+                                <span>Deactivate</span>
                             </button>
-                            <button class="btn btn-info btn-sm" onclick="contactAdmin('${admin.id}')" title="Contact">
+                            <button class="btn-action btn-action-view" onclick="contactAdmin('${admin.id}')" title="Contact">
                                 <i class="fas fa-envelope"></i>
+                                <span>Contact</span>
                             </button>
                         </div>`
                     ];

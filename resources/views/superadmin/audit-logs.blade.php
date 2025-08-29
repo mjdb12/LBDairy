@@ -556,15 +556,18 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-info" onclick="viewLogDetails('{{ $log->id }}')" title="View Details">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-view" onclick="viewLogDetails('{{ $log->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
+                                        <span>View</span>
                                     </button>
-                                    <button class="btn btn-sm btn-warning" onclick="investigateLog('{{ $log->id }}')" title="Investigate">
+                                    <button class="btn-action btn-action-investigate" onclick="investigateLog('{{ $log->id }}')" title="Investigate">
                                         <i class="fas fa-search"></i>
+                                        <span>Investigate</span>
                                     </button>
-                                    <button class="btn btn-sm btn-danger" onclick="flagLog('{{ $log->id }}')" title="Flag">
+                                    <button class="btn-action btn-action-flag" onclick="flagLog('{{ $log->id }}')" title="Flag">
                                         <i class="fas fa-flag"></i>
+                                        <span>Flag</span>
                                     </button>
                                 </div>
                             </td>

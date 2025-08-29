@@ -161,21 +161,26 @@
                             <td>{{ $admin->last_login ?? 'Never' }}</td>
                             <td>{{ $admin->created_at ?? 'N/A' }}</td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-info" onclick="viewAdminDetails('{{ $admin->id }}')">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-view" onclick="viewAdminDetails('{{ $admin->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
+                                        <span>View</span>
                                     </button>
-                                    <button class="btn btn-sm btn-primary" onclick="editAdmin('{{ $admin->id }}')">
+                                    <button class="btn-action btn-action-edit" onclick="editAdmin('{{ $admin->id }}')" title="Edit">
                                         <i class="fas fa-edit"></i>
+                                        <span>Edit</span>
                                     </button>
-                                    <button class="btn btn-sm btn-success" onclick="toggleAdminStatus('{{ $admin->id }}')">
+                                    <button class="btn-action btn-action-toggle" onclick="toggleAdminStatus('{{ $admin->id }}')" title="Toggle Status">
                                         <i class="fas fa-toggle-on"></i>
+                                        <span>Toggle</span>
                                     </button>
-                                    <button class="btn btn-sm btn-warning" onclick="resetPassword('{{ $admin->id }}')">
+                                    <button class="btn-action btn-action-reset" onclick="resetPassword('{{ $admin->id }}')" title="Reset Password">
                                         <i class="fas fa-key"></i>
+                                        <span>Reset</span>
                                     </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteAdmin('{{ $admin->id }}')">
+                                    <button class="btn-action btn-action-delete" onclick="deleteAdmin('{{ $admin->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             </td>

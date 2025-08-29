@@ -336,8 +336,14 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <div class="mt-2 mt-md-0 d-flex align-items-center">
                 <span class="badge badge-${priorityBadge(task.priority)} mr-2"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
-                <button class="btn btn-sm btn-light mr-2 edit-task"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-sm btn-light text-danger delete-task"><i class="fas fa-trash"></i></button>
+                <button class="btn-action btn-action-edit btn-action-sm edit-task" title="Edit Task">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit</span>
+                </button>
+                <button class="btn-action btn-action-delete btn-action-sm delete-task" title="Delete Task">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete</span>
+                </button>
             </div>
         `;
 

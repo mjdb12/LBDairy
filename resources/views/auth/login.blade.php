@@ -9,19 +9,19 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .bg-gradient-primary {
-            background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+            background: #18375d;
         }
         .glass-effect {
             backdrop-filter: blur(16px);
             background: rgba(255, 255, 255, 0.97);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 40px 0 rgba(78, 115, 223, 0.18), 0 2px 8px 0 rgba(60, 90, 166, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.08);
+            box-shadow: 0 8px 40px 0 rgba(24, 55, 93, 0.18), 0 2px 8px 0 rgba(18, 42, 71, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.08);
         }
         .tab-active {
-            background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+            background: #18375d;
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);
+            box-shadow: 0 8px 25px rgba(24, 55, 93, 0.3);
         }
         .tab-inactive {
             background: rgba(255, 255, 255, 0.1);
@@ -30,16 +30,16 @@
         }
         .input-focus:focus {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.15);
+            box-shadow: 0 8px 25px rgba(24, 55, 93, 0.15);
         }
         .btn-primary {
-            background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+            background: #18375d;
             transform: translateY(0);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(78, 115, 223, 0.4);
+            box-shadow: 0 12px 35px rgba(24, 55, 93, 0.4);
         }
         .hidden { display: none; }
         .modal-backdrop {
@@ -54,7 +54,7 @@
             <div class="glass-effect rounded-3xl shadow-2xl overflow-hidden">
                 <div class="flex flex-col lg:flex-row">
                     <!-- Left Side - Branding -->
-                    <div class="lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
+                    <div class="lg:w-1/2 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden" style="background: #18375d;">
                         <div class="absolute inset-0 bg-black opacity-20"></div>
                         <div class="relative z-10 text-center">
                             <h1 class="text-4xl font-bold mb-4">LBDAIRY</h1>

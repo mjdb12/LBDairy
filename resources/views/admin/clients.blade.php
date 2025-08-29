@@ -137,15 +137,18 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-warning btn-sm" onclick="viewLedger(this)" title="View Ledger">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-ledger" onclick="viewLedger(this)" title="View Ledger">
                                         <i class="fas fa-book"></i>
+                                        <span>Ledger</span>
                                     </button>
-                                    <button class="btn btn-info btn-sm" onclick="viewDetails(this)" title="View Details">
+                                    <button class="btn-action btn-action-view" onclick="viewDetails(this)" title="View Details">
                                         <i class="fas fa-eye"></i>
+                                        <span>View</span>
                                     </button>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                    <button class="btn-action btn-action-delete" onclick="confirmDelete(this)" title="Delete">
                                         <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             </td>

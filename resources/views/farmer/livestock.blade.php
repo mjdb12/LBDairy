@@ -110,15 +110,18 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-primary btn-sm" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-action-edit" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
                                                 <i class="fas fa-edit"></i>
+                                                <span>Edit</span>
                                             </button>
-                                            <a href="{{ route('farmer.livestock.print', $animal->id) }}" class="btn btn-info btn-sm" title="Print Record" target="_blank">
+                                            <a href="{{ route('farmer.livestock.print', $animal->id) }}" class="btn-action btn-action-print" title="Print Record" target="_blank">
                                                 <i class="fas fa-print"></i>
+                                                <span>Print</span>
                                             </a>
-                                            <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
+                                            <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
                                                 <i class="fas fa-trash"></i>
+                                                <span>Delete</span>
                                             </button>
                                         </div>
                                     </td>

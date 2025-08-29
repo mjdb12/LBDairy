@@ -175,16 +175,19 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-info" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-action-view" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
+                                                <span>View</span>
                                             </button>
                                             @if($alert->status === 'active')
-                                            <button class="btn btn-sm btn-success" onclick="markAsResolved('{{ $alert->id }}')" title="Mark as Resolved">
+                                            <button class="btn-action btn-action-approve" onclick="markAsResolved('{{ $alert->id }}')" title="Mark as Resolved">
                                                 <i class="fas fa-check"></i>
+                                                <span>Resolve</span>
                                             </button>
-                                            <button class="btn btn-sm btn-secondary" onclick="dismissAlert('{{ $alert->id }}')" title="Dismiss Alert">
+                                            <button class="btn-action btn-action-reject" onclick="dismissAlert('{{ $alert->id }}')" title="Dismiss Alert">
                                                 <i class="fas fa-times"></i>
+                                                <span>Dismiss</span>
                                             </button>
                                             @endif
                                         </div>

@@ -136,20 +136,24 @@
                                 <td>{{ $farmer->farms->count() }}</td>
                                 <td>{{ $farmer->created_at->format('M Y') }}</td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-sm btn-outline-primary" title="View Details">
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-action-view" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="View Details">
                                             <i class="fas fa-eye"></i>
+                                            <span>View</span>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <button class="btn-action btn-action-edit" onclick="editFarmer('{{ $farmer->id }}')" title="Edit">
                                             <i class="fas fa-edit"></i>
+                                            <span>Edit</span>
                                         </button>
                                         @if($farmer->is_active)
-                                            <button class="btn btn-sm btn-outline-danger" title="Deactivate">
+                                            <button class="btn-action btn-action-toggle" onclick="toggleFarmerStatus('{{ $farmer->id }}', 'deactivate')" title="Deactivate">
                                                 <i class="fas fa-user-slash"></i>
+                                                <span>Deactivate</span>
                                             </button>
                                         @else
-                                            <button class="btn btn-sm btn-outline-success" title="Activate">
+                                            <button class="btn-action btn-action-toggle" onclick="toggleFarmerStatus('{{ $farmer->id }}', 'activate')" title="Activate">
                                                 <i class="fas fa-user-check"></i>
+                                                <span>Activate</span>
                                             </button>
                                         @endif
                                     </div>

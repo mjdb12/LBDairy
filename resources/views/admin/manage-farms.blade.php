@@ -108,12 +108,14 @@
                                 </select>
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-info btn-sm" onclick="viewFarmDetails('{{ $farm->id }}')" title="View Details">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-view" onclick="viewFarmDetails('{{ $farm->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
+                                        <span>View</span>
                                     </button>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $farm->id }}')" title="Delete">
+                                    <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $farm->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             </td>

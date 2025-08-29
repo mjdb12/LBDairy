@@ -617,12 +617,14 @@ function loadPendingFarmers() {
                         farmer.email || 'N/A',
                         farmer.username || 'N/A',
                         farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
-                        `<div class="btn-group" role="group">
-                            <button class="btn btn-success btn-sm" onclick="approveFarmer('${farmer.id}')" title="Approve">
+                        `<div class="action-buttons">
+                            <button class="btn-action btn-action-approve" onclick="approveFarmer('${farmer.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
+                                <span>Approve</span>
                             </button>
-                            <button class="btn btn-danger btn-sm" onclick="showRejectionModal('${farmer.id}')" title="Reject">
+                            <button class="btn-action btn-action-reject" onclick="showRejectionModal('${farmer.id}')" title="Reject">
                                 <i class="fas fa-times"></i>
+                                <span>Reject</span>
                             </button>
                         </div>`
                     ];
@@ -666,15 +668,18 @@ function loadActiveFarmers() {
                         farmer.email || 'N/A',
                         farmer.username || 'N/A',
                         farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
-                        `<div class="btn-group" role="group">
-                            <button class="btn btn-info btn-sm" onclick="showFarmerDetails(${JSON.stringify(farmer).replace(/"/g, '&quot;')})" title="View Details">
+                        `<div class="action-buttons">
+                            <button class="btn-action btn-action-view" onclick="showFarmerDetails(${JSON.stringify(farmer).replace(/"/g, '&quot;')})" title="View Details">
                                 <i class="fas fa-eye"></i>
+                                <span>View</span>
                             </button>
-                            <button class="btn btn-warning btn-sm" onclick="openContactModal()" title="Contact">
+                            <button class="btn-action btn-action-view" onclick="openContactModal()" title="Contact">
                                 <i class="fas fa-envelope"></i>
+                                <span>Contact</span>
                             </button>
-                            <button class="btn btn-danger btn-sm" onclick="deactivateFarmer('${farmer.id}')" title="Deactivate">
+                            <button class="btn-action btn-action-toggle" onclick="deactivateFarmer('${farmer.id}')" title="Deactivate">
                                 <i class="fas fa-user-slash"></i>
+                                <span>Deactivate</span>
                             </button>
                         </div>`
                     ];

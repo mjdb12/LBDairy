@@ -87,15 +87,18 @@
 <div class="card shadow mb-4 fade-in">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Inventory Items</h6>
-        <div class="d-flex gap-2">
-            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addItemModal">
-                <i class="fas fa-plus"></i> Add New Item
+        <div class="action-buttons">
+            <button class="btn-action btn-action-approve" data-toggle="modal" data-target="#addItemModal">
+                <i class="fas fa-plus"></i>
+                <span>Add New Item</span>
             </button>
-            <button class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-download"></i> Export
+            <button class="btn-action btn-action-print">
+                <i class="fas fa-download"></i>
+                <span>Export</span>
             </button>
-            <button class="btn btn-outline-info btn-sm">
-                <i class="fas fa-bell"></i> Set Alerts
+            <button class="btn-action btn-action-toggle">
+                <i class="fas fa-bell"></i>
+                <span>Set Alerts</span>
             </button>
         </div>
     </div>
@@ -135,8 +138,16 @@
                             </span>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="viewItem('{{ $item['id'] }}')">View</button>
-                            <button class="btn btn-sm btn-outline-info" onclick="editItem('{{ $item['id'] }}')">Edit</button>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-action-view" onclick="viewItem('{{ $item['id'] }}')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                    <span>View</span>
+                                </button>
+                                <button class="btn-action btn-action-edit" onclick="editItem('{{ $item['id'] }}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Edit</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     @empty

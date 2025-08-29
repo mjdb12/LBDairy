@@ -486,15 +486,18 @@ function loadUsers() {
                         `<span class="badge badge-${getStatusBadgeClass(user.status)}">${user.status}</span>`,
                         new Date(user.created_at).toLocaleDateString(),
                         user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : 'Never',
-                        `<div class="btn-group" role="group">
-                            <button class="btn btn-primary btn-sm" onclick="editUser('${user.id}')" title="Edit">
+                        `<div class="action-buttons">
+                            <button class="btn-action btn-action-edit" onclick="editUser('${user.id}')" title="Edit">
                                 <i class="fas fa-edit"></i>
+                                <span>Edit</span>
                             </button>
-                            <button class="btn btn-warning btn-sm" onclick="toggleUserStatus('${user.id}', '${user.status}')" title="Toggle Status">
+                            <button class="btn-action btn-action-toggle" onclick="toggleUserStatus('${user.id}', '${user.status}')" title="Toggle Status">
                                 <i class="fas fa-${user.status === 'approved' ? 'pause' : 'play'}"></i>
+                                <span>${user.status === 'approved' ? 'Deactivate' : 'Activate'}</span>
                             </button>
-                            <button class="btn btn-danger btn-sm" onclick="confirmDelete('${user.id}')" title="Delete">
+                            <button class="btn-action btn-action-delete" onclick="confirmDelete('${user.id}')" title="Delete">
                                 <i class="fas fa-trash"></i>
+                                <span>Delete</span>
                             </button>
                         </div>`
                     ];

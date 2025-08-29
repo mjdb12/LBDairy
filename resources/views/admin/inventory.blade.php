@@ -133,12 +133,14 @@
                             <td>{{ $item->quantity ?? 'N/A' }}</td>
                             <td>{{ $item->farm_id ?? 'N/A' }}</td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-primary btn-sm" onclick="editInventoryItem('{{ $item->id }}')" title="Edit">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-edit" onclick="editInventoryItem('{{ $item->id }}')" title="Edit">
                                         <i class="fas fa-edit"></i>
+                                        <span>Edit</span>
                                     </button>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(this)" title="Delete">
+                                    <button class="btn-action btn-action-delete" onclick="confirmDelete(this)" title="Delete">
                                         <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             </td>

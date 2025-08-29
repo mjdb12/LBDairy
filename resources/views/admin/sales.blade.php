@@ -148,9 +148,10 @@
                             <td>{{ $sale->type ?? 'Livestock' }}</td>
                             <td>{{ number_format($sale->amount) }}</td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $sale->id }}')" title="Delete">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $sale->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             </td>

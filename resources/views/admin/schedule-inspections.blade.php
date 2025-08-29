@@ -535,15 +535,18 @@ function loadInspections() {
                         `<span class="badge badge-${inspection.priority === 'urgent' ? 'danger' : (inspection.priority === 'high' ? 'warning' : (inspection.priority === 'medium' ? 'info' : 'success'))}">${inspection.priority}</span>`,
                         `<span class="badge badge-${inspection.status === 'scheduled' ? 'primary' : (inspection.status === 'completed' ? 'success' : (inspection.status === 'cancelled' ? 'danger' : 'warning'))}">${inspection.status}</span>`,
                         inspection.scheduled_by?.name || 'Admin',
-                        `<div class="btn-group" role="group">
-                            <button class="btn btn-info btn-sm" onclick="viewInspectionDetails('${inspection.id}')" title="View Details">
+                        `<div class="action-buttons">
+                            <button class="btn-action btn-action-view" onclick="viewInspectionDetails('${inspection.id}')" title="View Details">
                                 <i class="fas fa-eye"></i>
+                                <span>View</span>
                             </button>
-                            <button class="btn btn-warning btn-sm" onclick="editInspection('${inspection.id}')" title="Edit">
+                            <button class="btn-action btn-action-edit" onclick="editInspection('${inspection.id}')" title="Edit">
                                 <i class="fas fa-edit"></i>
+                                <span>Edit</span>
                             </button>
-                            <button class="btn btn-danger btn-sm" onclick="cancelInspection('${inspection.id}')" title="Cancel">
+                            <button class="btn-action btn-action-reject" onclick="cancelInspection('${inspection.id}')" title="Cancel">
                                 <i class="fas fa-times"></i>
+                                <span>Cancel</span>
                             </button>
                         </div>`
                     ];
@@ -586,12 +589,14 @@ function loadFarmersTable() {
                         farmer.phone || 'N/A',
                         farmer.barangay || 'N/A',
                         `<span class="badge badge-success">Active</span>`,
-                        `<div class="btn-group" role="group">
-                            <button class="btn btn-success btn-sm" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
-                                <i class="fas fa-calendar-check"></i> Schedule
+                        `<div class="action-buttons">
+                            <button class="btn-action btn-action-approve" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Schedule</span>
                             </button>
-                            <button class="btn btn-info btn-sm" onclick="viewFarmerDetails('${farmer.id}')" title="View Details">
+                            <button class="btn-action btn-action-view" onclick="viewFarmerDetails('${farmer.id}')" title="View Details">
                                 <i class="fas fa-eye"></i>
+                                <span>View</span>
                             </button>
                         </div>`
                     ];

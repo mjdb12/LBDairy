@@ -216,12 +216,16 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-primary" title="View Details">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-info" title="Generate Report">
-                                        <i class="fas fa-file-alt"></i>
-                                    </button>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-action-view" onclick="viewFarmDetails('{{ $farm->id }}')" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                            <span>View</span>
+                                        </button>
+                                        <button class="btn-action btn-action-report" onclick="generateFarmReport('{{ $farm->id }}')" title="Generate Report">
+                                            <i class="fas fa-file-alt"></i>
+                                            <span>Report</span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach

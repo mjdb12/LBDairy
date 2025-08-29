@@ -155,20 +155,24 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-info btn-sm" onclick="viewFarmerData('{{ $farmer->id }}')" title="View Data">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-view" onclick="viewFarmerData('{{ $farmer->id }}')" title="View Data">
                                         <i class="fas fa-eye"></i>
+                                        <span>View</span>
                                     </button>
-                                    <button class="btn btn-primary btn-sm" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="Details">
+                                    <button class="btn-action btn-action-details" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="Details">
                                         <i class="fas fa-info-circle"></i>
+                                        <span>Details</span>
                                     </button>
-                                    <button class="btn btn-{{ $farmer->status === 'active' ? 'warning' : 'success' }} btn-sm" 
+                                    <button class="btn-action btn-action-toggle" 
                                             onclick="updateFarmerStatus('{{ $farmer->id }}', '{{ $farmer->status === 'active' ? 'inactive' : 'active' }}')" 
                                             title="{{ $farmer->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                         <i class="fas fa-{{ $farmer->status === 'active' ? 'pause' : 'play' }}"></i>
+                                        <span>{{ $farmer->status === 'active' ? 'Deactivate' : 'Activate' }}</span>
                                     </button>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
+                                    <button class="btn-action btn-action-delete" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             </td>

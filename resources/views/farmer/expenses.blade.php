@@ -199,15 +199,18 @@
                                     </td>
                                     <td>{{ $expense['payment_method'] }}</td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-info btn-sm" onclick="viewExpenseDetails('{{ $expense['id'] }}')" title="View Details">
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-action-view" onclick="viewExpenseDetails('{{ $expense['id'] }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
+                                                <span>View</span>
                                             </button>
-                                            <button class="btn btn-warning btn-sm" onclick="openEditExpenseModal('{{ $expense['id'] }}')" title="Edit Expense">
+                                            <button class="btn-action btn-action-edit" onclick="openEditExpenseModal('{{ $expense['id'] }}')" title="Edit Expense">
                                                 <i class="fas fa-edit"></i>
+                                                <span>Edit</span>
                                             </button>
-                                            <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $expense['id'] }}')" title="Delete Expense">
+                                            <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $expense['id'] }}')" title="Delete Expense">
                                                 <i class="fas fa-trash"></i>
+                                                <span>Delete</span>
                                             </button>
                                         </div>
                                     </td>

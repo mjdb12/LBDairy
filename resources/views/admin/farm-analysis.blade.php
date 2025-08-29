@@ -161,15 +161,18 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-info" onclick="viewFarmDetails('{{ $farm->id }}')">
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-view" onclick="viewFarmDetails('{{ $farm->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
+                                        <span>View</span>
                                     </button>
-                                    <button class="btn btn-sm btn-primary" onclick="editFarm('{{ $farm->id }}')">
+                                    <button class="btn-action btn-action-edit" onclick="editFarm('{{ $farm->id }}')" title="Edit">
                                         <i class="fas fa-edit"></i>
+                                        <span>Edit</span>
                                     </button>
-                                    <button class="btn btn-sm btn-success" onclick="generateReport('{{ $farm->id }}')">
+                                    <button class="btn-action btn-action-report" onclick="generateReport('{{ $farm->id }}')" title="Generate Report">
                                         <i class="fas fa-file-alt"></i>
+                                        <span>Report</span>
                                     </button>
                                 </div>
                             </td>

@@ -23,14 +23,15 @@
     <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('css/unified-styles.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/button-consistency.css') }}" rel="stylesheet">
     
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --primary-color: #4e73df;
-            --primary-dark: #3c5aa6;
+            --primary-color: #18375d;
+            --primary-dark: #122a47;
             --success-color: #1cc88a;
             --warning-color: #f6c23e;
             --danger-color: #e74a3b;
@@ -62,17 +63,21 @@
             transform: translateY(-2px);
         }
 
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            border-bottom: none;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        /* Override all card headers with maximum specificity */
+        html body .card-header,
+        html body .card .card-header,
+        html body .card > .card-header {
+            background: #18375d !important;
+            border-bottom: none !important;
+            padding: 1.5rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            color: white !important;
         }
 
         .card-header h6 {
-            color: white;
+            color: white !important;
             font-weight: 600;
             font-size: 1.1rem;
             margin: 0;
@@ -253,6 +258,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            color: white !important;
         }
 
         .modern-card-body {
@@ -404,7 +410,334 @@
             margin-bottom: 1.5rem !important;
         }
 
-
+        /* Custom Sidebar Toggle Override - Maximum specificity to override style.css */
+        html body .sidebar.toggled {
+            width: 6.5rem !important;
+            overflow: visible !important;
+        }
+        
+        html body .sidebar.toggled .sidebar-brand-text,
+        html body .sidebar.toggled .nav-link span {
+            display: none !important;
+        }
+        
+        /* Show sidebar headings in collapsed state with smaller text */
+        html body .sidebar.toggled .sidebar-heading {
+            visibility: visible !important;
+            height: auto !important;
+            margin: 0.75rem 0 0.5rem 0 !important;
+            padding: 0 0.5rem !important;
+            font-size: 0.6rem !important;
+            line-height: 1.2 !important;
+            text-align: center !important;
+            color: rgba(255, 255, 255, 0.6) !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+        }
+        
+        /* Ensure consistent spacing for collapsed sidebar */
+        html body .sidebar.toggled hr.sidebar-divider {
+            margin: 0.5rem 0 !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+        }
+        
+        /* Maintain consistent nav-item height */
+        html body .sidebar.toggled .nav-item {
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure consistent spacing between nav items */
+        html body .sidebar.toggled .nav-item + .nav-item {
+            margin-top: 0.25rem !important;
+        }
+        
+        html body .sidebar.toggled .nav-link {
+            text-align: center !important;
+            padding: 0.75rem 0.5rem !important;
+            height: auto !important;
+            min-height: 3rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        html body .sidebar.toggled .nav-link i {
+            margin-right: 0 !important;
+            font-size: 1.1rem !important;
+            line-height: 1 !important;
+        }
+        
+        html body .sidebar.toggled .sidebar-brand {
+            justify-content: center !important;
+            height: 4.375rem !important;
+            padding: 1rem 0.5rem !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        html body .sidebar.toggled .sidebar-brand-icon {
+            margin-right: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        html body .sidebar.toggled .sidebar-brand-icon img {
+            width: 40px !important;
+            height: 40px !important;
+            object-fit: contain !important;
+        }
+        
+        /* Content wrapper adjustments */
+        html body #content-wrapper {
+            margin-left: 14rem !important;
+            transition: margin-left 0.3s ease !important;
+        }
+        
+        html body.sidebar-toggled #content-wrapper {
+            margin-left: 6.5rem !important;
+        }
+        
+        /* Sidebar transition */
+        html body .sidebar {
+            transition: width 0.3s ease !important;
+            height: 100vh !important;
+            overflow-y: auto !important;
+        }
+        
+        /* Ensure sidebar toggle button stays in position */
+        html body .sidebar #sidebarToggle {
+            position: sticky !important;
+            bottom: 1rem !important;
+            margin: 1rem auto !important;
+            z-index: 1000 !important;
+        }
+        
+        /* Enhanced Hover tooltips for collapsed sidebar */
+        html body .sidebar.toggled .nav-link {
+            position: relative !important;
+        }
+        
+        html body .sidebar.toggled .nav-link:hover::after {
+            content: attr(title) !important;
+            position: absolute !important;
+            left: 100% !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            background: rgba(0, 0, 0, 0.9) !important;
+            color: white !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 6px !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            white-space: nowrap !important;
+            z-index: 9999 !important;
+            margin-left: 15px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            pointer-events: none !important;
+            animation: tooltipFadeIn 0.2s ease-in-out !important;
+        }
+        
+        /* Tooltip arrow */
+        html body .sidebar.toggled .nav-link:hover::before {
+            content: '' !important;
+            position: absolute !important;
+            left: 100% !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            margin-left: 5px !important;
+            border: 5px solid transparent !important;
+            border-right-color: rgba(0, 0, 0, 0.9) !important;
+            z-index: 9999 !important;
+            pointer-events: none !important;
+        }
+        
+        /* Tooltip animation */
+        @keyframes tooltipFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50%) translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(-50%) translateX(0);
+            }
+        }
+        
+        /* Additional card header overrides for all variations */
+        html body .card-header:first-child,
+        html body .card-group > .card:not(:last-child) .card-header,
+        html body .card-group > .card:not(:first-child) .card-header,
+        html body .accordion > .card > .card-header {
+            background: #18375d !important;
+            color: white !important;
+        }
+        
+        /* Override all elements with old blue gradient colors */
+        html body .page-link,
+        html body .page-item.active .page-link,
+        html body .pagination .page-item.active .page-link {
+            background-color: #18375d !important;
+            border-color: #18375d !important;
+            color: white !important;
+        }
+        
+        html body .page-link:hover,
+        html body .page-link:focus {
+            background-color: #122a47 !important;
+            border-color: #122a47 !important;
+            color: white !important;
+        }
+        
+        /* Override any gradient backgrounds */
+        html body [class*="bg-gradient-primary"],
+        html body [class*="bg-primary"],
+        html body .bg-primary {
+            background: #18375d !important;
+        }
+        
+        /* Override any blue color classes */
+        html body .text-primary,
+        html body [class*="text-primary"] {
+            color: #18375d !important;
+        }
+        
+        /* Override any border colors */
+        html body .border-primary,
+        html body [class*="border-primary"] {
+            border-color: #18375d !important;
+        }
+        
+        /* Override any button colors */
+        html body .btn-primary,
+        html body [class*="btn-primary"] {
+            background-color: #18375d !important;
+            border-color: #18375d !important;
+            color: white !important;
+        }
+        
+        html body .btn-primary:hover,
+        html body .btn-primary:focus,
+        html body .btn-primary:active {
+            background-color: #122a47 !important;
+            border-color: #122a47 !important;
+            color: white !important;
+        }
+        
+        /* Override any badge colors */
+        html body .badge-primary,
+        html body [class*="badge-primary"] {
+            background-color: #18375d !important;
+            color: white !important;
+        }
+        
+        /* Override any alert colors */
+        html body .alert-primary {
+            background-color: rgba(24, 55, 93, 0.1) !important;
+            border-color: #18375d !important;
+            color: #18375d !important;
+        }
+        
+        /* Override any progress bar colors */
+        html body .progress-bar {
+            background-color: #18375d !important;
+        }
+        
+        /* Override any list group item colors */
+        html body .list-group-item-primary {
+            background-color: rgba(24, 55, 93, 0.1) !important;
+            color: #18375d !important;
+        }
+        
+        /* Laravel Pagination Overrides */
+        html body .pagination .page-item .page-link {
+            background-color: #18375d !important;
+            border-color: #18375d !important;
+            color: white !important;
+        }
+        
+        html body .pagination .page-item.active .page-link {
+            background-color: #122a47 !important;
+            border-color: #122a47 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+        
+        html body .pagination .page-item .page-link:hover,
+        html body .pagination .page-item .page-link:focus {
+            background-color: #122a47 !important;
+            border-color: #122a47 !important;
+            color: white !important;
+        }
+        
+        html body .pagination .page-item.disabled .page-link {
+            background-color: #6c757d !important;
+            border-color: #6c757d !important;
+            color: #adb5bd !important;
+        }
+        
+        /* DataTables Pagination Overrides */
+        html body .dataTables_wrapper .dataTables_paginate .paginate_button {
+            background: #18375d !important;
+            border: 1px solid #18375d !important;
+            color: white !important;
+        }
+        
+        html body .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #122a47 !important;
+            border: 1px solid #122a47 !important;
+            color: white !important;
+        }
+        
+        html body .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #122a47 !important;
+            border: 1px solid #122a47 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+        
+        html body .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            background: #6c757d !important;
+            border: 1px solid #6c757d !important;
+            color: #adb5bd !important;
+        }
+        
+        /* Enhanced Active State Styling */
+        html body .sidebar .nav-item.active .nav-link {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-left: 4px solid #fff !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+        }
+        
+        html body .sidebar .nav-item.active .nav-link i {
+            color: #fff !important;
+        }
+        
+        html body .sidebar .nav-item.active .nav-link span {
+            color: #fff !important;
+            font-weight: 600 !important;
+        }
+        
+        /* Active state for collapsed sidebar */
+        html body .sidebar.toggled .nav-item.active .nav-link {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-left: 4px solid #fff !important;
+            border-radius: 0 6px 6px 0 !important;
+        }
+        
+        /* Hover effect for active items */
+        html body .sidebar .nav-item.active .nav-link:hover {
+            background: rgba(255, 255, 255, 0.25) !important;
+        }
+        
+        /* Active state for collapse items */
+        html body .sidebar .collapse-item.active {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+        }
 
         /* Content Cards */
         .modern-card {
@@ -422,8 +755,8 @@
         }
 
         .modern-card-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
+            background: var(--primary-color);
+            color: white !important;
             padding: 1.5rem 2rem;
             font-weight: 600;
             display: flex;
@@ -542,8 +875,8 @@
 
         /* Page Header Enhancement */
         .page-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: white !important;
             padding: 2rem;
             border-radius: 12px;
             margin-bottom: 2rem;
@@ -551,6 +884,7 @@
         }
 
         .page-header h1 {
+            color: white !important;
             margin: 0;
             font-weight: 700;
             font-size: 2rem;
@@ -560,66 +894,15 @@
         }
 
         .page-header p {
+            color: white !important;
             margin: 0.5rem 0 0 0;
             opacity: 0.9;
             font-size: 1.1rem;
         }
         
-        /* Ensure sidebar scrolling works properly */
-        #wrapper {
-            position: relative;
-        }
+
         
-        #content-wrapper {
-            margin-left: 6.5rem;
-        }
-        
-        @media (min-width: 768px) {
-            #content-wrapper {
-                margin-left: 14rem;
-            }
-        }
-        
-        body.sidebar-toggled #content-wrapper {
-            margin-left: 6.5rem;
-        }
-        
-        /* Enhanced Sidebar Toggle Button Styling */
-        #sidebarToggle {
-            width: 40px !important;
-            height: 40px !important;
-            background-color: #4e73df !important;
-            color: white !important;
-            border: none !important;
-            cursor: pointer !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-        }
-        
-        #sidebarToggle:hover {
-            background-color: #3c5aa6 !important;
-            transform: scale(1.1) !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
-        }
-        
-        #sidebarToggle:active {
-            transform: scale(0.95) !important;
-        }
-        
-        #sidebarToggle i {
-            font-size: 14px !important;
-            font-weight: bold !important;
-        }
-        
-        /* Ensure sidebar toggle container is visible */
-        .sidebar #sidebarToggle {
-            position: relative !important;
-            z-index: 1000 !important;
-        }
+
     </style>
     
     @stack('styles')
@@ -705,35 +988,29 @@
         }
         
         $(document).ready(function() {
-            // Enhanced sidebar toggle functionality
-            $('#sidebarToggle').on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                $('body').toggleClass('sidebar-toggled');
-                $('.sidebar').toggleClass('toggled');
-                
-                // Update button icon and text
-                var icon = $(this).find('i');
-                if ($('.sidebar').hasClass('toggled')) {
-                    icon.removeClass('fa-chevron-left').addClass('fa-chevron-right');
-                    $('.sidebar .collapse').collapse('hide');
-                } else {
-                    icon.removeClass('fa-chevron-right').addClass('fa-chevron-left');
-                }
-                
-                console.log('Sidebar toggled:', $('.sidebar').hasClass('toggled'));
-            });
+            // Let SB Admin 2 handle the sidebar toggle
+            // Just add localStorage support and debug logging
             
-            // Topbar sidebar toggle for mobile
-            $('#sidebarToggleTop').on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
+            // Restore sidebar state from localStorage
+            var sidebarToggled = localStorage.getItem('sidebar-toggled') === 'true';
+            if (sidebarToggled) {
+                $('body').addClass('sidebar-toggled');
+                $('.sidebar').addClass('toggled');
+            }
+            
+            // Save state when sidebar is toggled (using SB Admin 2's event)
+            $(document).on('click', '#sidebarToggle, #sidebarToggleTop', function() {
+                console.log('Toggle button clicked - before toggle');
+                console.log('Current sidebar classes:', $('.sidebar').attr('class'));
+                console.log('Current body classes:', $('body').attr('class'));
                 
-                $('body').toggleClass('sidebar-toggled');
-                $('.sidebar').toggleClass('toggled');
-                
-                console.log('Topbar sidebar toggle clicked');
+                setTimeout(function() {
+                localStorage.setItem('sidebar-toggled', $('.sidebar').hasClass('toggled'));
+                    console.log('Sidebar state saved:', $('.sidebar').hasClass('toggled'));
+                    console.log('After toggle - sidebar classes:', $('.sidebar').attr('class'));
+                    console.log('After toggle - body classes:', $('body').attr('class'));
+                    console.log('Sidebar width:', $('.sidebar').css('width'));
+                }, 100);
             });
             
             // Ensure logout modal works
@@ -748,11 +1025,7 @@
             console.log('Sidebar toggle button:', $('#sidebarToggle').length);
             console.log('Topbar sidebar toggle button:', $('#sidebarToggleTop').length);
             console.log('Logout modal:', $('#logoutModal').length);
-            
-            // Test click events
-            $('#sidebarToggle').on('click', function() {
-                console.log('Sidebar toggle button clicked!');
-            });
+            console.log('Initial sidebar state:', $('.sidebar').hasClass('toggled'));
         });
     </script>
     
@@ -767,11 +1040,17 @@
     
     <!-- Service Worker Registration -->
     <script>
+    console.log('=== SERVICE WORKER DEBUG ===');
     console.log('Service worker script loaded!');
+    console.log('Navigator object:', navigator);
+    console.log('ServiceWorker in navigator:', 'serviceWorker' in navigator);
+    
     if ('serviceWorker' in navigator) {
         console.log('Service Worker API is supported');
         window.addEventListener('load', () => {
             console.log('Page loaded, attempting to register service worker...');
+            console.log('Current URL:', window.location.href);
+            
             navigator.serviceWorker.register('/sw.js')
                 .then(registration => {
                     console.log('SW registered successfully: ', registration);

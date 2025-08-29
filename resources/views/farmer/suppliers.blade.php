@@ -128,15 +128,18 @@
                                 <td>{{ $supplier['contact'] }}</td>
                                 <td><span class="status-badge {{ $supplier['status_badge'] }}">{{ $supplier['status_label'] }}</span></td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-warning btn-sm" onclick="viewLedger('{{ $supplier['name'] }}')" title="View Ledger">
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-action-ledger" onclick="viewLedger('{{ $supplier['name'] }}')" title="View Ledger">
                                             <i class="fas fa-book"></i>
+                                            <span>Ledger</span>
                                         </button>
-                                        <button class="btn btn-info btn-sm" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
+                                        <button class="btn-action btn-action-view" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
                                             <i class="fas fa-eye"></i>
+                                            <span>View</span>
                                         </button>
-                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $supplier['name'] }}')" title="Delete">
+                                        <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $supplier['name'] }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
+                                            <span>Delete</span>
                                         </button>
                                     </div>
                                 </td>

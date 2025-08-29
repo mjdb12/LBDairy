@@ -137,15 +137,20 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-info btn-sm" onclick="viewIssue('{{ $issue->id }}')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn btn-warning btn-sm" onclick="editIssue('{{ $issue->id }}')">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteIssue('{{ $issue->id }}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-action-view" onclick="viewIssue('{{ $issue->id }}')" title="View">
+                                        <i class="fas fa-eye"></i>
+                                        <span>View</span>
+                                    </button>
+                                    <button class="btn-action btn-action-edit" onclick="editIssue('{{ $issue->id }}')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Edit</span>
+                                    </button>
+                                    <button class="btn-action btn-action-delete" onclick="deleteIssue('{{ $issue->id }}')" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         @empty

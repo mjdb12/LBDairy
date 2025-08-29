@@ -470,21 +470,26 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-info btn-sm" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-action-view" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
+                                                <span>View</span>
                                             </button>
-                                            <button class="btn btn-success btn-sm" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
+                                            <button class="btn-action btn-action-print" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
                                                 <i class="fas fa-qrcode"></i>
+                                                <span>QR Code</span>
                                             </button>
-                                            <button class="btn btn-warning btn-sm" onclick="issueAlert('${animal.id}')" title="Issue Alert">
+                                            <button class="btn-action btn-action-flag" onclick="issueAlert('${animal.id}')" title="Issue Alert">
                                                 <i class="fas fa-exclamation-triangle"></i>
+                                                <span>Alert</span>
                                             </button>
-                                            <button class="btn btn-primary btn-sm" onclick="editLivestock('${animal.id}')" title="Edit">
+                                            <button class="btn-action btn-action-edit" onclick="editLivestock('${animal.id}')" title="Edit">
                                                 <i class="fas fa-edit"></i>
+                                                <span>Edit</span>
                                             </button>
-                                            <button class="btn btn-danger btn-sm" onclick="deleteLivestock('${animal.id}')" title="Delete">
+                                            <button class="btn-action btn-action-delete" onclick="deleteLivestock('${animal.id}')" title="Delete">
                                                 <i class="fas fa-trash"></i>
+                                                <span>Delete</span>
                                             </button>
                                         </div>
                                     </td>

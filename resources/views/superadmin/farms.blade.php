@@ -354,15 +354,18 @@ function loadFarms() {
                     `${farm.owner?.phone || ''}`,
                     `${farm.barangay || ''}`,
                     `<span class="badge badge-${farm.status === 'active' ? 'success' : 'danger'}">${farm.status}</span>`,
-                    `<div class="btn-group" role="group">
-                        <button class="btn btn-primary btn-sm" onclick="openDetailsModal('${farm.id}')" title="View Details">
+                    `<div class="action-buttons">
+                        <button class="btn-action btn-action-view" onclick="openDetailsModal('${farm.id}')" title="View Details">
                             <i class="fas fa-eye"></i>
+                            <span>View</span>
                         </button>
-                        <button class="btn btn-warning btn-sm" onclick="toggleFarmStatus('${farm.id}', '${farm.status}')" title="Toggle Status">
+                        <button class="btn-action btn-action-toggle" onclick="toggleFarmStatus('${farm.id}', '${farm.status}')" title="Toggle Status">
                             <i class="fas fa-${farm.status === 'active' ? 'pause' : 'play'}"></i>
+                            <span>${farm.status === 'active' ? 'Deactivate' : 'Activate'}</span>
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${farm.id}')" title="Delete">
+                        <button class="btn-action btn-action-delete" onclick="confirmDelete('${farm.id}')" title="Delete">
                             <i class="fas fa-trash"></i>
+                            <span>Delete</span>
                         </button>
                     </div>`
                 ];

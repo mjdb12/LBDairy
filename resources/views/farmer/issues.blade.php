@@ -183,9 +183,10 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-info" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-action-view" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
+                                                <span>View Details</span>
                                             </button>
                                         </div>
                                     </td>
@@ -272,13 +273,15 @@
                                     </td>
                                     <td>{{ Str::limit($inspection->notes, 50) }}</td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-info" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-action-view" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
+                                                <span>View</span>
                                             </button>
                                             @if($inspection->status === 'scheduled')
-                                            <button class="btn btn-sm btn-success" onclick="markInspectionComplete('{{ $inspection->id }}')" title="Mark Complete">
+                                            <button class="btn-action btn-action-approve" onclick="markInspectionComplete('{{ $inspection->id }}')" title="Mark Complete">
                                                 <i class="fas fa-check"></i>
+                                                <span>Complete</span>
                                             </button>
                                             @endif
                                         </div>
