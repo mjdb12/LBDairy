@@ -184,13 +184,13 @@
 @push('styles')
 <style>
     :root {
-        --primary-color: #4e73df;
-        --primary-dark: #3c5aa6;
+        --primary-color: #18375d;
+        --primary-dark: #122a47;
         --success-color: #1cc88a;
         --warning-color: #f6c23e;
         --danger-color: #e74a3b;
         --info-color: #36b9cc;
-        --light-color: #f8f9fc;
+        --light-color: #f6f4e8;
         --dark-color: #5a5c69;
         --border-color: #e3e6f0;
         --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);

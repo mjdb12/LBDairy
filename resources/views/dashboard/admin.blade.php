@@ -13,14 +13,14 @@
 <!-- Statistics Grid -->
 <div class="row fade-in">
     <!-- Active Farms -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2 dashboard-card stat-card">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Active Farms</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Active Farms</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Farm::where('status', 'active')->count() }}</div>
                 </div>
-                <div class="icon text-info">
+                <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-building fa-2x"></i>
                 </div>
             </div>
@@ -28,14 +28,14 @@
     </div>
 
     <!-- Total Farmers -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2 dashboard-card stat-card">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Farmers</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Farmers</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->count() }}</div>
                 </div>
-                <div class="icon text-success">
+                <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-users fa-2x"></i>
                 </div>
             </div>
@@ -43,14 +43,14 @@
     </div>
 
     <!-- New Requests -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2 dashboard-card stat-card">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">New Requests</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">New Requests</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'pending')->count() }}</div>
                 </div>
-                <div class="icon text-warning">
+                <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-user-plus fa-2x"></i>
                 </div>
             </div>
@@ -58,14 +58,14 @@
     </div>
 
     <!-- Service Areas -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2 dashboard-card stat-card">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Service Areas</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Service Areas</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Farm::distinct('location')->count() }}</div>
                 </div>
-                <div class="icon text-danger">
+                <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-map-marker-alt fa-2x"></i>
                 </div>
             </div>
@@ -73,14 +73,14 @@
     </div>
 
     <!-- Total Livestock -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Livestock</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Livestock::count() }}</div>
                 </div>
-                <div class="icon text-primary">
+                <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-cow fa-2x"></i>
                 </div>
             </div>
@@ -88,14 +88,14 @@
     </div>
 
     <!-- Efficiency Rate -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-secondary shadow h-100 py-2 dashboard-card stat-card">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Efficiency Rate</div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Efficiency Rate</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">53<sup class="font-size-4">%</sup></div>
                 </div>
-                <div class="icon text-secondary">
+                <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-chart-line fa-2x"></i>
                 </div>
             </div>

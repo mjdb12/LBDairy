@@ -1,11 +1,85 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* Custom Component Classes */
+@layer components {
+    /* Button Components */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    
+    .btn-primary {
+        @apply bg-primary text-white hover:bg-primary-dark focus:ring-primary;
+    }
+    
+    .btn-secondary {
+        @apply bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary;
+    }
+    
+    .btn-success {
+        @apply bg-success text-white hover:bg-success-dark focus:ring-success;
+    }
+    
+    .btn-danger {
+        @apply bg-danger text-white hover:bg-danger-dark focus:ring-danger;
+    }
+    
+    .btn-warning {
+        @apply bg-warning text-white hover:bg-warning-dark focus:ring-warning;
+    }
+    
+    .btn-info {
+        @apply bg-info text-white hover:bg-info-dark focus:ring-info;
+    }
+    
+    .btn-light {
+        @apply bg-light text-dark border border-border hover:bg-white focus:ring-secondary;
+    }
+    
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+    
+    .btn-lg {
+        @apply px-6 py-3 text-base;
+    }
+    
+    /* Card Components */
+    .card {
+        @apply bg-light rounded-xl shadow-custom border border-border overflow-hidden transition-all duration-300 hover:shadow-custom-lg hover:-translate-y-1;
+    }
+    
+    .card-header {
+        @apply bg-primary text-white px-6 py-4 flex items-center justify-between border-b-0;
+    }
+    
+    .card-body {
+        @apply p-6;
+    }
+    
+    .card-footer {
+        @apply px-6 py-4 bg-light border-t border-border;
+    }
+    
+    /* Form Components */
+    .form-control {
+        @apply w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200;
+    }
+    
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-2;
+    }
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* Custom Utilities */
+@layer utilities {
+    /* Animation Classes */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .slide-in {
+        animation: slideIn 0.5s ease-in-out;
+    }
 }

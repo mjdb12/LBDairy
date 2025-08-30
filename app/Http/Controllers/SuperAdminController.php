@@ -1011,8 +1011,8 @@ class SuperAdminController extends Controller
                 'dataset' => [
                     'label' => 'Production (L)',
                     'data' => $data,
-                    'borderColor' => '#4e73df',
-                    'backgroundColor' => 'rgba(78, 115, 223, 0.1)',
+                    'borderColor' => '#18375d',
+                    'backgroundColor' => 'rgba(24, 55, 93, 0.1)',
                     'fill' => true,
                     'tension' => 0.4,
                 ],
@@ -1173,8 +1173,8 @@ class SuperAdminController extends Controller
                     [
                         'label' => 'Cattle',
                         'data' => $seriesCow,
-                        'borderColor' => '#007bff',
-                        'backgroundColor' => 'rgba(0, 123, 255, 0.1)',
+                        'borderColor' => '#fca700',
+                        'backgroundColor' => 'rgba(252, 167, 0, 0.1)',
                         'tension' => 0.4,
                         'fill' => true,
                     ],

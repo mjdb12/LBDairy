@@ -1,5 +1,5 @@
 <!-- Topbar -->
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+<nav class="navbar navbar-expand navbar-light bg-light topbar mb-4 static-top shadow">
 
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -118,14 +118,23 @@ function loadNotifications() {
     const container = document.getElementById('notificationsList');
     container.innerHTML = '<div class="dropdown-item text-center small text-gray-500"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
     
-    fetch('/superadmin/notifications', {
-        method: 'GET',
-        credentials: 'same-origin',
-        headers: {
-            'Accept': 'application/json',
-            'Cache-Control': 'no-cache'
-        }
-    })
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 10000); // 10 second timeout
+    });
+
+    // Race between fetch and timeout
+    Promise.race([
+        fetch('/superadmin/notifications', {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        }),
+        timeoutPromise
+    ])
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -155,6 +164,8 @@ function loadNotifications() {
         })
         .catch(error => {
             console.error('Error loading notifications:', error);
+            
+            // Show error message with retry option
             container.innerHTML = `
                 <div class="dropdown-item text-center small text-gray-500">
                     <i class="fas fa-exclamation-triangle text-warning"></i>
@@ -165,6 +176,9 @@ function loadNotifications() {
             
             // Make it clickable to retry
             container.querySelector('.dropdown-item').addEventListener('click', loadNotifications);
+            
+            // Update notification count to 0 to prevent showing loading state
+            updateNotificationCount(0);
         });
 }
 

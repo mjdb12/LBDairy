@@ -3,7 +3,7 @@
 /* ===== CSS VARIABLES ===== */
 :root {
     /* Primary Colors */
-    --primary-color: #4e73df;
+    --primary-color: #18375d;
     --primary-dark: #3c5aa6;
     --primary-light: #bac8f3;
     
@@ -898,6 +898,74 @@ body {
     color: white;
 }
 
+/* Superadmin Dashboard - Recent System Activity Table Badge Colors */
+.card .table .badge-danger,
+.card .table .badge-warning,
+.card .table .badge-info {
+    background: #fca700 !important;
+    background-color: #fca700 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
+
+.card .table .badge-success {
+    background: #387057 !important;
+    background-color: #387057 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
+
+/* Custom Green Button for New Task */
+html body .card .card-header #addTaskBtn.btn-primary,
+html body #addTaskBtn.btn-primary,
+#addTaskBtn.btn-primary {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+}
+
+html body .card .card-header #addTaskBtn.btn-primary:hover,
+html body .card .card-header #addTaskBtn.btn-primary:focus,
+html body #addTaskBtn.btn-primary:hover,
+html body #addTaskBtn.btn-primary:focus,
+#addTaskBtn.btn-primary:hover,
+#addTaskBtn.btn-primary:focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+}
+
+/* Scroll to Top Button - Dark Blue */
+.scroll-to-top {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    color: #fff !important;
+    border: 2px solid #18375d !important;
+}
+
+.scroll-to-top:hover,
+.scroll-to-top:focus {
+    background-color: #122a47 !important;
+    background: #122a47 !important;
+    color: #fff !important;
+    border-color: #122a47 !important;
+}
+
+/* Notification Bell - Dark Blue */
+.navbar-nav .nav-link .fas.fa-bell {
+    color: #18375d !important;
+}
+
+.navbar-nav .nav-link:hover .fas.fa-bell {
+    color: #122a47 !important;
+}
+
 .badge-light {
     background: var(--light-color);
     color: var(--dark-color);
@@ -1397,4 +1465,26 @@ body {
     .table td {
         border: 1px solid #000 !important;
     }
+}
+
+/* ===== TOOLTIP OVERRIDES ===== */
+.tooltip .tooltip-inner,
+.bs-tooltip-top .tooltip-inner,
+.bs-tooltip-bottom .tooltip-inner,
+.bs-tooltip-left .tooltip-inner,
+.bs-tooltip-right .tooltip-inner {
+    background-color: #387057 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+}
+
+.tooltip .arrow::before,
+.bs-tooltip-top .arrow::before,
+.bs-tooltip-bottom .arrow::before,
+.bs-tooltip-left .arrow::before,
+.bs-tooltip-right .arrow::before {
+    border-top-color: #387057 !important;
+    border-bottom-color: #387057 !important;
+    border-left-color: #387057 !important;
+    border-right-color: #387057 !important;
 }

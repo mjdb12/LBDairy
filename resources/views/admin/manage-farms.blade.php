@@ -273,7 +273,7 @@
 
     /* Page Header */
     .page-header {
-        background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
         color: white;
         padding: 2rem;
         border-radius: 12px;
@@ -320,9 +320,9 @@
     }
 
     .search-container input:focus {
-        border-color: #4e73df;
+        border-color: #18375d;
         background: white;
-        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(24, 55, 93, 0.25);
         outline: none;
     }
 

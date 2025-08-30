@@ -26,7 +26,7 @@ use App\Http\Controllers\TestController;
 
 // Public routes
 Route::get('/', function () {
-    return redirect('/login');
+    return view('landing');
 });
 
 // Test route - temporarily disabled

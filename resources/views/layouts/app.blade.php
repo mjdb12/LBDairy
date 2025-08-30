@@ -8,7 +8,7 @@
     <meta name="author" content="LBDAIRY">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#4e73df">
+    <meta name="theme-color" content="#18375d">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="LB Dairy">
@@ -24,6 +24,7 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('css/unified-styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/button-consistency.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/tooltip-override.css') }}" rel="stylesheet">
     
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -36,7 +37,7 @@
             --warning-color: #f6c23e;
             --danger-color: #e74a3b;
             --info-color: #36b9cc;
-            --light-color: #f8f9fc;
+            --light-color: #f6f4e8;
             --dark-color: #5a5c69;
             --gray: #858796;
             --border-color: #e3e6f0;
@@ -46,7 +47,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f8f9fc;
+            background-color: #f6f4e8;
         }
 
         /* Enhanced Card Styling */
@@ -56,6 +57,7 @@
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
             overflow: hidden;
+            background-color: #f6f4e8;
         }
 
         .card:hover {
@@ -66,14 +68,163 @@
         /* Override all card headers with maximum specificity */
         html body .card-header,
         html body .card .card-header,
-        html body .card > .card-header {
+        html body .card > .card-header,
+        .card-header,
+        .card .card-header,
+        .card > .card-header {
             background: #18375d !important;
+            background-color: #18375d !important;
             border-bottom: none !important;
             padding: 1.5rem !important;
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
             color: white !important;
+        }
+        
+        /* Exclude stat cards and dashboard cards from card header styling */
+        html body .card.stat-card .card-header,
+        html body .card.dashboard-card .card-header,
+        .card.stat-card .card-header,
+        .card.dashboard-card .card-header {
+            display: none !important;
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+        
+        /* Completely override any card styling for stat cards */
+        html body .card.stat-card,
+        html body .card.dashboard-card,
+        .card.stat-card,
+        .card.dashboard-card {
+            background: #f6f4e8 !important;
+            background-color: #f6f4e8 !important;
+        }
+        
+        html body .card.stat-card .card-body,
+        html body .card.dashboard-card .card-body,
+        .card.stat-card .card-body,
+        .card.dashboard-card .card-body {
+            background: #f6f4e8 !important;
+            background-color: #f6f4e8 !important;
+            color: inherit !important;
+        }
+        
+        /* Force text colors in stat cards */
+        html body .card.stat-card .text-primary,
+        html body .card.dashboard-card .text-primary,
+        .card.stat-card .text-primary,
+        .card.dashboard-card .text-primary {
+            color: #18375d !important;
+        }
+        
+        /* Green tooltips when sidebar is collapsed */
+        body.sidebar-toggled .tooltip-inner,
+        .sidebar.toggled .tooltip-inner {
+            background-color: #387057 !important;
+            color: #fff !important;
+            opacity: 1 !important;
+        }
+        
+        /* Hide tooltips when sidebar is expanded */
+        body:not(.sidebar-toggled) .tooltip,
+        .sidebar:not(.toggled) .tooltip {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+        
+        /* Make tooltip completely solid */
+        .tooltip.show {
+            opacity: 1 !important;
+        }
+        
+        .tooltip {
+            opacity: 1 !important;
+        }
+        
+        /* Green arrows when sidebar is collapsed */
+        body.sidebar-toggled .tooltip .arrow::before,
+        .sidebar.toggled .tooltip .arrow::before {
+            border-top-color: #387057 !important;
+            border-bottom-color: #387057 !important;
+            border-left-color: #387057 !important;
+            border-right-color: #387057 !important;
+        }
+        
+        /* Hide tooltip arrows when sidebar is expanded */
+        body:not(.sidebar-toggled) .tooltip .arrow,
+        .sidebar:not(.toggled) .tooltip .arrow {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+        
+        /* Override any dynamically created tooltips */
+        .tooltip-inner {
+            background-color: #387057 !important;
+            color: #fff !important;
+        }
+        
+        html body .card.stat-card .text-success,
+        html body .card.dashboard-card .text-success,
+        .card.stat-card .text-success,
+        .card.dashboard-card .text-success {
+            color: #1cc88a !important;
+        }
+        
+        html body .card.stat-card .text-info,
+        html body .card.dashboard-card .text-info,
+        .card.stat-card .text-info,
+        .card.dashboard-card .text-info {
+            color: #36b9cc !important;
+        }
+        
+        html body .card.stat-card .text-warning,
+        html body .card.dashboard-card .text-warning,
+        .card.stat-card .text-warning,
+        .card.dashboard-card .text-warning {
+            color: #f6c23e !important;
+        }
+        
+        html body .card.stat-card .text-danger,
+        html body .card.dashboard-card .text-danger,
+        .card.stat-card .text-danger,
+        .card.dashboard-card .text-danger {
+            color: #e74a3b !important;
+        }
+        
+        html body .card.stat-card .text-secondary,
+        html body .card.dashboard-card .text-secondary,
+        .card.stat-card .text-secondary,
+        .card.dashboard-card .text-secondary {
+            color: #858796 !important;
+        }
+        
+        /* Ensure stat cards and dashboard cards don't have card headers */
+        .stat-card .card-header,
+        .stat-card > .card-header,
+        .dashboard-card .card-header,
+        .dashboard-card > .card-header,
+        .card.stat-card .card-header,
+        .card.dashboard-card .card-header {
+            display: none !important;
+        }
+        
+        /* Override any card header styling for stat and dashboard cards */
+        .card.stat-card,
+        .card.dashboard-card,
+        .stat-card,
+        .dashboard-card {
+            background: #f6f4e8 !important;
+        }
+        
+        /* Ensure no blue backgrounds on stat/dashboard cards */
+        .card.stat-card::before,
+        .card.dashboard-card::before,
+        .stat-card::before,
+        .dashboard-card::before {
+            display: none !important;
         }
 
         .card-header h6 {
@@ -85,6 +236,14 @@
             align-items: center;
             gap: 0.5rem;
         }
+        
+        /* Ensure stat card text is not affected by card header text styling */
+        .stat-card h6,
+        .dashboard-card h6,
+        .stat-card .card-header h6,
+        .dashboard-card .card-header h6 {
+            color: inherit !important;
+        }
 
         .card-header h6::before {
             content: '';
@@ -92,6 +251,45 @@
             height: 20px;
             background: rgba(255, 255, 255, 0.3);
             border-radius: 2px;
+        }
+
+        /* Override Bootstrap primary colors */
+        .bg-primary,
+        .btn-primary,
+        .text-primary {
+            background-color: #18375d !important;
+            color: #18375d !important;
+        }
+
+        .btn-primary {
+            background-color: #18375d !important;
+            border-color: #18375d !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #122a47 !important;
+            border-color: #122a47 !important;
+        }
+
+        .border-primary {
+            border-color: #18375d !important;
+        }
+
+        /* Sidebar Brand Styling */
+        .sidebar-brand {
+            background-color: #f4f2e6 !important;
+            border-bottom: 1px solid rgba(24, 55, 93, 0.1) !important;
+        }
+
+        .sidebar-brand-text {
+            color: #18375d !important;
+            font-weight: bold !important;
+            font-size: 1.1rem !important;
+        }
+
+        .sidebar-brand:hover {
+            background-color: #f4f2e6 !important;
+            text-decoration: none !important;
         }
 
         /* Enhanced Button Styling */
@@ -116,13 +314,99 @@
 
         /* Custom Dashboard Styles */
         .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--primary-color);
-            height: 100%;
+            background: #f6f4e8 !important;
+            border-radius: 12px !important;
+            padding: 1.5rem !important;
+            box-shadow: var(--shadow) !important;
+            transition: all 0.3s ease !important;
+            border-left: 4px solid var(--primary-color) !important;
+            height: 100% !important;
+        }
+        
+        /* Dashboard card specific styling */
+        .dashboard-card {
+            background: #f6f4e8 !important;
+            border-radius: 12px !important;
+            box-shadow: var(--shadow) !important;
+            transition: all 0.3s ease !important;
+            height: 100% !important;
+        }
+        
+        .dashboard-card:hover {
+            box-shadow: var(--shadow-lg) !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        /* Fix text colors in stat cards and dashboard cards */
+        .stat-card .text-primary,
+        .dashboard-card .text-primary {
+            color: #18375d !important;
+        }
+        
+        .stat-card .text-success,
+        .dashboard-card .text-success {
+            color: #1cc88a !important;
+        }
+        
+        .stat-card .text-info,
+        .dashboard-card .text-info {
+            color: #36b9cc !important;
+        }
+        
+        .stat-card .text-warning,
+        .dashboard-card .text-warning {
+            color: #f6c23e !important;
+        }
+        
+        .stat-card .text-danger,
+        .dashboard-card .text-danger {
+            color: #e74a3b !important;
+        }
+        
+        .stat-card .text-secondary,
+        .dashboard-card .text-secondary {
+            color: #858796 !important;
+        }
+        
+        /* Ensure stat card text is not affected by card header styling */
+        .stat-card .text-xs,
+        .dashboard-card .text-xs,
+        .stat-card .font-weight-bold,
+        .dashboard-card .font-weight-bold,
+        .stat-card .text-uppercase,
+        .dashboard-card .text-uppercase {
+            color: inherit !important;
+        }
+        
+        /* Fix icon colors in stat cards */
+        .stat-card .icon.text-primary,
+        .dashboard-card .icon.text-primary {
+            color: #18375d !important;
+        }
+        
+        .stat-card .icon.text-success,
+        .dashboard-card .icon.text-success {
+            color: #1cc88a !important;
+        }
+        
+        .stat-card .icon.text-info,
+        .dashboard-card .icon.text-info {
+            color: #36b9cc !important;
+        }
+        
+        .stat-card .icon.text-warning,
+        .dashboard-card .icon.text-warning {
+            color: #f6c23e !important;
+        }
+        
+        .stat-card .icon.text-danger,
+        .dashboard-card .icon.text-danger {
+            color: #e74a3b !important;
+        }
+        
+        .stat-card .icon.text-secondary,
+        .dashboard-card .icon.text-secondary {
+            color: #858796 !important;
         }
 
         .stat-card:hover {
@@ -186,7 +470,7 @@
 
         /* Page Header */
         .page-header {
-            background: white;
+            background: #f6f4e8;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: var(--shadow);
@@ -236,7 +520,7 @@
 
         /* Modern Card Styles */
         .modern-card {
-            background: white;
+            background: #f6f4e8;
             border-radius: 12px;
             box-shadow: var(--shadow);
             overflow: hidden;
@@ -484,9 +768,13 @@
         }
         
         html body .sidebar.toggled .sidebar-brand-icon img {
-            width: 40px !important;
-            height: 40px !important;
+            width: 50px !important;
+            height: 50px !important;
             object-fit: contain !important;
+        }
+        
+        html body .sidebar.toggled .sidebar-brand-text img {
+            display: none !important;
         }
         
         /* Content wrapper adjustments */
@@ -966,6 +1254,8 @@
     <!-- Scripts -->
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery Easing for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables JS -->
@@ -988,6 +1278,24 @@
         }
         
         $(document).ready(function() {
+
+            
+            // Optimized tooltip initialization
+            if (typeof $.fn.tooltip !== 'undefined') {
+                // Set global defaults for all tooltips
+                $.fn.tooltip.Constructor.Default.template = '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>';
+                $.fn.tooltip.Constructor.Default.delay = { show: 0, hide: 0 };
+                $.fn.tooltip.Constructor.Default.trigger = 'hover';
+                $.fn.tooltip.Constructor.Default.animation = false;
+                
+                // Initialize tooltips with optimized settings
+                $('[data-toggle="tooltip"]').tooltip({
+                    delay: { show: 0, hide: 0 },
+                    trigger: 'hover',
+                    animation: false
+                });
+            }
+            
             // Let SB Admin 2 handle the sidebar toggle
             // Just add localStorage support and debug logging
             
@@ -1014,7 +1322,7 @@
             });
             
             // Ensure logout modal works
-            $('[data-toggle="modal"][data-target="#logoutModal"]').on('click', function(e) {
+            $('[data-target="#logoutModal"]').on('click', function(e) {
                 e.preventDefault();
                 $('#logoutModal').modal('show');
             });
@@ -1026,6 +1334,24 @@
             console.log('Topbar sidebar toggle button:', $('#sidebarToggleTop').length);
             console.log('Logout modal:', $('#logoutModal').length);
             console.log('Initial sidebar state:', $('.sidebar').hasClass('toggled'));
+
+            // Scroll to Top Button Functionality
+            $(document).on('scroll', function() {
+                var scrollDistance = $(this).scrollTop();
+                if (scrollDistance > 100) {
+                    $('.scroll-to-top').fadeIn();
+                } else {
+                    $('.scroll-to-top').fadeOut();
+                }
+            });
+
+            // Smooth scrolling to top when scroll-to-top button is clicked
+            $(document).on('click', '.scroll-to-top', function(e) {
+                e.preventDefault();
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 800, 'easeInOutExpo');
+            });
         });
     </script>
     

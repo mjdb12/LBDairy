@@ -14,11 +14,13 @@
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background: #18375d !important;">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}" style="background-color: #f4f2e6 !important;">
         <div class="sidebar-brand-icon">
-            <img src="{{ asset('img/logo.png') }}" alt="LBDAIRY" width="40" height="40">
+            <img src="{{ asset('img/LBDairy.png') }}" alt="LBDAIRY" width="50" height="50">
         </div>
-        <div class="sidebar-brand-text mx-3">LBDAIRY</div>
+        <div class="sidebar-brand-text mx-2">
+            <img src="{{ asset('img/LBDairyText.png') }}" alt="LBDAIRY" style="height: 70px; width: auto; object-fit: contain;">
+        </div>
     </a>
 
     <!-- Divider -->
@@ -28,7 +30,7 @@
         @if(auth()->user()->isFarmer())
             <!-- Farmer Navigation -->
             <li class="nav-item {{ isCurrentRoute('farmer.dashboard') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.dashboard') }}" title="Dashboard">
+                <a class="nav-link" href="{{ route('farmer.dashboard') }}" data-toggle="tooltip" data-placement="right" data-original-title="Dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -43,42 +45,42 @@
             </div>
 
             <li class="nav-item {{ isCurrentRoute('farmer.scan') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.scan') }}" title="Scan Livestock">
+                <a class="nav-link" href="{{ route('farmer.scan') }}" data-toggle="tooltip" data-placement="right" data-original-title="Scan Livestock">
                     <i class="fas fa-qrcode"></i>
                     <span>Scan Livestock</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.livestock') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.livestock') }}" title="Manage Livestock">
+                <a class="nav-link" href="{{ route('farmer.livestock') }}" data-toggle="tooltip" data-placement="right" data-original-title="Manage Livestock">
                     <i class="fa fa-list"></i>
                     <span>Manage Livestock</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.issues') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.issues') }}" title="Manage Issues">
+                <a class="nav-link" href="{{ route('farmer.issues') }}" data-toggle="tooltip" data-placement="right" data-original-title="Manage Issues">
                     <i class="fa fa-exclamation-triangle"></i>
                     <span>Manage Issues</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.issue-alerts') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.issue-alerts') }}" title="Issues Alerts">
+                <a class="nav-link" href="{{ route('farmer.issue-alerts') }}" data-toggle="tooltip" data-placement="right" data-original-title="Issues Alerts">
                     <i class="fa fa-exclamation-triangle"></i>
                     <span>Issues Alerts</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.farm-analysis') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.farm-analysis') }}" title="Farm Analysis">
+                <a class="nav-link" href="{{ route('farmer.farm-analysis') }}" data-toggle="tooltip" data-placement="right" data-original-title="Farm Analysis">
                     <i class="fas fa-fw fa-database"></i>
                     <span>Farm Analysis</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.livestock-analysis') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.livestock-analysis') }}" title="Livestock Analysis">
+                <a class="nav-link" href="{{ route('farmer.livestock-analysis') }}" data-toggle="tooltip" data-placement="right" data-original-title="Livestock Analysis">
                     <i class="fas fa-fw fa-database"></i>
                     <span>Livestock Analysis</span>
                 </a>
@@ -93,49 +95,49 @@
             </div>
 
             <li class="nav-item {{ isCurrentRoute('farmer.sales') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.sales') }}" title="Sales">
+                <a class="nav-link" href="{{ route('farmer.sales') }}" data-toggle="tooltip" data-placement="right" data-original-title="Sales">
                     <i class="fas fa-fw fa-donate"></i>
                     <span>Sales</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.clients') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.clients') }}" title="Clients">
+                <a class="nav-link" href="{{ route('farmer.clients') }}" data-toggle="tooltip" data-placement="right" data-original-title="Clients">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Clients</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.suppliers') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.suppliers') }}" title="Suppliers">
+                <a class="nav-link" href="{{ route('farmer.suppliers') }}" data-toggle="tooltip" data-placement="right" data-original-title="Suppliers">
                     <i class="fa fa-users"></i>
                     <span>Suppliers</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.production') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.production') }}" title="Production">
+                <a class="nav-link" href="{{ route('farmer.production') }}" data-toggle="tooltip" data-placement="right" data-original-title="Production">
                     <i class="fas fa-fw fa-tasks"></i>
                     <span>Production</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.expenses') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.expenses') }}" title="Expenses">
+                <a class="nav-link" href="{{ route('farmer.expenses') }}" data-toggle="tooltip" data-placement="right" data-original-title="Expenses">
                     <i class="fas fa-fw fa-donate"></i>
                     <span>Expenses</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.inventory') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.inventory') }}" title="Inventory">
+                <a class="nav-link" href="{{ route('farmer.inventory') }}" data-toggle="tooltip" data-placement="right" data-original-title="Inventory">
                     <i class="fa fa-list"></i>
                     <span>Inventory</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.schedule') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.schedule') }}" title="Calendar">
+                <a class="nav-link" href="{{ route('farmer.schedule') }}" data-toggle="tooltip" data-placement="right" data-original-title="Calendar">
                     <i class="fas fa-fw fa-clock"></i>
                     <span>Calendar</span>
                 </a>
@@ -150,7 +152,7 @@
             </div>
 
             <li class="nav-item {{ isCurrentRoute('farmer.audit-logs') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.audit-logs') }}" title="Audit Logs">
+                <a class="nav-link" href="{{ route('farmer.audit-logs') }}" data-toggle="tooltip" data-placement="right" data-original-title="Audit Logs">
                     <i class="fas fa-fw fa-file-alt"></i>
                     <span>Audit Logs</span>
                 </a>
@@ -165,14 +167,14 @@
             </div>
 
             <li class="nav-item {{ isCurrentRoute('farmer.profile') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.profile') }}" title="Profile">
+                <a class="nav-link" href="{{ route('farmer.profile') }}" data-toggle="tooltip" data-placement="right" data-original-title="Profile">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Profile</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" title="Logout">
+                <a class="nav-link" href="#" data-target="#logoutModal" data-toggle="tooltip" data-placement="right" data-original-title="Logout">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -181,7 +183,7 @@
         @elseif(auth()->user()->isAdmin())
             <!-- Admin Navigation -->
             <li class="nav-item {{ isCurrentRoute('admin.dashboard') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.dashboard') }}" title="Dashboard">
+                <a class="nav-link" href="{{ route('admin.dashboard') }}" data-toggle="tooltip" data-placement="right" data-original-title="Dashboard">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Dashboard</span>
                 </a>
@@ -197,7 +199,7 @@
 
             <!-- Nav Item - Farmers -->
             <li class="nav-item {{ isCurrentRoute('admin.manage-farmers') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.manage-farmers') }}" title="Farmers">
+                <a class="nav-link" href="{{ route('admin.manage-farmers') }}" data-toggle="tooltip" data-placement="right" data-original-title="Farmers">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Farmers</span>
                 </a>
@@ -206,12 +208,12 @@
             <!-- Nav Item - Livestock -->
             <li class="nav-item {{ isCurrentRoutePattern('admin.livestock.*') ? 'active' : '' }}">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCharts"
-                    aria-expanded="false" aria-controls="collapseCharts" title="Livestock">
+                    aria-expanded="false" aria-controls="collapseCharts" data-toggle="tooltip" data-placement="right" data-original-title="Livestock">
                     <i class="fas fa-fw fa-list"></i>
                     <span>Livestock</span>
                 </a>
                 <div id="collapseCharts" class="collapse" aria-labelledby="headingCharts" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="bg-light py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Manage:</h6>
                         <a class="collapse-item {{ isCurrentRoute('admin.livestock.index') ? 'active' : '' }}" href="{{ route('admin.livestock.index') }}">List of Farmers</a>
                         <div class="collapse-divider"></div>
@@ -221,7 +223,7 @@
 
             <!-- Nav Item - Analysis -->
             <li class="nav-item {{ isCurrentRoute('admin.analysis.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.analysis.index') }}" title="Productivity Analysis">
+                <a class="nav-link" href="{{ route('admin.analysis.index') }}" data-toggle="tooltip" data-placement="right" data-original-title="Productivity Analysis">
                     <i class="fas fa-fw fa-chart-bar"></i>
                     <span>Productivity Analysis</span>
                 </a>
@@ -229,7 +231,7 @@
 
             <!-- Nav Item - Issues -->
             <li class="nav-item {{ isCurrentRoute('admin.issues.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.issues.index') }}" title="Issues Alerts">
+                <a class="nav-link" href="{{ route('admin.issues.index') }}" data-toggle="tooltip" data-placement="right" data-original-title="Issues Alerts">
                     <i class="fas fa-fw fa-exclamation-triangle"></i>
                     <span>Issues Alerts</span>
                 </a>
@@ -237,7 +239,7 @@
 
             <!-- Nav Item - Schedule Inspections -->
             <li class="nav-item {{ isCurrentRoute('admin.schedule-inspections') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.schedule-inspections') }}" title="Schedule Inspections">
+                <a class="nav-link" href="{{ route('admin.schedule-inspections') }}" data-toggle="tooltip" data-placement="right" data-original-title="Schedule Inspections">
                     <i class="fas fa-fw fa-calendar-check"></i>
                     <span>Schedule Inspections</span>
                 </a>
@@ -245,7 +247,7 @@
 
             <!-- Nav Item - Farmer Alerts -->
             <li class="nav-item {{ isCurrentRoute('admin.farmer-alerts') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.farmer-alerts') }}" title="Farmer Alerts">
+                <a class="nav-link" href="{{ route('admin.farmer-alerts') }}" data-toggle="tooltip" data-placement="right" data-original-title="Farmer Alerts">
                     <i class="fas fa-fw fa-bell"></i>
                     <span>Farmer Alerts</span>
                 </a>
@@ -253,7 +255,7 @@
 
             <!-- Nav Item - User Approvals -->
             <li class="nav-item {{ isCurrentRoute('admin.approvals') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.approvals') }}" title="User Approvals">
+                <a class="nav-link" href="{{ route('admin.approvals') }}" data-toggle="tooltip" data-placement="right" data-original-title="User Approvals">
                     <i class="fas fa-fw fa-user-check"></i>
                     <span>User Approvals</span>
                 </a>
@@ -261,7 +263,7 @@
 
             <!-- Nav Item - Logs -->
             <li class="nav-item {{ isCurrentRoute('admin.audit-logs') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.audit-logs') }}" title="Logs">
+                <a class="nav-link" href="{{ route('admin.audit-logs') }}" data-toggle="tooltip" data-placement="right" data-original-title="Logs">
                     <i class="fas fa-fw fa-file-alt"></i>
                     <span>Logs</span>
                 </a>
@@ -269,7 +271,7 @@
 
             <!-- Nav Item - Profile -->
             <li class="nav-item {{ isCurrentRoute('admin.profile') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.profile') }}" title="Profile">
+                <a class="nav-link" href="{{ route('admin.profile') }}" data-toggle="tooltip" data-placement="right" data-original-title="Profile">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Profile</span>
                 </a>
@@ -277,7 +279,7 @@
 
             <!-- Nav Item - Logout -->
             <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" title="Logout">
+                <a class="nav-link" href="#" data-target="#logoutModal" data-toggle="tooltip" data-placement="right" data-original-title="Logout">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -286,7 +288,7 @@
         @elseif(auth()->user()->isSuperAdmin())
             <!-- Super Admin Navigation -->
             <li class="nav-item {{ isCurrentRoute('superadmin.dashboard') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.dashboard') }}" title="Dashboard">
+                <a class="nav-link" href="{{ route('superadmin.dashboard') }}" data-toggle="tooltip" data-placement="right" data-original-title="Dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -301,56 +303,56 @@
             </div>
 
             <li class="nav-item {{ isCurrentRoute('superadmin.users') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.users') }}" title="User Management">
+                <a class="nav-link" href="{{ route('superadmin.users') }}" data-toggle="tooltip" data-placement="right" data-original-title="User Management">
                     <i class="fas fa-fw fa-users-cog"></i>
                     <span>User Management</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('superadmin.admins') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.admins') }}" title="Manage Admins">
+                <a class="nav-link" href="{{ route('superadmin.admins') }}" data-toggle="tooltip" data-placement="right" data-original-title="Manage Admins">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Manage Admins</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('superadmin.manage-farmers') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.manage-farmers') }}" title="Manage Farmers">
+                <a class="nav-link" href="{{ route('superadmin.manage-farmers') }}" data-toggle="tooltip" data-placement="right" data-original-title="Manage Farmers">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Manage Farmers</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('superadmin.farms.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.farms.index') }}" title="Manage Farms">
+                <a class="nav-link" href="{{ route('superadmin.farms.index') }}" data-toggle="tooltip" data-placement="right" data-original-title="Manage Farms">
                     <i class="fas fa-fw fa-university"></i>
                     <span>Manage Farms</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('superadmin.manage-analysis') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.manage-analysis') }}" title="Productivity Analysis">
+                <a class="nav-link" href="{{ route('superadmin.manage-analysis') }}" data-toggle="tooltip" data-placement="right" data-original-title="Productivity Analysis">
                     <i class="fas fa-fw fa-database"></i>
                     <span>Productivity Analysis</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('superadmin.audit-logs') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.audit-logs') }}" title="Audit Logs">
+                <a class="nav-link" href="{{ route('superadmin.audit-logs') }}" data-toggle="tooltip" data-placement="right" data-original-title="Audit Logs">
                     <i class="fas fa-fw fa-file-alt"></i>
                     <span>Audit Logs</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('superadmin.profile') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('superadmin.profile') }}" title="Profile">
+                <a class="nav-link" href="{{ route('superadmin.profile') }}" data-toggle="tooltip" data-placement="right" data-original-title="Profile">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Profile</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" title="Logout">
+                <a class="nav-link" href="#" data-target="#logoutModal" data-toggle="tooltip" data-placement="right" data-original-title="Logout">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -363,7 +365,7 @@
 
     <!-- Sidebar Toggle Button -->
     <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle" title="Toggle Sidebar">
+        <button class="rounded-circle border-0" id="sidebarToggle" data-toggle="tooltip" data-placement="right" data-original-title="Toggle Sidebar">
         </button>
     </div>
 

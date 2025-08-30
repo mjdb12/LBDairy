@@ -43,7 +43,7 @@
 
 .btn-action:focus {
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(24, 55, 93, 0.25);
 }
 
 /* Action Button Types - Consistent across system */
@@ -60,15 +60,15 @@
 }
 
 .btn-action-edit {
-    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+    background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
     color: white;
-    box-shadow: 0 2px 4px rgba(78, 115, 223, 0.3);
+    box-shadow: 0 2px 4px rgba(24, 55, 93, 0.3);
 }
 
 .btn-action-edit:hover {
-    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+    background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
     color: white;
-    box-shadow: 0 4px 8px rgba(78, 115, 223, 0.4);
+    box-shadow: 0 4px 8px rgba(24, 55, 93, 0.4);
 }
 
 .btn-action-delete {
@@ -325,22 +325,22 @@
 
 .pagination-btn:focus {
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(24, 55, 93, 0.25);
 }
 
 /* Active/Current Page */
 .pagination-btn.active {
-    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
-    border-color: #4e73df;
+    background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+    border-color: #18375d;
     color: white;
-    box-shadow: 0 2px 4px rgba(78, 115, 223, 0.3);
+    box-shadow: 0 2px 4px rgba(24, 55, 93, 0.3);
 }
 
 .pagination-btn.active:hover {
-    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
-    border-color: #4e73df;
+    background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+    border-color: #18375d;
     color: white;
-    box-shadow: 0 4px 8px rgba(78, 115, 223, 0.4);
+    box-shadow: 0 4px 8px rgba(24, 55, 93, 0.4);
 }
 
 /* Disabled Pagination Buttons */
@@ -399,25 +399,25 @@
 
 .dataTables_paginate .paginate_button:hover {
     background: #f8f9fc !important;
-    border-color: #4e73df !important;
-    color: #4e73df !important;
+    border-color: #18375d !important;
+    color: #18375d !important;
     text-decoration: none !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .dataTables_paginate .paginate_button.current {
-    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%) !important;
-    border-color: #4e73df !important;
+    background: linear-gradient(135deg, #18375d 0%, #122a47 100%) !important;
+    border-color: #18375d !important;
     color: white !important;
-    box-shadow: 0 2px 4px rgba(78, 115, 223, 0.3) !important;
+    box-shadow: 0 2px 4px rgba(24, 55, 93, 0.3) !important;
 }
 
 .dataTables_paginate .paginate_button.current:hover {
-    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%) !important;
-    border-color: #4e73df !important;
+    background: linear-gradient(135deg, #18375d 0%, #122a47 100%) !important;
+    border-color: #18375d !important;
     color: white !important;
-    box-shadow: 0 4px 8px rgba(78, 115, 223, 0.4) !important;
+    box-shadow: 0 4px 8px rgba(24, 55, 93, 0.4) !important;
 }
 
 .dataTables_paginate .paginate_button.disabled {

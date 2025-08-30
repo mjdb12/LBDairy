@@ -1,0 +1,114 @@
+/* Tooltip Override Styles - Optimized */
+
+/* Green tooltips when sidebar is collapsed */
+body.sidebar-toggled .tooltip-inner,
+.sidebar.toggled .tooltip-inner {
+    background-color: #387057 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    opacity: 1 !important;
+}
+
+/* Hide tooltips when sidebar is expanded */
+body:not(.sidebar-toggled) .tooltip,
+.sidebar:not(.toggled) .tooltip {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Make tooltip completely solid */
+.tooltip.show {
+    opacity: 1 !important;
+}
+
+.tooltip {
+    opacity: 1 !important;
+}
+
+/* Green arrows when sidebar is collapsed */
+body.sidebar-toggled .tooltip .arrow::before,
+.sidebar.toggled .tooltip .arrow::before {
+    border-top-color: #387057 !important;
+    border-bottom-color: #387057 !important;
+    border-left-color: #387057 !important;
+    border-right-color: #387057 !important;
+}
+
+/* Hide tooltip arrows when sidebar is expanded */
+body:not(.sidebar-toggled) .tooltip .arrow,
+.sidebar:not(.toggled) .tooltip .arrow {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Superadmin Dashboard - Recent System Activity Table Badge Colors */
+.card .table .badge-danger,
+.card .table .badge-warning,
+.card .table .badge-info {
+    background: #fca700 !important;
+    background-color: #fca700 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
+
+.card .table .badge-success {
+    background: #387057 !important;
+    background-color: #387057 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
+
+/* Custom Green Button for New Task */
+html body .card .card-header #addTaskBtn.btn-primary,
+html body #addTaskBtn.btn-primary,
+#addTaskBtn.btn-primary {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+}
+
+html body .card .card-header #addTaskBtn.btn-primary:hover,
+html body .card .card-header #addTaskBtn.btn-primary:focus,
+html body #addTaskBtn.btn-primary:hover,
+html body #addTaskBtn.btn-primary:focus,
+#addTaskBtn.btn-primary:hover,
+#addTaskBtn.btn-primary:focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+}
+
+/* Scroll to Top Button - Dark Blue */
+.scroll-to-top {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    color: #fff !important;
+    border: 2px solid #18375d !important;
+}
+
+.scroll-to-top:hover,
+.scroll-to-top:focus {
+    background-color: #122a47 !important;
+    background: #122a47 !important;
+    color: #fff !important;
+    border-color: #122a47 !important;
+}
+
+/* Notification Bell - Dark Blue */
+.navbar-nav .nav-link .fas.fa-bell {
+    color: #18375d !important;
+}
+
+.navbar-nav .nav-link:hover .fas.fa-bell {
+    color: #122a47 !important;
+}
+
+

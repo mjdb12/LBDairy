@@ -69,15 +69,14 @@
 @endpush
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header fade-in">
-        <h1>
-            <i class="fas fa-users"></i>
-            User Management
-        </h1>
-        <p>Manage all system users, roles, and permissions</p>
-    </div>
+<!-- Page Header -->
+<div class="page-header fade-in">
+    <h1>
+        <i class="fas fa-users"></i>
+        User Management
+    </h1>
+    <p>Manage all system users, roles, and permissions</p>
+</div>
 
     <!-- Stats Cards -->
     <div class="row fade-in">
@@ -214,7 +213,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Add/Edit User Modal -->
 <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">

@@ -12,91 +12,61 @@
 
 <!-- Statistics Grid -->
 <div class="row fade-in">
-    <!-- Total Admins -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+    <!-- Total Users -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Admins</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAdmins ?? 0 }}</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Users</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUsers ?? 0 }}</div>
                 </div>
-                <div class="icon text-primary">
-                    <i class="fas fa-user-shield fa-2x"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Active Admins -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2 dashboard-card stat-card">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Admins</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeAdmins ?? 0 }}</div>
-                </div>
-                <div class="icon text-success">
-                    <i class="fas fa-user-check fa-2x"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Total Farmers -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2 dashboard-card stat-card">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farmers</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalFarmers ?? 0 }}</div>
-                </div>
-                <div class="icon text-info">
-                    <i class="fas fa-users fa-2x"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- New Requests -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2 dashboard-card stat-card">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">New Requests</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingAdminRequests ?? 0 }}</div>
-                </div>
-                <div class="icon text-warning">
-                    <i class="fas fa-user-plus fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-user-friends fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Service Areas -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2 dashboard-card stat-card">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Service Areas</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Service Areas</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $serviceAreasCount ?? 0 }}</div>
                 </div>
-                <div class="icon text-danger">
-                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-map-marker-alt fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Total Users -->
-    <div class="col-xl-2 col-lg-3 col-md-6 mb-4">
-        <div class="card border-left-secondary shadow h-100 py-2 dashboard-card stat-card">
+    <!-- Total Admins -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Total Users</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUsers ?? 0 }}</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Admins</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAdmins ?? 0 }}</div>
                 </div>
-                <div class="icon text-secondary">
-                    <i class="fas fa-user-friends fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-user-shield fa-2x" style="color: #18375d !important;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Farmers -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Farmers</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalFarmers ?? 0 }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
@@ -151,8 +121,8 @@
     <div class="col-12">
         <div class="card shadow">
             <div class="card-header">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-history"></i>
+                <h6 class="m-0 font-weight-bold" style="color: white !important;">
+                    <i class="fas fa-history" style="color: white !important;"></i>
                     Recent System Activity
                 </h6>
             </div>
@@ -240,21 +210,87 @@
 <style>
 .dashboard-card {
     transition: transform 0.2s ease-in-out;
+    background: #f6f4e8 !important;
+}
+
+/* Recent System Activity Table Badge Colors */
+html body .card .table .badge-danger,
+html body .card .table .badge-warning,
+html body .card .table .badge-info,
+.card .table .badge-danger,
+.card .table .badge-warning,
+.card .table .badge-info {
+    background-color: #fca700 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
+
+html body .card .table .badge-success,
+.card .table .badge-success {
+    background-color: #387057 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
+
+/* Custom Green Button for New Task */
+html body .card .card-header #addTaskBtn.btn-primary,
+html body #addTaskBtn.btn-primary,
+#addTaskBtn.btn-primary {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+}
+
+html body .card .card-header #addTaskBtn.btn-primary:hover,
+html body .card .card-header #addTaskBtn.btn-primary:focus,
+html body #addTaskBtn.btn-primary:hover,
+html body #addTaskBtn.btn-primary:focus,
+#addTaskBtn.btn-primary:hover,
+#addTaskBtn.btn-primary:focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+}
+
+/* Fix Status column alignment in Recent System Activity table */
+.card .table th:last-child,
+.card .table td:last-child {
+    text-align: left !important;
 }
 
 .dashboard-card:hover {
     transform: translateY(-2px);
 }
 
+/* Force override any blue styling on stat cards */
+.card.stat-card,
+.card.dashboard-card {
+    background: #f6f4e8 !important;
+    background-color: #f6f4e8 !important;
+}
 
+.card.stat-card .card-body,
+.card.dashboard-card .card-body {
+    background: #f6f4e8 !important;
+    background-color: #f6f4e8 !important;
+    color: inherit !important;
+}
 
 .stat-card {
     border-radius: 10px;
     overflow: hidden;
+    background: #f6f4e8 !important;
 }
 
 .stat-card .card-body {
     padding: 1.5rem;
+    background: #f6f4e8 !important;
 }
 
 .stat-card .icon {
@@ -264,6 +300,42 @@
 
 .stat-card:hover .icon {
     opacity: 1;
+}
+
+/* Force text colors to be correct */
+.text-primary {
+    color: #18375d !important;
+}
+
+.text-success {
+    color: #1cc88a !important;
+}
+
+.text-info {
+    color: #36b9cc !important;
+}
+
+.text-warning {
+    color: #f6c23e !important;
+}
+
+.text-danger {
+    color: #e74a3b !important;
+}
+
+.text-secondary {
+    color: #858796 !important;
+}
+
+/* Ensure no blue backgrounds anywhere in stat cards */
+.card.stat-card *,
+.card.dashboard-card * {
+    background-color: transparent !important;
+}
+
+.card.stat-card,
+.card.dashboard-card {
+    background-color: #f6f4e8 !important;
 }
 
 .table-responsive {
@@ -511,8 +583,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     datasets: [{
                         label: 'Cattle',
                         data: [0, 0, 0, 0, 0, 0],
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        borderColor: '#fca700',
+                        backgroundColor: 'rgba(252, 167, 0, 0.1)',
                         tension: 0.4,
                         fill: true
                     }, {

@@ -242,7 +242,7 @@
 @push('styles')
 <style>
     .page-header {
-        background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
         color: white;
         padding: 2rem;
         border-radius: 12px;
@@ -250,26 +250,26 @@
     }
     
     .farmer-link {
-        color: #4e73df;
+        color: #18375d;
         text-decoration: none;
         font-weight: 600;
         cursor: pointer;
     }
     
     .farmer-link:hover {
-        color: #3c5aa6;
+        color: #122a47;
         text-decoration: underline;
     }
     
     .livestock-link {
-        color: #4e73df;
+        color: #18375d;
         text-decoration: none;
         font-weight: 600;
         cursor: pointer;
     }
     
     .livestock-link:hover {
-        color: #3c5aa6;
+        color: #122a47;
         text-decoration: underline;
     }
     

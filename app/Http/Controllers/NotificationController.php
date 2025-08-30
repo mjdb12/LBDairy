@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use App\Models\AuditLog;
 use App\Models\Issue;
 use App\Models\User;
@@ -26,10 +27,21 @@ class NotificationController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
+            // Check if notifications table exists
+            if (!Schema::hasTable('notifications')) {
+                // Return empty notifications if table doesn't exist
+                return response()->json([
+                    'success' => true,
+                    'notifications' => [],
+                    'unread_count' => 0
+                ]);
+            }
+
             // Get unread notifications from database
             $notifications = Notification::unread()
                 ->recent()
                 ->orderBy('created_at', 'desc')
+                ->limit(10) // Limit to prevent performance issues
                 ->get()
                 ->map(function ($notification) {
                     return [
@@ -44,25 +56,38 @@ class NotificationController extends Controller
                     ];
                 });
 
-            // Generate system notifications if none exist
-            if ($notifications->isEmpty()) {
-                $this->generateSystemNotifications();
-                $notifications = Notification::unread()
-                    ->recent()
-                    ->orderBy('created_at', 'desc')
-                    ->get()
-                    ->map(function ($notification) {
-                        return [
-                            'id' => $notification->id,
-                            'type' => $notification->severity,
-                            'icon' => $notification->icon,
-                            'title' => $notification->title,
-                            'message' => $notification->message,
-                            'time' => $notification->created_at->diffForHumans(),
-                            'action_url' => $notification->action_url,
-                            'is_read' => $notification->is_read
-                        ];
-                    });
+            // Only generate system notifications if there are no unread notifications
+            // and we haven't generated any in the last 5 minutes
+            $lastGeneratedNotification = Notification::where('metadata->identifier', 'like', '%_generated')
+                ->where('created_at', '>=', now()->subMinutes(5))
+                ->first();
+
+            if ($notifications->isEmpty() && !$lastGeneratedNotification) {
+                try {
+                    $this->generateSystemNotifications();
+                    
+                    // Get notifications again after generation
+                    $notifications = Notification::unread()
+                        ->recent()
+                        ->orderBy('created_at', 'desc')
+                        ->limit(10)
+                        ->get()
+                        ->map(function ($notification) {
+                            return [
+                                'id' => $notification->id,
+                                'type' => $notification->severity,
+                                'icon' => $notification->icon,
+                                'title' => $notification->title,
+                                'message' => $notification->message,
+                                'time' => $notification->created_at->diffForHumans(),
+                                'action_url' => $notification->action_url,
+                                'is_read' => $notification->is_read
+                            ];
+                        });
+                } catch (\Exception $e) {
+                    Log::error('Error generating system notifications: ' . $e->getMessage());
+                    // Continue with empty notifications if generation fails
+                }
             }
             
             return response()->json([
