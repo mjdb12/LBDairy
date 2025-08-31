@@ -308,29 +308,7 @@
 
 @push('styles')
 <style>
-.page-header {
-    background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
-    color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-}
 
-.page-header h1 {
-    margin: 0;
-    font-weight: 700;
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.page-header p {
-    margin: 0.5rem 0 0 0;
-    opacity: 0.9;
-    font-size: 1.1rem;
-}
 
 .fade-in {
     animation: fadeIn 0.5s ease-in;

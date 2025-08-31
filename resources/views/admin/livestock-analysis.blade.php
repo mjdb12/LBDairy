@@ -524,8 +524,8 @@ function refreshTable() {
 @push('styles')
 <style>
 :root {
-    --primary-color: #4e73df;
-    --primary-dark: #3c5aa6;
+    --primary-color: #18375d;
+    --primary-dark: #122a47;
     --success-color: #1cc88a;
     --warning-color: #f6c23e;
     --danger-color: #e74a3b;

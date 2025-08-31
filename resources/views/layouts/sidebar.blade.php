@@ -248,7 +248,7 @@
             <!-- Nav Item - Farmer Alerts -->
             <li class="nav-item {{ isCurrentRoute('admin.farmer-alerts') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.farmer-alerts') }}" data-toggle="tooltip" data-placement="right" data-original-title="Farmer Alerts">
-                    <i class="fas fa-fw fa-bell"></i>
+                    <i class="fas fa-fw fa-exclamation-circle"></i>
                     <span>Farmer Alerts</span>
                 </a>
             </li>

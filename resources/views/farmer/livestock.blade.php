@@ -926,19 +926,7 @@ function showToast(message, type = 'info') {
 
 @push('styles')
 <style>
-:root {
-    --primary-color: #4e73df;
-    --primary-dark: #3c5aa6;
-    --success-color: #1cc88a;
-    --warning-color: #f6c23e;
-    --danger-color: #e74a3b;
-    --info-color: #36b9cc;
-    --light-color: #f8f9fc;
-    --dark-color: #5a5c69;
-    --border-color: #e3e6f0;
-    --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-}
+
 
 /* Enhanced Card Styling */
 .card {
@@ -1103,31 +1091,7 @@ function showToast(message, type = 'info') {
     box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
 }
 
-/* Page Header Enhancement */
-.page-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: linear-gradient(135deg, var(--light-color) 0%, #e3e6f0 100%);
-    border-radius: 16px;
-    border-left: 4px solid var(--primary-color);
-}
 
-.page-header h1 {
-    color: var(--primary-color);
-    font-weight: 700;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.page-header p {
-    color: var(--dark-color);
-    font-size: 1.1rem;
-    margin: 0;
-}
 
 /* Status Badge Styling */
 .status-badge {

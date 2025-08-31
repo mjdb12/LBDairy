@@ -14,7 +14,7 @@
         .glass-effect {
             backdrop-filter: blur(16px);
             background: rgba(255, 255, 255, 0.97);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(24, 55, 93, 0.2);
             box-shadow: 0 8px 40px 0 rgba(24, 55, 93, 0.18), 0 2px 8px 0 rgba(18, 42, 71, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.08);
         }
         .tab-active {
@@ -31,6 +31,7 @@
         .input-focus:focus {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(24, 55, 93, 0.15);
+            border-color: #d4a574;
         }
         .btn-primary {
             background: #18375d;
@@ -48,12 +49,12 @@
         }
     </style>
 </head>
-<body class="min-h-screen" style="background-color: #fff;">
+<body class="min-h-screen" style="background: #ffffff;">
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-4xl">
             <div class="glass-effect rounded-3xl shadow-2xl overflow-hidden">
                 <div class="flex flex-col lg:flex-row">
-                    <!-- Left Side - Branding -->
+                    <!-- Left Side - Branding (Dark Blue) -->
                     <div class="lg:w-1/2 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden" style="background: #18375d;">
                         <div class="absolute inset-0 bg-black opacity-20"></div>
                         <div class="relative z-10 text-center">
@@ -62,8 +63,8 @@
                         </div>
                     </div>
 
-                    <!-- Right Side - Login Form -->
-                    <div class="lg:w-1/2 p-12">
+                    <!-- Right Side - Login Form (White) -->
+                    <div class="lg:w-1/2 p-12" style="background: #ffffff;">
                         <div class="max-w-md mx-auto">
                             @if (session('success'))
                                 <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
@@ -80,12 +81,12 @@
                             @endif
 
                             <div class="text-center mb-8">
-                                <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
                                 <p class="text-gray-600">Please sign in to your account</p>
                             </div>
 
                             <!-- User Type Tabs -->
-                            <div class="flex rounded-2xl p-1 bg-gray-100 mb-8">
+                            <div class="flex rounded-2xl p-1 bg-gray-100">
                                 <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-active" data-tab="farmer">
                                     <div class="flex items-center justify-center space-x-2">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -151,7 +152,7 @@
 
                             <div class="text-center mt-6">
                                 <p class="text-gray-600">Don't have an account? 
-                                    <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-700 font-medium">Register here</a>
+                                    <a href="{{ route('register') }}" class="font-medium" style="color: #18375d;">Register here</a>
                                 </p>
                             </div>
                         </div>

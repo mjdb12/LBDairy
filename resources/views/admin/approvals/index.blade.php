@@ -1,34 +1,44 @@
-@extends('layouts.admin')
+@extends('layouts.app')
+
+@section('title', 'LBDAIRY: Admin - User Approvals')
 
 @section('content')
 <div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">User Registration Approvals</h1>
+    <!-- Page Header -->
+    <div class="page-header fade-in">
+        <h1>
+            <i class="fas fa-user-check"></i>
+            User Registration Approvals
+        </h1>
+        <p>Review and approve pending user registrations</p>
     </div>
 
     <!-- Success/Error Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
+            <i class="fas fa-check-circle mr-2"></i>
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
+            <i class="fas fa-exclamation-circle mr-2"></i>
             {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     @endif
 
     <!-- Pending Registrations -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-                <i class="fas fa-clock me-2"></i>
+    <div class="card shadow mb-4 fade-in">
+        <div class="card-header">
+            <h6>
+                <i class="fas fa-clock mr-2"></i>
                 Pending Approvals ({{ $pendingUsers->count() }})
             </h6>
         </div>
@@ -51,24 +61,24 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar-sm me-3">
+                                        <div class="avatar-sm mr-3">
                                             @if($user->profile_image)
                                                 <img src="{{ asset('storage/' . $user->profile_image) }}" class="rounded-circle" width="40" height="40" alt="Profile">
                                             @else
                                                 <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                    <span class="text-white fw-bold">{{ strtoupper(substr($user->first_name, 0, 1)) }}{{ strtoupper(substr($user->last_name, 0, 1)) }}</span>
+                                                    <span class="text-white font-weight-bold">{{ strtoupper(substr($user->first_name, 0, 1)) }}{{ strtoupper(substr($user->last_name, 0, 1)) }}</span>
                                                 </div>
                                             @endif
                                         </div>
                                         <div>
-                                            <div class="fw-bold">{{ $user->first_name }} {{ $user->last_name }}</div>
+                                            <div class="font-weight-bold">{{ $user->first_name }} {{ $user->last_name }}</div>
                                             <small class="text-muted">@{{ $user->username }}</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
-                                        <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>
+                                    <span class="badge badge-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
+                                        <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} mr-1"></i>
                                         {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
@@ -78,13 +88,13 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="{{ route('admin.approvals.show', $user->id) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye me-1"></i>View
+                                            <i class="fas fa-eye mr-1"></i>View
                                         </a>
                                         <button type="button" class="btn btn-sm btn-success" onclick="approveUser({{ $user->id }})">
-                                            <i class="fas fa-check me-1"></i>Approve
+                                            <i class="fas fa-check mr-1"></i>Approve
                                         </button>
                                         <button type="button" class="btn btn-sm btn-danger" onclick="rejectUser({{ $user->id }})">
-                                            <i class="fas fa-times me-1"></i>Reject
+                                            <i class="fas fa-times mr-1"></i>Reject
                                         </button>
                                     </div>
                                 </td>

@@ -98,7 +98,19 @@
         .card.stat-card,
         .card.dashboard-card {
             background: #f6f4e8 !important;
-            background-color: #f6f4e8 !important;
+        }
+
+        /* Ensure sidebar icons are visible */
+        .sidebar .nav-item .nav-link i {
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .sidebar .nav-item .nav-link:hover i,
+        .sidebar .nav-item.active .nav-link i {
+            color: white !important;
         }
         
         html body .card.stat-card .card-body,
@@ -470,27 +482,46 @@
 
         /* Page Header */
         .page-header {
-            background: #f6f4e8;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white !important;
             padding: 2rem;
             border-radius: 12px;
-            box-shadow: var(--shadow);
             margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .page-header h1 {
-            color: var(--dark-color);
-            font-size: 1.875rem;
+            color: white !important;
+            margin: 0;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         .page-header p {
-            color: var(--gray);
-            font-size: 1.125rem;
-            margin: 0;
+            color: white !important;
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
         }
 
         /* Fade In Animation */
@@ -792,6 +823,62 @@
             transition: width 0.3s ease !important;
             height: 100vh !important;
             overflow-y: auto !important;
+            overflow-x: hidden !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 1000 !important;
+        }
+        
+        /* Ensure collapsed sidebar maintains scrollability */
+        html body .sidebar.toggled {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+        }
+        
+        /* Custom scrollbar for sidebar */
+        html body .sidebar::-webkit-scrollbar,
+        html body .sidebar.toggled::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        html body .sidebar::-webkit-scrollbar-track,
+        html body .sidebar.toggled::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        html body .sidebar::-webkit-scrollbar-thumb,
+        html body .sidebar.toggled::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+        
+        html body .sidebar::-webkit-scrollbar-thumb:hover,
+        html body .sidebar.toggled::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Firefox scrollbar styling */
+        html body .sidebar,
+        html body .sidebar.toggled {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Prevent tooltips from interfering with sidebar navigation */
+        .sidebar .nav-link {
+            position: relative !important;
+            z-index: 1 !important;
+        }
+        
+        /* Disable all tooltips in sidebar */
+        .sidebar .tooltip,
+        body.sidebar-toggled .tooltip,
+        .sidebar.toggled .tooltip {
+            display: none !important;
         }
         
         /* Ensure sidebar toggle button stays in position */
@@ -800,57 +887,6 @@
             bottom: 1rem !important;
             margin: 1rem auto !important;
             z-index: 1000 !important;
-        }
-        
-        /* Enhanced Hover tooltips for collapsed sidebar */
-        html body .sidebar.toggled .nav-link {
-            position: relative !important;
-        }
-        
-        html body .sidebar.toggled .nav-link:hover::after {
-            content: attr(title) !important;
-            position: absolute !important;
-            left: 100% !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            background: rgba(0, 0, 0, 0.9) !important;
-            color: white !important;
-            padding: 0.75rem 1rem !important;
-            border-radius: 6px !important;
-            font-size: 0.875rem !important;
-            font-weight: 500 !important;
-            white-space: nowrap !important;
-            z-index: 9999 !important;
-            margin-left: 15px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-            pointer-events: none !important;
-            animation: tooltipFadeIn 0.2s ease-in-out !important;
-        }
-        
-        /* Tooltip arrow */
-        html body .sidebar.toggled .nav-link:hover::before {
-            content: '' !important;
-            position: absolute !important;
-            left: 100% !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            margin-left: 5px !important;
-            border: 5px solid transparent !important;
-            border-right-color: rgba(0, 0, 0, 0.9) !important;
-            z-index: 9999 !important;
-            pointer-events: none !important;
-        }
-        
-        /* Tooltip animation */
-        @keyframes tooltipFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50%) translateX(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(-50%) translateX(0);
-            }
         }
         
         /* Additional card header overrides for all variations */
@@ -1161,32 +1197,7 @@
             padding: 1rem;
         }
 
-        /* Page Header Enhancement */
-        .page-header {
-            background: var(--primary-color);
-            color: white !important;
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
 
-        .page-header h1 {
-            color: white !important;
-            margin: 0;
-            font-weight: 700;
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .page-header p {
-            color: white !important;
-            margin: 0.5rem 0 0 0;
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
         
 
         
@@ -1294,6 +1305,8 @@
                     trigger: 'hover',
                     animation: false
                 });
+                
+
             }
             
             // Let SB Admin 2 handle the sidebar toggle
@@ -1306,6 +1319,8 @@
                 $('.sidebar').addClass('toggled');
             }
             
+
+            
             // Save state when sidebar is toggled (using SB Admin 2's event)
             $(document).on('click', '#sidebarToggle, #sidebarToggleTop', function() {
                 console.log('Toggle button clicked - before toggle');
@@ -1313,11 +1328,13 @@
                 console.log('Current body classes:', $('body').attr('class'));
                 
                 setTimeout(function() {
-                localStorage.setItem('sidebar-toggled', $('.sidebar').hasClass('toggled'));
+                    localStorage.setItem('sidebar-toggled', $('.sidebar').hasClass('toggled'));
                     console.log('Sidebar state saved:', $('.sidebar').hasClass('toggled'));
                     console.log('After toggle - sidebar classes:', $('.sidebar').attr('class'));
                     console.log('After toggle - body classes:', $('body').attr('class'));
                     console.log('Sidebar width:', $('.sidebar').css('width'));
+                    
+
                 }, 100);
             });
             
@@ -1334,6 +1351,21 @@
             console.log('Topbar sidebar toggle button:', $('#sidebarToggleTop').length);
             console.log('Logout modal:', $('#logoutModal').length);
             console.log('Initial sidebar state:', $('.sidebar').hasClass('toggled'));
+            
+            // Ensure sidebar scrolling works
+            $('.sidebar').on('wheel', function(e) {
+                e.preventDefault();
+                this.scrollTop += e.originalEvent.deltaY;
+            });
+            
+            // Additional debugging for farmer sidebar
+            if ($('body').hasClass('sidebar-toggled') || $('.sidebar').hasClass('toggled')) {
+                console.log('Sidebar is collapsed - checking scrollability');
+                console.log('Sidebar height:', $('.sidebar').height());
+                console.log('Sidebar overflow-y:', $('.sidebar').css('overflow-y'));
+                console.log('Sidebar scrollHeight:', $('.sidebar')[0].scrollHeight);
+                console.log('Sidebar clientHeight:', $('.sidebar')[0].clientHeight);
+            }
 
             // Scroll to Top Button Functionality
             $(document).on('scroll', function() {

@@ -55,16 +55,13 @@
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Livestock</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #36b9cc !important;">Total Livestock</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ auth()->user()->livestock->count() }}</div>
                 </div>
-                <div class="icon text-info">
-                    <i class="fas fa-cow fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-cow fa-2x" style="color: #36b9cc !important;"></i>
                 </div>
             </div>
-            <a href="{{ route('farmer.livestock') }}" class="card-footer text-info small d-flex justify-content-between align-items-center">
-                View Livestock <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div>
     <!-- Milk Production (Monthly) -->
@@ -72,16 +69,13 @@
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Milk Production</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1cc88a !important;">Milk Production</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\ProductionRecord::where('farm_id', auth()->user()->farms->first()->id ?? 0)->whereMonth('production_date', now()->month)->sum('milk_quantity') }} <span class="text-xs">L/month</span></div>
                 </div>
-                <div class="icon text-success">
-                    <i class="fas fa-glass-whiskey fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-glass-whiskey fa-2x" style="color: #1cc88a !important;"></i>
                 </div>
             </div>
-            <a href="{{ route('farmer.production') }}" class="card-footer text-success small d-flex justify-content-between align-items-center">
-                View Records <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div>
     <!-- Sales This Month -->
@@ -89,16 +83,13 @@
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Sales This Month</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #f6c23e !important;">Sales This Month</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format(\App\Models\Sale::where('farm_id', auth()->user()->farms->first()->id ?? 0)->whereMonth('sale_date', now()->month)->sum('total_amount'), 0) }}</div>
                 </div>
-                <div class="icon text-warning">
-                    <i class="fas fa-coins fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-coins fa-2x" style="color: #f6c23e !important;"></i>
                 </div>
             </div>
-            <a href="{{ route('farmer.sales') }}" class="card-footer text-warning small d-flex justify-content-between align-items-center">
-                View Sales <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div>
     <!-- Age of Account -->
@@ -106,16 +97,13 @@
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Account Age</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Account Age</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \Carbon\Carbon::parse(auth()->user()->created_at)->diffForHumans() }}</div>
                 </div>
-                <div class="icon text-primary">
-                    <i class="fas fa-user-clock fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-user-clock fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
-            <a href="{{ route('farmer.profile') }}" class="card-footer text-primary small d-flex justify-content-between align-items-center">
-                Profile Info <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div>
 </div>
@@ -483,47 +471,7 @@
         padding: 2rem;
     }
 
-    /* Page Header Enhancement */
-    .page-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        color: white;
-        padding: 3rem 2rem;
-        border-radius: 16px;
-        margin-bottom: 2.5rem;
-        box-shadow: var(--shadow-lg);
-        position: relative;
-        overflow: hidden;
-    }
 
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-        transform: rotate(45deg);
-    }
-
-    .page-header h1 {
-        margin: 0;
-        font-weight: 800;
-        font-size: 2.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .page-header p {
-        margin: 1rem 0 0 0;
-        opacity: 0.9;
-        font-size: 1.2rem;
-        position: relative;
-        z-index: 1;
-    }
 
     /* Stats Cards Enhancement */
     .border-left-info {
@@ -565,7 +513,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(78, 115, 223, 0.1), transparent);
+        background: linear-gradient(90deg, transparent, rgba(24, 55, 93, 0.1), transparent);
         transition: left 0.5s ease;
     }
 
@@ -574,7 +522,7 @@
     }
 
     .card-footer:hover {
-        background: rgba(78, 115, 223, 0.05);
+        background: rgba(24, 55, 93, 0.05);
     }
 
     /* Profile Picture Enhancement */
@@ -627,7 +575,7 @@
 
     .form-control:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        box-shadow: 0 0 0 0.25rem rgba(24, 55, 93, 0.25);
         background: white;
         transform: translateY(-1px);
     }
@@ -670,9 +618,9 @@
 
     /* CSS Variables */
     :root {
-        --primary-color: #4e73df;
-        --primary-dark: #3c5aa6;
-        --primary-light: #6f8ae6;
+        --primary-color: #18375d;
+        --primary-dark: #122a47;
+        --primary-light: #224abe;
         --success-color: #1cc88a;
         --success-dark: #17a673;
         --warning-color: #f6c23e;

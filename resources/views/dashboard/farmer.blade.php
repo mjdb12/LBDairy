@@ -16,14 +16,14 @@
 <div class="row fade-in">
     <!-- Total Livestock -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
                 </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-cow fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-cow fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
@@ -31,14 +31,14 @@
 
     <!-- Total Production -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Production (L)</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Production (L)</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalProduction, 2) }}</div>
                 </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-chart-line fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-chart-line fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
@@ -46,14 +46,14 @@
 
     <!-- Total Sales -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Sales</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Sales</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalSales, 2) }}</div>
                 </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-dollar-sign fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-dollar-sign fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
@@ -61,14 +61,14 @@
 
     <!-- Total Expenses -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Expenses</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Expenses</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalExpenses, 2) }}</div>
                 </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-receipt fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-receipt fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
@@ -76,14 +76,14 @@
 
     <!-- Active Tasks -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Active Tasks</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Tasks</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $tasks->where('status', '!=', 'done')->count() }}</div>
                 </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-tasks fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-tasks fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
@@ -91,14 +91,14 @@
 
     <!-- Net Profit -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Net Profit</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Net Profit</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalSales - $totalExpenses, 2) }}</div>
                 </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-chart-pie fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-chart-pie fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>

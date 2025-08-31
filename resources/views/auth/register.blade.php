@@ -18,8 +18,8 @@
 
     <style>
         :root {
-            --primary-color: #4e73df;
-            --primary-dark: #3c5aa6;
+            --primary-color: #18375d;
+            --primary-dark: #122a47;
             --success-color: #1cc88a;
             --success-dark: #17a673;
             --warning-color: #f6c23e;
@@ -58,11 +58,13 @@
         .logo-container {
             position: relative;
             margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
         .logo-container img {
-            width: 120px;
-            height: 120px;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
             transition: transform 0.3s ease;
@@ -91,7 +93,7 @@
         .form-control-user:focus {
             border-color: var(--primary-color);
             background: white;
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(24, 55, 93, 0.25);
             transform: translateY(-2px);
         }
 
@@ -110,7 +112,7 @@
 
         .btn-user:hover {
             transform: translateY(-3px);
-            box-shadow: 0 1rem 2rem rgba(78, 115, 223, 0.4);
+            box-shadow: 0 1rem 2rem rgba(24, 55, 93, 0.4);
         }
 
         .nav-tabs {
@@ -130,16 +132,16 @@
         }
 
         .nav-tabs .nav-link:hover {
-            background: rgba(78, 115, 223, 0.1);
+            background: rgba(24, 55, 93, 0.1);
             color: var(--primary-color);
             transform: translateY(-2px);
         }
 
         .nav-tabs .nav-link.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            background: var(--primary-color);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(78, 115, 223, 0.3);
+            box-shadow: 0 8px 25px rgba(24, 55, 93, 0.3);
         }
 
         .form-group {
@@ -220,7 +222,7 @@
         }
 
         .custom-control-input:focus ~ .custom-control-label::before {
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(24, 55, 93, 0.25);
         }
 
         .custom-control-input:hover ~ .custom-control-label::before {
@@ -235,7 +237,7 @@
         }
 
         .modal-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--primary-color);
             color: white;
             border-bottom: none;
             border-radius: 20px 20px 0 0;
@@ -268,6 +270,18 @@
 
         .small:hover {
             color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .terms-link {
+            color: var(--primary-color) !important;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .terms-link:hover {
+            color: var(--primary-dark) !important;
             text-decoration: underline;
         }
 
@@ -345,7 +359,7 @@
                     <div class="card-body">
                         <div class="text-center mb-4">
                             <div class="logo-container">
-                                <img src="https://via.placeholder.com/120x120/4e73df/ffffff?text=LB" alt="LBDAIRY Logo">
+                                <img src="{{ asset('img/LBDairy.png') }}" alt="LBDAIRY Logo" style="width: 150px; height: 150px;">
                             </div>
                             <h1 class="registration-title">Join LBDAIRY</h1>
                             <p class="registration-subtitle">Create your account and start managing your dairy operations</p>
@@ -480,12 +494,12 @@
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" id="farmerTermsCheckbox" name="terms_accepted" required>
                                             <label class="custom-control-label" for="farmerTermsCheckbox">
-                                                I agree to the <a href="#" onclick="showTerms(); return false;">Terms and Conditions</a>
+                                                I agree to the <a href="#" onclick="showTerms(); return false;" class="terms-link">Terms and Conditions</a>
                                             </label>
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    <button type="submit" class="btn btn-user btn-block" style="background: var(--primary-color); color: white;">
                                         <i class="fas fa-seedling mr-2"></i>
                                         Register as Farmer
                                     </button>
@@ -605,12 +619,12 @@
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" id="adminTermsCheckbox" name="terms_accepted" required>
                                             <label class="custom-control-label" for="adminTermsCheckbox">
-                                                I agree to the <a href="#" onclick="showTerms(); return false;">Terms and Conditions</a>
+                                                I agree to the <a href="#" onclick="showTerms(); return false;" class="terms-link">Terms and Conditions</a>
                                             </label>
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    <button type="submit" class="btn btn-user btn-block" style="background: var(--primary-color); color: white;">
                                         <i class="fas fa-user-plus mr-2"></i>
                                         Create Admin Account
                                     </button>
@@ -673,7 +687,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">
+                    <button type="button" class="btn" data-dismiss="modal" style="background: var(--primary-color); color: white; border: none;">
                         <i class="fas fa-check mr-2"></i>
                         I Understand and Agree
                     </button>

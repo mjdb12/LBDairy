@@ -324,7 +324,7 @@
 @push('styles')
 <style>
     .page-header {
-        background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
         color: white;
         padding: 2rem;
         border-radius: 12px;
@@ -332,21 +332,21 @@
     }
     
     .farmer-link {
-        color: #4e73df;
+        color: #18375d;
         text-decoration: none;
         font-weight: 600;
         cursor: pointer;
     }
     
     .farmer-link:hover {
-        color: #3c5aa6;
+        color: #122a47;
         text-decoration: underline;
     }
     
     .border-left-success { border-left: 0.25rem solid #1cc88a !important; }
     .border-left-info { border-left: 0.25rem solid #36b9cc !important; }
     .border-left-warning { border-left: 0.25rem solid #f6c23e !important; }
-    .border-left-primary { border-left: 0.25rem solid #4e73df !important; }
+    .border-left-primary { border-left: 0.25rem solid #18375d !important; }
     
     .gap-2 { gap: 0.5rem !important; }
 </style>

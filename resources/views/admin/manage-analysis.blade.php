@@ -283,7 +283,7 @@
     .stat-card h3 {
         font-size: 2rem;
         font-weight: 700;
-        color: #4e73df;
+        color: #18375d;
         margin: 0;
         position: relative;
         z-index: 1;
@@ -302,13 +302,13 @@
         top: 1rem;
         right: 1rem;
         font-size: 2rem;
-        color: rgba(78, 115, 223, 0.2);
+        color: rgba(24, 55, 93, 0.2);
         z-index: 1;
     }
 
     /* Page Header */
     .page-header {
-        background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
         color: white;
         padding: 2rem;
         border-radius: 12px;

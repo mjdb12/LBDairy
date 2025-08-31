@@ -18,7 +18,7 @@
     }
     
     .border-left-primary {
-        border-left: 0.25rem solid #4e73df !important;
+        border-left: 0.25rem solid #18375d !important;
     }
     
     .border-left-danger {
@@ -40,15 +40,15 @@
 
     .img-profile:hover {
         transform: scale(1.08);
-        box-shadow: 0 1.5rem 4rem rgba(78, 115, 223, 0.25);
+        box-shadow: 0 1.5rem 4rem rgba(24, 55, 93, 0.25);
     }
 
     /* Profile Card Thick Blue Border */
     .profile-card-bordered {
-        background: #4e73df;
+        background: #18375d;
         border-radius: 18px;
         padding: 18px;
-        box-shadow: 0 4px 32px rgba(78, 115, 223, 0.10);
+        box-shadow: 0 4px 32px rgba(24, 55, 93, 0.10);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -65,7 +65,7 @@
 
     /* Card Headers */
     .card-header {
-        background: linear-gradient(135deg, #4e73df 0%, #3c5aa6 100%);
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
         color: white;
         border-bottom: none;
         padding: 1rem 1.5rem;

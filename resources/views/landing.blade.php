@@ -16,7 +16,7 @@
     
     <style>
         .hero-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #18375d;
         }
         .feature-card {
             transition: all 0.3s ease;
@@ -26,10 +26,10 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         .stats-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #18375d;
         }
         .cta-gradient {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: #18375d;
         }
     </style>
 </head>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                        <a href="{{ url('/dashboard') }}" class="bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-md" style="background: #18375d !important;">
                             Dashboard
                         </a>
                     @else
@@ -53,7 +53,7 @@
                             Log in
                         </a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                            <a href="{{ route('register') }}" class="bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-md" style="background: #18375d !important;">
                                 Get Started
                             </a>
                         @endif
@@ -77,14 +77,14 @@
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out">
+                        <a href="{{ url('/dashboard') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
                             Go to Dashboard
                         </a>
                     @else
-                        <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out">
+                        <a href="{{ route('register') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
                             Start Free Trial
                         </a>
-                        <a href="#features" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out">
+                        <a href="#features" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
                             Learn More
                         </a>
                     @endauth
@@ -103,7 +103,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-2">500+</h3>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">{{ $activeFarms ?? 0 }}+</h3>
                     <p class="text-gray-600">Active Farms</p>
                 </div>
                 <div class="text-center">
@@ -112,7 +112,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-2">10,000+</h3>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">{{ $totalLivestock ?? 0 }}+</h3>
                     <p class="text-gray-600">Livestock Tracked</p>
                 </div>
                 <div class="text-center">
@@ -121,7 +121,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-2">99.9%</h3>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">{{ $uptime ?? 99.5 }}%</h3>
                     <p class="text-gray-600">Uptime</p>
                 </div>
             </div>
@@ -144,8 +144,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Livestock Management -->
                 <div class="feature-card bg-white rounded-lg p-6 shadow-md">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4" style="background: rgba(24, 55, 93, 0.1) !important;">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #18375d !important;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </div>
@@ -157,8 +157,8 @@
 
                 <!-- Production Tracking -->
                 <div class="feature-card bg-white rounded-lg p-6 shadow-md">
-                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4" style="background: rgba(24, 55, 93, 0.1) !important;">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #18375d !important;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                     </div>
@@ -170,8 +170,8 @@
 
                 <!-- Health Monitoring -->
                 <div class="feature-card bg-white rounded-lg p-6 shadow-md">
-                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4" style="background: rgba(24, 55, 93, 0.1) !important;">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #18375d !important;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
                     </div>
@@ -183,8 +183,8 @@
 
                 <!-- Financial Management -->
                 <div class="feature-card bg-white rounded-lg p-6 shadow-md">
-                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4" style="background: rgba(24, 55, 93, 0.1) !important;">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #18375d !important;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                         </svg>
                     </div>
@@ -196,8 +196,8 @@
 
                 <!-- Issue Management -->
                 <div class="feature-card bg-white rounded-lg p-6 shadow-md">
-                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4" style="background: rgba(24, 55, 93, 0.1) !important;">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #18375d !important;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                         </svg>
                     </div>
@@ -209,8 +209,8 @@
 
                 <!-- Analytics & Reports -->
                 <div class="feature-card bg-white rounded-lg p-6 shadow-md">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4" style="background: rgba(24, 55, 93, 0.1) !important;">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #18375d !important;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                     </div>
@@ -234,16 +234,16 @@
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out">
-                        Access Dashboard
-                    </a>
+                                            <a href="{{ url('/dashboard') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
+                            Access Dashboard
+                        </a>
                 @else
-                    <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out">
-                        Start Free Trial
-                    </a>
-                    <a href="{{ route('login') }}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out">
-                        Sign In
-                    </a>
+                                            <a href="{{ route('register') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
+                            Start Free Trial
+                        </a>
+                        <a href="{{ route('login') }}" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
+                            Sign In
+                        </a>
                 @endauth
             </div>
         </div>

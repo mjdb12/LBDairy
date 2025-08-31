@@ -25,9 +25,7 @@ use App\Http\Controllers\TestController;
 */
 
 // Public routes
-Route::get('/', function () {
-    return view('landing');
-});
+Route::get('/', [App\Http\Controllers\LandingController::class, 'index']);
 
 // Test route - temporarily disabled
 // Route::get('/test', [TestController::class, 'index']);
