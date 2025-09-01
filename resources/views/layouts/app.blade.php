@@ -37,7 +37,7 @@
             --warning-color: #f6c23e;
             --danger-color: #e74a3b;
             --info-color: #36b9cc;
-            --light-color: #f6f4e8;
+            --light-color: #fff;
             --dark-color: #5a5c69;
             --gray: #858796;
             --border-color: #e3e6f0;
@@ -47,7 +47,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f6f4e8;
+            background-color: #fff;
         }
 
         /* Enhanced Card Styling */
@@ -57,7 +57,7 @@
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
             overflow: hidden;
-            background-color: #f6f4e8;
+            background-color: #fff;
         }
 
         .card:hover {
@@ -97,7 +97,7 @@
         html body .card.dashboard-card,
         .card.stat-card,
         .card.dashboard-card {
-            background: #f6f4e8 !important;
+            background: #fff !important;
         }
 
         /* Ensure sidebar icons are visible */
@@ -117,8 +117,8 @@
         html body .card.dashboard-card .card-body,
         .card.stat-card .card-body,
         .card.dashboard-card .card-body {
-            background: #f6f4e8 !important;
-            background-color: #f6f4e8 !important;
+            background: #fff !important;
+            background-color: #fff !important;
             color: inherit !important;
         }
         
@@ -228,7 +228,7 @@
         .card.dashboard-card,
         .stat-card,
         .dashboard-card {
-            background: #f6f4e8 !important;
+            background: #fff !important;
         }
         
         /* Ensure no blue backgrounds on stat/dashboard cards */
@@ -326,7 +326,7 @@
 
         /* Custom Dashboard Styles */
         .stat-card {
-            background: #f6f4e8 !important;
+            background: #fff !important;
             border-radius: 12px !important;
             padding: 1.5rem !important;
             box-shadow: var(--shadow) !important;
@@ -337,7 +337,7 @@
         
         /* Dashboard card specific styling */
         .dashboard-card {
-            background: #f6f4e8 !important;
+            background: #fff !important;
             border-radius: 12px !important;
             box-shadow: var(--shadow) !important;
             transition: all 0.3s ease !important;
@@ -482,7 +482,7 @@
 
         /* Page Header */
         .page-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--primary-color);
             color: white !important;
             padding: 2rem;
             border-radius: 12px;
@@ -492,16 +492,7 @@
             overflow: hidden;
         }
 
-        .page-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
+
 
         .page-header h1 {
             color: white !important;
@@ -551,7 +542,7 @@
 
         /* Modern Card Styles */
         .modern-card {
-            background: #f6f4e8;
+            background: #fff;
             border-radius: 12px;
             box-shadow: var(--shadow);
             overflow: hidden;

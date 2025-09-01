@@ -210,7 +210,7 @@
 <style>
 .dashboard-card {
     transition: transform 0.2s ease-in-out;
-    background: #f6f4e8 !important;
+    background: #fff !important;
 }
 
 /* Recent System Activity Table Badge Colors */
@@ -271,26 +271,26 @@ html body #addTaskBtn.btn-primary:focus,
 /* Force override any blue styling on stat cards */
 .card.stat-card,
 .card.dashboard-card {
-    background: #f6f4e8 !important;
-    background-color: #f6f4e8 !important;
+    background: #fff !important;
+    background-color: #fff !important;
 }
 
 .card.stat-card .card-body,
 .card.dashboard-card .card-body {
-    background: #f6f4e8 !important;
-    background-color: #f6f4e8 !important;
+    background: #fff !important;
+    background-color: #fff !important;
     color: inherit !important;
 }
 
 .stat-card {
     border-radius: 10px;
     overflow: hidden;
-    background: #f6f4e8 !important;
+    background: #fff !important;
 }
 
 .stat-card .card-body {
     padding: 1.5rem;
-    background: #f6f4e8 !important;
+    background: #fff !important;
 }
 
 .stat-card .icon {
@@ -335,7 +335,7 @@ html body #addTaskBtn.btn-primary:focus,
 
 .card.stat-card,
 .card.dashboard-card {
-    background-color: #f6f4e8 !important;
+    background-color: #fff !important;
 }
 
 .table-responsive {

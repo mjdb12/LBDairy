@@ -14,7 +14,7 @@
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background: #18375d !important;">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}" style="background-color: #f4f2e6 !important;">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}" style="background-color: #f4f2e6 !important; border-bottom: 3px solid #18375d !important;">
         <div class="sidebar-brand-icon">
             <img src="{{ asset('img/LBDairy.png') }}" alt="LBDAIRY" width="50" height="50">
         </div>

@@ -308,7 +308,7 @@
 
     /* Page Header */
     .page-header {
-        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+        background: #18375d;
         color: white;
         padding: 2rem;
         border-radius: 12px;

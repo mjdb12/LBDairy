@@ -30,7 +30,7 @@
   --info: #36b9cc;
   --warning: #FDC500;
   --danger: #e74a3b;
-  --light: #f8f9fc;
+  --light: #fff;
   --dark: #000000;
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
@@ -2579,8 +2579,8 @@ fieldset:disabled a.btn {
 
 .btn-light {
   color: #3a3b45;
-  background-color: #f8f9fc;
-  border-color: #f8f9fc;
+  background-color: #fff;
+  border-color: #fff;
 }
 
 .btn-light:hover {
@@ -2598,8 +2598,8 @@ fieldset:disabled a.btn {
 
 .btn-light.disabled, .btn-light:disabled {
   color: #3a3b45;
-  background-color: #f8f9fc;
-  border-color: #f8f9fc;
+  background-color: #fff;
+  border-color: #fff;
 }
 
 .btn-light:not(:disabled):not(.disabled):active, .btn-light:not(:disabled):not(.disabled).active,
@@ -2844,14 +2844,14 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-light {
-  color: #f8f9fc;
-  border-color: #f8f9fc;
+  color: #fff;
+  border-color: #fff;
 }
 
 .btn-outline-light:hover {
   color: #3a3b45;
-  background-color: #f8f9fc;
-  border-color: #f8f9fc;
+  background-color: #fff;
+  border-color: #fff;
 }
 
 .btn-outline-light:focus, .btn-outline-light.focus {
@@ -2859,15 +2859,15 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-light.disabled, .btn-outline-light:disabled {
-  color: #f8f9fc;
+  color: #fff;
   background-color: transparent;
 }
 
 .btn-outline-light:not(:disabled):not(.disabled):active, .btn-outline-light:not(:disabled):not(.disabled).active,
 .show > .btn-outline-light.dropdown-toggle {
   color: #3a3b45;
-  background-color: #f8f9fc;
-  border-color: #f8f9fc;
+  background-color: #fff;
+  border-color: #fff;
 }
 
 .btn-outline-light:not(:disabled):not(.disabled):active:focus, .btn-outline-light:not(:disabled):not(.disabled).active:focus,
@@ -4552,7 +4552,7 @@ input[type="button"].btn-block {
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
-  background-color: #f8f9fc;
+  background-color: #fff;
   border-bottom: 1px solid #e3e6f0;
 }
 
@@ -4562,7 +4562,7 @@ input[type="button"].btn-block {
 
 .card-footer {
   padding: 0.75rem 1.25rem;
-  background-color: #f8f9fc;
+  background-color: #fff;
   border-top: 1px solid #e3e6f0;
 }
 
@@ -4969,7 +4969,7 @@ a.badge-danger:focus, a.badge-danger.focus {
 
 .badge-light {
   color: #3a3b45;
-  background-color: #f8f9fc;
+  background-color: #fff;
 }
 
 a.badge-light:hover, a.badge-light:focus {
@@ -5247,7 +5247,7 @@ a.badge-dark:focus, a.badge-dark.focus {
   z-index: 1;
   color: #6e707e;
   text-decoration: none;
-  background-color: #f8f9fc;
+  background-color: #fff;
 }
 
 .list-group-item-action:active {
@@ -6471,7 +6471,7 @@ button.bg-danger:focus {
 }
 
 .bg-light {
-  background-color: #f8f9fc !important;
+  background-color: #fff !important;
 }
 
 a.bg-light:hover, a.bg-light:focus,
@@ -6563,7 +6563,7 @@ button.bg-dark:focus {
 }
 
 .border-light {
-  border-color: #f8f9fc !important;
+  border-color: #fff !important;
 }
 
 .border-dark {
@@ -9640,7 +9640,7 @@ a.text-danger:hover, a.text-danger:focus {
 }
 
 .text-light {
-  color: #f8f9fc !important;
+  color: #fff !important;
 }
 
 a.text-light:hover, a.text-light:focus {
@@ -9797,7 +9797,7 @@ a:focus {
 }
 
 #wrapper #content-wrapper {
-  background-color: #f8f9fc;
+  background-color: #fff;
   width: 100%;
   overflow-x: hidden;
 }
@@ -9936,8 +9936,8 @@ a:focus {
 }
 
 .bg-gradient-light {
-  background-color: #f8f9fc;
-  background-image: linear-gradient(180deg, #f8f9fc 10%, #c2cbe5 100%);
+  background-color: #fff;
+  background-image: linear-gradient(180deg, #fff 10%, #c2cbe5 100%);
   background-size: cover;
 }
 
@@ -9948,7 +9948,7 @@ a:focus {
 }
 
 .bg-gray-100 {
-  background-color: #f8f9fc !important;
+  background-color: #fff !important;
 }
 
 .bg-gray-200 {
@@ -9996,7 +9996,7 @@ a:focus {
 }
 
 .text-gray-100 {
-  color: #f8f9fc !important;
+  color: #fff !important;
 }
 
 .text-gray-200 {
@@ -11176,7 +11176,7 @@ form.user .btn-user {
   text-shadow: -1px 0 #e74a3b;
   top: 0;
   color: #5a5c69;
-  background: #f8f9fc;
+  background: #fff;
   overflow: hidden;
   clip: rect(0, 900px, 0, 0);
   animation: noise-anim 2s infinite linear alternate-reverse;
@@ -11321,7 +11321,7 @@ form.user .btn-user {
   text-shadow: 1px 0 #18375d;
   top: 0;
   color: #5a5c69;
-  background: #f8f9fc;
+  background: #fff;
   overflow: hidden;
   clip: rect(0, 900px, 0, 0);
   animation: noise-anim-2 3s infinite linear alternate-reverse;

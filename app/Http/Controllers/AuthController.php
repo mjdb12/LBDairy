@@ -58,6 +58,9 @@ class AuthController extends Controller
         }
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
+            // Update last login time
+            $user->update(['last_login_at' => now()]);
+            
             Auth::login($user);
             return redirect()->intended($this->getDashboardRoute($user->role));
         }

@@ -60,15 +60,15 @@
 }
 
 .btn-action-edit {
-    background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+    background: #387057;
     color: white;
-    box-shadow: 0 2px 4px rgba(24, 55, 93, 0.3);
+    box-shadow: 0 2px 4px rgba(56, 112, 87, 0.3);
 }
 
 .btn-action-edit:hover {
-    background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+    background: #2d5a47;
     color: white;
-    box-shadow: 0 4px 8px rgba(24, 55, 93, 0.4);
+    box-shadow: 0 4px 8px rgba(56, 112, 87, 0.4);
 }
 
 .btn-action-delete {
@@ -120,15 +120,15 @@
 }
 
 .btn-action-toggle {
-    background: linear-gradient(135deg, #858796 0%, #6b6d7d 100%);
+    background: #e04220;
     color: white;
-    box-shadow: 0 2px 4px rgba(133, 135, 150, 0.3);
+    box-shadow: 0 2px 4px rgba(224, 66, 32, 0.3);
 }
 
 .btn-action-toggle:hover {
-    background: linear-gradient(135deg, #858796 0%, #6b6d7d 100%);
+    background: #c73a1c;
     color: white;
-    box-shadow: 0 4px 8px rgba(133, 135, 150, 0.4);
+    box-shadow: 0 4px 8px rgba(224, 66, 32, 0.4);
 }
 
 .btn-action-reset {
@@ -311,7 +311,7 @@
 }
 
 .pagination-btn:hover {
-    background: #f8f9fc;
+    background: #fff;
     border-color: #4e73df;
     color: #4e73df;
     text-decoration: none;
@@ -398,7 +398,7 @@
 }
 
 .dataTables_paginate .paginate_button:hover {
-    background: #f8f9fc !important;
+    background: #fff !important;
     border-color: #18375d !important;
     color: #18375d !important;
     text-decoration: none !important;

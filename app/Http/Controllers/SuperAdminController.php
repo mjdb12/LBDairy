@@ -12,6 +12,7 @@ use App\Models\Farm;
 use App\Models\Livestock;
 use App\Models\ProductionRecord;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SuperAdminController extends Controller
 {
@@ -394,9 +395,29 @@ class SuperAdminController extends Controller
                 'is_active',
                 'phone',
                 'barangay',
+                'last_login_at',
                 'created_at',
                 'updated_at'
             ])->get();
+
+            // Check which users are currently online (have active sessions)
+            try {
+                $onlineUserIds = DB::table('sessions')
+                    ->where('user_id', '!=', null)
+                    ->where('last_activity', '>', now()->subMinutes(5)) // Consider users online if active in last 5 minutes
+                    ->pluck('user_id')
+                    ->toArray();
+
+                // Add online status to each user
+                $users->each(function ($user) use ($onlineUserIds) {
+                    $user->is_online = in_array($user->id, $onlineUserIds);
+                });
+            } catch (\Exception $e) {
+                // If sessions table doesn't exist or there's an error, mark all users as offline
+                $users->each(function ($user) {
+                    $user->is_online = false;
+                });
+            }
 
             return response()->json(['success' => true, 'data' => $users]);
         } catch (\Exception $e) {
@@ -409,10 +430,22 @@ class SuperAdminController extends Controller
         try {
             $stats = [
                 'total' => User::count(),
-                'active' => User::where('is_active', true)->count(),
+                'approved' => User::where('status', 'approved')->count(),
                 'pending' => User::where('status', 'pending')->count(),
-                'suspended' => User::where('is_active', false)->count(),
+                'rejected' => User::where('status', 'rejected')->count(),
             ];
+            
+            // Try to get online and recently active stats
+            try {
+                $stats['online'] = DB::table('sessions')
+                    ->where('user_id', '!=', null)
+                    ->where('last_activity', '>', now()->subMinutes(5))
+                    ->count();
+                $stats['recently_active'] = User::where('last_login_at', '>', now()->subHours(24))->count();
+            } catch (\Exception $e) {
+                $stats['online'] = 0;
+                $stats['recently_active'] = 0;
+            }
             
             return response()->json(['success' => true, 'data' => $stats]);
         } catch (\Exception $e) {
@@ -436,6 +469,7 @@ class SuperAdminController extends Controller
                 'phone',
                 'barangay',
                 'address',
+                'last_login_at',
                 'created_at',
                 'updated_at'
             ])->findOrFail($id);
@@ -458,6 +492,7 @@ class SuperAdminController extends Controller
                 'phone' => 'nullable|string|max:20',
                 'barangay' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
+                'status' => 'required|in:pending,approved,rejected',
                 'password' => 'required|string|min:8|confirmed',
             ]);
 
@@ -472,8 +507,8 @@ class SuperAdminController extends Controller
                 'barangay' => $request->barangay,
                 'address' => $request->address,
                 'password' => Hash::make($request->password),
-                'is_active' => true,
-                'status' => 'approved',
+                'is_active' => $request->status === 'approved',
+                'status' => $request->status,
             ]);
 
             // Log the action
@@ -497,6 +532,18 @@ class SuperAdminController extends Controller
         try {
             $user = User::findOrFail($id);
             
+            // Debug: Log the incoming request data
+            Log::info('Update user request data:', $request->all());
+            Log::info('Current user status:', ['id' => $id, 'current_status' => $user->status]);
+            
+            // Check if current user status is valid
+            $validStatuses = ['pending', 'approved', 'rejected'];
+            if (!in_array($user->status, $validStatuses)) {
+                Log::warning('User has invalid status:', ['id' => $id, 'invalid_status' => $user->status]);
+                // Fix the invalid status
+                $user->update(['status' => 'pending']);
+            }
+            
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
@@ -506,6 +553,7 @@ class SuperAdminController extends Controller
                 'phone' => 'nullable|string|max:20',
                 'barangay' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
+                'status' => 'required|in:pending,approved,rejected',
                 'password' => 'nullable|string|min:8|confirmed',
             ]);
 
@@ -518,6 +566,8 @@ class SuperAdminController extends Controller
                 'role' => $request->role,
                 'phone' => $request->phone,
                 'barangay' => $request->barangay,
+                'status' => $request->status,
+                'is_active' => $request->status === 'approved',
                 'address' => $request->address,
             ];
 
@@ -539,8 +589,15 @@ class SuperAdminController extends Controller
             ]);
 
             return response()->json(['success' => true, 'message' => 'User updated successfully']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to update user'], 500);
+            Log::error('User update failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to update user: ' . $e->getMessage()], 500);
         }
     }
 

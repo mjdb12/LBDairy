@@ -33,14 +33,14 @@
     --info-light: #c7ebf1;
     
     /* Neutral Colors */
-    --light-color: #f8f9fc;
+    --light-color: #fff;
     --dark-color: #5a5c69;
     --gray-color: #858796;
     --border-color: #e3e6f0;
     --text-muted: #6b7280;
     
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    --gradient-primary: var(--primary-color);
     --gradient-success: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
     --gradient-warning: linear-gradient(135deg, var(--warning-color) 0%, var(--warning-dark) 100%);
     --gradient-danger: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-dark) 100%);

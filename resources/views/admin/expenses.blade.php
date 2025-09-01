@@ -478,7 +478,7 @@ function printExpenses() {
     --warning-color: #f6c23e;
     --danger-color: #e74a3b;
     --info-color: #36b9cc;
-    --light-color: #f6f4e8;
+    --light-color: #fff;
     --dark-color: #5a5c69;
     --border-color: #e3e6f0;
     --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
@@ -488,7 +488,7 @@ function printExpenses() {
 }
 
 .page-header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    background: var(--primary-color);
     color: white;
     padding: 2rem;
     border-radius: var(--border-radius);
