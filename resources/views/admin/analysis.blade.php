@@ -146,7 +146,7 @@
                                 <div class="progress" style="height: 20px;">
                                     <div class="progress-bar bg-{{ $farmer->productivity_score >= 80 ? 'success' : ($farmer->productivity_score >= 60 ? 'warning' : 'danger') }}" 
                                          role="progressbar" 
-                                         style="width: {{ $farmer->productivity_score }}%"
+                                         data-width="{{ $farmer->productivity_score }}"
                                          aria-valuenow="{{ $farmer->productivity_score }}" 
                                          aria-valuemin="0" 
                                          aria-valuemax="100">
@@ -165,10 +165,12 @@
                                         <span>Details</span>
                                     </button>
                                     <button class="btn-action btn-action-toggle" 
-                                            onclick="updateFarmerStatus('{{ $farmer->id }}', '{{ $farmer->status === 'active' ? 'inactive' : 'active' }}')" 
-                                            title="{{ $farmer->status === 'active' ? 'Deactivate' : 'Activate' }}">
-                                        <i class="fas fa-{{ $farmer->status === 'active' ? 'pause' : 'play' }}"></i>
-                                        <span>{{ $farmer->status === 'active' ? 'Deactivate' : 'Activate' }}</span>
+                                            data-farmer-id="{{ $farmer->id }}" 
+                                            data-current-status="{{ $farmer->status }}"
+                                            onclick="toggleFarmerStatus(this)"
+                                            title="{{ $farmer->status == 'active' ? 'Deactivate' : 'Activate' }}">
+                                        <i class="fas fa-{{ $farmer->status == 'active' ? 'pause' : 'play' }}"></i>
+                                        <span>{{ $farmer->status == 'active' ? 'Deactivate' : 'Activate' }}</span>
                                     </button>
                                     <button class="btn-action btn-action-delete" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
@@ -714,6 +716,12 @@
     let farmerToDelete = null;
 
     $(document).ready(function () {
+        // Set progress bar widths from data attributes
+        $('.progress-bar[data-width]').each(function() {
+            const width = $(this).data('width');
+            $(this).css('width', width + '%');
+        });
+        
         // Initialize DataTable
         initializeDataTable();
         
@@ -816,6 +824,13 @@
                     </div>
                 `;
             });
+    }
+
+    function toggleFarmerStatus(button) {
+        const farmerId = button.getAttribute('data-farmer-id');
+        const currentStatus = button.getAttribute('data-current-status');
+        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+        updateFarmerStatus(farmerId, newStatus);
     }
 
     function updateFarmerStatus(farmerId, newStatus) {

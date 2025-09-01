@@ -262,11 +262,29 @@
     .table-responsive {
         overflow-x: auto;
         min-width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
     }
     
     #usersTable {
         width: 100% !important;
-        min-width: 1200px;
+        min-width: 1280px;
         border-collapse: collapse;
     }
     
@@ -289,18 +307,31 @@
         padding: 0.75rem;
         text-align: center;
         border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure Registration Date column has enough space */
+    #usersTable th:nth-child(6),
+    #usersTable td:nth-child(6) {
+        min-width: 220px !important;
+        width: 220px !important;
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: initial;
     }
     
     /* Ensure all table headers have consistent styling */
     #usersTable thead th {
         background-color: #f8f9fa;
         border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
         text-transform: uppercase;
-        font-size: 0.8rem;
         letter-spacing: 0.5px;
         padding: 1rem 0.75rem;
-        text-align: center;
+        text-align: left;
         vertical-align: middle;
         position: relative;
         white-space: nowrap;
@@ -333,12 +364,117 @@
         display: none;
     }
     
-    /* Actions column header - left aligned */
-    #usersTable thead th:last-child {
-        text-align: left;
-    }
+
     
 
+    
+    /* DataTables Pagination Styling */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #18375d;
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+    }
+    
+    /* Ensure pagination container is properly positioned */
+    .dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+    
+    .dataTables_wrapper .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0;
+    }
+
+    /* User Details Modal Styling */
+    #userDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #userDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #userDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #userDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #userDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #userDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #userDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
     
     /* Responsive adjustments */
     @media (max-width: 1200px) {
@@ -767,7 +903,7 @@ function initializeDataTables() {
             { width: '220px', targets: 2 }, // Email
             { width: '120px', targets: 3 }, // Role
             { width: '120px', targets: 4 }, // Status
-            { width: '140px', targets: 5 }, // Registration Date
+            { width: '220px', targets: 5 }, // Registration Date
             { width: '160px', targets: 6 }, // Last Login
             { width: '220px', targets: 7, className: 'text-left' }  // Actions
         ],
@@ -1104,14 +1240,14 @@ function showUserDetails(userId) {
                 const details = `
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="mb-3 text-primary">Personal Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Personal Information</h6>
                             <p><strong>Full Name:</strong> ${displayName}</p>
                             <p><strong>Email:</strong> ${user.email}</p>
                             <p><strong>Username:</strong> ${user.username}</p>
                             <p><strong>Contact Number:</strong> ${user.phone || 'N/A'}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="mb-3 text-primary">Account Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Account Information</h6>
                             <p><strong>Role:</strong> <span class="badge badge-${getRoleBadgeClass(user.role)}">${user.role}</span></p>
                             <p><strong>Status:</strong> <span class="badge badge-${getStatusBadgeClass(user.status)}">${user.status}</span></p>
                             <p><strong>Barangay:</strong> ${user.barangay || 'N/A'}</p>

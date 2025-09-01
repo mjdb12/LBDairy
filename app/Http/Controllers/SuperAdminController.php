@@ -762,6 +762,65 @@ class SuperAdminController extends Controller
         }
     }
 
+    public function storeAdmin(Request $request)
+    {
+        try {
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'username' => 'required|string|max:255|unique:users,username',
+                'phone' => 'nullable|string|max:20',
+                'barangay' => 'required|string|max:255',
+                'password' => 'required|string|min:8|confirmed',
+                'status' => 'required|in:approved,pending',
+                'role' => 'required|in:admin',
+            ]);
+
+            // Create the admin user
+            $admin = User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'email' => $request->email,
+                'username' => $request->username,
+                'phone' => $request->phone,
+                'barangay' => $request->barangay,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+                'status' => $request->status,
+                'is_active' => $request->status === 'approved',
+            ]);
+
+            // Log the admin creation
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'admin_created',
+                'description' => "New admin '{$admin->name}' created by super admin",
+                'severity' => 'low'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin created successfully',
+                'admin' => $admin
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Error creating admin: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create admin. Please try again.'
+            ], 500);
+        }
+    }
+
     // Farm Management Methods
     public function getFarmStats()
     {
@@ -1247,6 +1306,117 @@ class SuperAdminController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to load livestock trends'], 500);
+        }
+    }
+
+    /**
+     * Show admin details.
+     */
+    public function showAdmin($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            
+            // Check if user is online
+            $admin->is_online = DB::table('sessions')
+                ->where('user_id', $admin->id)
+                ->where('last_activity', '>=', now()->subMinutes(5))
+                ->exists();
+
+            return response()->json([
+                'success' => true,
+                'data' => $admin
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admin not found'
+            ], 404);
+        }
+    }
+
+    /**
+     * Update admin.
+     */
+    public function updateAdmin(Request $request, $id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => ['required', 'email', Rule::unique('users')->ignore($admin->id)],
+                'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($admin->id)],
+                'phone' => 'nullable|string|max:20',
+                'barangay' => 'required|string|max:255',
+                'role' => 'required|string|in:admin',
+                'password' => 'nullable|string|min:8',
+            ]);
+
+            $updateData = [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'username' => $request->username,
+                'phone' => $request->phone,
+                'barangay' => $request->barangay,
+                'role' => $request->role,
+            ];
+
+            // Only update password if provided
+            if ($request->filled('password')) {
+                $updateData['password'] = Hash::make($request->password);
+            }
+
+            $admin->update($updateData);
+
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'admin_updated',
+                'description' => "Admin '{$admin->first_name} {$admin->last_name}' updated by super admin",
+                'severity' => 'info'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update admin'
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete admin.
+     */
+    public function destroyAdmin($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            $adminName = $admin->first_name . ' ' . $admin->last_name;
+            
+            $admin->delete();
+
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'admin_deleted',
+                'description' => "Admin '{$adminName}' deleted by super admin",
+                'severity' => 'warning'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete admin'
+            ], 500);
         }
     }
 }

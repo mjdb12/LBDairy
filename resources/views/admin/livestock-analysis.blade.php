@@ -171,7 +171,7 @@
                             <td>
                                 <div class="progress" style="height: 20px;">
                                     <div class="progress-bar bg-success" role="progressbar" 
-                                         style="width: {{ $animal->productivity_score ?? 0 }}%"
+                                         data-width="{{ $animal->productivity_score ?? 0 }}"
                                          aria-valuenow="{{ $animal->productivity_score ?? 0 }}" 
                                          aria-valuemin="0" aria-valuemax="100">
                                         {{ $animal->productivity_score ?? 0 }}%
@@ -279,6 +279,12 @@ let currentAnalysisType = 'growth';
 
 // Initialize charts when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Set progress bar widths from data attributes
+    document.querySelectorAll('.progress-bar[data-width]').forEach(function(progressBar) {
+        const width = progressBar.getAttribute('data-width');
+        progressBar.style.width = width + '%';
+    });
+    
     initializeMainChart();
     setupEventListeners();
 });

@@ -108,7 +108,11 @@ let suppressNotifications = false;
 let lastNotificationCount = 0;
 
 function loadNotifications() {
+    // Debug logging
+    console.log('loadNotifications called, suppressNotifications:', suppressNotifications);
+    
     if (suppressNotifications) {
+        console.log('Notifications suppressed, returning early');
         updateNotificationCount(0);
         updateNotificationsList([]);
         return;
@@ -116,7 +120,13 @@ function loadNotifications() {
     
     // Show loading state
     const container = document.getElementById('notificationsList');
+    if (!container) {
+        console.error('notificationsList container not found');
+        return;
+    }
     container.innerHTML = '<div class="dropdown-item text-center small text-gray-500"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    
+    console.log('Starting notifications fetch request...');
     
     // Create a timeout promise
     const timeoutPromise = new Promise((_, reject) => {
@@ -130,35 +140,44 @@ function loadNotifications() {
             credentials: 'same-origin',
             headers: {
                 'Accept': 'application/json',
-                'Cache-Control': 'no-cache'
+                'Cache-Control': 'no-cache',
+                'X-Requested-With': 'XMLHttpRequest'
             }
         }),
         timeoutPromise
     ])
         .then(response => {
+            console.log('Notifications response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
+            console.log('Notifications response data:', data);
+            
             if (data.success) {
-                const newCount = data.unread_count;
+                const newCount = data.unread_count || 0;
                 
-                // Only update if count has changed
-                if (newCount !== lastNotificationCount) {
-                    updateNotificationCount(newCount);
-                    updateNotificationsList(data.notifications);
-                    lastNotificationCount = newCount;
-                    
-                    // Log for debugging
-                    console.log('Notifications updated:', {
-                        count: newCount,
-                        notifications: data.notifications.length,
-                        timestamp: new Date().toISOString()
-                    });
-                }
+                console.log('Processing notifications:', {
+                    newCount: newCount,
+                    lastCount: lastNotificationCount,
+                    notifications: data.notifications
+                });
+                
+                // Always update to ensure display is correct
+                updateNotificationCount(newCount);
+                updateNotificationsList(data.notifications || []);
+                lastNotificationCount = newCount;
+                
+                // Log for debugging
+                console.log('Notifications updated:', {
+                    count: newCount,
+                    notifications: (data.notifications || []).length,
+                    timestamp: new Date().toISOString()
+                });
             } else {
+                console.error('Notifications response not successful:', data);
                 throw new Error(data.error || 'Failed to load notifications');
             }
         })
@@ -198,9 +217,16 @@ function updateNotificationCount(count) {
 }
 
 function updateNotificationsList(notifications) {
+    console.log('updateNotificationsList called with:', notifications);
     const container = document.getElementById('notificationsList');
     
-    if (notifications.length === 0) {
+    if (!container) {
+        console.error('notificationsList container not found in updateNotificationsList');
+        return;
+    }
+    
+    if (!notifications || notifications.length === 0) {
+        console.log('No notifications to display');
         container.innerHTML = '<div class="dropdown-item text-center small text-gray-500"><i class="fas fa-check-circle text-success"></i> No new notifications</div>';
         return;
     }

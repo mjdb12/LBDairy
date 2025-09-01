@@ -23,7 +23,17 @@ class NotificationController extends Controller
         try {
             $user = Auth::user();
             
+            Log::info('Notifications request received', [
+                'user_id' => $user ? $user->id : null,
+                'user_role' => $user ? $user->role : null,
+                'timestamp' => now()->toISOString()
+            ]);
+            
             if (!$user || $user->role !== 'superadmin') {
+                Log::warning('Unauthorized notifications access attempt', [
+                    'user_id' => $user ? $user->id : null,
+                    'user_role' => $user ? $user->role : null
+                ]);
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -56,13 +66,26 @@ class NotificationController extends Controller
                     ];
                 });
 
+            Log::info('Retrieved notifications from database', [
+                'unread_count' => $notifications->count(),
+                'total_notifications_in_db' => Notification::count(),
+                'notifications' => $notifications->toArray()
+            ]);
+
             // Only generate system notifications if there are no unread notifications
             // and we haven't generated any in the last 5 minutes
             $lastGeneratedNotification = Notification::where('metadata->identifier', 'like', '%_generated')
                 ->where('created_at', '>=', now()->subMinutes(5))
                 ->first();
 
+            Log::info('Checking if notifications need to be generated', [
+                'notifications_empty' => $notifications->isEmpty(),
+                'last_generated_exists' => $lastGeneratedNotification !== null,
+                'should_generate' => $notifications->isEmpty() && !$lastGeneratedNotification
+            ]);
+
             if ($notifications->isEmpty() && !$lastGeneratedNotification) {
+                Log::info('Generating system notifications...');
                 try {
                     $this->generateSystemNotifications();
                     
@@ -84,8 +107,15 @@ class NotificationController extends Controller
                                 'is_read' => $notification->is_read
                             ];
                         });
+                    
+                    Log::info('Notifications after generation', [
+                        'count' => $notifications->count(),
+                        'notifications' => $notifications->toArray()
+                    ]);
                 } catch (\Exception $e) {
-                    Log::error('Error generating system notifications: ' . $e->getMessage());
+                    Log::error('Error generating system notifications: ' . $e->getMessage(), [
+                        'exception' => $e->getTraceAsString()
+                    ]);
                     // Continue with empty notifications if generation fails
                 }
             }

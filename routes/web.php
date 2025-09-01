@@ -316,6 +316,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admins/pending', [SuperAdminController::class, 'getPendingAdmins'])->name('admins.pending');
         Route::get('/admins/active', [SuperAdminController::class, 'getActiveAdmins'])->name('admins.active');
         Route::get('/admins/stats', [SuperAdminController::class, 'getAdminStats'])->name('admins.stats');
+        Route::get('/admins/{id}', [SuperAdminController::class, 'showAdmin'])->name('admins.show');
+        Route::post('/admins', [SuperAdminController::class, 'storeAdmin'])->name('admins.store');
+        Route::put('/admins/{id}', [SuperAdminController::class, 'updateAdmin'])->name('admins.update');
+        Route::delete('/admins/{id}', [SuperAdminController::class, 'destroyAdmin'])->name('admins.destroy');
         Route::post('/admins/{id}/approve', [SuperAdminController::class, 'approveAdmin'])->name('admins.approve');
         Route::post('/admins/{id}/reject', [SuperAdminController::class, 'rejectAdmin'])->name('admins.reject');
         Route::post('/admins/{id}/deactivate', [SuperAdminController::class, 'deactivateAdmin'])->name('admins.deactivate');

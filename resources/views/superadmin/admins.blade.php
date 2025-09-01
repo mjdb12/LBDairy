@@ -5,20 +5,8 @@
 @push('styles')
 <style>
     /* Custom styles for admin management */
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
-    
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
-    
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
-    
-    .border-left-danger {
-        border-left: 0.25rem solid #e74a3b !important;
+    .border-left-primary {
+        border-left: 0.25rem solid #18375d !important;
     }
     
     .card-header .btn-group {
@@ -65,6 +53,421 @@
     .gap-2 {
         gap: 0.5rem !important;
     }
+    
+    /* Dashboard-style stat card styling */
+    .dashboard-card {
+        transition: transform 0.2s ease-in-out;
+        background: #fff !important;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Force override any blue styling on stat cards */
+    .card.stat-card,
+    .card.dashboard-card {
+        background: #fff !important;
+        background-color: #fff !important;
+    }
+    
+    .card.stat-card .card-body,
+    .card.dashboard-card .card-body {
+        background: #fff !important;
+        background-color: #fff !important;
+        color: inherit !important;
+    }
+    
+    .stat-card {
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff !important;
+    }
+    
+    .stat-card .card-body {
+        padding: 1.5rem;
+        background: #fff !important;
+    }
+    
+    .stat-card .icon {
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .stat-card:hover .icon {
+        opacity: 1;
+    }
+    
+    /* Force text colors to be correct */
+    .text-primary {
+        color: #18375d !important;
+    }
+    
+    /* Ensure no blue backgrounds anywhere in stat cards */
+    .card.stat-card *,
+    .card.dashboard-card * {
+        background-color: transparent !important;
+    }
+    
+    .card.stat-card,
+    .card.dashboard-card {
+        background-color: #fff !important;
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.6s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Action buttons styling to match user management */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-approve {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-approve:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-reject {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-reject:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+    
+    .btn-action-toggle {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-action-toggle:hover {
+        background-color: #5a6268;
+        border-color: #5a6268;
+        color: white;
+    }
+    
+    .btn-action-view {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+    
+    .btn-action-view:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        color: white;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Responsive action buttons */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+    
+    /* Header action buttons styling to match user management */
+    .btn-action-add {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-add:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    
+    .btn-action-refresh {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+    
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+    
+    /* Table layout styling to match user directory */
+    
+    /* Ensure table has enough space for actions column */
+    #pendingAdminsTable th:last-child,
+    #pendingAdminsTable td:last-child,
+    #activeAdminsTable th:last-child,
+    #activeAdminsTable td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
+    
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #pendingAdminsTable,
+    #activeAdminsTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #pendingAdminsTable th,
+    #pendingAdminsTable td,
+    #activeAdminsTable th,
+    #activeAdminsTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #pendingAdminsTable thead th,
+    #activeAdminsTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #pendingAdminsTable thead th.sorting,
+    #pendingAdminsTable thead th.sorting_asc,
+    #pendingAdminsTable thead th.sorting_desc,
+    #activeAdminsTable thead th.sorting,
+    #activeAdminsTable thead th.sorting_asc,
+    #activeAdminsTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #pendingAdminsTable thead th::after,
+    #activeAdminsTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #pendingAdminsTable thead th.sorting::after,
+    #pendingAdminsTable thead th.sorting_asc::after,
+    #pendingAdminsTable thead th.sorting_desc::after,
+    #activeAdminsTable thead th.sorting::after,
+    #activeAdminsTable thead th.sorting_asc::after,
+    #activeAdminsTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+    /* DataTables Pagination Styling */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #18375d;
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+            .dataTables_wrapper .dataTables_info {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #495057;
+            font-size: 0.875rem;
+        }
+
+        /* User ID link styling to match user directory */
+        .user-id-link {
+            color: #18375d;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .user-id-link:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+
+        .user-id-link:active {
+            color: #0a58ca;
+        }
+    
+    /* Ensure pagination container is properly positioned */
+    .dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+    
+    .dataTables_wrapper .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0;
+    }
 </style>
 @endpush
 
@@ -82,56 +485,56 @@
     <!-- Stats Cards -->
     <div class="row fade-in">
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Approvals</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Pending Approvals</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingCount">0</div>
                     </div>
-                    <div class="icon text-warning">
-                        <i class="fas fa-clock fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-clock fa-2x" style="color: #18375d !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Admins</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Admins</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeCount">0</div>
                     </div>
-                    <div class="icon text-success">
-                        <i class="fas fa-user-check fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-user-check fa-2x" style="color: #18375d !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Rejected</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Rejected</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800" id="rejectedCount">0</div>
                     </div>
-                    <div class="icon text-danger">
-                        <i class="fas fa-user-times fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-user-times fa-2x" style="color: #18375d !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Admins</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Admins</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCount">0</div>
                     </div>
-                    <div class="icon text-info">
-                        <i class="fas fa-users-cog fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-users-cog fa-2x" style="color: #18375d !important;"></i>
                     </div>
                 </div>
             </div>
@@ -141,47 +544,27 @@
     <!-- Pending Admins Card -->
     <div class="card shadow mb-4 fade-in">
         <div class="card-header bg-warning text-white">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                <h6 class="mb-0 mb-md-0">
-                    <i class="fas fa-clock"></i>
-                    Pending Admin Registrations
-                </h6>
-                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
-                    <div class="input-group" style="max-width: 300px;">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search pending admins..." id="pendingSearch">
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-download"></i> Export
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" onclick="exportCSV('pendingAdminsTable')">
-                                <i class="fas fa-file-csv"></i> CSV
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPDF('pendingAdminsTable')">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPNG('pendingAdminsTable')">
-                                <i class="fas fa-image"></i> PNG
-                            </a>
-                        </div>
-                    </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable('pendingAdminsTable')" title="Print">
-                        <i class="fas fa-print"></i>
-                    </button>
-                </div>
-            </div>
+            <h6 class="mb-0">
+                <i class="fas fa-clock"></i>
+                Pending Admin Registrations
+            </h6>
         </div>
         <div class="card-body">
+            <div class="mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search pending admins..." id="pendingSearch">
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="pendingAdminsTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
                         <tr>
+                            <th>User ID</th>
                             <th>Name</th>
                             <th>Barangay</th>
                             <th>Contact</th>
@@ -207,42 +590,52 @@
                     <i class="fas fa-user-check"></i>
                     Active Admins
                 </h6>
-                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
-                    <div class="input-group" style="max-width: 300px;">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search active admins..." id="activeSearch">
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-download"></i> Export
+                <div class="d-flex flex-column flex-sm-row align-items-center gap-2 mt-2 mt-md-0">
+                    <button class="btn-action btn-action-add" onclick="showAddAdminModal()">
+                        <i class="fas fa-user-plus"></i> Add User
+                    </button>
+                    <button class="btn-action btn-action-print" onclick="printActiveAdminsTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshActiveAdmins()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" href="#" onclick="exportCSV('activeAdminsTable')">
-                                <i class="fas fa-file-csv"></i> CSV
+                                <i class="fas fa-file-csv"></i> Download CSV
                             </a>
                             <a class="dropdown-item" href="#" onclick="exportPDF('activeAdminsTable')">
-                                <i class="fas fa-file-pdf"></i> PDF
+                                <i class="fas fa-file-pdf"></i> Download PDF
                             </a>
                             <a class="dropdown-item" href="#" onclick="exportPNG('activeAdminsTable')">
-                                <i class="fas fa-image"></i> PNG
+                                <i class="fas fa-image"></i> Download PNG
                             </a>
+
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable('activeAdminsTable')" title="Print">
-                        <i class="fas fa-print"></i>
-                    </button>
                 </div>
             </div>
         </div>
         <div class="card-body">
+            <div class="mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search active admins..." id="activeSearch">
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="activeAdminsTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
                         <tr>
+                            <th>User ID</th>
                             <th>Name</th>
                             <th>Barangay</th>
                             <th>Contact</th>
@@ -351,6 +744,269 @@
         </div>
     </div>
 </div>
+
+<!-- Add Admin Modal -->
+<div class="modal fade" id="addAdminModal" tabindex="-1" role="dialog" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAdminModalLabel">
+                    <i class="fas fa-user-plus"></i>
+                    Add New Admin
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="addAdminForm" onsubmit="saveNewAdmin(event)">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminFirstName">First Name *</label>
+                                <input type="text" class="form-control" id="adminFirstName" name="first_name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminLastName">Last Name *</label>
+                                <input type="text" class="form-control" id="adminLastName" name="last_name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminEmail">Email *</label>
+                                <input type="email" class="form-control" id="adminEmail" name="email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminUsername">Username *</label>
+                                <input type="text" class="form-control" id="adminUsername" name="username" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminPhone">Contact Number</label>
+                                <input type="text" class="form-control" id="adminPhone" name="phone">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminBarangay">Barangay</label>
+                                <select class="form-control" id="adminBarangay" name="barangay">
+                                    <option value="">Select Barangay</option>
+                                    <option value="Abang">Abang</option>
+                                    <option value="Aliliw">Aliliw</option>
+                                    <option value="Atulinao">Atulinao</option>
+                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                                    <option value="Igang">Igang</option>
+                                    <option value="Kabatete">Kabatete</option>
+                                    <option value="Kakawit">Kakawit</option>
+                                    <option value="Kalangay">Kalangay</option>
+                                    <option value="Kalyaat">Kalyaat</option>
+                                    <option value="Kilib">Kilib</option>
+                                    <option value="Kulapi">Kulapi</option>
+                                    <option value="Mahabang Parang">Mahabang Parang</option>
+                                    <option value="Malupak">Malupak</option>
+                                    <option value="Manasa">Manasa</option>
+                                    <option value="May-It">May-It</option>
+                                    <option value="Nagsinamo">Nagsinamo</option>
+                                    <option value="Nalunao">Nalunao</option>
+                                    <option value="Palola">Palola</option>
+                                    <option value="Piis">Piis</option>
+                                    <option value="Samil">Samil</option>
+                                    <option value="Tiawe">Tiawe</option>
+                                    <option value="Tinamnan">Tinamnan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminRole">Role *</label>
+                                <select class="form-control" id="adminRole" name="role" required>
+                                    <option value="">Select Role</option>
+                                    <option value="admin" selected>Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminStatus">Status *</label>
+                                <select class="form-control" id="adminStatus" name="status" required>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="passwordFields">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminPassword">Password *</label>
+                                <input type="password" class="form-control" id="adminPassword" name="password" required>
+                                <small class="form-text text-muted">Minimum 8 characters</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminPasswordConfirm">Confirm Password *</label>
+                                <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="adminFormNotification" class="mt-2" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveAdminBtn">
+                        <i class="fas fa-save"></i> Save User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Admin Modal -->
+<div class="modal fade" id="editAdminModal" tabindex="-1" role="dialog" aria-labelledby="editAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAdminModalLabel">
+                    <i class="fas fa-edit"></i>
+                    Edit Admin
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editAdminForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editAdminId" name="admin_id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editFirstName">First Name *</label>
+                                <input type="text" class="form-control" id="editFirstName" name="first_name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editLastName">Last Name *</label>
+                                <input type="text" class="form-control" id="editLastName" name="last_name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmail">Email *</label>
+                                <input type="email" class="form-control" id="editEmail" name="email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editUsername">Username *</label>
+                                <input type="text" class="form-control" id="editUsername" name="username" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editPhone">Contact Number</label>
+                                <input type="text" class="form-control" id="editPhone" name="phone">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editBarangay">Barangay *</label>
+                                <select class="form-control" id="editBarangay" name="barangay" required>
+                                    <option value="">Select Barangay</option>
+                                    <option value="Alupay">Alupay</option>
+                                    <option value="Ayaas">Ayaas</option>
+                                    <option value="Bagong Pook">Bagong Pook</option>
+                                    <option value="Bukal">Bukal</option>
+                                    <option value="Calumpang">Calumpang</option>
+                                    <option value="Candelaria">Candelaria</option>
+                                    <option value="Castañas">Castañas</option>
+                                    <option value="Ibabang Dupay">Ibabang Dupay</option>
+                                    <option value="Ibabang Ilog">Ibabang Ilog</option>
+                                    <option value="Ibabang San Isidro">Ibabang San Isidro</option>
+                                    <option value="Ilayang Dupay">Ilayang Dupay</option>
+                                    <option value="Ilayang Ilog">Ilayang Ilog</option>
+                                    <option value="Ilayang San Isidro">Ilayang San Isidro</option>
+                                    <option value="Igang">Igang</option>
+                                    <option value="Kabatete">Kabatete</option>
+                                    <option value="Kakawit">Kakawit</option>
+                                    <option value="Kalangay">Kalangay</option>
+                                    <option value="Kalyaat">Kalyaat</option>
+                                    <option value="Kilib">Kilib</option>
+                                    <option value="Kulapi">Kulapi</option>
+                                    <option value="Mahabang Parang">Mahabang Parang</option>
+                                    <option value="Malupak">Malupak</option>
+                                    <option value="Manasa">Manasa</option>
+                                    <option value="May-It">May-It</option>
+                                    <option value="Nagsinamo">Nagsinamo</option>
+                                    <option value="Nalunao">Nalunao</option>
+                                    <option value="Palola">Palola</option>
+                                    <option value="Piis">Piis</option>
+                                    <option value="Samil">Samil</option>
+                                    <option value="Tiawe">Tiawe</option>
+                                    <option value="Tinamnan">Tinamnan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editRole">Role *</label>
+                                <select class="form-control" id="editRole" name="role" required>
+                                    <option value="">Select Role</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editPassword">Password</label>
+                                <input type="password" class="form-control" id="editPassword" name="password">
+                                <small class="form-text text-muted">Leave blank to keep current password</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="editAdminFormNotification" class="mt-2" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="updateAdminBtn">
+                        <i class="fas fa-save"></i> Update Admin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -423,6 +1079,16 @@ function initializeDataTables() {
 
     pendingAdminsTable = $('#pendingAdminsTable').DataTable({
         ...commonConfig,
+        columnDefs: [
+            { width: '80px', targets: 0 }, // User ID
+            { width: '180px', targets: 1 }, // Name
+            { width: '140px', targets: 2 }, // Barangay
+            { width: '140px', targets: 3 }, // Contact
+            { width: '220px', targets: 4 }, // Email
+            { width: '140px', targets: 5 }, // Username
+            { width: '140px', targets: 6 }, // Registration Date
+            { width: '220px', targets: 7, className: 'text-left' }  // Actions
+        ],
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -446,6 +1112,17 @@ function initializeDataTables() {
 
     activeAdminsTable = $('#activeAdminsTable').DataTable({
         ...commonConfig,
+        columnDefs: [
+            { width: '80px', targets: 0 }, // User ID
+            { width: '180px', targets: 1 }, // Name
+            { width: '140px', targets: 2 }, // Barangay
+            { width: '140px', targets: 3 }, // Contact
+            { width: '220px', targets: 4 }, // Email
+            { width: '140px', targets: 5 }, // Username
+            { width: '140px', targets: 6 }, // Approval Date
+            { width: '160px', targets: 7 }, // Last Login
+            { width: '220px', targets: 8, className: 'text-left' }  // Actions
+        ],
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -485,6 +1162,7 @@ function loadPendingAdmins() {
                 response.data.forEach((admin, index) => {
                     console.log(`Admin ${index}:`, admin);
                     const rowData = [
+                        `<a href="#" class="user-id-link" onclick="showAdminDetails('${admin.id}')">${admin.id}</a>`,
                         `${admin.first_name || ''} ${admin.last_name || ''}`,
                         admin.barangay || '',
                         admin.phone || '',
@@ -492,11 +1170,11 @@ function loadPendingAdmins() {
                         admin.username || '',
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-approve" onclick="approveAdmin('${admin.id}')" title="Approve">
+                            <button class="btn-action btn-action-edit" onclick="approveAdmin('${admin.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
                                 <span>Approve</span>
                             </button>
-                            <button class="btn-action btn-action-reject" onclick="rejectAdmin('${admin.id}')" title="Reject">
+                            <button class="btn-action btn-action-delete" onclick="rejectAdmin('${admin.id}')" title="Reject">
                                 <i class="fas fa-times"></i>
                                 <span>Reject</span>
                             </button>
@@ -504,14 +1182,7 @@ function loadPendingAdmins() {
                     ];
                     
                     console.log(`Row data for admin ${index}:`, rowData);
-                    const row = pendingAdminsTable.row.add(rowData).draw(false);
-                    
-                    // Add click handler for row details (excluding action buttons)
-                    $(row.node()).on('click', function(e) {
-                        if (!$(e.target).closest('button').length) {
-                            showAdminDetails(admin);
-                        }
-                    });
+                    pendingAdminsTable.row.add(rowData).draw(false);
                 });
             }
         },
@@ -534,6 +1205,7 @@ function loadActiveAdmins() {
                 response.data.forEach((admin, index) => {
                     console.log(`Active admin ${index}:`, admin);
                     const rowData = [
+                        `<a href="#" class="user-id-link" onclick="showAdminDetails('${admin.id}')">${admin.id}</a>`,
                         `${admin.first_name || ''} ${admin.last_name || ''}`,
                         admin.barangay || '',
                         admin.phone || '',
@@ -542,26 +1214,19 @@ function loadActiveAdmins() {
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
                         admin.last_login_at ? new Date(admin.last_login_at).toLocaleDateString() : 'Never',
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-toggle" onclick="deactivateAdmin('${admin.id}')" title="Deactivate">
-                                <i class="fas fa-user-slash"></i>
-                                <span>Deactivate</span>
+                            <button class="btn-action btn-action-edit" onclick="editAdmin('${admin.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit</span>
                             </button>
-                            <button class="btn-action btn-action-view" onclick="contactAdmin('${admin.id}')" title="Contact">
-                                <i class="fas fa-envelope"></i>
-                                <span>Contact</span>
+                            <button class="btn-action btn-action-delete" onclick="confirmDeleteAdmin('${admin.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                                <span>Delete</span>
                             </button>
                         </div>`
                     ];
                     
                     console.log(`Row data for active admin ${index}:`, rowData);
-                    const row = activeAdminsTable.row.add(rowData).draw(false);
-                    
-                    // Add click handler for row details (excluding action buttons)
-                    $(row.node()).on('click', function(e) {
-                        if (!$(e.target).closest('button').length) {
-                            showAdminDetails(admin);
-                        }
-                    });
+                    activeAdminsTable.row.add(rowData).draw(false);
                 });
             }
         },
@@ -593,28 +1258,90 @@ function updateStats() {
     });
 }
 
-function showAdminDetails(admin) {
-    const details = `
-        <div class="row">
-            <div class="col-md-6">
-                <h6 class="mb-3 text-primary">Personal Information</h6>
-                <p><strong>Full Name:</strong> ${admin.first_name || ''} ${admin.last_name || ''}</p>
-                <p><strong>Email:</strong> ${admin.email || ''}</p>
-                <p><strong>Contact Number:</strong> ${admin.phone || ''}</p>
-            </div>
-            <div class="col-md-6">
-                <h6 class="mb-3 text-primary">Account Information</h6>
-                <p><strong>Username:</strong> ${admin.username || ''}</p>
-                <p><strong>Barangay:</strong> ${admin.barangay || ''}</p>
-                <p><strong>Registration Date:</strong> ${admin.created_at ? new Date(admin.created_at).toLocaleDateString() : ''}</p>
-                ${admin.status ? `<p><strong>Status:</strong> <span class="status-badge status-${admin.status}">${admin.status}</span></p>` : ''}
-            </div>
-        </div>
-    `;
+function getRoleBadgeClass(role) {
+    switch(role) {
+        case 'superadmin': return 'primary';
+        case 'admin': return 'warning';
+        case 'farmer': return 'success';
+        default: return 'secondary badge-pill';
+    }
+}
 
-    document.getElementById('farmerDetails').innerHTML = details;
-    document.getElementById('farmerNameHidden').value = `${admin.first_name || ''} ${admin.last_name || ''}`;
-    $('#detailsModal').modal('show');
+function getStatusBadgeClass(status) {
+    switch(status) {
+        case 'approved': return 'success';
+        case 'pending': return 'warning';
+        case 'rejected': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+function formatLastLogin(lastLoginAt) {
+    if (!lastLoginAt) return 'Never';
+    
+    const loginDate = new Date(lastLoginAt);
+    const now = new Date();
+    const diffInHours = Math.floor((now - loginDate) / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInHours / 24);
+    
+    if (diffInDays > 0) {
+        return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    } else if (diffInHours > 0) {
+        return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+    } else {
+        const diffInMinutes = Math.floor((now - loginDate) / (1000 * 60));
+        if (diffInMinutes > 0) {
+            return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+        } else {
+            return 'Just now';
+        }
+    }
+}
+
+function showAdminDetails(adminId) {
+    // Load admin details via AJAX
+    $.ajax({
+        url: `{{ route("superadmin.admins.show", ":id") }}`.replace(':id', adminId),
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const admin = response.data;
+                const displayName = admin.first_name && admin.last_name 
+                    ? `${admin.first_name} ${admin.last_name}` 
+                    : admin.name || 'N/A';
+                
+                const details = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Personal Information</h6>
+                            <p><strong>Full Name:</strong> ${displayName}</p>
+                            <p><strong>Email:</strong> ${admin.email}</p>
+                            <p><strong>Username:</strong> ${admin.username}</p>
+                            <p><strong>Contact Number:</strong> ${admin.phone || 'N/A'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Account Information</h6>
+                            <p><strong>Role:</strong> <span class="badge badge-${getRoleBadgeClass(admin.role)}">${admin.role}</span></p>
+                            <p><strong>Status:</strong> <span class="badge badge-${getStatusBadgeClass(admin.status)}">${admin.status}</span></p>
+                            <p><strong>Barangay:</strong> ${admin.barangay || 'N/A'}</p>
+                            <p><strong>Registration Date:</strong> ${new Date(admin.created_at).toLocaleDateString()}</p>
+                            <p><strong>Last Login:</strong> ${admin.last_login_at ? formatLastLogin(admin.last_login_at) : 'Never'}${admin.is_online ? ' <span class="badge badge-success badge-sm" title="Currently Online"><i class="fas fa-circle"></i> Online</span>' : ''}</p>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('farmerDetails').innerHTML = details;
+                document.getElementById('farmerNameHidden').value = displayName;
+                $('#detailsModal').modal('show');
+            } else {
+                showNotification('Error loading admin details', 'danger');
+            }
+        },
+        error: function(xhr) {
+            console.error('Error loading admin details:', xhr);
+            showNotification('Error loading admin details', 'danger');
+        }
+    });
 }
 
 function approveAdmin(adminId) {
@@ -742,30 +1469,260 @@ function showNotification(message, type) {
     }, 5000);
 }
 
-// Export functions
+// Download counter for file naming
+let activeAdminsDownloadCounter = 1;
+
+// Export functions for Active Admins (matching user directory style)
 function exportCSV(tableId) {
-    const table = tableId === 'pendingAdminsTable' ? pendingAdminsTable : activeAdminsTable;
-    table.button('.buttons-csv').trigger();
+    if (tableId === 'activeAdminsTable') {
+        try {
+            // Get current table data without actions column
+            const tableData = activeAdminsTable.data().toArray();
+            
+            if (!tableData || tableData.length === 0) {
+                showNotification('No data available to export', 'warning');
+                return;
+            }
+            
+            // Create CSV content manually
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Add headers (excluding Actions column)
+            const headers = ['User ID', 'Name', 'Barangay', 'Contact', 'Email', 'Username', 'Approval Date', 'Last Login'];
+            csvContent += headers.join(',') + '\n';
+            
+            // Add data rows (excluding Actions column)
+            tableData.forEach(row => {
+                const csvRow = [];
+                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                    let cellText = '';
+                    if (row[i]) {
+                        // Remove HTML tags and get clean text
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = row[i];
+                        cellText = tempDiv.textContent || tempDiv.innerText || '';
+                        // Clean up the text and escape quotes
+                        cellText = cellText.replace(/\s+/g, ' ').trim().replace(/"/g, '""');
+                    }
+                    csvRow.push('"' + cellText + '"');
+                }
+                csvContent += csvRow.join(',') + '\n';
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `SuperAdmin_ActiveAdminsReport_${activeAdminsDownloadCounter}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            activeAdminsDownloadCounter++;
+            showNotification('CSV export completed successfully', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting CSV:', error);
+            showNotification('Error exporting CSV. Please try again.', 'danger');
+        }
+    } else {
+        // For pending admins, use simple DataTables export
+        const table = tableId === 'pendingAdminsTable' ? pendingAdminsTable : activeAdminsTable;
+        table.button('.buttons-csv').trigger();
+    }
 }
 
 function exportPDF(tableId) {
-    const table = tableId === 'pendingAdminsTable' ? pendingAdminsTable : activeAdminsTable;
-    table.button('.buttons-pdf').trigger();
-}
-
-function printTable(tableId) {
-    const table = tableId === 'pendingAdminsTable' ? pendingAdminsTable : activeAdminsTable;
-    table.button('.buttons-print').trigger();
+    if (tableId === 'activeAdminsTable') {
+        try {
+            // Get current table data without actions column
+            const tableData = activeAdminsTable.data().toArray();
+            
+            if (!tableData || tableData.length === 0) {
+                showNotification('No data available to export', 'warning');
+                return;
+            }
+            
+            // Check if jsPDF is available
+            if (typeof window.jsPDF === 'undefined') {
+                console.warn('jsPDF not available, falling back to DataTables PDF export');
+                activeAdminsTable.button('.buttons-pdf').trigger();
+                return;
+            }
+            
+            const { jsPDF } = window.jsPDF;
+            const doc = new jsPDF('landscape');
+            
+            // Add title
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('SuperAdmin Active Admins Report', 148, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 148, 30, { align: 'center' });
+            
+            // Prepare table data
+            const headers = ['User ID', 'Name', 'Barangay', 'Contact', 'Email', 'Username', 'Approval Date', 'Last Login'];
+            const pdfData = [];
+            
+            tableData.forEach(row => {
+                const pdfRow = [];
+                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                    let cellText = '';
+                    if (row[i]) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = row[i];
+                        cellText = tempDiv.textContent || tempDiv.innerText || '';
+                        cellText = cellText.replace(/\s+/g, ' ').trim();
+                    }
+                    pdfRow.push(cellText);
+                }
+                pdfData.push(pdfRow);
+            });
+            
+            // Add table
+            doc.autoTable({
+                head: [headers],
+                body: pdfData,
+                startY: 40,
+                styles: { fontSize: 8, cellPadding: 2 },
+                headStyles: { fillColor: [24, 55, 93], textColor: 255 },
+                columnStyles: {
+                    0: { cellWidth: 25 }, // Name
+                    1: { cellWidth: 25 }, // Barangay  
+                    2: { cellWidth: 25 }, // Contact
+                    3: { cellWidth: 40 }, // Email
+                    4: { cellWidth: 25 }, // Username
+                    5: { cellWidth: 30 }, // Approval Date
+                    6: { cellWidth: 30 }  // Last Login
+                }
+            });
+            
+            // Save the PDF
+            doc.save(`SuperAdmin_ActiveAdminsReport_${activeAdminsDownloadCounter}.pdf`);
+            activeAdminsDownloadCounter++;
+            showNotification('PDF export completed successfully', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting PDF:', error);
+            showNotification('Error exporting PDF. Please try again.', 'danger');
+            
+            // Fallback to DataTables PDF export
+            try {
+                activeAdminsTable.button('.buttons-pdf').trigger();
+            } catch (fallbackError) {
+                console.error('Fallback PDF export also failed:', fallbackError);
+            }
+        }
+    } else {
+        // For pending admins, use simple DataTables export
+        const table = tableId === 'pendingAdminsTable' ? pendingAdminsTable : activeAdminsTable;
+        table.button('.buttons-pdf').trigger();
+    }
 }
 
 function exportPNG(tableId) {
-    const tableElement = document.getElementById(tableId);
-    html2canvas(tableElement).then(canvas => {
-        let link = document.createElement('a');
-        link.download = `${tableId}_Report.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    });
+    if (tableId === 'activeAdminsTable') {
+        try {
+            // Create a temporary table without actions column for PNG export
+            const tableData = activeAdminsTable.data().toArray();
+            
+            if (!tableData || tableData.length === 0) {
+                showNotification('No data available to export', 'warning');
+                return;
+            }
+            
+            // Create temporary container
+            const tempContainer = document.createElement('div');
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            tempContainer.style.top = '-9999px';
+            tempContainer.style.background = 'white';
+            tempContainer.style.padding = '20px';
+            
+            // Create content for PNG
+            let pngContent = `
+                <div style="font-family: Arial, sans-serif;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h1 style="color: #18375d; margin-bottom: 5px;">SuperAdmin Active Admins Report</h1>
+                        <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    <table style="border-collapse: collapse; width: 100%; border: 2px solid #000;">
+                        <thead>
+                            <tr style="background-color: #f2f2f2;">
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">User ID</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Name</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Barangay</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Contact</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Email</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Username</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Approval Date</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Last Login</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+            
+            // Add data rows (excluding Actions column)
+            tableData.forEach(row => {
+                pngContent += '<tr>';
+                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                    let cellText = '';
+                    if (row[i]) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = row[i];
+                        cellText = tempDiv.textContent || tempDiv.innerText || '';
+                        cellText = cellText.replace(/\s+/g, ' ').trim();
+                    }
+                    pngContent += `<td style="border: 1px solid #000; padding: 8px;">${cellText}</td>`;
+                }
+                pngContent += '</tr>';
+            });
+            
+            pngContent += `
+                        </tbody>
+                    </table>
+                </div>`;
+            
+            tempContainer.innerHTML = pngContent;
+            document.body.appendChild(tempContainer);
+            
+            // Use html2canvas to capture the content
+            html2canvas(tempContainer, {
+                backgroundColor: 'white',
+                scale: 2,
+                useCORS: true
+            }).then(canvas => {
+                // Create download link
+                const link = document.createElement('a');
+                link.download = `SuperAdmin_ActiveAdminsReport_${activeAdminsDownloadCounter}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                // Clean up
+                document.body.removeChild(tempContainer);
+                activeAdminsDownloadCounter++;
+                showNotification('PNG export completed successfully', 'success');
+            }).catch(error => {
+                console.error('Error generating PNG:', error);
+                document.body.removeChild(tempContainer);
+                showNotification('Error exporting PNG. Please try again.', 'danger');
+            });
+            
+        } catch (error) {
+            console.error('Error exporting PNG:', error);
+            showNotification('Error exporting PNG. Please try again.', 'danger');
+        }
+    } else {
+        // For pending admins, use simple HTML2Canvas export
+        const tableElement = document.getElementById(tableId);
+        html2canvas(tableElement).then(canvas => {
+            let link = document.createElement('a');
+            link.download = `${tableId}_Report.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
 }
 
 // Confirmation modal handlers
@@ -786,5 +1743,352 @@ function deleteFarmer(button) {
     let row = button.closest('tr');
     row.remove();
 }
+
+// Header action button functions
+function showAddAdminModal() {
+    // Clear the form
+    document.getElementById('addAdminForm').reset();
+    document.getElementById('adminFormNotification').style.display = 'none';
+    
+    // Show the modal
+    $('#addAdminModal').modal('show');
+}
+
+function refreshActiveAdmins() {
+    // Show loading indicator
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+    
+    // Refresh active admins data
+    loadActiveAdmins();
+    loadPendingAdmins(); // Also refresh pending admins
+    updateStats();
+    
+    // Re-enable button after a short delay
+    setTimeout(() => {
+        refreshBtn.innerHTML = originalText;
+        refreshBtn.disabled = false;
+        showNotification('Active admins data refreshed successfully!', 'success');
+    }, 1000);
+}
+
+function printActiveAdminsTable() {
+    try {
+        // Get current table data without actions column
+        const tableData = activeAdminsTable.data().toArray();
+        
+        if (!tableData || tableData.length === 0) {
+            showNotification('No data available to print', 'warning');
+            return;
+        }
+        
+        // Create print content directly in current page
+        const originalContent = document.body.innerHTML;
+        
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">SuperAdmin Active Admins Report</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                    <thead>
+                        <tr>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Email</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Approval Date</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Last Login</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            printContent += '<tr>';
+            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
+            }
+            printContent += '</tr>';
+        });
+        
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+        
+        // Replace page content with print content
+        document.body.innerHTML = printContent;
+        
+        // Print the page
+        window.print();
+        
+        // Restore original content after print dialog closes
+        setTimeout(() => {
+            document.body.innerHTML = originalContent;
+            // Re-initialize any JavaScript that might be needed
+            location.reload(); // Reload to restore full functionality
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in print function:', error);
+        showNotification('Error generating print. Please try again.', 'danger');
+        
+        // Fallback to DataTables print
+        try {
+            activeAdminsTable.button('.buttons-print').trigger();
+        } catch (fallbackError) {
+            console.error('Fallback print also failed:', fallbackError);
+            showNotification('Print failed. Please try again.', 'danger');
+        }
+    }
+}
+
+function saveNewAdmin(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('addAdminForm');
+    const submitBtn = document.getElementById('saveAdminBtn');
+    const notification = document.getElementById('adminFormNotification');
+    
+    // Validate password confirmation
+    const password = document.getElementById('adminPassword').value;
+    const confirmPassword = document.getElementById('adminPasswordConfirm').value;
+    
+    if (password !== confirmPassword) {
+        notification.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                Passwords do not match. Please try again.
+            </div>
+        `;
+        notification.style.display = 'block';
+        return;
+    }
+    
+    // Disable submit button
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Admin...';
+    
+    // Collect form data
+    const formData = {
+        first_name: document.getElementById('adminFirstName').value,
+        last_name: document.getElementById('adminLastName').value,
+        email: document.getElementById('adminEmail').value,
+        phone: document.getElementById('adminPhone').value,
+        username: document.getElementById('adminUsername').value,
+        barangay: document.getElementById('adminBarangay').value,
+        password: password,
+        password_confirmation: confirmPassword,
+        status: document.getElementById('adminStatus').value,
+        role: 'admin',
+        _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    };
+    
+    // Submit via AJAX
+    $.ajax({
+        url: '{{ route("superadmin.admins.store") }}',
+        method: 'POST',
+        data: formData,
+        success: function(response) {
+            if (response.success) {
+                // Close modal
+                $('#addAdminModal').modal('hide');
+                
+                // Refresh data
+                loadPendingAdmins();
+                loadActiveAdmins();
+                updateStats();
+                
+                // Show success notification
+                showNotification('Admin added successfully!', 'success');
+            } else {
+                notification.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ${response.message || 'Error adding admin. Please try again.'}
+                    </div>
+                `;
+                notification.style.display = 'block';
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = 'Error adding admin. Please try again.';
+            
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                const errors = xhr.responseJSON.errors;
+                errorMessage = Object.values(errors).flat().join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            
+            notification.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    ${errorMessage}
+                </div>
+            `;
+            notification.style.display = 'block';
+        },
+        complete: function() {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Add Admin';
+        }
+    });
+}
+
+// Edit and Delete Admin Functions
+function editAdmin(adminId) {
+    // Load admin data via AJAX
+    $.ajax({
+        url: `{{ route("superadmin.admins.show", ":id") }}`.replace(':id', adminId),
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const admin = response.data;
+                populateEditAdminForm(admin);
+                $('#editAdminModal').modal('show');
+            } else {
+                showNotification('Error loading admin data', 'danger');
+            }
+        },
+        error: function(xhr) {
+            console.error('Error loading admin data:', xhr);
+            showNotification('Error loading admin data', 'danger');
+        }
+    });
+}
+
+function populateEditAdminForm(admin) {
+    document.getElementById('editAdminId').value = admin.id;
+    document.getElementById('editFirstName').value = admin.first_name || '';
+    document.getElementById('editLastName').value = admin.last_name || '';
+    document.getElementById('editEmail').value = admin.email || '';
+    document.getElementById('editUsername').value = admin.username || '';
+    document.getElementById('editPhone').value = admin.phone || '';
+    document.getElementById('editBarangay').value = admin.barangay || '';
+    document.getElementById('editRole').value = admin.role || '';
+    document.getElementById('editPassword').value = '';
+    
+    // Clear any previous notifications
+    document.getElementById('editAdminFormNotification').style.display = 'none';
+}
+
+function confirmDeleteAdmin(adminId) {
+    if (confirm('Are you sure you want to delete this admin? This action cannot be undone.')) {
+        deleteAdmin(adminId);
+    }
+}
+
+function deleteAdmin(adminId) {
+    $.ajax({
+        url: `{{ route("superadmin.admins.destroy", ":id") }}`.replace(':id', adminId),
+        method: 'PUT',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            loadActiveAdmins();
+            updateStats();
+            showNotification('Admin deleted successfully', 'success');
+        },
+        error: function(xhr) {
+            showNotification('Error deleting admin', 'danger');
+        }
+    });
+}
+
+// Handle edit admin form submission
+document.getElementById('editAdminForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('editAdminForm');
+    const submitBtn = document.getElementById('updateAdminBtn');
+    const notification = document.getElementById('editAdminFormNotification');
+    
+    // Disable submit button
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    
+    // Collect form data
+    const formData = {
+        admin_id: document.getElementById('editAdminId').value,
+        first_name: document.getElementById('editFirstName').value,
+        last_name: document.getElementById('editLastName').value,
+        email: document.getElementById('editEmail').value,
+        phone: document.getElementById('editPhone').value,
+        username: document.getElementById('editUsername').value,
+        barangay: document.getElementById('editBarangay').value,
+        role: document.getElementById('editRole').value,
+        password: document.getElementById('editPassword').value,
+        _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    };
+    
+    // Submit via AJAX
+    $.ajax({
+        url: `{{ route("superadmin.admins.update", ":id") }}`.replace(':id', formData.admin_id),
+        method: 'PUT',
+        data: formData,
+        success: function(response) {
+            if (response.success) {
+                // Close modal
+                $('#editAdminModal').modal('hide');
+                
+                // Refresh data
+                loadActiveAdmins();
+                updateStats();
+                
+                // Show success notification
+                showNotification('Admin updated successfully!', 'success');
+            } else {
+                notification.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ${response.message || 'Error updating admin. Please try again.'}
+                    </div>
+                `;
+                notification.style.display = 'block';
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = 'Error updating admin. Please try again.';
+            
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                const errors = xhr.responseJSON.errors;
+                errorMessage = Object.values(errors).flat().join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            
+            notification.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    ${errorMessage}
+                </div>
+            `;
+            notification.style.display = 'block';
+        },
+        complete: function() {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Admin';
+        }
+    });
+});
 </script>
 @endpush
