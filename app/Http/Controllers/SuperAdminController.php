@@ -1419,4 +1419,155 @@ class SuperAdminController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Show manage farmers page.
+     */
+    public function manageFarmers()
+    {
+        try {
+            // Get all farmers (users with role 'farmer')
+            $farmers = User::where('role', 'farmer')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            // Calculate statistics
+            $totalFarmers = User::where('role', 'farmer')->count();
+            $activeFarmers = User::where('role', 'farmer')->where('status', 'active')->count();
+            $pendingFarmers = User::where('role', 'farmer')->where('status', 'pending')->count();
+            $totalFarms = Farm::count();
+
+            return view('superadmin.manage-farmers', compact(
+                'farmers',
+                'totalFarmers',
+                'activeFarmers',
+                'pendingFarmers',
+                'totalFarms'
+            ));
+
+        } catch (\Exception $e) {
+            Log::error('Error in manageFarmers: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load farmers data. Please try again.');
+        }
+    }
+
+    /**
+     * Get farmer details for modal display.
+     */
+    public function getFarmerDetails($id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $farmer->id,
+                    'name' => $farmer->first_name . ' ' . $farmer->last_name,
+                    'email' => $farmer->email,
+                    'phone' => $farmer->phone,
+                    'username' => $farmer->username,
+                    'barangay' => $farmer->barangay,
+                    'status' => $farmer->status,
+                    'created_at' => $farmer->created_at,
+                    'updated_at' => $farmer->updated_at,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in getFarmerDetails: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Farmer not found'
+            ], 404);
+        }
+    }
+
+    /**
+     * Update farmer information.
+     */
+    public function updateFarmer(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
+                'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($id)],
+                'phone' => 'nullable|string|max:20',
+                'barangay' => 'required|string|max:255',
+                'status' => 'required|in:pending,approved,rejected',
+                'password' => 'nullable|string|min:8',
+            ]);
+
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            
+            $updateData = [
+                'email' => $request->email,
+                'username' => $request->username,
+                'phone' => $request->phone,
+                'barangay' => $request->barangay,
+                'status' => $request->status,
+            ];
+
+            // Handle name update (will automatically split into first_name and last_name)
+            if ($request->filled('name')) {
+                $farmer->name = $request->name;
+            }
+
+            // Only update password if provided
+            if ($request->filled('password')) {
+                $updateData['password'] = Hash::make($request->password);
+            }
+
+            $farmer->update($updateData);
+
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'farmer_updated',
+                'description' => "Farmer '{$farmer->name}' updated by super admin",
+                'severity' => 'info'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Farmer updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating farmer: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update farmer: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete farmer.
+     */
+    public function deleteFarmer($id)
+    {
+        try {
+            $farmer = User::where('role', 'farmer')->findOrFail($id);
+            $farmerName = $farmer->name;
+            
+            $farmer->delete();
+
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'farmer_deleted',
+                'description' => "Farmer '{$farmerName}' deleted by super admin",
+                'severity' => 'warning'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Farmer deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error deleting farmer: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete farmer'
+            ], 500);
+        }
+    }
 }

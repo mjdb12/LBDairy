@@ -99,6 +99,32 @@
         white-space: nowrap;
         vertical-align: baseline;
     }
+
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
     
     .btn-group .btn {
         margin-right: 0.25rem;

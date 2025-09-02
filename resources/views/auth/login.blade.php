@@ -6,6 +6,7 @@
     <title>LBDAIRY - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .bg-gradient-primary {
@@ -139,9 +140,14 @@
                                     </div>
                                     <div>
                                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                                        <input type="password" id="password" name="password" required
-                                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your password">
+                                        <div class="relative">
+                                            <input type="password" id="password" name="password" required
+                                                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your password">
+                                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('password')">
+                                                <i class="fas fa-eye text-gray-400 hover:text-gray-600 transition-colors duration-200" id="passwordIcon"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -163,6 +169,22 @@
     </div>
 
     <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + 'Icon');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
         // Tab switching functionality
         const tabBtns = document.querySelectorAll('.tab-btn');
         const selectedRoleInput = document.getElementById('selectedRole');

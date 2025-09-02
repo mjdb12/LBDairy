@@ -482,11 +482,25 @@
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
                                             <label for="farmerPassword">Password</label>
-                                            <input type="password" class="form-control form-control-user" id="farmerPassword" name="password" required>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control form-control-user" id="farmerPassword" name="password" required>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('farmerPassword')">
+                                                        <i class="fas fa-eye" id="farmerPasswordIcon"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="farmerConfirmPassword">Confirm Password</label>
-                                            <input type="password" class="form-control form-control-user" id="farmerConfirmPassword" name="password_confirmation" required>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control form-control-user" id="farmerConfirmPassword" name="password_confirmation" required>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('farmerConfirmPassword')">
+                                                        <i class="fas fa-eye" id="farmerConfirmPasswordIcon"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -607,11 +621,25 @@
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
                                             <label for="adminPassword">Password</label>
-                                            <input type="password" class="form-control form-control-user" id="adminPassword" name="password" required>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control form-control-user" id="adminPassword" name="password" required>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminPassword')">
+                                                        <i class="fas fa-eye" id="adminPasswordIcon"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="adminConfirmPassword">Confirm Password</label>
-                                            <input type="password" class="form-control form-control-user" id="adminConfirmPassword" name="password_confirmation" required>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control form-control-user" id="adminConfirmPassword" name="password_confirmation" required>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminConfirmPassword')">
+                                                        <i class="fas fa-eye" id="adminConfirmPasswordIcon"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -702,6 +730,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + 'Icon');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
         // Show terms modal
         function showTerms() {
             console.log('showTerms function called');

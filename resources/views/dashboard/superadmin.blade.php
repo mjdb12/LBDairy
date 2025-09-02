@@ -85,7 +85,7 @@
                     <i class="fas fa-tasks"></i>
                     Task Board
                 </h6>
-                <button class="btn btn-sm btn-primary" id="addTaskBtn">
+                <button class="custom-task-btn" id="addTaskBtn">
                     <i class="fas fa-plus"></i> New Task
                 </button>
             </div>
@@ -234,15 +234,24 @@ html body .card .table .badge-success,
     border: none !important;
 }
 
-/* Custom Green Button for New Task */
+/* Custom Green Button for New Task - NO GLASS EFFECTS */
 html body .card .card-header #addTaskBtn.btn-primary,
 html body #addTaskBtn.btn-primary,
-#addTaskBtn.btn-primary {
+#addTaskBtn.btn-primary,
+#addTaskBtn,
+#addTaskBtn.btn {
     background-color: #387057 !important;
     background: #387057 !important;
     border-color: #387057 !important;
     color: #fff !important;
     border: 2px solid #387057 !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
 }
 
 html body .card .card-header #addTaskBtn.btn-primary:hover,
@@ -250,12 +259,115 @@ html body .card .card-header #addTaskBtn.btn-primary:focus,
 html body #addTaskBtn.btn-primary:hover,
 html body #addTaskBtn.btn-primary:focus,
 #addTaskBtn.btn-primary:hover,
-#addTaskBtn.btn-primary:focus {
+#addTaskBtn.btn-primary:focus,
+#addTaskBtn:hover,
+#addTaskBtn:focus,
+#addTaskBtn.btn:hover,
+#addTaskBtn.btn:focus {
     background-color: #2d5a47 !important;
     background: #2d5a47 !important;
     border-color: #2d5a47 !important;
     color: #fff !important;
     border: 2px solid #2d5a47 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+/* NEW: Complete override for no-glass-effect class */
+.no-glass-effect,
+.no-glass-effect.btn,
+.no-glass-effect.btn-primary,
+.no-glass-effect.btn-sm {
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
+    background: #387057 !important;
+    background-color: #387057 !important;
+    border: 2px solid #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    transition: all 0.2s ease;
+}
+
+.no-glass-effect:hover,
+.no-glass-effect.btn:hover,
+.no-glass-effect.btn-primary:hover,
+.no-glass-effect.btn-sm:hover {
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
+    background: #2d5a47 !important;
+    background-color: #2d5a47 !important;
+    border: 2px solid #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+/* COMPLETELY CUSTOM BUTTON - NO BOOTSTRAP INHERITANCE */
+.custom-task-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #387057;
+    color: #fff;
+    border: 2px solid #387057;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-width: 80px;
+    height: 36px;
+    box-shadow: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    opacity: 1;
+    text-shadow: none;
+    background-image: none;
+    font-family: inherit;
+    line-height: 1.5;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.custom-task-btn:hover,
+.custom-task-btn:focus {
+    background-color: #2d5a47;
+    border-color: #2d5a47;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    opacity: 1;
+    text-shadow: none;
+    background-image: none;
+    text-decoration: none;
+}
+
+.custom-task-btn:active {
+    transform: translateY(0);
+}
+
+.custom-task-btn:focus {
+    outline: 0;
 }
 
 /* Fix Status column alignment in Recent System Activity table */
@@ -356,6 +468,116 @@ html body #addTaskBtn.btn-primary:focus,
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Task Board Styling */
+.task-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #18375d !important;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+/* Task board container styling */
+#taskList {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+#taskList .list-group-item:first-child {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+#taskList .list-group-item:last-child {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.task-checkbox:checked {
+    background-color: #18375d !important;
+    border-color: #18375d !important;
+}
+
+.task-checkbox:focus {
+    outline: 2px solid #18375d;
+    outline-offset: 2px;
+}
+
+.task-checkbox:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Task action buttons spacing */
+.action-buttons {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Ensure proper alignment of task items */
+.list-group-item {
+    padding: 1rem;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid #e3e6f0;
+    border-bottom: 1px solid #e3e6f0;
+    transition: all 0.2s ease;
+    background-color: #fff;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fc;
+    transform: translateX(2px);
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item .d-flex {
+    gap: 0.5rem;
+}
+
+/* Task title and description alignment */
+.list-group-item .font-weight-bold {
+    color: #18375d;
+    margin-bottom: 0.25rem;
+}
+
+.list-group-item .text-muted {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Priority badge styling */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+}
+
+/* Priority badge specific colors */
+.badge-danger {
+    background-color: #e74a3b !important;
+    color: #fff !important;
+}
+
+.badge-warning {
+    background-color: #f6c23e !important;
+    color: #fff !important;
+}
+
+.badge-secondary {
+    background-color: #858796 !important;
+    color: #fff !important;
+}
 </style>
 @endpush
 
@@ -393,23 +615,25 @@ document.addEventListener('DOMContentLoaded', function () {
         li.className = 'list-group-item d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between';
         li.dataset.id = task.id;
         li.innerHTML = `
-            <div class="d-flex align-items-start">
-                <input type="checkbox" class="mr-2" ${task.status === 'done' ? 'checked' : ''}>
+            <div class="d-flex align-items-center">
+                <input type="checkbox" class="task-checkbox mr-3" ${task.status === 'done' ? 'checked' : ''}>
                 <div>
                     <div class="font-weight-bold">${escapeHtml(task.title)}</div>
                     <small class="text-muted">${escapeHtml(task.description || '')}</small>
                 </div>
             </div>
             <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-2"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
-                <button class="btn-action btn-action-edit btn-action-sm edit-task" title="Edit Task">
-                    <i class="fas fa-edit"></i>
-                    <span>Edit</span>
-                </button>
-                <button class="btn-action btn-action-delete btn-action-sm delete-task" title="Delete Task">
-                    <i class="fas fa-trash"></i>
-                    <span>Delete</span>
-                </button>
+                <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
+                <div class="action-buttons">
+                    <button class="btn-action btn-action-edit btn-action-sm edit-task" title="Edit Task">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit</span>
+                    </button>
+                    <button class="btn-action btn-action-delete btn-action-sm delete-task" title="Delete Task">
+                        <i class="fas fa-trash"></i>
+                        <span>Delete</span>
+                    </button>
+                </div>
             </div>
         `;
 

@@ -435,22 +435,30 @@
             font-size: 0.875rem;
         }
 
-        /* User ID link styling to match user directory */
+        /* User ID link styling - superadmin theme */
         .user-id-link {
             color: #18375d;
             text-decoration: none;
             font-weight: 600;
             cursor: pointer;
             transition: color 0.2s ease;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            background-color: rgba(24, 55, 93, 0.1);
+            border: 1px solid rgba(24, 55, 93, 0.2);
         }
 
         .user-id-link:hover {
-            color: #0d6efd;
-            text-decoration: underline;
+            color: #fff;
+            background-color: #18375d;
+            border-color: #18375d;
+            text-decoration: none;
         }
 
         .user-id-link:active {
-            color: #0a58ca;
+            color: #fff;
+            background-color: #122a4e;
+            border-color: #122a4e;
         }
     
     /* Ensure pagination container is properly positioned */
@@ -862,14 +870,28 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="adminPassword">Password *</label>
-                                <input type="password" class="form-control" id="adminPassword" name="password" required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="adminPassword" name="password" required>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminPassword')">
+                                            <i class="fas fa-eye" id="adminPasswordIcon"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 <small class="form-text text-muted">Minimum 8 characters</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="adminPasswordConfirm">Confirm Password *</label>
-                                <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminPasswordConfirm')">
+                                            <i class="fas fa-eye" id="adminPasswordConfirmIcon"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -990,7 +1012,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="editPassword">Password</label>
-                                <input type="password" class="form-control" id="editPassword" name="password">
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="editPassword" name="password">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('editPassword')">
+                                            <i class="fas fa-eye" id="editPasswordIcon"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 <small class="form-text text-muted">Leave blank to keep current password</small>
                             </div>
                         </div>
@@ -1007,6 +1036,32 @@
         </div>
     </div>
 </div>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteAdminModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteAdminLabel">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this admin? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteAdminBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -1024,9 +1079,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
+// Toggle password visibility
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + 'Icon');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
 let pendingAdminsTable;
 let activeAdminsTable;
 let farmerToDelete = null;
+let adminToDelete = null;
 
 $(document).ready(function () {
     // Initialize DataTables
@@ -1044,6 +1116,15 @@ $(document).ready(function () {
     $('#activeSearch').on('keyup', function() {
         activeAdminsTable.search(this.value).draw();
     });
+});
+
+// Add event listener for confirm delete admin button
+document.getElementById('confirmDeleteAdminBtn').addEventListener('click', function() {
+    if (adminToDelete) {
+        deleteAdmin(adminToDelete);
+        adminToDelete = null;
+        $('#confirmDeleteAdminModal').modal('hide');
+    }
 });
 
 function initializeDataTables() {
@@ -1990,9 +2071,8 @@ function populateEditAdminForm(admin) {
 }
 
 function confirmDeleteAdmin(adminId) {
-    if (confirm('Are you sure you want to delete this admin? This action cannot be undone.')) {
-        deleteAdmin(adminId);
-    }
+    adminToDelete = adminId;
+    $('#confirmDeleteAdminModal').modal('show');
 }
 
 function deleteAdmin(adminId) {

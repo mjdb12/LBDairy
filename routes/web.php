@@ -334,8 +334,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/farms/import', [SuperAdminController::class, 'importFarms'])->name('farms.import');
         
         // Additional superadmin routes to match static website
-        Route::get('/manage-farmers', function () { return view('superadmin.manage-farmers'); })->name('manage-farmers');
-        Route::post('/farmers', [SuperAdminController::class, 'storeFarmer'])->name('farmers.store');
+        Route::get('/manage-farmers', [SuperAdminController::class, 'manageFarmers'])->name('manage-farmers');
+Route::get('/farmers/{id}/details', [SuperAdminController::class, 'getFarmerDetails'])->name('farmers.details');
+Route::put('/farmers/{id}/update', [SuperAdminController::class, 'updateFarmer'])->name('farmers.update');
+Route::delete('/farmers/{id}', [SuperAdminController::class, 'deleteFarmer'])->name('farmers.destroy');
+Route::post('/farmers', [SuperAdminController::class, 'storeFarmer'])->name('farmers.store');
         Route::get('/manage-analysis', function () { return view('superadmin.manage-analysis'); })->name('manage-analysis');
         // Analysis data endpoints
         Route::get('/analysis/summary', [SuperAdminController::class, 'getAnalysisSummary'])->name('analysis.summary');

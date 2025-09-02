@@ -93,6 +93,163 @@
         background-color: #d1ecf1;
         color: #0c5460;
     }
+    
+    /* Table-responsive wrapper positioning */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* DataTables Pagination Styling - FIXED */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #1cc88a !important; /* Admin theme color for numbers */
+        border: 1px solid #1cc88a !important;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #fff !important;
+        background-color: #1cc88a !important;
+        border-color: #1cc88a !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff !important;
+        background-color: #1cc88a !important;
+        border-color: #1cc88a !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+        text-align: left !important;
+        float: left !important;
+        clear: both;
+    }
+    
+    .dataTables_wrapper .dataTables_length {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+    
+    /* Force DataTables wrapper to have proper layout */
+    .dataTables_wrapper .row {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0 !important;
+        width: 100% !important;
+        float: left !important;
+        clear: both !important;
+    }
+    
+    /* Ensure pagination container stays left */
+    .dataTables_wrapper .dataTables_paginate,
+    .dataTables_wrapper .dataTables_info {
+        text-align: left !important;
+        float: left !important;
+        clear: both !important;
+        display: block !important;
+        width: auto !important;
+        margin-right: 1rem !important;
+    }
+    
+    /* Override any Bootstrap or other framework styles that might interfere */
+    .dataTables_wrapper .col-sm-12.col-md-7,
+    .dataTables_wrapper .col-sm-12.col-md-5 {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    /* Additional override to ensure left positioning */
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
+        text-align: left !important;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button {
+        color: #1cc88a !important;
+        border-color: #1cc88a !important;
+    }
+    
+    /* User ID link styling */
+    .user-id-link {
+        color: #1cc88a;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(28, 200, 138, 0.1);
+        border: 1px solid rgba(28, 200, 138, 0.2);
+    }
+    
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #1cc88a;
+        border-color: #1cc88a;
+        text-decoration: none;
+    }
+    
+    .user-id-link:active {
+        color: #fff;
+        background-color: #17a673;
+        border-color: #17a673;
+    }
 </style>
 @endpush
 
@@ -213,6 +370,7 @@
                 <table class="table table-bordered table-hover" id="pendingFarmersTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
                         <tr>
+                            <th>User ID</th>
                             <th>Name</th>
                             <th>Farm Name</th>
                             <th>Barangay</th>
@@ -278,11 +436,11 @@
                 <table class="table table-bordered table-hover" id="activeFarmersTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
                         <tr>
+                            <th>User ID</th>
                             <th>Name</th>
                             <th>Farm Name</th>
                             <th>Barangay</th>
                             <th>Contact</th>
-                            <th>Email</th>
                             <th>Username</th>
                             <th>Registration Date</th>
                             <th>Actions</th>
@@ -512,6 +670,11 @@ function initializeDataTables() {
         pageLength: 10,
         processing: true,
         serverSide: false,
+        language: {
+            search: "",
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>',
+            processing: '<i class="fas fa-spinner fa-spin"></i> Loading...'
+        },
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -528,11 +691,6 @@ function initializeDataTables() {
                 className: 'd-none'
             }
         ],
-        language: {
-            search: "",
-            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>',
-            processing: '<i class="fas fa-spinner fa-spin"></i> Loading...'
-        },
         columnDefs: [
             {
                 targets: -1, // Last column (Actions)
@@ -587,18 +745,91 @@ function initializeDataTables() {
             }
         ]
     });
+    
+    // Add event listeners to force pagination positioning on table updates
+    pendingFarmersTable.on('draw.dt', function() {
+        setTimeout(forcePaginationLeft, 50);
+    });
+    
+    activeFarmersTable.on('draw.dt', function() {
+        setTimeout(forcePaginationLeft, 50);
+    });
+    
+    // Force initial positioning
+    setTimeout(forcePaginationLeft, 200);
 
 
 
     // Hide default DataTables elements
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
+    
+    // Force pagination to left side after initialization
+    setTimeout(() => {
+        forcePaginationLeft();
+    }, 100);
 }
+
+    // Function to force pagination positioning to the left - ENHANCED VERSION
+    function forcePaginationLeft() {
+        console.log('Forcing pagination to left - enhanced version...');
+        
+        // Force wrapper layout
+        $('.dataTables_wrapper .row').css({
+            'display': 'block',
+            'width': '100%',
+            'margin': '0',
+            'padding': '0'
+        });
+        
+        $('.dataTables_wrapper .row > div').css({
+            'width': '100%',
+            'float': 'left',
+            'clear': 'both',
+            'padding': '0',
+            'margin': '0'
+        });
+        
+        // Force pagination and info to left
+        $('.dataTables_wrapper .dataTables_paginate').css({
+            'text-align': 'left',
+            'float': 'left',
+            'clear': 'both',
+            'display': 'block',
+            'width': 'auto',
+            'margin-right': '1rem',
+            'margin-top': '1rem'
+        });
+        
+        $('.dataTables_wrapper .dataTables_info').css({
+            'text-align': 'left',
+            'float': 'left',
+            'clear': 'both',
+            'display': 'block',
+            'width': 'auto',
+            'margin-right': '1rem',
+            'margin-top': '1rem'
+        });
+        
+        // Apply admin theme color to pagination buttons
+        $('.dataTables_wrapper .dataTables_paginate .paginate_button').css({
+            'color': '#1cc88a',
+            'border-color': '#1cc88a'
+        });
+        
+        $('.dataTables_wrapper .dataTables_paginate .paginate_button.current').css({
+            'color': '#fff',
+            'background-color': '#1cc88a',
+            'border-color': '#1cc88a'
+        });
+        
+        console.log('Enhanced pagination positioning applied');
+    }
 
 function loadPendingFarmers() {
     // Show loading state
     const tableBody = $('#pendingFarmersBody');
-    tableBody.html('<tr><td colspan="8" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading pending farmers...</td></tr>');
+    tableBody.html('<tr><td colspan="9" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading pending farmers...</td></tr>');
     
     // Load pending farmers from the database via AJAX
     $.ajax({
@@ -610,6 +841,7 @@ function loadPendingFarmers() {
             if (response.success && response.data && response.data.length > 0) {
                 response.data.forEach((farmer) => {
                     const rowData = [
+                        `<a href="#" class="user-id-link" onclick="showFarmerDetails(${farmer.id})" title="Click to view details">${farmer.id}</a>`,
                         `${farmer.first_name || ''} ${farmer.last_name || ''}`,
                         farmer.farm_name || 'N/A',
                         farmer.barangay || 'N/A',
@@ -635,13 +867,13 @@ function loadPendingFarmers() {
             } else {
                 // Handle empty data properly
                 pendingFarmersTable.clear().draw();
-                $('#pendingFarmersBody').html('<tr><td colspan="8" class="text-center">No pending farmers found</td></tr>');
+                $('#pendingFarmersBody').html('<tr><td colspan="9" class="text-center">No pending farmers found</td></tr>');
             }
         },
         error: function(xhr) {
             console.error('Error loading pending farmers:', xhr);
             pendingFarmersTable.clear().draw();
-            $('#pendingFarmersBody').html('<tr><td colspan="8" class="text-center text-danger"><i class="fas fa-exclamation-triangle"></i> Error loading pending farmers</td></tr>');
+            $('#pendingFarmersBody').html('<tr><td colspan="9" class="text-center text-danger"><i class="fas fa-exclamation-triangle"></i> Error loading pending farmers</td></tr>');
         }
     });
 }
@@ -649,7 +881,7 @@ function loadPendingFarmers() {
 function loadActiveFarmers() {
     // Show loading state
     const tableBody = $('#activeFarmersBody');
-    tableBody.html('<tr><td colspan="8" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading active farmers...</td></tr>');
+    tableBody.html('<tr><td colspan="9" class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading active farmers...</td></tr>');
     
     // Load active farmers from the database via AJAX
     $.ajax({
@@ -661,6 +893,7 @@ function loadActiveFarmers() {
             if (response.success && response.data && response.data.length > 0) {
                 response.data.forEach((farmer) => {
                     const rowData = [
+                        `<a href="#" class="user-id-link" onclick="showFarmerDetails(${farmer.id})" title="Click to view details">${farmer.id}</a>`,
                         `${farmer.first_name || ''} ${farmer.last_name || ''}`,
                         farmer.farm_name || 'N/A',
                         farmer.barangay || 'N/A',
@@ -669,7 +902,7 @@ function loadActiveFarmers() {
                         farmer.username || 'N/A',
                         farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-view" onclick="showFarmerDetails(${JSON.stringify(farmer).replace(/"/g, '&quot;')})" title="View Details">
+                            <button class="btn-action btn-action-view" onclick="showFarmerDetails(${farmer.id})" title="View Details">
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </button>
@@ -690,13 +923,13 @@ function loadActiveFarmers() {
             } else {
                 // Handle empty data properly
                 activeFarmersTable.clear().draw();
-                $('#activeFarmersBody').html('<tr><td colspan="8" class="text-center">No active farmers found</td></tr>');
+                $('#activeFarmersBody').html('<tr><td colspan="9" class="text-center">No active farmers found</td></tr>');
             }
         },
         error: function(xhr) {
             console.error('Error loading active farmers:', xhr);
             activeFarmersTable.clear().draw();
-            $('#activeFarmersBody').html('<tr><td colspan="8" class="text-center text-danger"><i class="fas fa-exclamation-triangle"></i> Error loading active farmers</td></tr>');
+            $('#activeFarmersBody').html('<tr><td colspan="9" class="text-center text-danger"><i class="fas fa-exclamation-triangle"></i> Error loading active farmers</td></tr>');
         }
     });
 }
@@ -720,30 +953,45 @@ function updateStats() {
     });
 }
 
-function showFarmerDetails(farmer) {
-    const details = `
-        <div class="row">
-            <div class="col-md-6">
-                <h6 class="mb-3 text-primary">Personal Information</h6>
-                <p><strong>Full Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
-                <p><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
-                <p><strong>Contact Number:</strong> ${farmer.phone || 'N/A'}</p>
-                <p><strong>Barangay:</strong> ${farmer.barangay || 'N/A'}</p>
-            </div>
-            <div class="col-md-6">
-                <h6 class="mb-3 text-primary">Farm Information</h6>
-                <p><strong>Farm Name:</strong> ${farmer.farm_name || 'N/A'}</p>
-                <p><strong>Farm Address:</strong> ${farmer.farm_address || 'N/A'}</p>
-                <p><strong>Username:</strong> ${farmer.username || 'N/A'}</p>
-                <p><strong>Registration Date:</strong> ${farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A'}</p>
-                ${farmer.status ? `<p><strong>Status:</strong> <span class="status-badge status-${farmer.status}">${farmer.status}</span></p>` : ''}
-            </div>
-        </div>
-    `;
+function showFarmerDetails(farmerId) {
+    // Load farmer details via AJAX
+    $.ajax({
+        url: `/admin/farmers/${farmerId}`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const farmer = response.farmer;
+                const details = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #1cc88a; font-weight: 600;">Personal Information</h6>
+                            <p><strong>Full Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
+                            <p><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
+                            <p><strong>Username:</strong> ${farmer.username || 'N/A'}</p>
+                            <p><strong>Contact Number:</strong> ${farmer.phone || 'N/A'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #1cc88a; font-weight: 600;">Account Information</h6>
+                            <p><strong>Role:</strong> <span class="badge badge-success">Farmer</span></p>
+                            <p><strong>Status:</strong> <span class="badge badge-${farmer.status === 'active' || farmer.status === 'approved' ? 'success' : 'warning'}">${farmer.status}</span></p>
+                            <p><strong>Barangay:</strong> ${farmer.barangay || 'N/A'}</p>
+                            <p><strong>Registration Date:</strong> ${farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A'}</p>
+                            <p><strong>Last Updated:</strong> ${farmer.updated_at ? new Date(farmer.updated_at).toLocaleDateString() : 'N/A'}</p>
+                        </div>
+                    </div>
+                `;
 
-    document.getElementById('farmerDetails').innerHTML = details;
-    document.getElementById('farmerNameHidden').value = `${farmer.first_name || ''} ${farmer.last_name || ''}`;
-    $('#detailsModal').modal('show');
+                document.getElementById('farmerDetails').innerHTML = details;
+                document.getElementById('farmerNameHidden').value = `${farmer.first_name || ''} ${farmer.last_name || ''}`;
+                $('#detailsModal').modal('show');
+            } else {
+                alert('Error loading farmer details');
+            }
+        },
+        error: function() {
+            alert('Error loading farmer details');
+        }
+    });
 }
 
 function approveFarmer(farmerId) {

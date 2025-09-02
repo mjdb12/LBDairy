@@ -260,19 +260,40 @@
               <label for="currentPassword">
                   <i class="fas fa-lock"></i>Current Password
               </label>
-              <input type="password" class="form-control" id="currentPassword" name="current_password" required>
+              <div class="input-group">
+                  <input type="password" class="form-control" id="currentPassword" name="current_password" required>
+                  <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('currentPassword')">
+                          <i class="fas fa-eye" id="currentPasswordIcon"></i>
+                      </button>
+                  </div>
+              </div>
           </div>
           <div class="form-group">
               <label for="newPassword">
                   <i class="fas fa-key"></i>New Password
               </label>
-              <input type="password" class="form-control" id="newPassword" name="password" required>
+              <div class="input-group">
+                  <input type="password" class="form-control" id="newPassword" name="password" required>
+                  <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('newPassword')">
+                          <i class="fas fa-eye" id="newPasswordIcon"></i>
+                      </button>
+                  </div>
+              </div>
           </div>
           <div class="form-group">
               <label for="confirmPassword">
                   <i class="fas fa-check-circle"></i>Confirm New Password
               </label>
-              <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
+              <div class="input-group">
+                  <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
+                  <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPassword')">
+                          <i class="fas fa-eye" id="confirmPasswordIcon"></i>
+                      </button>
+                  </div>
+              </div>
           </div>
       </div>
       <div class="modal-footer">
@@ -646,6 +667,22 @@
 
 @push('scripts')
 <script>
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = document.getElementById(fieldId + 'Icon');
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    
     function uploadProfilePicture(event) {
         const file = event.target.files[0];
         if (!file) return;
