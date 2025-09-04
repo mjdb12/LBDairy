@@ -4,6 +4,54 @@
 
 @push('styles')
 <style>
+    /* Farmer Details Modal Styling (ensure header doesn't cover content) */
+    #farmerDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        overflow: hidden;
+    }
+
+    #farmerDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+    }
+
+    #farmerDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+
+    #farmerDetailsModal .modal-body {
+        padding: 2rem;
+        background: #ffffff;
+        position: relative;
+        z-index: 1;
+    }
+
+    #farmerDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Prevent dark blue bars behind headings in farmer details */
+    #farmerDetailsModal .text-primary {
+        background-color: transparent !important;
+        color: #18375d !important;
+    }
+
+    #farmerDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+
+    #farmerDetailsModal .modal-footer {
+        background: #ffffff;
+    }
     /* Custom styles for farmer management */
     .border-left-primary {
         border-left: 0.25rem solid #18375d !important;
@@ -566,7 +614,7 @@
                     <tbody>
                         @foreach($farmers as $farmer)
                         <tr>
-                            <td><a href="#" class="user-id-link" onclick="showFarmerDetails({{ $farmer->id }})" title="Click to view details">{{ $farmer->id }}</a></td>
+                            <td><a href="#" class="user-id-link" onclick="showFarmerDetails('{{ $farmer->id }}')" title="Click to view details">{{ $farmer->id }}</a></td>
                             <td>{{ $farmer->name }}</td>
                             <td>{{ $farmer->barangay }}</td>
                             <td>{{ $farmer->phone }}</td>
@@ -586,11 +634,11 @@
                             <td>{{ $farmer->created_at->format('M d, Y') }}</td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-action btn-action-edit" onclick="editFarmer({{ $farmer->id }})" title="Edit">
+                                    <button class="btn-action btn-action-edit" onclick="editFarmer('{{ $farmer->id }}')" title="Edit">
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>
                                     </button>
-                                                        <button class="btn-action btn-action-delete" onclick="confirmDeleteFarmer({{ $farmer->id }})" title="Delete">
+                                                        <button class="btn-action btn-action-delete" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
                         <i class="fas fa-trash"></i>
                         <span>Delete</span>
                     </button>

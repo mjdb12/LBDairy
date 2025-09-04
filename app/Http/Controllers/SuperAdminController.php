@@ -936,6 +936,92 @@ class SuperAdminController extends Controller
         }
     }
 
+    /**
+     * Update an existing farm from SuperAdmin UI
+     */
+    public function updateFarm($id, Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'barangay' => 'nullable|string|max:255',
+                'status' => 'required|in:active,inactive',
+                'owner_name' => 'nullable|string|max:255',
+                'owner_email' => 'nullable|email',
+                'owner_phone' => 'nullable|string|max:50',
+            ]);
+
+            $farm = \App\Models\Farm::findOrFail($id);
+            $farm->name = $validated['name'];
+            $farm->location = $validated['barangay'] ?? null;
+            $farm->status = $validated['status'];
+            $farm->description = $request->input('description');
+            $farm->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Farm updated successfully',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update farm'
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created farm from SuperAdmin UI
+     */
+    public function storeFarm(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'barangay' => 'nullable|string|max:255',
+                'status' => 'required|in:active,inactive',
+                'owner_name' => 'nullable|string|max:255',
+                'owner_email' => 'nullable|email',
+                'owner_phone' => 'nullable|string|max:50',
+            ]);
+
+            $farm = new \App\Models\Farm();
+            $farm->name = $validated['name'];
+            $farm->location = $validated['barangay'] ?? null;
+            $farm->status = $validated['status'];
+            $farm->description = $request->input('description');
+            $farm->save();
+
+            // Optionally handle owner info if model supports relations
+            // Skipping owner creation/linking due to unspecified schema
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Farm created successfully',
+                'data' => [
+                    'id' => $farm->id,
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create farm'
+            ], 500);
+        }
+    }
+
     // Settings Methods
     public function getSettings()
     {

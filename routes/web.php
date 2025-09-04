@@ -329,6 +329,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/farms/list', [SuperAdminController::class, 'getFarmsList'])->name('farms.list');
         Route::get('/farms/stats', [SuperAdminController::class, 'getFarmStats'])->name('farms.stats');
         Route::get('/farms/{id}', [SuperAdminController::class, 'showFarm'])->name('farms.show');
+        Route::post('/farms', [SuperAdminController::class, 'storeFarm'])->name('farms.store');
+        Route::put('/farms/{id}', [SuperAdminController::class, 'updateFarm'])->name('farms.update');
         Route::post('/farms/{id}/update-status', [SuperAdminController::class, 'updateFarmStatus'])->name('farms.update-status');
         Route::delete('/farms/{id}', [SuperAdminController::class, 'destroyFarm'])->name('farms.destroy');
         Route::post('/farms/import', [SuperAdminController::class, 'importFarms'])->name('farms.import');
