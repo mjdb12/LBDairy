@@ -10,35 +10,66 @@
     <p>Monitor and track all system activities</p>
 </div>
 
-<!-- Stats Cards -->
-<div class="stats-container slide-in">
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-clipboard-list"></i>
+<!-- Statistics Grid -->
+<div class="row fade-in">
+    <!-- Total Logs -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Total Logs</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLogs ?? 0 }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-clipboard-list fa-2x" style="color: #1a365d !important;"></i>
+                </div>
+            </div>
         </div>
-        <h3>{{ $totalLogs ?? 0 }}</h3>
-        <p>Total Logs</p>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-calendar-day"></i>
+
+    <!-- Today's Activity -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Today's Activity</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $todayLogs ?? 0 }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-calendar-day fa-2x" style="color: #1a365d !important;"></i>
+                </div>
+            </div>
         </div>
-        <h3>{{ $todayLogs ?? 0 }}</h3>
-        <p>Today's Activity</p>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-exclamation-triangle"></i>
+
+    <!-- Critical Actions -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Critical Actions</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalEvents ?? 0 }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-exclamation-triangle fa-2x" style="color: #1a365d !important;"></i>
+                </div>
+            </div>
         </div>
-        <h3>{{ $criticalEvents ?? 0 }}</h3>
-        <p>Critical Actions</p>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fas fa-users"></i>
+
+    <!-- Active Users -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Active Users</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('is_active', true)->count() }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users fa-2x" style="color: #1a365d !important;"></i>
+                </div>
+            </div>
         </div>
-        <h3>{{ \App\Models\User::where('is_active', true)->count() }}</h3>
-        <p>Active Users</p>
     </div>
 </div>
 
@@ -222,67 +253,6 @@
         font-size: 1.1rem;
     }
 
-    /* Stats Cards */
-    .stats-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        text-align: center;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 100px;
-        height: 100px;
-        background: linear-gradient(135deg, rgba(78, 115, 223, 0.1) 0%, rgba(78, 115, 223, 0.05) 100%);
-        border-radius: 50%;
-        transform: translate(30px, -30px);
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-    }
-
-    .stat-card h3 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin: 0;
-        position: relative;
-        z-index: 1;
-    }
-
-    .stat-card p {
-        color: var(--dark-color);
-        margin: 0.5rem 0 0 0;
-        font-weight: 500;
-        position: relative;
-        z-index: 1;
-    }
-
-    .stat-card .stat-icon {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        font-size: 2rem;
-        color: rgba(78, 115, 223, 0.2);
-        z-index: 1;
-    }
 
     /* Table Controls */
     .table-controls {
@@ -469,9 +439,6 @@
             margin-top: 1rem;
         }
 
-        .stats-container {
-            grid-template-columns: 1fr;
-        }
 
         .table-controls {
             flex-direction: column;

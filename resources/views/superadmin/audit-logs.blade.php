@@ -250,56 +250,56 @@
     <!-- Stats Cards -->
     <div class="row fade-in">
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Logs</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Total Logs</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLogs ?? 0 }}</div>
                     </div>
-                    <div class="icon text-info">
-                        <i class="fas fa-list fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-list fa-2x" style="color: #1a365d !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Today's Logs</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Today's Logs</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $todayLogs ?? 0 }}</div>
                     </div>
-                    <div class="icon text-success">
-                        <i class="fas fa-calendar fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-calendar fa-2x" style="color: #1a365d !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Critical Events</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Critical Events</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalEvents ?? 0 }}</div>
                     </div>
-                    <div class="icon text-danger">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-exclamation-triangle fa-2x" style="color: #1a365d !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2" style="border-left-color: #1a365d !important;">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Active Users</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1a365d !important;">Active Users</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeUsers ?? 0 }}</div>
                     </div>
-                    <div class="icon text-warning">
-                        <i class="fas fa-users fa-2x"></i>
+                    <div class="icon">
+                        <i class="fas fa-users fa-2x" style="color: #1a365d !important;"></i>
                     </div>
                 </div>
             </div>

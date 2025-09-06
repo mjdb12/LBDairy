@@ -12,66 +12,64 @@
         <p>Comprehensive farm and livestock productivity insights and analytics</p>
 </div>
 
+
+
 <!-- Stats Cards -->
 <div class="row fade-in stagger-animation">
     <!-- Total Farms -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farms</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFarmsStat">0</div>
-                </div>
-                <div class="icon text-info">
-                    <i class="fas fa-university fa-2x"></i>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-    <!-- Total Livestock -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Livestock</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalLivestockStat">0</div>
-                </div>
-                <div class="icon text-success">
-                    <i class="fas fa-cow fa-2x"></i>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-    <!-- Monthly Production -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Monthly Production</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="monthlyProductionStat">0</span> L</div>
-                </div>
-                <div class="icon text-warning">
-                    <i class="fas fa-chart-line fa-2x"></i>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-    <!-- Efficiency Rate -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Efficiency Rate</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="efficiencyStat">0</span><sup>%</sup></div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Farms</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFarmsStat">0</div>
                 </div>
-                <div class="icon text-primary">
-                    <i class="fas fa-percentage fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-university fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
-            
+        </div>
+    </div>
+    <!-- Total Livestock -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalLivestockStat">0</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-cow fa-2x" style="color: #18375d !important;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Monthly Production -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Monthly Production</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="monthlyProductionStat">0</span> L</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-chart-line fa-2x" style="color: #18375d !important;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Efficiency Rate -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Efficiency Rate</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="efficiencyStat">0</span><sup>%</sup></div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-percentage fa-2x" style="color: #18375d !important;"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -131,7 +129,7 @@
 </div>
 
 <!-- Detailed Analysis -->
-<div class="row fade-in">
+<div class="row fade-in side-by-side-row">
     <!-- Livestock Analysis -->
     <div class="col-12 col-lg-6 mb-4">
         <div class="card shadow">
@@ -413,6 +411,74 @@
     .list-group-item:last-child {
         border-bottom: none;
     }
+
+    /* Side-by-side layout enhancements */
+    .side-by-side-row .col-lg-6 {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .side-by-side-row .col-lg-6 .card {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .side-by-side-row .col-lg-6 .card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Ensure charts and lists take full height */
+    #livestockChart {
+        flex: 1;
+        min-height: 200px;
+    }
+
+    #topFarmsList {
+        flex: 1;
+        min-height: 200px;
+    }
+
+    /* Force side-by-side layout */
+    .side-by-side-row {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        margin: 0 !important;
+    }
+
+    .side-by-side-row .col-lg-6 {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    .side-by-side-row .col-lg-6:first-child {
+        padding-left: 0 !important;
+        padding-right: 7.5px !important;
+    }
+
+    .side-by-side-row .col-lg-6:last-child {
+        padding-left: 7.5px !important;
+        padding-right: 0 !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+        .side-by-side-row {
+            flex-wrap: wrap !important;
+        }
+        
+        .side-by-side-row .col-lg-6 {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-bottom: 1rem;
+        }
+    }
 </style>
 @endpush
 
@@ -434,7 +500,7 @@
 
         // Farm Performance Chart
         const farmCtx = document.getElementById('farmPerformanceChart').getContext('2d');
-        fetch('{{ route('superadmin.analysis.farm-performance') }}?days=' + document.getElementById('chartPeriod').value)
+    fetch("{{ url('superadmin/analysis/farm-performance') }}?days=' + document.getElementById('chartPeriod').value)")
             .then(r => r.json())
             .then(payload => {
                 if (!payload?.success) return;
@@ -455,7 +521,7 @@
 
         // Livestock Distribution Chart
         const livestockCtx = document.getElementById('livestockChart').getContext('2d');
-        fetch('{{ route('superadmin.analysis.livestock-distribution') }}')
+    fetch("{{ url('superadmin/analysis/livestock-distribution') }}")
             .then(r => r.json())
             .then(payload => {
                 if (!payload?.success) return;
@@ -470,31 +536,137 @@
                             borderColor: '#ffffff'
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { 
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            } 
+                        },
+                        layout: {
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        }
+                    }
                 });
             });
 
         // Production Trends Chart
         const productionCtx = document.getElementById('productionChart').getContext('2d');
-        fetch('{{ route('superadmin.analysis.production-trends') }}')
+    fetch("{{ url('superadmin/analysis/production-trends') }}")
             .then(r => r.json())
             .then(payload => {
                 if (!payload?.success) return;
+                
+                // Create enhanced chart with multiple datasets
                 new Chart(productionCtx, {
                     type: 'bar',
                     data: {
                         labels: payload.labels,
-                        datasets: [{
-                            label: 'Milk Production (L)',
-                            backgroundColor: 'rgba(78, 115, 223, 0.8)',
-                            data: payload.data,
-                            borderRadius: 8,
-                            borderSkipped: false,
-                        }]
+                        datasets: [
+                            {
+                                label: 'Total Production (L)',
+                                backgroundColor: 'rgba(78, 115, 223, 0.8)',
+                                data: payload.data,
+                                borderRadius: 8,
+                                borderSkipped: false,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Active Farms',
+                                type: 'line',
+                                backgroundColor: 'rgba(28, 200, 138, 0.2)',
+                                borderColor: 'rgba(28, 200, 138, 1)',
+                                borderWidth: 3,
+                                fill: false,
+                                data: payload.activeFarms || [],
+                                yAxisID: 'y1',
+                                tension: 0.4
+                            }
+                        ]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    afterLabel: function(context) {
+                                        if (context.datasetIndex === 0) {
+                                            const weekIndex = context.dataIndex;
+                                            const avgProduction = payload.avgProduction ? payload.avgProduction[weekIndex] : 0;
+                                            const activeLivestock = payload.activeLivestock ? payload.activeLivestock[weekIndex] : 0;
+                                            return [
+                                                `Avg Daily: ${avgProduction.toFixed(1)}L`,
+                                                `Active Livestock: ${activeLivestock}`
+                                            ];
+                                        }
+                                        return '';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Production (Liters)'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Active Farms'
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                            }
+                        }
+                    }
                 });
+
+                // Update summary information if available
+                if (payload.summary) {
+                    updateProductionSummary(payload.summary);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading production trends:', error);
             });
+
+        // Function to update production summary
+        function updateProductionSummary(summary) {
+            // You can add summary display elements here if needed
+            console.log('Production Summary:', summary);
+        }
 
         // Add fade-in animation
         const observerOptions = {
@@ -519,7 +691,7 @@
         });
 
         // Load top KPI stats
-        fetch('{{ route('superadmin.analysis.summary') }}')
+    fetch("{{ url('superadmin/analysis/summary') }}")
             .then(r => r.json())
             .then(payload => {
                 if (!payload?.success) return;
@@ -528,6 +700,43 @@
                 document.getElementById('totalLivestockStat').textContent = t.livestock ?? 0;
                 document.getElementById('monthlyProductionStat').textContent = (t.monthly_production_liters ?? 0);
                 document.getElementById('efficiencyStat').textContent = (t.efficiency_percent ?? 0);
+            });
+
+        // Load top performing farms
+    fetch("{{ url('superadmin/analysis/top-performing-farms') }}")
+            .then(r => r.json())
+            .then(payload => {
+                const topFarmsList = document.getElementById('topFarmsList');
+                if (!payload?.success) {
+                    topFarmsList.innerHTML = '<div class="text-center py-4"><p class="text-muted">Failed to load top performing farms</p></div>';
+                    return;
+                }
+                
+                const farms = payload.farms || [];
+                if (farms.length === 0) {
+                    topFarmsList.innerHTML = '<div class="text-center py-4"><p class="text-muted">No farm data available</p></div>';
+                    return;
+                }
+                
+                topFarmsList.innerHTML = farms.map((farm, index) => `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-primary mr-2">${index + 1}</span>
+                            <div>
+                                <div class="font-weight-bold">${farm.name}</div>
+                                <small class="text-muted">${farm.location} • ${farm.livestock_count} livestock</small>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="badge badge-success">${farm.performance_score}%</span>
+                            <div class="small text-muted">${farm.monthly_production}L</div>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(error => {
+                console.error('Error loading top performing farms:', error);
+                document.getElementById('topFarmsList').innerHTML = '<div class="text-center py-4"><p class="text-muted">Error loading data</p></div>';
             });
 
         // Chart period change handler
