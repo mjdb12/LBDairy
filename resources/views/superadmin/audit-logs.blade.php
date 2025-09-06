@@ -725,8 +725,8 @@ function initializeCharts() {
             datasets: [{
                 label: 'System Events',
                 data: [15, 8, 25, 45, 38, 52, 18],
-                borderColor: '#4e73df',
-                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                borderColor: '#fca700',
+                backgroundColor: 'rgba(252, 167, 0, 0.1)',
                 tension: 0.4
             }]
         },
