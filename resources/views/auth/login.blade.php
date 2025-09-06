@@ -10,7 +10,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .bg-gradient-primary {
-            background: #ca1c09ff;
+            background: #23d70eff;
         }
         .glass-effect {
             backdrop-filter: blur(16px);
