@@ -22,11 +22,16 @@
             transition: all 0.3s ease;
         }
         a#manage-dairy-link:hover {
-            background-color: #f3f4f6;
-            color: #4466ca;
-            border-color: #4466ca;
+            background-color: #fca700;
+            color: #ffffffff;
+            border-color: #fca700;
         }
         a#landing-page:hover {
+            background-color: #fca700;
+            color: #ffffffff;
+            border-color: #fca700;
+        }
+        a#features:hover {
             background-color: #18375d;
             color: #ffffffff;
             border-color: #18375d;
@@ -36,7 +41,13 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         .stats-card {
-            background: #18375d;
+            background: #4466ca;
+        }
+        .stats-cards {
+            background: #fca700;
+        }
+        .stats-cardss {
+            background: #39a400;
         }
         .cta-gradient {
             background: #18375d;
@@ -45,24 +56,14 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 w-full z-50">
+    <nav class="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 w-full z-50" style="background-color: #f6f4e8;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center space-x-4" style="align-items: flex-start;">
                         <img src="/img/LBDairy.png" alt="LB Dairy Logo" class="h-12 w-auto" style="max-height: 48px; object-fit: contain;">
+                        <img src="/img/LBDairy_Rectangle.png" alt="LB Dairy Logo" class="h-12 w-auto" style="max-height: 48px; object-fit: contain;">
                     </div>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <a href="/" id="manage-dairy-link" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
-                        Home
-                    </a>
-                    <a href="#features" id="manage-dairy-link" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
-                        About
-                    </a>
-                    <a href="#contact" id="manage-dairy-link" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
-                        Contact
-                    </a>
                 </div>
                 <div class="flex items-center space-x-4">
                     @auth
@@ -70,12 +71,9 @@
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
-                            Log in
-                        </a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" id="landing-page" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out !important;">
-                                Sign In
+                            <a href="{{ route('register') }}" id="manage-dairy-link" class="bg-#f6f4e8 text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out !important;">
+                                Sign Up
                             </a>
                         @endif
                     @endauth
@@ -85,17 +83,19 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-gradient text-white" style="background: url('/img/baka.jpg') no-repeat center center; background-size: cover; padding: 210px 0;">
+    <section class="hero-gradient text-white" style="background: url('/img/cow.jpg') no-repeat center center; background-size: cover; padding: 200px 0;">
         <div class="flex items-center justify-center w-full"></div>
             <div class="flex flex-col sm:flex-row items-center px-4 sm:px-6 lg:px-8">
                 <div class="text-left">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6" style="text-shadow: 2px 2px 4px rgba(0, 7, 20, 0.92);">
                         Smart Livestock Management
-                        <span class="block text-blue-200">for Modern Dairy Farms</span>
+                        <span class="block" style="color: #fca700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                            for Modern Dairy Farms
+                        </span>
                     </h1>
-                    <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl">
-                        Streamline your dairy operations with our comprehensive livestock management system. 
-                        Track production, monitor health, and optimize your farm's efficiency.
+
+                    <p class="text-xl md:text-2xl mb-8 max-w-3xl" style="color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.6);">
+                        Make managing your dairy farm easier. Keep track of your animals, monitor their health, and improve farm productivity.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         @auth
@@ -103,11 +103,11 @@
                                 Go to Dashboard
                             </a>
                         @else
-                            <a href="{{ route('register') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
-                                Start Free Trial
-                            </a>
-                            <a href="#features" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
+                            <a href="#features" id="landing-page" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
                                 Learn More
+                            </a>
+                            <a href="#contact" id="features" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
+                                Join Us
                             </a>
                         @endauth
                     </div>
@@ -116,8 +116,9 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="py-16 bg-white">
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-50">
+        <!-- Stats Section -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="text-center">
@@ -130,7 +131,7 @@
                     <p class="text-gray-600">Active Farms</p>
                 </div>
                 <div class="text-center">
-                    <div class="stats-card rounded-lg p-6 text-white mb-4">
+                    <div class="stats-cards rounded-lg p-6 text-white mb-4">
                         <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                         </svg>
@@ -139,7 +140,7 @@
                     <p class="text-gray-600">Livestock Tracked</p>
                 </div>
                 <div class="text-center">
-                    <div class="stats-card rounded-lg p-6 text-white mb-4">
+                    <div class="stats-cardss rounded-lg p-6 text-white mb-4">
                         <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
@@ -149,12 +150,9 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="py-20 bg-gray-50">
+        <br><br><br>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
+            <div class="text-center mb-16" color: #1b3043 !important;">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                     Everything You Need to Manage Your Dairy Farm
                 </h2>
@@ -174,7 +172,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Livestock Management</h3>
                     <p class="text-gray-600">
-                        Track individual animals, monitor health records, breeding history, and performance metrics in one centralized system.
+                        Manage animal records, monitor health, track breeding, and measure performance in a single system.
                     </p>
                 </div>
 
@@ -187,7 +185,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Production Tracking</h3>
                     <p class="text-gray-600">
-                        Monitor daily milk production, quality metrics, and yield analysis to optimize your dairy operations.
+                        Keep track of daily milk output, quality, and yield to run your dairy more efficiently.
                     </p>
                 </div>
 
@@ -200,7 +198,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Health Monitoring</h3>
                     <p class="text-gray-600">
-                        Track vaccinations, treatments, and health alerts to ensure the well-being of your livestock.
+                        Manage livestock health by recording vaccinations, treatments, and health alerts to keep animals well.
                     </p>
                 </div>
 
@@ -213,7 +211,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Financial Management</h3>
                     <p class="text-gray-600">
-                        Track expenses, sales, and revenue to maintain accurate financial records and improve profitability.
+                        Track farm finances including expenses, sales, and revenue to improve profitability.
                     </p>
                 </div>
 
@@ -226,7 +224,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Issue Management</h3>
                     <p class="text-gray-600">
-                        Report and track issues, receive alerts, and manage farm-related problems efficiently.
+                        Handle issues effectively by logging problems, receiving alerts, and resolving concerns quickly.
                     </p>
                 </div>
 
@@ -239,7 +237,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Analytics & Reports</h3>
                     <p class="text-gray-600">
-                        Generate comprehensive reports and analytics to make data-driven decisions for your farm.
+                        Use data and analytics to generate reports that support smarter, data-driven decisions.
                     </p>
                 </div>
             </div>
@@ -250,21 +248,21 @@
     <section id="contact" class="cta-gradient text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">
-                Ready to Transform Your Dairy Farm?
+                Ready to Take Your Dairy Farm to the Next Level?
             </h2>
             <p class="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
-                Join hundreds of farmers who have already improved their operations with LB Dairy.
+                Make Your Dairy Farm Smarter, Stronger, Better. Join hundreds of farmers who have already improved their operations with LB Dairy.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 @auth
-                                            <a href="{{ url('/dashboard') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
+                        <a href="{{ url('/dashboard') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
                             Access Dashboard
                         </a>
                 @else
-                                            <a href="{{ route('register') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
-                            Start Free Trial
+                        <a href="{{ route('register') }}" id="manage-dairy-link" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
+                            Join Now
                         </a>
-                        <a href="{{ route('login') }}" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
+                        <a href="{{ route('login') }}" id="manage-dairy-link" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
                             Sign In
                         </a>
                 @endauth
@@ -287,10 +285,10 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Features</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition duration-150 ease-in-out">Livestock Management</a></li>
-                        <li><a href="#" class="hover:text-white transition duration-150 ease-in-out">Production Tracking</a></li>
-                        <li><a href="#" class="hover:text-white transition duration-150 ease-in-out">Health Monitoring</a></li>
-                        <li><a href="#" class="hover:text-white transition duration-150 ease-in-out">Financial Reports</a></li>
+                        <li><a href="#features" class="hover:text-white transition duration-150 ease-in-out">Livestock Management</a></li>
+                        <li><a href="#features" class="hover:text-white transition duration-150 ease-in-out">Production Tracking</a></li>
+                        <li><a href="#features" class="hover:text-white transition duration-150 ease-in-out">Health Monitoring</a></li>
+                        <li><a href="#features" class="hover:text-white transition duration-150 ease-in-out">Financial Reports</a></li>
                     </ul>
                 </div>
                 <div>
