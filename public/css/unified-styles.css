@@ -1487,6 +1487,58 @@ html body #addTaskBtn.btn-primary:focus,
     }
 }
 
+/* ===== FARM ANALYSIS TABLE ACTION BUTTONS ===== */
+/* Override any conflicting styles for farm analysis table buttons */
+#farmAnalysisTable .btn-action.btn-action-view,
+.action-buttons .btn-action.btn-action-view,
+.btn-action.btn-action-view {
+    background-color: #387057 !important;
+    border-color: #387057 !important;
+    color: white !important;
+}
+
+#farmAnalysisTable .btn-action.btn-action-view:hover,
+.action-buttons .btn-action.btn-action-view:hover,
+.btn-action.btn-action-view:hover {
+    background-color: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: white !important;
+}
+
+#farmAnalysisTable .btn-action.btn-action-view:focus,
+.action-buttons .btn-action.btn-action-view:focus,
+.btn-action.btn-action-view:focus {
+    background-color: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: white !important;
+    box-shadow: 0 0 0 0.2rem rgba(56, 112, 87, 0.25) !important;
+}
+
+#farmAnalysisTable .btn-action.btn-action-report,
+.action-buttons .btn-action.btn-action-report,
+.btn-action.btn-action-report {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+#farmAnalysisTable .btn-action.btn-action-report:hover,
+.action-buttons .btn-action.btn-action-report:hover,
+.btn-action.btn-action-report:hover {
+    background-color: #c82333 !important;
+    border-color: #c82333 !important;
+    color: white !important;
+}
+
+#farmAnalysisTable .btn-action.btn-action-report:focus,
+.action-buttons .btn-action.btn-action-report:focus,
+.btn-action.btn-action-report:focus {
+    background-color: #c82333 !important;
+    border-color: #c82333 !important;
+    color: white !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
 /* ===== TOOLTIP OVERRIDES ===== */
 .tooltip .tooltip-inner,
 .bs-tooltip-top .tooltip-inner,
@@ -1507,4 +1559,37 @@ html body #addTaskBtn.btn-primary:focus,
     border-bottom-color: #387057 !important;
     border-left-color: #387057 !important;
     border-right-color: #387057 !important;
+}
+
+/* ===== ULTRA-SPECIFIC FARM ANALYSIS BUTTON OVERRIDES ===== */
+/* Force button colors with maximum specificity */
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons .btn-action.btn-action-view,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons button.btn-action.btn-action-view,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td button.btn-action.btn-action-view,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .btn-action.btn-action-view,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .btn-action-view,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td button.btn-action-view,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .btn-action,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td button,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons button,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons .btn-action,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons .btn-action.btn-action-view {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: white !important;
+}
+
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons .btn-action.btn-action-report,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons button.btn-action.btn-action-report,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td button.btn-action.btn-action-report,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .btn-action.btn-action-report,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .btn-action-report,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td button.btn-action-report,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons button.btn-action-report,
+html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .action-buttons .btn-action.btn-action-report {
+    background-color: #dc3545 !important;
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
 }

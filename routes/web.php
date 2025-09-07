@@ -347,6 +347,7 @@ Route::post('/farmers', [SuperAdminController::class, 'storeFarmer'])->name('far
         Route::get('/analysis/farm-performance', [SuperAdminController::class, 'getFarmPerformanceData'])->name('analysis.farm-performance');
         Route::get('/analysis/livestock-distribution', [SuperAdminController::class, 'getLivestockDistributionData'])->name('analysis.livestock-distribution');
         Route::get('/analysis/production-trends', [SuperAdminController::class, 'getProductionTrendsData'])->name('analysis.production-trends');
+        Route::get('/analysis/top-performing-farms', [SuperAdminController::class, 'getTopPerformingFarms'])->name('analysis.top-performing-farms');
         
         Route::get('/settings/get', [SuperAdminController::class, 'getSettings'])->name('settings.get');
         Route::post('/settings/general', [SuperAdminController::class, 'updateGeneralSettings'])->name('settings.general');

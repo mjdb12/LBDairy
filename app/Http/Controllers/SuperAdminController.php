@@ -1213,8 +1213,8 @@ class SuperAdminController extends Controller
                 'dataset' => [
                     'label' => 'Production (L)',
                     'data' => $data,
-                    'borderColor' => '#18375d',
-                    'backgroundColor' => 'rgba(24, 55, 93, 0.1)',
+                    'borderColor' => '#fca700',
+                    'backgroundColor' => 'rgba(252, 167, 0, 0.1)',
                     'fill' => true,
                     'tension' => 0.4,
                 ],
@@ -1278,6 +1278,51 @@ class SuperAdminController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to load trends'], 500);
         }
     }
+
+    /**
+     * Get top performing farms for analysis dashboard
+     */
+    public function getTopPerformingFarms()
+    {
+        try {
+            $farms = Farm::with(['owner', 'livestock', 'productionRecords'])
+                ->get()
+                ->map(function ($farm) {
+                    $livestockCount = $farm->livestock->count();
+                    $monthlyProduction = $farm->productionRecords
+                        ->where('production_date', '>=', now()->startOfMonth())
+                        ->where('production_date', '<=', now()->endOfMonth())
+                        ->sum('milk_quantity');
+                    $expectedProduction = $livestockCount * 25; // Assume 25L per livestock per month
+                    $efficiency = $expectedProduction > 0 ? round(($monthlyProduction / $expectedProduction) * 100, 1) : 0;
+                    $efficiency = min($efficiency, 100); // Cap at 100%
+
+                    return [
+                        'id' => $farm->id,
+                        'name' => $farm->name,
+                        'location' => $farm->location,
+                        'livestock_count' => $livestockCount,
+                        'monthly_production' => $monthlyProduction,
+                        'efficiency' => $efficiency,
+                        'owner_name' => $farm->owner ? ($farm->owner->name ?? trim(($farm->owner->first_name ?? '') . ' ' . ($farm->owner->last_name ?? ''))) : 'N/A'
+                    ];
+                })
+                ->sortByDesc('efficiency')
+                ->take(5)
+                ->values();
+
+            return response()->json([
+                'success' => true,
+                'farms' => $farms
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load top performing farms'
+            ], 500);
+        }
+    }
+
     /**
      * Create a farmer (Super Admin scope)
      */
