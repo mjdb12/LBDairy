@@ -531,7 +531,7 @@
                         labels: payload.labels,
                         datasets: [{
                             data: payload.data,
-                            backgroundColor: ['#1a365d','#2d4a6b','#3e5a7a','#4f6a89','#607a98','#718aa7'],
+                            backgroundColor: ['#dd1d10ff','#2d4a6b','#3e5a7a','#4f6a89','#607a98','#718aa7'],
                             borderWidth: 2,
                             borderColor: '#ffffff'
                         }]
