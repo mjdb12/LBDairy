@@ -21,6 +21,16 @@
         .feature-card {
             transition: all 0.3s ease;
         }
+        a#manage-dairy-link:hover {
+            background-color: #f3f4f6;
+            color: #4466ca;
+            border-color: #4466ca;
+        }
+        a#landing-page:hover {
+            background-color: #18375d;
+            color: #ffffffff;
+            border-color: #18375d;
+        }
         .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -35,13 +45,24 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+    <nav class="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0">
+                    <div class="flex-shrink-0 flex items-center space-x-4" style="align-items: flex-start;">
                         <img src="/img/LBDairy.png" alt="LB Dairy Logo" class="h-12 w-auto" style="max-height: 48px; object-fit: contain;">
                     </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <a href="/" id="manage-dairy-link" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                        Home
+                    </a>
+                    <a href="#features" id="manage-dairy-link" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                        About
+                    </a>
+                    <a href="#contact" id="manage-dairy-link" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                        Contact
+                    </a>
                 </div>
                 <div class="flex items-center space-x-4">
                     @auth
@@ -53,8 +74,8 @@
                             Log in
                         </a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-md" style="background: #18375d !important;">
-                                Get Started
+                            <a href="{{ route('register') }}" id="landing-page" class="bg-white text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out !important;">
+                                Sign In
                             </a>
                         @endif
                     @endauth
@@ -64,30 +85,32 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-gradient text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-            <div class="text-center">
-                <h1 class="text-4xl md:text-6xl font-bold mb-6">
-                    Smart Livestock Management
-                    <span class="block text-blue-200">for Modern Dairy Farms</span>
-                </h1>
-                <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-                    Streamline your dairy operations with our comprehensive livestock management system. 
-                    Track production, monitor health, and optimize your farm's efficiency.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
-                            Go to Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('register') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
-                            Start Free Trial
-                        </a>
-                        <a href="#features" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
-                            Learn More
-                        </a>
-                    @endauth
+    <section class="hero-gradient text-white" style="background: url('/img/baka.jpg') no-repeat center center; background-size: cover; padding: 210px 0;">
+        <div class="flex items-center justify-center w-full"></div>
+            <div class="flex flex-col sm:flex-row items-center px-4 sm:px-6 lg:px-8">
+                <div class="text-left">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                        Smart Livestock Management
+                        <span class="block text-blue-200">for Modern Dairy Farms</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl">
+                        Streamline your dairy operations with our comprehensive livestock management system. 
+                        Track production, monitor health, and optimize your farm's efficiency.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
+                                Go to Dashboard
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
+                                Start Free Trial
+                            </a>
+                            <a href="#features" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
+                                Learn More
+                            </a>
+                        @endauth
+                    </div>
                 </div>
             </div>
         </div>
@@ -224,7 +247,7 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-gradient text-white py-20">
+    <section id="contact" class="cta-gradient text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">
                 Ready to Transform Your Dairy Farm?
