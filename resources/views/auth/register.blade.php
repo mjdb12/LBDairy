@@ -12,6 +12,9 @@
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -57,7 +60,7 @@
 
         .logo-container {
             position: relative;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2.2 rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -98,6 +101,7 @@
         }
 
         .btn-user {
+             background: #18375d;
             border-radius: 15px;
             padding: 1.25rem 1.5rem;
             font-size: 1.1rem;
@@ -111,6 +115,10 @@
         }
 
         .btn-user:hover {
+            background-color: #fca700;
+            color: #ffffffff;
+            border-color: #fca700;
+            transform: translateY(-2px);
             transform: translateY(-3px);
             box-shadow: 0 1rem 2rem rgba(24, 55, 93, 0.4);
         }
@@ -293,7 +301,7 @@
         .registration-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--dark-color);
+            color: #18375d;
             margin-bottom: 0.5rem;
         }
 
@@ -320,6 +328,18 @@
             background: rgba(28, 200, 138, 0.1);
             color: var(--success-color);
             border-left: 4px solid var(--success-color);
+        }
+
+         .tab-active {
+            background: #387057;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(24, 55, 93, 0.3);
+        }
+        .tab-inactive {
+            background: rgba(255, 255, 255, 0.1);
+            color: #6b7280;
+            backdrop-filter: blur(8px);
         }
 
         @media (max-width: 768px) {
@@ -361,24 +381,37 @@
                             <div class="logo-container">
                                 <img src="{{ asset('img/LBDairy.png') }}" alt="LBDAIRY Logo" style="width: 150px; height: 150px;">
                             </div>
-                            <h1 class="registration-title">Join LBDAIRY</h1>
+                            <h1 class="registration-title" >Join LBDAIRY</h1>
                             <p class="registration-subtitle">Create your account and start managing your dairy operations</p>
                         </div>
 
                         <!-- User Type Tabs -->
-                        <ul class="nav nav-tabs justify-content-center" id="registrationTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="farmer-tab" data-toggle="tab" data-target="#farmer" type="button" role="tab" aria-controls="farmer" aria-selected="true">
-                                    <i class="fas fa-seedling mr-2"></i>Farmer Registration
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="admin-tab" data-toggle="tab" data-target="#admin" type="button" role="tab" aria-controls="admin" aria-selected="false">
-                                    <i class="fas fa-user-shield mr-2"></i>Admin Registration
-                                </button>
-                            </li>
-                        </ul>
-
+                                <div class="rounded-2xl p-2 bg-gray-100 max-w-md mx-auto h-16">
+                                    <ul class="nav nav-tabs justify-content-center w-full" id="registrationTabs" role="tablist">
+                                        <li class="flex-1" role="presentation">
+                                            <button class="w-full tab-btn py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-active" 
+                                                    id="farmer-tab" data-toggle="tab" data-target="#farmer" type="button" role="tab" 
+                                                    aria-controls="farmer" aria-selected="true">
+                                                <div class="flex items-center justify-center space-x-2">
+                                                    <i class="fas fa-seedling mr-2"></i>
+                                                    <span>Farmer</span>
+                                                </div>
+                                            </button>
+                                        </li>
+                                        <li class="flex-1" role="presentation">
+                                            <button class="w-full tab-btn py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-inactive" 
+                                                    id="admin-tab" data-toggle="tab" data-target="#admin" type="button" role="tab" 
+                                                    aria-controls="admin" aria-selected="false">
+                                                <div class="flex items-center justify-center space-x-2">
+                                                    <i class="fas fa-user-shield mr-2"></i>
+                                                    <span>Admin</span>
+                                                </div>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                        <!-- User Type Tabs -->
+                        <br>
                         <!-- Tab Content -->
                         <div class="tab-content" id="registrationTabContent">
                             <!-- Farmer Registration Form -->
@@ -398,24 +431,30 @@
                                     @endif
 
                                     <div class="form-group">
-                                        <label for="farmerCode">Farmer Registration Code</label>
-                                        <input type="text" class="form-control form-control-user" id="farmerCode" name="farmer_code" required>
+                                        <label for="farmerCode" class="block text-sm font-medium text-gray-700 mb-2">Farmer Registration Code</label>
+                                        <input type="text" id="farmerCode" name="farmer_code" required
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your username">
                                     </div>
-
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="farmerFirstName">First Name</label>
-                                            <input type="text" class="form-control form-control-user" id="farmerFirstName" name="first_name" required>
+                                            <label for="farmerFirstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                            <input type="text"  id="farmerFirstName" name="first_name" required
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your firstname">
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="farmerLastName">Last Name</label>
-                                            <input type="text" class="form-control form-control-user" id="farmerLastName" name="last_name" required>
+                                            <label for="farmerLastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                            <input type="text" id="farmerLastName" name="last_name" required
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your lastname">
                                         </div>
                                     </div>
 
-                                                                         <div class="form-group">
-                                         <label for="farmerBarangay">Barangay</label>
-                                         <input list="farmerBarangayList" class="form-control form-control-user" id="farmerBarangay" name="barangay" placeholder="Select Barangay" required>
+                                        <div class="form-group">
+                                         <label for="farmerBarangay" class="block text-sm font-medium text-gray-700 mb-2">Barangay</label>
+                                         <input list="farmerBarangayList"  id="farmerBarangay" name="barangay" placeholder="Select Barangay" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your barangay">
                                          <datalist id="farmerBarangayList">
                                              <option value="Abang">Abang</option>
                                              <option value="Aliliw">Aliliw</option>
@@ -454,52 +493,94 @@
                                      </div>
 
                                     <div class="form-group">
-                                        <label for="farmerContactNumber">Contact Number</label>
-                                        <input type="tel" class="form-control form-control-user" id="farmerContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required>
+                                        <label for="farmerContactNumber" class="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                                        <input type="tel" id="farmerContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your contact number">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="farmerEmail">Email Address</label>
-                                        <input type="email" class="form-control form-control-user" id="farmerEmail" name="email" required>
+                                        <label for="farmerEmail" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                        <input type="email" id="farmerEmail" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your email address">
                                     </div>
 
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="farmerFarmName">Farm Name</label>
-                                            <input type="text" class="form-control form-control-user" id="farmerFarmName" name="farm_name" required>
+                                            <label for="farmerFarmName" class="block text-sm font-medium text-gray-700 mb-2">Farm Name</label>
+                                            <input type="text" id="farmerFarmName" name="farm_name" required class="w- px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your farm name">
                                         </div>
+                                        
                                         <div class="col-sm-6">
                                             <label for="farmerFarmAddress">Farm Address</label>
-                                            <input type="text" class="form-control form-control-user" id="farmerFarmAddress" name="farm_address" required>
+                                            <input list="farmAddressList" id="farmerFarmAddress" name="farm_address" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Select address">
+                                            <datalist id="farmAddressList">
+                                             <option value="Abang">Abang</option>
+                                             <option value="Aliliw">Aliliw</option>
+                                             <option value="Atulinao">Atulinao</option>
+                                             <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                             <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                             <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                             <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                             <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                             <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                             <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                             <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                             <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                             <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                             <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                                             <option value="Igang">Igang</option>
+                                             <option value="Kabatete">Kabatete</option>
+                                             <option value="Kakawit">Kakawit</option>
+                                             <option value="Kalangay">Kalangay</option>
+                                             <option value="Kalyaat">Kalyaat</option>
+                                             <option value="Kilib">Kilib</option>
+                                             <option value="Kulapi">Kulapi</option>
+                                             <option value="Mahabang Parang">Mahabang Parang</option>
+                                             <option value="Malupak">Malupak</option>
+                                             <option value="Manasa">Manasa</option>
+                                             <option value="May-It">May-It</option>
+                                             <option value="Nagsinamo">Nagsinamo</option>
+                                             <option value="Nalunao">Nalunao</option>
+                                             <option value="Palola">Palola</option>
+                                             <option value="Piis">Piis</option>
+                                             <option value="Samil">Samil</option>
+                                             <option value="Tiawe">Tiawe</option>
+                                             <option value="Tinamnan">Tinamnan</option>
+                                         </datalist>
+                                         <input type="hidden" name="address" id="farmerAddress">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="farmerUsername">Username</label>
-                                        <input type="text" class="form-control form-control-user" id="farmerUsername" name="username" required>
+                                        <label for="farmerUsername" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                                        <input type="text" id="farmerUsername" name="username" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your username">
                                     </div>
 
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="farmerPassword">Password</label>
-                                            <div class="input-group">
-                                                <input type="password" class="form-control form-control-user" id="farmerPassword" name="password" required>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('farmerPassword')">
-                                                        <i class="fas fa-eye" id="farmerPasswordIcon"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                            <label for="farmerPassword" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                                            <div class="relative">
+                                            <input type="password" id="farmerPassword" name="password" required
+                                                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your password">
+                                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('farmerPassword')">
+                                                <i class="fas fa-eye text-gray-400 hover:text-gray-600 transition-colors duration-200" id="farmerPasswordIcon"></i>
+                                            </button>
                                         </div>
+                                        </div>
+
                                         <div class="col-sm-6">
-                                            <label for="farmerConfirmPassword">Confirm Password</label>
-                                            <div class="input-group">
-                                                <input type="password" class="form-control form-control-user" id="farmerConfirmPassword" name="password_confirmation" required>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('farmerConfirmPassword')">
-                                                        <i class="fas fa-eye" id="farmerConfirmPasswordIcon"></i>
-                                                    </button>
-                                                </div>
+                                            <label for="farmerConfirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                                            <div class="relative">
+                                            <input type="password" id="farmerConfirmPassword" name="password_confirmation" required
+                                                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Confirm your password">
+                                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('farmerConfirmPassword')">
+                                                <i class="fas fa-eye text-gray-400 hover:text-gray-600 transition-colors duration-200" id="farmerConfirmPasswordIcon"></i>
+                                            </button>
                                             </div>
                                         </div>
                                     </div>
@@ -513,8 +594,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-user btn-block" style="background: var(--primary-color); color: white;">
-                                        <i class="fas fa-seedling mr-2"></i>
+                                    <button type="submit" class="btn btn-user btn-block text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300">
                                         Register as Farmer
                                     </button>
                                 </form>
@@ -652,7 +732,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-user btn-block" style="background: var(--primary-color); color: white;">
+                                    <button type="submit" class="btn btn-user btn-block text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300">
                                         <i class="fas fa-user-plus mr-2"></i>
                                         Create Admin Account
                                     </button>
@@ -660,12 +740,13 @@
                             </div>
                         </div>
 
+                        <br>
                         <hr>
-                        <div class="text-center">
-                            <a class="small" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt mr-1"></i>
-                                Already have an account? Sign In
-                            </a>
+                        <div class="text-center mt-6">
+                            <a class="small" href="{{ route('login') }}"></a>
+                                <p class="text-gray-600">Already have an account? 
+                                    <a href="{{ route('login') }}" id="sign-in" class="font-medium" style="color: #18375d;">Sign In</a>
+                                </p>
                         </div>
                     </div>
                 </div>
@@ -686,37 +767,49 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-4">
-                        <h6 class="text-success mb-3">LBDAIRY User Agreement</h6>
-                        <p class="mb-3">By registering with LBDAIRY, you agree to the following terms:</p>
+                        <h6 class="text-#18375d mb-3">LBDAIRY User Agreement</h6>
                     </div>
                     
+                    <p class="text-gray-700 mb-4">
+                        By registering with <span class="font-semibold">LBDAIRY</span>, you agree to provide correct and up-to-date 
+                        information. Keeping your details accurate ensures that the system can generate reliable records and reports 
+                        that reflect your farm’s real performance.
+                        The information you share will be used to monitor activities, track productivity, and provide insights that 
+                        support better farm management. This allows us to give you tools and recommendations that are useful and 
+                        tailored to your needs.
+                    </p>
+
+                    <p class="text-gray-700 mb-4">
+                        We respect your privacy and take data protection seriously. Your information will remain secure and will only 
+                        be used for the purposes stated here. We follow privacy laws to make sure your data is safe and handled 
+                        responsibly at all times.
+                    </p>
+
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-secondary mb-2">Data Accuracy</h6>
+                            <h6 class="text-#18375d mb-2">Data Accuracy</h6>
                             <ul class="list-unstyled">
-                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Provide accurate information</li>
                                 <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Update information regularly</li>
                                 <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Report changes promptly</li>
                             </ul>
                         </div>
-                        <div class="col-md-6">
-                            <h6 class="text-secondary mb-2">Data Usage</h6>
-                            <ul class="list-unstyled">
-                                <li class="mb-2"><i class="fas fa-chart-line text-info me-2"></i>Monitoring and analysis</li>
-                                <li class="mb-2"><i class="fas fa-chart-line text-info me-2"></i>Productivity tracking</li>
-                                <li class="mb-2"><i class="fas fa-chart-line text-info me-2"></i>Agricultural insights</li>
-                            </ul>
+                        <div class="col-md-6"> 
+                            <h6 class="text-#18375d mb-2">Data Usage</h6> 
+                            <ul class="list-unstyled"> 
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Monitoring and analysis</li> 
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Productivity tracking</li> 
+                            </ul> 
                         </div>
                     </div>
-                    
                     <div class="alert alert-info mt-3">
-                        <i class="fas fa-shield-alt me-2"></i>
-                        <strong>Privacy:</strong> Your data is handled according to our privacy policy and local data protection laws.
+                        <strong>Reminder:</strong> Your data is handled according to our privacy policy and local data protection laws. Rest assured, your information is secure with us.
+                        By using LBDAIRY, you accept these terms and agree to use the 
+                        system honestly and responsibly.
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" data-dismiss="modal" style="background: var(--primary-color); color: white; border: none;">
-                        <i class="fas fa-check mr-2"></i>
+               <div class="modal-footer justify-end">
+                    <button type="button" data-dismiss="modal"
+                        class="btn btn-user text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all duration-300">
                         I Understand and Agree
                     </button>
                 </div>
@@ -728,6 +821,30 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FontAwesome -->
+     <script>
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const selectedRoleInput = document.getElementById('selectedRole');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                // Update tab buttons
+                tabBtns.forEach(b => {
+                    b.classList.remove('tab-active');
+                    b.classList.add('tab-inactive');
+                });
+                btn.classList.remove('tab-inactive');
+                btn.classList.add('tab-active');
+                
+                // Update hidden input
+                selectedRoleInput.value = tab;
+                
+            });
+        });
+    </script>
 
     <script>
         // Toggle password visibility

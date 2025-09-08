@@ -93,7 +93,7 @@
                             </div>
 
                             <!-- User Type Tabs -->
-                            <div class="flex rounded-2xl p-1 bg-gray-100 w-full">
+                            <div class="flex rounded-2xl p-2 bg-gray-100 w-full">
                                 <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-active" data-tab="farmer">
                                     <div class="flex items-center justify-center space-x-2">
                                         <span>Farmer</span>
@@ -154,6 +154,7 @@
                             </form>
 
                             <div class="text-center mt-6">
+                            <a class="small" href="{{ route('register') }}"></a>
                                 <p class="text-gray-600">Don't have an account? 
                                     <a href="{{ route('register') }}" id="sign-in" class="font-medium" style="color: #18375d;">Register here</a>
                                 </p>
