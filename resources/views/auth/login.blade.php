@@ -19,7 +19,7 @@
             box-shadow: 0 8px 40px 0 rgba(24, 55, 93, 0.18), 0 2px 8px 0 rgba(18, 42, 71, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.08);
         }
         .tab-active {
-            background: #18375d;
+            background: #387057;
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(24, 55, 93, 0.3);
@@ -40,6 +40,9 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .btn-primary:hover {
+            background-color: #fca700;
+            color: #ffffffff;
+            border-color: #fca700;
             transform: translateY(-2px);
             box-shadow: 0 12px 35px rgba(24, 55, 93, 0.4);
         }
@@ -52,13 +55,13 @@
 </head>
 <body class="min-h-screen" style="background: #ffffff;">
     <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-4xl">
+        <div class="w-full max-w-5xl">
             <div class="glass-effect rounded-3xl shadow-2xl overflow-hidden">
                 <div class="flex flex-col lg:flex-row">
                     <!-- Left Side - Branding (Dark Blue) -->
                     <div class="lg:w-1/2 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden" style="background: #18375d;">
                         <div class="logo-container">
-                                <img src="{{ asset('img/bg.png') }}" alt="LBDAIRY Logo" style="width: 200px; height: 200px;">
+                                <img src="{{ asset('img/lucban.png') }}" alt="LBDAIRY Logo" style="width: 200px; height: 200px;">
                             </div>
                         <div class="absolute inset-0 bg-black opacity-20"></div>
                         <div class="relative z-10 text-center">
@@ -85,33 +88,24 @@
                             @endif
 
                             <div class="text-center mb-8">
-                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-                                <p class="text-gray-600">Please sign in to your account</p>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome back</h2>
+                                <p class="text-gray-600">Log in to your account</p>
                             </div>
 
                             <!-- User Type Tabs -->
-                            <div class="flex rounded-2xl p-1 bg-gray-100">
+                            <div class="flex rounded-2xl p-1 bg-gray-100 w-full">
                                 <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-active" data-tab="farmer">
                                     <div class="flex items-center justify-center space-x-2">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
                                         <span>Farmer</span>
                                     </div>
                                 </button>
                                 <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-inactive" data-tab="admin">
                                     <div class="flex items-center justify-center space-x-2">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-                                        </svg>
                                         <span>Admin</span>
                                     </div>
                                 </button>
                                 <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-inactive" data-tab="superadmin">
                                     <div class="flex items-center justify-center space-x-2">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M5 16L3 14l5.5-5.5L10 10l-1.5 1.5L5 16zm8.5-6.5L16 10l-2 2-1.5-1.5L15 8.5l-1.5-1.5zm-5 0L10 8l2 2-1.5 1.5L8 9.5 6.5 8l1.5-1.5z"/>
-                                        </svg>
                                         <span>Super</span>
                                     </div>
                                 </button>
@@ -154,14 +148,14 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300">
+                                <button type="submit"  class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300">
                                     Sign In
                                 </button>
                             </form>
 
                             <div class="text-center mt-6">
                                 <p class="text-gray-600">Don't have an account? 
-                                    <a href="{{ route('register') }}" class="font-medium" style="color: #18375d;">Register here</a>
+                                    <a href="{{ route('register') }}" id="sign-in" class="font-medium" style="color: #18375d;">Register here</a>
                                 </p>
                             </div>
                         </div>
