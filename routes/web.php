@@ -300,6 +300,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/audit-logs/{id}/details', [SuperAdminController::class, 'getAuditLogDetails'])->name('audit-logs.details');
         Route::get('/audit-logs/export', [SuperAdminController::class, 'exportAuditLogs'])->name('audit-logs.export');
         Route::post('/audit-logs/clear', [SuperAdminController::class, 'clearOldLogs'])->name('audit-logs.clear');
+        Route::get('/audit-logs/chart-data', [SuperAdminController::class, 'getAuditLogChartData'])->name('audit-logs.chart-data');
         Route::get('/system-overview', [SuperAdminController::class, 'getSystemOverview'])->name('system-overview');
         Route::get('/system-settings', function () { return view('superadmin.settings'); })->name('settings');
         

@@ -180,13 +180,85 @@ class SuperAdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
+        // Get security alerts (warning, danger, and critical events from last 7 days)
+        $securityAlerts = AuditLog::with(['user'])
+            ->whereIn('severity', ['warning', 'danger', 'critical', 'error'])
+            ->where('created_at', '>=', now()->subDays(7))
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get()
+            ->map(function($log) {
+                // Determine severity badge class
+                $severityClass = 'warning';
+                $severityLabel = 'Warning';
+                
+                switch($log->severity) {
+                    case 'critical':
+                    case 'error':
+                        $severityClass = 'danger';
+                        $severityLabel = 'Critical';
+                        break;
+                    case 'danger':
+                        $severityClass = 'danger';
+                        $severityLabel = 'High Risk';
+                        break;
+                    case 'warning':
+                        $severityClass = 'warning';
+                        $severityLabel = 'Warning';
+                        break;
+                }
+                
+                return (object) [
+                    'id' => $log->id,
+                    'timestamp' => $log->created_at->format('M d, Y H:i:s'),
+                    'user_name' => $log->user ? $log->user->name : 'System',
+                    'event' => ucfirst(str_replace('_', ' ', $log->action)),
+                    'details' => $log->description ?: 'No additional details',
+                    'severity' => $log->severity,
+                    'severity_class' => $severityClass,
+                    'severity_label' => $severityLabel
+                ];
+            });
+
+        // Get user activity summary (last 30 days)
+        $userActivity = User::withCount([
+            'auditLogs as total_actions' => function($query) {
+                $query->where('created_at', '>=', now()->subDays(30));
+            },
+            'auditLogs as critical_events' => function($query) {
+                $query->where('created_at', '>=', now()->subDays(30))
+                      ->whereIn('severity', ['warning', 'danger', 'critical', 'error']);
+            }
+        ])
+        ->where('is_active', true)
+        ->get()
+        ->map(function($user) {
+            $lastActivity = AuditLog::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            
+            return (object) [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'last_activity' => $lastActivity ? $lastActivity->created_at->format('M d, Y H:i:s') : 'Never',
+                'total_actions' => $user->total_actions ?? 0,
+                'critical_events' => $user->critical_events ?? 0,
+                'status' => $user->is_active ? 'Active' : 'Inactive'
+            ];
+        })
+        ->sortByDesc('total_actions')
+        ->take(20);
+
         return view('superadmin.audit-logs', [
             'totalLogs' => $stats['total_logs'],
             'criticalEvents' => $stats['critical_logs'],
             'todayLogs' => $stats['today_logs'],
             'systemHealth' => $stats['system_health'],
             'activeUsers' => User::where('is_active', true)->count(),
-            'auditLogs' => $auditLogs
+            'auditLogs' => $auditLogs,
+            'securityAlerts' => $securityAlerts,
+            'userActivity' => $userActivity
         ]);
     }
 
@@ -1698,6 +1770,150 @@ class SuperAdminController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete farmer'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get audit log chart data for dashboard charts
+     */
+    public function getAuditLogChartData()
+    {
+        try {
+            // Get severity distribution data
+            $severityData = AuditLog::select('severity', DB::raw('count(*) as count'))
+                ->whereNotNull('severity')
+                ->groupBy('severity')
+                ->get()
+                ->pluck('count', 'severity')
+                ->toArray();
+
+            // Prepare data for Chart.js
+            $severityLabels = [];
+            $severityCounts = [];
+            $severityColors = [];
+
+            // Define simplified 3-category severity levels and their colors
+            $severityLevels = [
+                'low' => ['label' => 'Low', 'color' => '#387057'],
+                'medium' => ['label' => 'Medium', 'color' => '#ffc107'],
+                'high' => ['label' => 'High', 'color' => '#c82333']
+            ];
+
+            // Map existing severity values to new 3-category system
+            $severityMapping = [
+                'debug' => 'low',
+                'info' => 'low',
+                'warning' => 'medium',
+                'error' => 'high',
+                'critical' => 'high'
+            ];
+
+            // Count events by new categories
+            $categoryCounts = ['low' => 0, 'medium' => 0, 'high' => 0];
+            
+            foreach ($severityData as $severity => $count) {
+                $category = $severityMapping[$severity] ?? 'low';
+                $categoryCounts[$category] += $count;
+            }
+
+            foreach ($severityLevels as $level => $config) {
+                $severityLabels[] = $config['label'];
+                $severityCounts[] = $categoryCounts[$level];
+                $severityColors[] = $config['color'];
+            }
+
+            // Get timeline data for the last 24 hours (hourly breakdown)
+            $timelineData = AuditLog::select(
+                    DB::raw('HOUR(created_at) as hour'),
+                    DB::raw('count(*) as count')
+                )
+                ->where('created_at', '>=', now()->subDay())
+                ->groupBy('hour')
+                ->orderBy('hour')
+                ->get();
+
+            // Create array for all 24 hours (0-23) with default count of 0
+            $hourlyData = [];
+            for ($i = 0; $i < 24; $i++) {
+                $hourlyData[$i] = 0;
+            }
+
+            // Fill in actual data
+            foreach ($timelineData as $data) {
+                $hourlyData[$data->hour] = $data->count;
+            }
+
+            $timelineLabels = [];
+            $timelineCounts = [];
+            
+            // Generate labels and data arrays
+            for ($i = 0; $i < 24; $i++) {
+                $timelineLabels[] = sprintf('%02d:00', $i);
+                $timelineCounts[] = $hourlyData[$i];
+            }
+
+            // Calculate additional statistics
+            $totalEvents = array_sum($severityCounts);
+            $totalEvents24h = array_sum($timelineCounts);
+            $avgPerHour = $totalEvents24h > 0 ? round($totalEvents24h / 24, 1) : 0;
+            
+            // Find peak hour
+            $maxHourIndex = array_search(max($timelineCounts), $timelineCounts);
+            $peakHour = $maxHourIndex !== false ? $timelineLabels[$maxHourIndex] : '00:00';
+            
+            // Calculate system health metrics
+            $highSeverityCount = $severityCounts[2] ?? 0; // High severity events
+            $mediumSeverityCount = $severityCounts[1] ?? 0; // Medium severity events
+            $lowSeverityCount = $severityCounts[0] ?? 0; // Low severity events
+            
+            // Get recent critical events (last 24 hours)
+            $recentCriticalEvents = AuditLog::where('created_at', '>=', now()->subDay())
+                ->whereIn('severity', ['error', 'critical'])
+                ->count();
+
+            return response()->json([
+                'success' => true,
+                'severity' => [
+                    'labels' => $severityLabels,
+                    'data' => $severityCounts,
+                    'colors' => $severityColors
+                ],
+                'timeline' => [
+                    'labels' => $timelineLabels,
+                    'data' => $timelineCounts
+                ],
+                'statistics' => [
+                    'total_events' => $totalEvents,
+                    'total_events_24h' => $totalEvents24h,
+                    'avg_per_hour' => $avgPerHour,
+                    'peak_hour' => $peakHour,
+                    'high_severity_count' => $highSeverityCount,
+                    'medium_severity_count' => $mediumSeverityCount,
+                    'low_severity_count' => $lowSeverityCount,
+                    'recent_critical_events' => $recentCriticalEvents
+                ],
+                'debug' => [
+                    'severity_raw' => $severityData,
+                    'timeline_raw' => $timelineData->toArray()
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get audit log chart data: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load chart data',
+                'severity' => [
+                    'labels' => ['Low', 'Medium', 'High'],
+                    'data' => [0, 0, 0],
+                    'colors' => ['#387057', '#ffc107', '#c82333']
+                ],
+                'timeline' => [
+                    'labels' => array_map(function($i) { return sprintf('%02d:00', $i); }, range(0, 23)),
+                    'data' => array_fill(0, 24, 0)
+                ]
             ], 500);
         }
     }
