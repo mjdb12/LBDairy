@@ -22,14 +22,19 @@
             transition: all 0.3s ease;
         }
         a#manage-dairy-link:hover {
-            background-color: #fca700;
+            background-color: #387057;
             color: #ffffffff;
-            border-color: #fca700;
+            border-color: #387057;
         }
         a#landing-page:hover {
             background-color: #fca700;
             color: #ffffffff;
             border-color: #fca700;
+        }
+        a#login-btn:hover {
+            background-color: #f6f4e8;
+            color: #18375d;
+            border-color: #18375d;
         }
         a#features:hover {
             background-color: #18375d;
@@ -41,7 +46,7 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         .stats-card {
-            background: #4466ca;
+            background: #18375d;
         }
         .stats-cards {
             background: #fca700;
@@ -71,6 +76,9 @@
                             Dashboard
                         </a>
                     @else
+                         <a href="{{ url('/login') }}" id="login-btn" class="bg-#f6f4e8 text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out !important;">
+                            Sign In
+                        </a>
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}" id="manage-dairy-link" class="bg-#f6f4e8 text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out !important;">
                                 Sign Up
@@ -259,10 +267,10 @@
                             Access Dashboard
                         </a>
                 @else
-                        <a href="{{ route('register') }}" id="manage-dairy-link" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
+                        <a href="{{ route('register') }}" id="landing-page" class="bg-white text-blue-900 hover:bg-gray-50 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out shadow-lg" style="color: #18375d !important;">
                             Join Now
                         </a>
-                        <a href="{{ route('login') }}" id="manage-dairy-link" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
+                        <a href="{{ route('login') }}" id="landing-page" class="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold transition duration-150 ease-in-out" style="color: white !important;">
                             Sign In
                         </a>
                 @endauth

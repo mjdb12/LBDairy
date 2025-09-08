@@ -57,10 +57,13 @@
                 <div class="flex flex-col lg:flex-row">
                     <!-- Left Side - Branding (Dark Blue) -->
                     <div class="lg:w-1/2 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden" style="background: #18375d;">
+                        <div class="logo-container">
+                                <img src="{{ asset('img/bg.png') }}" alt="LBDAIRY Logo" style="width: 200px; height: 200px;">
+                            </div>
                         <div class="absolute inset-0 bg-black opacity-20"></div>
                         <div class="relative z-10 text-center">
                             <h1 class="text-4xl font-bold mb-4">LBDAIRY</h1>
-                            <p class="text-xl opacity-90 mb-8">Modern Dairy Management System</p>
+                            <p class="text-xl opacity-90 mb-8">Smart Livestock Management</p>
                         </div>
                     </div>
 
