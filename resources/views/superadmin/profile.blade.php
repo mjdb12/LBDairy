@@ -85,20 +85,86 @@
         display: flex;
         gap: 0.5rem;
     }
+    
+    /* Custom button colors */
+    .btn-edit-profile {
+        background-color: #387057 !important;
+        border-color: #387057 !important;
+        color: white !important;
+    }
+    
+    .btn-edit-profile:hover,
+    .btn-edit-profile:focus {
+        background-color: #2d5a47 !important;
+        border-color: #2d5a47 !important;
+        color: white !important;
+        box-shadow: 0 0 0 0.2rem rgba(56, 112, 87, 0.25) !important;
+    }
+    
+    .btn-change-password {
+        background-color: #fca700 !important;
+        border-color: #fca700 !important;
+        color: white !important;
+    }
+    
+    .btn-change-password:hover,
+    .btn-change-password:focus {
+        background-color: #e69500 !important;
+        border-color: #e69500 !important;
+        color: white !important;
+        box-shadow: 0 0 0 0.2rem rgba(252, 167, 0, 0.25) !important;
+    }
 
     /* Profile Info Table */
+    .profile-info-table {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
     .profile-info-table td {
-        color: #333 !important;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #f8f9fc;
+        color: #5a5c69 !important;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e3e6f0;
+        font-size: 0.95rem;
+        vertical-align: middle;
     }
     
     .profile-info-table th {
-        color: #333 !important;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #f8f9fc;
+        color: #18375d !important;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e3e6f0;
         font-weight: 600;
-        width: 180px;
+        width: 200px;
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+    
+    .profile-info-table th i {
+        margin-right: 0.5rem;
+        width: 16px;
+        text-align: center;
+    }
+    
+    .profile-info-table tbody tr:hover {
+        background-color: #f8f9fc;
+        transition: background-color 0.2s ease;
+    }
+    
+    .profile-info-table tbody tr:last-child td,
+    .profile-info-table tbody tr:last-child th {
+        border-bottom: none;
+    }
+    
+    /* Profile detail values styling */
+    .profile-info-table td {
+        font-weight: 500;
+    }
+    
+    .profile-info-table td:empty::after {
+        content: "Not provided";
+        color: #858796;
+        font-style: italic;
     }
 
     /* Stagger Animation */
@@ -155,6 +221,42 @@
             gap: 1rem;
             text-align: center;
         }
+        
+        .profile-info-table th {
+            width: 150px;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info-table td {
+            font-size: 0.9rem;
+        }
+        
+        .profile-info-table th i {
+            width: 14px;
+            margin-right: 0.4rem;
+        }
+        
+        .profile-card-bordered {
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .profile-info-table th {
+            width: 120px;
+            font-size: 0.8rem;
+            padding: 0.75rem 0;
+        }
+        
+        .profile-info-table td {
+            font-size: 0.85rem;
+            padding: 0.75rem 0;
+        }
+        
+        .profile-info-table th i {
+            width: 12px;
+            margin-right: 0.3rem;
+        }
     }
 </style>
 @endpush
@@ -208,71 +310,59 @@
 <!-- Stats Cards -->
 <div class="row fade-in stagger-animation">
     <!-- Total Admins -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Admins</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'admin')->count() }}</div>
-                </div>
-                <div class="icon text-info">
-                    <i class="fas fa-user-shield fa-2x"></i>
-                </div>
-            </div>
-            <a href="{{ route('superadmin.admins') }}" class="card-footer text-info small d-flex justify-content-between align-items-center">
-                View Admins <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <!-- Active Admins -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Admins</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'admin')->where('is_active', true)->count() }}</div>
-                </div>
-                <div class="icon text-success">
-                    <i class="fas fa-user-check fa-2x"></i>
-                </div>
-            </div>
-            <a href="{{ route('superadmin.admins') }}" class="card-footer text-success small d-flex justify-content-between align-items-center">
-                View Active <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <!-- Pending Requests -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Requests</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'open')->count() }}</div>
-                </div>
-                <div class="icon text-warning">
-                    <i class="fas fa-user-clock fa-2x"></i>
-                </div>
-            </div>
-            <a href="{{ route('superadmin.admins') }}" class="card-footer text-warning small d-flex justify-content-between align-items-center">
-                View Requests <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <!-- Days as Admin -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Days as Super Admin</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format(\Carbon\Carbon::parse(auth()->user()->created_at)->diffInDays(now()), 2) }}</div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Admins</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'admin')->count() }}</div>
                 </div>
-                <div class="icon text-primary">
-                    <i class="fas fa-user-shield fa-2x"></i>
+                <div class="icon">
+                    <i class="fas fa-user-shield fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
-            <a href="{{ route('superadmin.profile') }}" class="card-footer text-primary small d-flex justify-content-between align-items-center">
-                See Profile <i class="fas fa-arrow-circle-right"></i>
-            </a>
+        </div>
+    </div>
+    <!-- Active Admins -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Admins</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'admin')->where('is_active', true)->count() }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-user-check fa-2x" style="color: #18375d !important;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pending Requests -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Pending Requests</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'open')->count() }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-user-clock fa-2x" style="color: #18375d !important;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Days as Admin -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Days as Super Admin</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format(\Carbon\Carbon::parse(auth()->user()->created_at)->diffInDays(now()), 2) }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-user-shield fa-2x" style="color: #18375d !important;"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -309,10 +399,10 @@
                     Profile Details
                 </h6>
                 <div class="action-buttons">
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
+                    <button class="btn btn-sm btn-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
                         <i class="fas fa-edit mr-2"></i>Edit Profile
                     </button>
-                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
+                    <button class="btn btn-sm btn-change-password" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
                         <i class="fas fa-key mr-2"></i>Change Password
                     </button>
                 </div>
@@ -324,49 +414,49 @@
                         <tbody>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-user text-primary"></i>Full Name
+                                    <i class="fas fa-user" style="color: #18375d;"></i>Full Name
                                 </th>
                                 <td>{{ auth()->user()->name }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-envelope text-info"></i>Email
+                                    <i class="fas fa-envelope" style="color: #18375d;"></i>Email
                                 </th>
                                 <td>{{ auth()->user()->email }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-phone text-success"></i>Phone
+                                    <i class="fas fa-phone" style="color: #18375d;"></i>Phone
                                 </th>
                                 <td>{{ auth()->user()->phone ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-user-shield text-warning"></i>Position
+                                    <i class="fas fa-user-shield" style="color: #18375d;"></i>Position
                                 </th>
                                 <td>{{ auth()->user()->position ?? 'Super Admin' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-map-marker-alt text-info"></i>Barangay
+                                    <i class="fas fa-map-marker-alt" style="color: #18375d;"></i>Barangay
                                 </th>
                                 <td>{{ auth()->user()->barangay ?? 'Not specified' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-map-marker-alt text-danger"></i>Address
+                                    <i class="fas fa-home" style="color: #18375d;"></i>Address
                                 </th>
                                 <td>{{ auth()->user()->address ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-calendar text-secondary"></i>Member Since
+                                    <i class="fas fa-calendar-alt" style="color: #18375d;"></i>Member Since
                                 </th>
                                 <td>{{ auth()->user()->created_at ? auth()->user()->created_at->format('F Y') : 'Unknown' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <i class="fas fa-clock text-primary"></i>Last Updated
+                                    <i class="fas fa-clock" style="color: #18375d;"></i>Last Updated
                                 </th>
                                 <td>{{ auth()->user()->updated_at ? auth()->user()->updated_at->format('F j, Y g:i A') : 'Never' }}</td>
                             </tr>

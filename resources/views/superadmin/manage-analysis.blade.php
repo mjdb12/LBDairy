@@ -2,6 +2,76 @@
 
 @section('title', 'LBDAIRY: SuperAdmin - Productivity Analysis')
 
+@push('styles')
+<style>
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 <!-- Page Header -->
 <div class="page-header fade-in">
@@ -163,37 +233,13 @@
     <div class="col-12 mb-4">
         <div class="card shadow mb-4 fade-in">
             <div class="card-header bg-primary text-white">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-                    <h6 class="mb-0">
-                        <i class="fas fa-table"></i>
-                        Farm Analysis Data
-                    </h6>
-                    <div class="d-flex flex-column flex-sm-row align-items-center gap-2">
-                        <button class="btn-action btn-action-print" onclick="printFarmTable()">
-                            <i class="fas fa-print"></i> Print
-                        </button>
-                        <button class="btn-action btn-action-refresh" onclick="refreshFarmData()">
-                            <i class="fas fa-sync-alt"></i> Refresh
-                        </button>
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                            <i class="fas fa-tools"></i> Tools
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" onclick="exportFarmCSV()">
-                                <i class="fas fa-file-csv"></i> Download CSV
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportFarmPNG()">
-                                <i class="fas fa-image"></i> Download PNG
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportFarmPDF()">
-                                <i class="fas fa-file-pdf"></i> Download PDF
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <h6 class="mb-0">
+                    <i class="fas fa-table"></i>
+                    Farm Analysis Data
+                </h6>
             </div>
             <div class="card-body">
-                <div class="mb-3">
+                <div class="search-controls mb-3">
                     <div class="input-group" style="max-width: 300px;">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -201,6 +247,30 @@
                             </span>
                         </div>
                         <input type="text" class="form-control" placeholder="Search farms..." id="farmSearch">
+                    </div>
+                    <div class="d-flex flex-column flex-sm-row align-items-center">
+                        <button class="btn-action btn-action-print" onclick="printFarmTable()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="btn-action btn-action-refresh" onclick="refreshFarmData()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                <i class="fas fa-tools"></i> Tools
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#" onclick="exportFarmCSV()">
+                                    <i class="fas fa-file-csv"></i> Download CSV
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportFarmPNG()">
+                                    <i class="fas fa-image"></i> Download PNG
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportFarmPDF()">
+                                    <i class="fas fa-file-pdf"></i> Download PDF
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">

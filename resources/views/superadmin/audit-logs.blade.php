@@ -21,26 +21,68 @@
         border-left: 0.25rem solid #e74a3b !important;
     }
     
-    .card-header .btn-group {
-        margin-left: 0.5rem;
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
     
-    .card-header .input-group {
-        margin-bottom: 0.5rem;
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
     }
     
-    @media (max-width: 768px) {
-        .card-header .d-flex {
-            flex-direction: column !important;
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
         }
         
-        .card-header .btn-group {
-            margin-left: 0;
+        .search-controls .btn-group {
             margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
         }
         
-        .card-header .input-group {
-            margin-bottom: 0.5rem;
+        .search-controls .input-group {
             max-width: 100% !important;
         }
     }
@@ -903,37 +945,13 @@
     <!-- Security Alerts -->
     <div class="card shadow mb-4 fade-in">
         <div class="card-header bg-danger text-white">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
             <h6 class="mb-0">
                 <i class="fas fa-shield-alt"></i>
                 Security Alerts & Critical Events
             </h6>
-                <div class="d-flex flex-column flex-sm-row align-items-center gap-2">
-                    <button class="btn-action btn-action-refresh" onclick="refreshSecurityAlerts()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="btn-action btn-action-print" onclick="printSecurityTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                        <i class="fas fa-tools"></i> Tools
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" onclick="exportSecurityCSV()">
-                            <i class="fas fa-file-csv"></i> Download CSV
-                        </a>
-                        <a class="dropdown-item" href="#" onclick="exportSecurityPNG()">
-                            <i class="fas fa-image"></i> Download PNG
-                        </a>
-                        <a class="dropdown-item" href="#" onclick="exportSecurityPDF()">
-                            <i class="fas fa-file-pdf"></i> Download PDF
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="card-body">
-            <div class="mb-3">
+            <div class="search-controls mb-3">
                 <div class="input-group" style="max-width: 300px;">
                     <div class="input-group-prepend">
                         <span class="input-group-text">
@@ -941,6 +959,30 @@
                         </span>
                     </div>
                     <input type="text" class="form-control" placeholder="Search alerts..." id="securitySearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-refresh" onclick="refreshSecurityAlerts()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-action btn-action-print" onclick="printSecurityTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportSecurityCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportSecurityPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportSecurityPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="table-responsive">
@@ -991,37 +1033,13 @@
     <!-- User Activity Summary -->
     <div class="card shadow mb-4 fade-in">
         <div class="card-header bg-success text-white">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 User Activity Summary
             </h6>
-                <div class="d-flex flex-column flex-sm-row align-items-center gap-2">
-                    <button class="btn-action btn-action-refresh" onclick="refreshUserActivity()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="btn-action btn-action-print" onclick="printUserActivityTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                        <i class="fas fa-tools"></i> Tools
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" onclick="exportUserActivityCSV()">
-                            <i class="fas fa-file-csv"></i> Download CSV
-                        </a>
-                        <a class="dropdown-item" href="#" onclick="exportUserActivityPNG()">
-                            <i class="fas fa-image"></i> Download PNG
-                        </a>
-                        <a class="dropdown-item" href="#" onclick="exportUserActivityPDF()">
-                            <i class="fas fa-file-pdf"></i> Download PDF
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="card-body">
-            <div class="mb-3">
+            <div class="search-controls mb-3">
                 <div class="input-group" style="max-width: 300px;">
                     <div class="input-group-prepend">
                         <span class="input-group-text">
@@ -1029,6 +1047,30 @@
                         </span>
                     </div>
                     <input type="text" class="form-control" placeholder="Search users..." id="userActivitySearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-refresh" onclick="refreshUserActivity()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-action btn-action-print" onclick="printUserActivityTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportUserActivityCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportUserActivityPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportUserActivityPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="table-responsive">
@@ -1079,37 +1121,13 @@
     <!-- System Activity Logs Table (Moved to bottom) -->
     <div class="card shadow mb-4 fade-in">
         <div class="card-header bg-secondary text-white">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-                <h6 class="mb-0">
-                    <i class="fas fa-table"></i>
-                    System Activity Logs (Latest 30 Entries)
-                </h6>
-                <div class="d-flex flex-column flex-sm-row align-items-center gap-2">
-                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                        </button>
-                    <button class="btn-action btn-action-print" onclick="printSystemLogsTable()">
-                        <i class="fas fa-print"></i> Print
-                        </button>
-                    <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                        <i class="fas fa-tools"></i> Tools
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" onclick="exportSystemLogsCSV()">
-                            <i class="fas fa-file-csv"></i> Download CSV
-                            </a>
-                        <a class="dropdown-item" href="#" onclick="exportSystemLogsPNG()">
-                            <i class="fas fa-image"></i> Download PNG
-                            </a>
-                        <a class="dropdown-item" href="#" onclick="exportSystemLogsPDF()">
-                            <i class="fas fa-file-pdf"></i> Download PDF
-                            </a>
-                    </div>
-                </div>
-            </div>
+            <h6 class="mb-0">
+                <i class="fas fa-table"></i>
+                System Activity Logs (Latest 30 Entries)
+            </h6>
         </div>
         <div class="card-body">
-            <div class="mb-3">
+            <div class="search-controls mb-3">
                 <div class="input-group" style="max-width: 300px;">
                     <div class="input-group-prepend">
                         <span class="input-group-text">
@@ -1117,6 +1135,30 @@
                         </span>
                     </div>
                     <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-action btn-action-print" onclick="printSystemLogsTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportSystemLogsCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportSystemLogsPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportSystemLogsPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="table-responsive" style="overflow-x: auto; max-width: 100%;">
