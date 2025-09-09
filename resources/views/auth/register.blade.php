@@ -489,7 +489,6 @@
                                              <option value="Tiawe">Tiawe</option>
                                              <option value="Tinamnan">Tinamnan</option>
                                          </datalist>
-                                         <input type="hidden" name="address" id="farmerAddress">
                                      </div>
 
                                     <div class="form-group">
@@ -916,19 +915,39 @@
             nameInput.value = fullName;
         }
 
-        // Auto-populate address field from barangay selection for farmer form
-        document.getElementById('farmerBarangay').addEventListener('input', updateFarmerAddress);
+        // Auto-populate address field from farm address selection for farmer form
+        document.addEventListener('DOMContentLoaded', function() {
+            const farmAddressField = document.getElementById('farmerFarmAddress');
+            if (farmAddressField) {
+                farmAddressField.addEventListener('input', updateFarmerAddress);
+                farmAddressField.addEventListener('change', updateFarmerAddress);
+                farmAddressField.addEventListener('blur', updateFarmerAddress);
+                console.log('Event listeners added to farm address field');
+            } else {
+                console.error('Farm address field not found!');
+            }
+        });
 
         function updateFarmerAddress() {
-            const barangay = document.getElementById('farmerBarangay').value;
-            if (barangay) {
-                const address = `Brgy. ${barangay}, Lucban, Quezon`;
-                document.getElementById('farmerAddress').value = address;
+            const farmAddress = document.getElementById('farmerFarmAddress').value;
+            if (farmAddress) {
+                const address = `Brgy. ${farmAddress}, Lucban, Quezon`;
+                const addressField = document.getElementById('farmerAddress');
+                if (addressField) {
+                    addressField.value = address;
+                }
             }
         }
 
         // Form validation and submission
         document.getElementById('farmerForm').addEventListener('submit', function(e) {
+            // Ensure address field is populated before validation
+            const farmAddress = document.getElementById('farmerFarmAddress').value;
+            if (farmAddress && !document.getElementById('farmerAddress').value) {
+                const address = `Brgy. ${farmAddress}, Lucban, Quezon`;
+                document.getElementById('farmerAddress').value = address;
+            }
+            
             if (!validateForm('farmer')) {
                 e.preventDefault();
             }

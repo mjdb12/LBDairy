@@ -158,13 +158,4 @@ class User extends Authenticatable
         return $this->first_name ?: $this->last_name ?: '';
     }
 
-    /**
-     * Set the user's name by splitting into first and last names.
-     */
-    public function setNameAttribute($value)
-    {
-        $names = explode(' ', $value, 2);
-        $this->attributes['first_name'] = $names[0] ?? '';
-        $this->attributes['last_name'] = $names[1] ?? '';
-    }
 }
