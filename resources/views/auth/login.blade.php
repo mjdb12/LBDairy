@@ -93,7 +93,7 @@
                             </div>
 
                             <!-- User Type Tabs -->
-                            <div class="flex rounded-2xl p-2 bg-gray-100 w-full">
+                            <div class="flex rounded-2xl p-1.5 bg-gray-100 w-full">
                                 <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-active" data-tab="farmer">
                                     <div class="flex items-center justify-center space-x-2">
                                         <span>Farmer</span>
