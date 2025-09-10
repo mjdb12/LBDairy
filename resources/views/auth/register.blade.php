@@ -50,7 +50,7 @@
             overflow: hidden;
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.98);
-            margin: 2rem auto;
+            margin: 1rem auto;
         }
 
         .card:hover {
@@ -393,7 +393,6 @@
                                                     id="farmer-tab" data-toggle="tab" data-target="#farmer" type="button" role="tab" 
                                                     aria-controls="farmer" aria-selected="true">
                                                 <div class="flex items-center justify-center space-x-2">
-                                                    <i class="fas fa-seedling mr-2"></i>
                                                     <span>Farmer</span>
                                                 </div>
                                             </button>
@@ -403,7 +402,6 @@
                                                     id="admin-tab" data-toggle="tab" data-target="#admin" type="button" role="tab" 
                                                     aria-controls="admin" aria-selected="false">
                                                 <div class="flex items-center justify-center space-x-2">
-                                                    <i class="fas fa-user-shield mr-2"></i>
                                                     <span>Admin</span>
                                                 </div>
                                             </button>
@@ -434,20 +432,20 @@
                                         <label for="farmerCode" class="block text-sm font-medium text-gray-700 mb-2">Farmer Registration Code</label>
                                         <input type="text" id="farmerCode" name="farmer_code" required
                                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your username">
+                                            placeholder="Enter your farmer code">
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
                                             <label for="farmerFirstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
                                             <input type="text"  id="farmerFirstName" name="first_name" required
                                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your firstname">
+                                            placeholder="Enter your first name">
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="farmerLastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
                                             <input type="text" id="farmerLastName" name="last_name" required
                                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your lastname">
+                                            placeholder="Enter your last name">
                                         </div>
                                     </div>
 
@@ -491,26 +489,19 @@
                                          </datalist>
                                      </div>
 
-                                    <div class="form-group">
-                                        <label for="farmerContactNumber" class="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
-                                        <input type="tel" id="farmerContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your contact number">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="farmerEmail" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                                        <input type="email" id="farmerEmail" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your email address">
-                                    </div>
-
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="farmerFarmName" class="block text-sm font-medium text-gray-700 mb-2">Farm Name</label>
-                                            <input type="text" id="farmerFarmName" name="farm_name" required class="w- px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your farm name">
+                                            <label for="farmerContactNumber" class="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                                            <input type="tel" id="farmerContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your contact number">
                                         </div>
-                                        
                                         <div class="col-sm-6">
+                                            <label for="farmerEmail" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                            <input type="email" id="farmerEmail" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your email address">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                             <label for="farmerFarmAddress">Farm Address</label>
                                             <input list="farmAddressList" id="farmerFarmAddress" name="farm_address" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
                                                 placeholder="Select address">
@@ -550,12 +541,18 @@
                                          </datalist>
                                          <input type="hidden" name="address" id="farmerAddress">
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="farmerUsername" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                                        <input type="text" id="farmerUsername" name="username" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your username">
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <label for="farmerFarmName" class="block text-sm font-medium text-gray-700 mb-2">Farm Name</label>
+                                            <input type="text" id="farmerFarmName" name="farm_name" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                            placeholder="Enter your farm name">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="farmerUsername" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                                            <input type="text" id="farmerUsername" name="username" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your username">
+                                        </div>
                                     </div>
 
                                     <div class="form-group row">
@@ -616,24 +613,28 @@
                                     @endif
 
                                     <div class="form-group">
-                                        <label for="adminCode">Admin Registration Code</label>
-                                        <input type="text" class="form-control form-control-user" id="adminCode" name="admin_code" required>
+                                        <label for="adminCode" class="block text-sm font-medium text-gray-700 mb-2">Admin Registration Code</label>
+                                        <input type="text" id="adminCode" name="admin_code" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your admin code">
                                     </div>
 
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="adminFirstName">First Name</label>
-                                            <input type="text" class="form-control form-control-user" id="adminFirstName" name="first_name" required>
+                                            <label for="adminFirstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                            <input type="text" id="adminFirstName" name="first_name" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your first name">
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="adminLastName">Last Name</label>
-                                            <input type="text" class="form-control form-control-user" id="adminLastName" name="last_name" required>
+                                            <label for="adminLastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                            <input type="text" id="adminLastName" name="last_name" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your last name">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="adminPosition">Position</label>
-                                        <input list="positionList" class="form-control form-control-user" id="adminPosition" name="position" required>
+                                        <label for="adminPosition" class="block text-sm font-medium text-gray-700 mb-2">Position</label>
+                                        <input list="positionList" id="adminPosition" name="position" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Select position">
                                         <datalist id="positionList">
                                             <option value="Municipal Agriculturist">Municipal Agriculturist</option>
                                             <option value="Livestock Technician">Livestock Technician</option>
@@ -642,8 +643,9 @@
                                     </div>
 
                                      <div class="form-group">
-                                         <label for="adminBarangay">Barangay</label>
-                                         <input list="adminBarangayList" class="form-control form-control-user" id="adminBarangay" name="barangay" placeholder="Select Barangay" required>
+                                         <label for="adminBarangay" class="block text-sm font-medium text-gray-700 mb-2">Barangay</label>
+                                         <input list="adminBarangayList" id="adminBarangay" name="barangay" placeholder="Select Barangay" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Select barangay">
                                          <datalist id="adminBarangayList">
                                              <option value="Abang">Abang</option>
                                              <option value="Aliliw">Aliliw</option>
@@ -681,41 +683,47 @@
                                          <input type="hidden" name="address" id="adminAddress">
                                      </div>
 
-                                    <div class="form-group">
-                                        <label for="adminContactNumber">Contact Number</label>
-                                        <input type="tel" class="form-control form-control-user" id="adminContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <label for="adminContactNumber">Contact Number</label>
+                                            <input type="tel" id="adminContactNumber" name="phone" pattern="[0-9]{11}" maxlength="11" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your contact number">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="adminEmail">Email Address</label>
+                                            <input type="email" id="adminEmail" name="email" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your email address">
+                                            <input type="hidden" name="name" id="adminFullName">
+                                        </div>
                                     </div>
-
+                                    
                                     <div class="form-group">
-                                        <label for="adminEmail">Email Address</label>
-                                        <input type="email" class="form-control form-control-user" id="adminEmail" name="email" required>
-                                        <input type="hidden" name="name" id="adminFullName">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="adminUsername">Username</label>
-                                        <input type="text" class="form-control form-control-user" id="adminUsername" name="username" required>
+                                        <label for="adminUsername" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                                        <input type="text" id="adminUsername" name="username" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your username">
                                     </div>
 
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <label for="adminPassword">Password</label>
+                                            <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                                             <div class="input-group">
-                                                <input type="password" class="form-control form-control-user" id="adminPassword" name="password" required>
+                                                <input type="password" id="adminPassword" name="password" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Enter your password">
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminPassword')">
-                                                        <i class="fas fa-eye" id="adminPasswordIcon"></i>
+                                                    <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('adminPassword')">
+                                                        <i class="fas fa-eye text-gray-400 hover:text-gray-600 transition-colors duration-200" id="adminPasswordIcon"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="adminConfirmPassword">Confirm Password</label>
+                                            <label for="adminConfirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
                                             <div class="input-group">
-                                                <input type="password" class="form-control form-control-user" id="adminConfirmPassword" name="password_confirmation" required>
+                                                <input type="password" id="adminConfirmPassword" name="password_confirmation" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
+                                                placeholder="Confirm your password">
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminConfirmPassword')">
-                                                        <i class="fas fa-eye" id="adminConfirmPasswordIcon"></i>
+                                                    <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('adminConfirmPassword')">
+                                                        <i class="fas fa-eye text-gray-400 hover:text-gray-600 transition-colors duration-200" id="adminConfirmPasswordIcon"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -762,7 +770,11 @@
                         <i class="fas fa-file-contract mr-2"></i>
                         Terms and Conditions
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+  <span aria-hidden="true">&times;</span>
+</button>
+
+                </button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-4">
