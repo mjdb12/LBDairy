@@ -922,8 +922,7 @@ function printFarmersTable() {
 
 function showNotification(message, type) {
     const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-             style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
             ${message}
             <button type="button" class="close" data-dismiss="alert">

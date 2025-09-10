@@ -728,6 +728,32 @@
     </div>
 </div>
 
+<!-- Reject Admin Confirmation Modal -->
+<div class="modal fade" id="confirmRejectModal" tabindex="-1" role="dialog" aria-labelledby="confirmRejectLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmRejectLabel">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirm Rejection
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject this admin registration? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmRejectBtn" class="btn btn-danger">
+                    <i class="fas fa-times"></i> Reject
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Details Modal -->
 <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -1484,10 +1510,16 @@ function approveAdmin(adminId) {
 }
 
 function rejectAdmin(adminId) {
-    if (!confirm('Are you sure you want to reject this admin registration?')) return;
+    // Store the admin ID for the modal handler
+    window.adminToReject = adminId;
+    $('#confirmRejectModal').modal('show');
+}
+
+function performRejection() {
+    if (!window.adminToReject) return;
 
     $.ajax({
-        url: `{{ route("superadmin.admins.reject", ":id") }}`.replace(':id', adminId),
+        url: `{{ route("superadmin.admins.reject", ":id") }}`.replace(':id', window.adminToReject),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1496,6 +1528,8 @@ function rejectAdmin(adminId) {
             loadPendingAdmins();
             updateStats();
             showNotification('Admin registration rejected.', 'warning');
+            $('#confirmRejectModal').modal('hide');
+            window.adminToReject = null;
         },
         error: function(xhr) {
             showNotification('Error rejecting admin', 'danger');
@@ -1572,8 +1606,7 @@ function sendMessage(event) {
 
 function showNotification(message, type) {
     const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-             style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
             ${message}
             <button type="button" class="close" data-dismiss="alert">
@@ -1857,6 +1890,11 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
         farmerToDelete = null;
         $('#confirmDeleteModal').modal('hide');
     }
+});
+
+// Reject modal event handler
+document.getElementById('confirmRejectBtn').addEventListener('click', function() {
+    performRejection();
 });
 
 function deleteFarmer(button) {

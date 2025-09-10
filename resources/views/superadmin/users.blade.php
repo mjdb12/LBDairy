@@ -4,6 +4,28 @@
 
 @push('styles')
 <style>
+    /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
+    .superadmin-modal select.form-control,
+    .modal.superadmin-modal select.form-control,
+    .superadmin-modal .modal-body select.form-control {
+        min-width: 250px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Ensure columns don't constrain dropdowns */
+    .superadmin-modal .col-md-6 {
+        min-width: 280px !important;
+        overflow: visible !important;
+    }
+    
     /* Custom styles for user management */
     .border-left-success {
         border-left: 0.25rem solid #1cc88a !important;
@@ -627,19 +649,6 @@
             </div>
         </div>
         
-        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Online Users</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="onlineUsersCount">0</div>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-wifi fa-2x" style="color: #18375d !important;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     
     <!-- Last Updated Indicator -->
@@ -720,7 +729,7 @@
     </div>
 
 <!-- Add/Edit User Modal -->
-<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+<div class="modal fade superadmin-modal" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -739,28 +748,28 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="firstName">First Name *</label>
-                                <input type="text" class="form-control" id="firstName" name="first_name" required>
+                                <label for="firstName">First Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Enter first name" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="lastName">Last Name *</label>
-                                <input type="text" class="form-control" id="lastName" name="last_name" required>
+                                <label for="lastName">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Enter last name" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <label for="email">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="username">Username *</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
+                                <label for="username">Username <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
                             </div>
                         </div>
                     </div>
@@ -768,7 +777,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="phone">Contact Number</label>
-                                <input type="text" class="form-control" id="phone" name="phone">
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter contact number">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1076,7 +1085,6 @@ function updateStats() {
                 document.getElementById('activeUsersCount').textContent = response.data.approved;
                 document.getElementById('pendingUsersCount').textContent = response.data.pending;
                 document.getElementById('suspendedUsersCount').textContent = response.data.rejected;
-                document.getElementById('onlineUsersCount').textContent = response.data.online;
                 
                 // Update timestamp
                 document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
@@ -1666,8 +1674,7 @@ function refreshData() {
 
 function showNotification(message, type) {
     const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-             style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
             ${message}
             <button type="button" class="close" data-dismiss="alert">

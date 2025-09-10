@@ -75,3 +75,27 @@ if (!function_exists('getActionDescription')) {
         return $description;
     }
 }
+
+if (!function_exists('notifySuperAdmins')) {
+    /**
+     * Send notification to all super admins
+     */
+    function notifySuperAdmins($type, $title, $message, $icon = 'fas fa-bell', $actionUrl = null, $severity = 'info', $metadata = [])
+    {
+        // Get all super admin users
+        $superAdmins = \App\Models\User::where('role', 'superadmin')->get();
+        
+        foreach ($superAdmins as $superAdmin) {
+            \App\Models\Notification::create([
+                'type' => $type,
+                'title' => $title,
+                'message' => $message,
+                'icon' => $icon,
+                'action_url' => $actionUrl,
+                'severity' => $severity,
+                'is_read' => false,
+                'metadata' => $metadata
+            ]);
+        }
+    }
+}

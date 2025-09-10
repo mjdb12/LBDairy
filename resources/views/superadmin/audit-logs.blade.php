@@ -1395,6 +1395,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     initializeCharts();
     initializeDataTable();
+    
+    // Check for refresh notification flag after page loads
+    if (sessionStorage.getItem('showRefreshNotification') === 'true') {
+        // Clear the flag
+        sessionStorage.removeItem('showRefreshNotification');
+        // Show notification after a short delay to ensure page is fully loaded
+        setTimeout(() => {
+            showNotification('Data refreshed successfully!', 'success');
+        }, 500);
+    }
 });
 
 function initializeCharts() {
@@ -1716,11 +1726,16 @@ function refreshCharts() {
             if (response.statistics) {
                 updateStatisticsFromServer(response.statistics);
             }
+            
+            // Show success notification
+            showNotification('Charts refreshed successfully!', 'success');
         } else {
             console.error('Failed to refresh chart data:', response.message);
+            showNotification('Failed to refresh chart data', 'danger');
         }
     }).fail(function() {
         console.error('Failed to refresh chart data');
+        showNotification('Failed to refresh chart data', 'danger');
     }).always(function() {
         // Restore button state
         refreshButtons.forEach(btn => {
@@ -2099,8 +2114,22 @@ function printChart(chartType) {
 
 // Security Alerts Functions
 function refreshSecurityAlerts() {
-    // Reload the page to refresh security alerts data
-    location.reload();
+    // Show loading indicator - target the specific security alerts refresh button
+    const refreshBtn = document.querySelector('[onclick="refreshSecurityAlerts()"]');
+    if (refreshBtn) {
+        const originalText = refreshBtn.innerHTML;
+        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+        refreshBtn.disabled = true;
+    }
+    
+    // Since the table is server-side rendered (not AJAX), we'll reload the page
+    // Store a flag to show notification after reload
+    sessionStorage.setItem('showRefreshNotification', 'true');
+    
+    // Reload the page after a short delay
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
 }
 
 function printSecurityTable() {
@@ -2180,8 +2209,22 @@ function printSecurityTable() {
 
 // User Activity Functions
 function refreshUserActivity() {
-    // Reload the page to refresh user activity data
-    location.reload();
+    // Show loading indicator - target the specific user activity refresh button
+    const refreshBtn = document.querySelector('[onclick="refreshUserActivity()"]');
+    if (refreshBtn) {
+        const originalText = refreshBtn.innerHTML;
+        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+        refreshBtn.disabled = true;
+    }
+    
+    // Since the table is server-side rendered (not AJAX), we'll reload the page
+    // Store a flag to show notification after reload
+    sessionStorage.setItem('showRefreshNotification', 'true');
+    
+    // Reload the page after a short delay
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
 }
 
 function printUserActivityTable() {
@@ -2605,8 +2648,22 @@ function exportUserActivityPDF() {
 
 // System Activity Logs Functions
 function refreshSystemLogs() {
-    // Reload the page to refresh system logs data
-    location.reload();
+    // Show loading indicator - target the specific system logs refresh button
+    const refreshBtn = document.querySelector('[onclick="refreshSystemLogs()"]');
+    if (refreshBtn) {
+        const originalText = refreshBtn.innerHTML;
+        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+        refreshBtn.disabled = true;
+    }
+    
+    // Since the table is server-side rendered (not AJAX), we'll reload the page
+    // Store a flag to show notification after reload
+    sessionStorage.setItem('showRefreshNotification', 'true');
+    
+    // Reload the page after a short delay
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
 }
 
 function printSystemLogsTable() {
@@ -2857,6 +2914,25 @@ function exportSystemLogsPDF() {
         console.error('Error exporting PDF:', error);
         showNotification('Error exporting PDF. Please try again.', 'danger');
     }
+}
+
+// Notification function (matching other super admin pages)
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
 }
 </script>
 @endpush

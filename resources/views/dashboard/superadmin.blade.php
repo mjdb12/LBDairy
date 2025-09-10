@@ -3,11 +3,37 @@
 @section('content')
 <!-- Page Header -->
 <div class="page-header fade-in">
-    <h1>
-        <i class="fas fa-crown"></i>
-        Super Admin Dashboard
-    </h1>
-    <p>System-wide overview and management controls for the entire dairy management system.</p>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1>
+                <i class="fas fa-crown"></i>
+                Super Admin Dashboard
+            </h1>
+            <p>System-wide overview and management controls for the entire dairy management system.</p>
+        </div>
+        <div class="notification-bell">
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle position-relative" type="button" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge badge-danger notification-count" id="notificationCount" style="display: none;">0</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right notification-dropdown" aria-labelledby="notificationDropdown">
+                    <h6 class="dropdown-header">
+                        <i class="fas fa-bell mr-2"></i>Notifications
+                    </h6>
+                    <div id="notificationList">
+                        <div class="dropdown-item text-center text-muted">
+                            <i class="fas fa-spinner fa-spin"></i> Loading notifications...
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-center" href="#" onclick="markAllAsRead()">
+                        <i class="fas fa-check-double mr-2"></i>Mark all as read
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Statistics Grid -->
@@ -202,6 +228,32 @@
                 <button type="submit" class="btn btn-primary" id="taskSubmitBtn">Add Task</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Delete Task Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteTaskLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteTaskLabel">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteTaskBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Yes, Delete
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -739,8 +791,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }).catch(() => alert('Failed to update task: network error'));
     }
 
+    let taskToDelete = null;
+
     function deleteTask(id) {
-        if (!confirm('Delete this task?')) return;
+        taskToDelete = id;
+        $('#confirmDeleteTaskModal').modal('show');
+    }
+
+    document.getElementById('confirmDeleteTaskBtn').addEventListener('click', function() {
+        if (taskToDelete) {
+            performTaskDeletion(taskToDelete);
+            taskToDelete = null;
+            $('#confirmDeleteTaskModal').modal('hide');
+        }
+    });
+
+    function performTaskDeletion(id) {
         fetch(`/superadmin/tasks/${id}`, {
             method: 'DELETE',
             credentials: 'same-origin',
@@ -749,8 +815,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         }).then(r => r.json()).then(data => {
-            if (data.success) fetchTasks(); else alert('Failed to delete task');
+            if (data.success) {
+                fetchTasks();
+                showNotification('Task deleted successfully', 'success');
+            } else {
+                showNotification('Failed to delete task', 'danger');
+            }
+        }).catch(() => {
+            showNotification('Failed to delete task: network error', 'danger');
         });
+    }
+
+    function showNotification(message, type) {
+        const notification = $(`
+            <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        setTimeout(() => {
+            notification.alert('close');
+        }, 5000);
     }
 
     addTaskBtn?.addEventListener('click', () => startNewTask());
@@ -824,5 +915,109 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 });
+
+// Notification System
+function loadNotifications() {
+    $.ajax({
+        url: '{{ route("superadmin.notifications") }}',
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                displayNotifications(response.notifications);
+                updateNotificationCount(response.unread_count);
+            }
+        },
+        error: function(xhr) {
+            console.error('Error loading notifications:', xhr);
+            $('#notificationList').html('<div class="dropdown-item text-center text-muted">Error loading notifications</div>');
+        }
+    });
+}
+
+function displayNotifications(notifications) {
+    const notificationList = $('#notificationList');
+    
+    if (notifications.length === 0) {
+        notificationList.html('<div class="dropdown-item text-center text-muted">No notifications</div>');
+        return;
+    }
+    
+    let html = '';
+    notifications.forEach(notification => {
+        const isRead = notification.is_read ? '' : 'font-weight-bold';
+        const timeAgo = getTimeAgo(notification.created_at);
+        
+        html += `
+            <a class="dropdown-item ${isRead}" href="${notification.action_url || '#'}" onclick="markAsRead(${notification.id})">
+                <div class="d-flex align-items-start">
+                    <i class="${notification.icon} mr-2 mt-1"></i>
+                    <div class="flex-grow-1">
+                        <div class="notification-title">${notification.title}</div>
+                        <div class="notification-message text-muted small">${notification.message}</div>
+                        <div class="notification-time text-muted small">${timeAgo}</div>
+                    </div>
+                </div>
+            </a>
+        `;
+    });
+    
+    notificationList.html(html);
+}
+
+function updateNotificationCount(count) {
+    const badge = $('#notificationCount');
+    if (count > 0) {
+        badge.text(count).show();
+    } else {
+        badge.hide();
+    }
+}
+
+function markAsRead(notificationId) {
+    $.ajax({
+        url: `{{ route("superadmin.notifications.mark-read", ":id") }}`.replace(':id', notificationId),
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                loadNotifications(); // Reload notifications
+            }
+        }
+    });
+}
+
+function markAllAsRead() {
+    $.ajax({
+        url: '{{ route("superadmin.notifications.mark-all-read") }}',
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                loadNotifications(); // Reload notifications
+            }
+        }
+    });
+}
+
+function getTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+}
+
+// Load notifications on page load
+loadNotifications();
+
+// Refresh notifications every 30 seconds
+setInterval(loadNotifications, 30000);
 </script>
 @endpush

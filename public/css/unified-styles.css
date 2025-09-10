@@ -1020,6 +1020,467 @@ html body #addTaskBtn.btn-primary:focus,
     border: 1px solid var(--danger-color);
 }
 
+/* ===== REFRESH NOTIFICATION STYLES ===== */
+.refresh-notification {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+    min-width: 300px !important;
+    max-width: 500px !important;
+    background-color: #387057 !important;
+    border-color: #387057 !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(56, 112, 87, 0.3) !important;
+}
+
+.refresh-notification .close {
+    color: white !important;
+    opacity: 0.8 !important;
+}
+
+.refresh-notification .close:hover {
+    opacity: 1 !important;
+}
+
+.refresh-notification i {
+    color: white !important;
+    margin-right: 12px !important;
+}
+
+/* ===== SUPER ADMIN FORM CONSISTENCY ===== */
+.superadmin-modal .modal-dialog {
+    max-width: 800px;
+    width: 90%;
+    margin: 1.75rem auto;
+}
+
+.superadmin-modal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    overflow: visible;
+    width: 100%;
+}
+
+/* Fix for dropdown cutting - ensure modal doesn't clip content */
+.superadmin-modal .modal {
+    overflow: visible !important;
+}
+
+.superadmin-modal .modal-dialog {
+    overflow: visible !important;
+}
+
+.superadmin-modal .modal-header {
+    background: #18375d !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.5rem;
+}
+
+.superadmin-modal .modal-title {
+    color: white !important;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.superadmin-modal .modal-title i {
+    margin-right: 0.5rem;
+    color: white !important;
+}
+
+.superadmin-modal .modal-header .close {
+    color: white !important;
+    opacity: 0.8;
+    font-size: 1.5rem;
+}
+
+.superadmin-modal .modal-header .close:hover {
+    opacity: 1;
+}
+
+.superadmin-modal .modal-body {
+    padding: 2rem;
+    background: white;
+    overflow-x: auto;
+    min-width: 0;
+}
+
+.superadmin-modal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.superadmin-modal .form-group label {
+    font-weight: 600;
+    color: #18375d;
+    margin-bottom: 0.5rem;
+}
+
+.superadmin-modal .form-group label .text-danger {
+    color: #dc3545 !important;
+}
+
+.superadmin-modal .form-control {
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+.superadmin-modal .form-control:focus {
+    border-color: #18375d;
+    box-shadow: 0 0 0 0.2rem rgba(24, 55, 93, 0.25);
+}
+
+.superadmin-modal .row {
+    margin-left: -15px;
+    margin-right: -15px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.superadmin-modal .col-md-6,
+.modal.superadmin-modal .col-md-6,
+.superadmin-modal .modal-body .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-width: 250px !important;
+    overflow: visible !important;
+}
+
+.superadmin-modal .col-md-4 {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-width: 150px;
+}
+
+.superadmin-modal .col-md-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-width: 120px;
+}
+
+.superadmin-modal .col-md-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-width: 0;
+}
+
+/* Specific fixes for form elements - CRITICAL FIX FOR DROPDOWN CUTTING */
+.superadmin-modal select.form-control,
+.modal.superadmin-modal select.form-control,
+.superadmin-modal .modal-body select.form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 250px !important;
+    box-sizing: border-box !important;
+    padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+}
+
+/* Ensure form groups don't clip dropdowns */
+.superadmin-modal .form-group {
+    overflow: visible !important;
+    position: relative !important;
+}
+
+.superadmin-modal input.form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+}
+
+.superadmin-modal textarea.form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    resize: vertical;
+}
+
+/* Ensure form groups don't overflow */
+.superadmin-modal .form-group {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+    margin-bottom: 1.5rem;
+}
+
+.superadmin-modal .modal-footer {
+    background: #f8f9fc;
+    border-top: 1px solid #e3e6f0;
+    padding: 1rem 2rem;
+    border-radius: 0 0 12px 12px;
+}
+
+.superadmin-modal .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 0.35rem;
+    font-size: 0.875rem;
+}
+
+.superadmin-modal .btn-primary {
+    background-color: #18375d;
+    border-color: #18375d;
+}
+
+.superadmin-modal .btn-primary:hover {
+    background-color: #122a47;
+    border-color: #122a47;
+}
+
+.superadmin-modal .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.superadmin-modal .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* ===== TASK SUBMIT BUTTON STYLING ===== */
+#taskSubmitBtn.btn-primary,
+#taskSubmitBtn.btn,
+#taskSubmitBtn {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+#taskSubmitBtn.btn-primary:hover,
+#taskSubmitBtn.btn-primary:focus,
+#taskSubmitBtn:hover,
+#taskSubmitBtn:focus,
+#taskSubmitBtn.btn:hover,
+#taskSubmitBtn.btn:focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+/* ===== SUPER ADMIN FORM SUBMIT BUTTONS STYLING ===== */
+/* All submit buttons in super admin forms */
+.superadmin-modal .btn-primary[type="submit"],
+.superadmin-modal .btn-primary,
+#saveAdminBtn,
+#updateAdminBtn,
+#updateFarmerBtn,
+.superadmin-modal button[type="submit"].btn-primary,
+.superadmin-modal .btn-primary:not(.btn-secondary) {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+.superadmin-modal .btn-primary[type="submit"]:hover,
+.superadmin-modal .btn-primary[type="submit"]:focus,
+.superadmin-modal .btn-primary:hover,
+.superadmin-modal .btn-primary:focus,
+#saveAdminBtn:hover,
+#saveAdminBtn:focus,
+#updateAdminBtn:hover,
+#updateAdminBtn:focus,
+#updateFarmerBtn:hover,
+#updateFarmerBtn:focus,
+.superadmin-modal button[type="submit"].btn-primary:hover,
+.superadmin-modal button[type="submit"].btn-primary:focus,
+.superadmin-modal .btn-primary:not(.btn-secondary):hover,
+.superadmin-modal .btn-primary:not(.btn-secondary):focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+/* Specific buttons in super admin pages */
+#auditLogsModal .btn-primary[type="submit"],
+#auditLogsModal .btn-primary,
+#farmModal .btn-primary[type="submit"],
+#farmModal .btn-primary,
+#userModal .btn-primary[type="submit"],
+#userModal .btn-primary,
+#addUserModal .btn-primary[type="submit"],
+#addUserModal .btn-primary,
+#editFarmerModal .btn-primary[type="submit"],
+#editFarmerModal .btn-primary,
+#addAdminModal .btn-primary[type="submit"],
+#addAdminModal .btn-primary,
+#editAdminModal .btn-primary[type="submit"],
+#editAdminModal .btn-primary,
+#manageAnalysisModal .btn-primary[type="submit"],
+#manageAnalysisModal .btn-primary {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+#auditLogsModal .btn-primary[type="submit"]:hover,
+#auditLogsModal .btn-primary[type="submit"]:focus,
+#auditLogsModal .btn-primary:hover,
+#auditLogsModal .btn-primary:focus,
+#farmModal .btn-primary[type="submit"]:hover,
+#farmModal .btn-primary[type="submit"]:focus,
+#farmModal .btn-primary:hover,
+#farmModal .btn-primary:focus,
+#userModal .btn-primary[type="submit"]:hover,
+#userModal .btn-primary[type="submit"]:focus,
+#userModal .btn-primary:hover,
+#userModal .btn-primary:focus,
+#addUserModal .btn-primary[type="submit"]:hover,
+#addUserModal .btn-primary[type="submit"]:focus,
+#addUserModal .btn-primary:hover,
+#addUserModal .btn-primary:focus,
+#editFarmerModal .btn-primary[type="submit"]:hover,
+#editFarmerModal .btn-primary[type="submit"]:focus,
+#editFarmerModal .btn-primary:hover,
+#editFarmerModal .btn-primary:focus,
+#addAdminModal .btn-primary[type="submit"]:hover,
+#addAdminModal .btn-primary[type="submit"]:focus,
+#addAdminModal .btn-primary:hover,
+#addAdminModal .btn-primary:focus,
+#editAdminModal .btn-primary[type="submit"]:hover,
+#editAdminModal .btn-primary[type="submit"]:focus,
+#editAdminModal .btn-primary:hover,
+#editAdminModal .btn-primary:focus,
+#manageAnalysisModal .btn-primary[type="submit"]:hover,
+#manageAnalysisModal .btn-primary[type="submit"]:focus,
+#manageAnalysisModal .btn-primary:hover,
+#manageAnalysisModal .btn-primary:focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+/* ===== SUPER ADMIN SETTINGS AND PROFILE PAGES ===== */
+/* Settings page submit buttons */
+.superadmin-settings .btn-primary[type="submit"],
+.superadmin-settings .btn-primary,
+.superadmin-profile .btn-primary[type="submit"],
+.superadmin-profile .btn-primary,
+.settings-form .btn-primary[type="submit"],
+.settings-form .btn-primary,
+.profile-form .btn-primary[type="submit"],
+.profile-form .btn-primary {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+.superadmin-settings .btn-primary[type="submit"]:hover,
+.superadmin-settings .btn-primary[type="submit"]:focus,
+.superadmin-settings .btn-primary:hover,
+.superadmin-settings .btn-primary:focus,
+.superadmin-profile .btn-primary[type="submit"]:hover,
+.superadmin-profile .btn-primary[type="submit"]:focus,
+.superadmin-profile .btn-primary:hover,
+.superadmin-profile .btn-primary:focus,
+.settings-form .btn-primary[type="submit"]:hover,
+.settings-form .btn-primary[type="submit"]:focus,
+.settings-form .btn-primary:hover,
+.settings-form .btn-primary:focus,
+.profile-form .btn-primary[type="submit"]:hover,
+.profile-form .btn-primary[type="submit"]:focus,
+.profile-form .btn-primary:hover,
+.profile-form .btn-primary:focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
 /* ===== UNIFIED STATS CARDS ===== */
 .stats-container {
     display: grid;
@@ -1252,6 +1713,31 @@ html body #addTaskBtn.btn-primary:focus,
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
+    .superadmin-modal .modal-dialog {
+        max-width: 95%;
+        width: 95%;
+        margin: 0.5rem auto;
+    }
+    
+    .superadmin-modal .modal-body {
+        padding: 1rem;
+        overflow-x: auto;
+    }
+    
+    .superadmin-modal .col-md-6,
+    .superadmin-modal .col-md-4,
+    .superadmin-modal .col-md-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .superadmin-modal .form-control {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+    
     .stats-container {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -1592,4 +2078,100 @@ html body .container-fluid .row .col-12 .card .card-body .table tbody tr td .act
     background: #dc3545 !important;
     border-color: #dc3545 !important;
     color: white !important;
+}
+
+/* ===== NOTIFICATION SYSTEM ===== */
+.notification-bell .dropdown-toggle {
+    border: 2px solid #387057 !important;
+    color: #387057 !important;
+    background: transparent !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+.notification-bell .dropdown-toggle:hover {
+    background-color: #387057 !important;
+    color: white !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(56, 112, 87, 0.3) !important;
+}
+
+.notification-bell .dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.2rem rgba(56, 112, 87, 0.25) !important;
+    border-color: #387057 !important;
+}
+
+.notification-count {
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+    font-size: 0.75rem !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #dc3545 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.notification-dropdown {
+    min-width: 350px !important;
+    max-width: 400px !important;
+    border: 1px solid #e3e6f0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+
+.notification-dropdown .dropdown-header {
+    background-color: #f8f9fc !important;
+    border-bottom: 1px solid #e3e6f0 !important;
+    color: #5a5c69 !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+}
+
+.notification-dropdown .dropdown-item {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #f8f9fc !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.notification-dropdown .dropdown-item:hover {
+    background-color: #f8f9fc !important;
+}
+
+.notification-dropdown .dropdown-item:last-child {
+    border-bottom: none !important;
+}
+
+.notification-title {
+    font-weight: 600 !important;
+    color: #5a5c69 !important;
+    margin-bottom: 4px !important;
+}
+
+.notification-message {
+    color: #858796 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 4px !important;
+}
+
+.notification-time {
+    color: #b7b9cc !important;
+    font-size: 0.75rem !important;
+}
+
+.notification-dropdown .dropdown-item.font-weight-bold {
+    background-color: #e3f2fd !important;
+    border-left: 3px solid #387057 !important;
+}
+
+.notification-dropdown .dropdown-item.font-weight-bold .notification-title {
+    color: #387057 !important;
 }

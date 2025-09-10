@@ -847,7 +847,7 @@
 </div>
 
 <!-- Add Farm Modal -->
-<div class="modal fade" id="farmModal" tabindex="-1" role="dialog" aria-labelledby="farmModalLabel" aria-hidden="true">
+<div class="modal fade superadmin-modal" id="farmModal" tabindex="-1" role="dialog" aria-labelledby="farmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -866,14 +866,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="farmName">Farm Name *</label>
-                                <input type="text" class="form-control" id="farmName" name="name" required>
+                                <label for="farmName">Farm Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="farmName" name="name" placeholder="Enter farm name" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="farmBarangay">Barangay</label>
-                                <input type="text" class="form-control" id="farmBarangay" name="barangay">
+                                <input type="text" class="form-control" id="farmBarangay" name="barangay" placeholder="Enter barangay">
                             </div>
                         </div>
                     </div>
@@ -881,19 +881,19 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="ownerName">Owner Name</label>
-                                <input type="text" class="form-control" id="ownerName" name="owner_name">
+                                <input type="text" class="form-control" id="ownerName" name="owner_name" placeholder="Enter owner name">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="ownerEmail">Owner Email</label>
-                                <input type="email" class="form-control" id="ownerEmail" name="owner_email">
+                                <input type="email" class="form-control" id="ownerEmail" name="owner_email" placeholder="Enter owner email">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="ownerPhone">Owner Phone</label>
-                                <input type="text" class="form-control" id="ownerPhone" name="owner_phone">
+                                <input type="text" class="form-control" id="ownerPhone" name="owner_phone" placeholder="Enter owner phone">
                             </div>
                         </div>
                     </div>
@@ -1454,8 +1454,7 @@ function saveFarm(event) {
 
 function showNotification(message, type) {
     const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-             style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
             ${message}
             <button type="button" class="close" data-dismiss="alert">

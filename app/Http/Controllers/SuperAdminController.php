@@ -11,6 +11,7 @@ use App\Models\AuditLog;
 use App\Models\Farm;
 use App\Models\Livestock;
 use App\Models\ProductionRecord;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -1914,6 +1915,84 @@ class SuperAdminController extends Controller
                     'labels' => array_map(function($i) { return sprintf('%02d:00', $i); }, range(0, 23)),
                     'data' => array_fill(0, 24, 0)
                 ]
+            ], 500);
+        }
+    }
+
+    /**
+     * Get notifications for the current super admin
+     */
+    public function getNotifications()
+    {
+        try {
+            $notifications = Notification::where('type', 'admin_registration')
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get();
+
+            $unreadCount = Notification::where('type', 'admin_registration')
+                ->where('is_read', false)
+                ->count();
+
+            return response()->json([
+                'success' => true,
+                'notifications' => $notifications,
+                'unread_count' => $unreadCount
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to get notifications: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load notifications'
+            ], 500);
+        }
+    }
+
+    /**
+     * Mark a notification as read
+     */
+    public function markNotificationAsRead($id)
+    {
+        try {
+            $notification = Notification::findOrFail($id);
+            $notification->markAsRead(Auth::id());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notification marked as read'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to mark notification as read: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to mark notification as read'
+            ], 500);
+        }
+    }
+
+    /**
+     * Mark all notifications as read
+     */
+    public function markAllNotificationsAsRead()
+    {
+        try {
+            Notification::where('type', 'admin_registration')
+                ->where('is_read', false)
+                ->update([
+                    'is_read' => true,
+                    'read_at' => now(),
+                    'read_by' => Auth::id()
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'All notifications marked as read'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to mark all notifications as read: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to mark all notifications as read'
             ], 500);
         }
     }

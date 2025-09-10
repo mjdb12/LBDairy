@@ -322,11 +322,11 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-action btn-action-edit" onclick="editFarm('{{ $farm->id }}')" title="Edit" style="background-color: #387057 !important; border-color: #387057 !important; color: white !important; background: #387057 !important;">
+                                        <button class="btn-action btn-action-edit" onclick="editFarm('{{ $farm->id }}')" title="Edit">
                                             <i class="fas fa-edit"></i>
                                             <span>Edit</span>
                                         </button>
-                                        <button class="btn-action btn-action-delete" onclick="confirmDeleteFarm('{{ $farm->id }}')" title="Delete" style="background-color: #dc3545 !important; border-color: #dc3545 !important; color: white !important; background: #dc3545 !important;">
+                                        <button class="btn-action btn-action-delete" onclick="confirmDeleteFarm('{{ $farm->id }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
                                             <span>Delete</span>
                                         </button>
@@ -371,7 +371,7 @@
 <!-- Farm Edit Modal -->
 <div class="modal fade" id="farmEditModal" tabindex="-1" role="dialog" aria-labelledby="farmEditModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content superadmin-modal">
             <div class="modal-header">
                 <h5 class="modal-title" id="farmEditModalLabel">
                     <i class="fas fa-edit"></i>
@@ -453,7 +453,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteConfirmModalLabel">
-                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    <i class="fas fa-exclamation-triangle"></i>
                     Confirm Delete
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -461,17 +461,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this farm?</p>
-                <p class="text-muted">This action cannot be undone and will permanently remove the farm and all associated data.</p>
-                <div class="alert alert-warning">
-                    <i class="fas fa-warning"></i>
-                    <strong>Warning:</strong> This will also delete any associated livestock and production records.
-                </div>
+                <p>Are you sure you want to delete this farm? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
-                    <i class="fas fa-trash"></i> Delete Farm
+                    <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>
@@ -633,38 +628,16 @@ $(document).ready(function () {
         }
     });
     
-    // Force button colors after page load and DataTable initialization
-    function forceButtonColors() {
-        $('.btn-action-edit').each(function() {
-            $(this).css({
-                'background-color': '#387057',
-                'border-color': '#387057',
-                'color': 'white',
-                'background': '#387057'
-            });
-        });
-        
-        $('.btn-action-delete').each(function() {
-            $(this).css({
-                'background-color': '#dc3545',
-                'border-color': '#dc3545',
-                'color': 'white',
-                'background': '#dc3545'
-            });
-        });
+    // Check for refresh notification flag after page loads
+    if (sessionStorage.getItem('showRefreshNotification') === 'true') {
+        // Clear the flag
+        sessionStorage.removeItem('showRefreshNotification');
+        // Show notification after a short delay to ensure page is fully loaded
+        setTimeout(() => {
+            showNotification('Farm analysis data refreshed successfully!', 'success');
+        }, 500);
     }
     
-    // Force colors multiple times to ensure they stick
-    setTimeout(forceButtonColors, 500);
-    setTimeout(forceButtonColors, 1000);
-    setTimeout(forceButtonColors, 2000);
-    
-    // Also force colors when DataTable redraws
-    if (farmAnalysisTable) {
-        farmAnalysisTable.on('draw', function() {
-            setTimeout(forceButtonColors, 100);
-        });
-    }
 });
 
 function initializeFarmDataTables() {
@@ -822,7 +795,20 @@ function printFarmTable() {
 }
 
 function refreshFarmData() {
-    location.reload();
+    // Show loading indicator
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+    
+    // Since the table is server-side rendered (not AJAX), we'll reload the page
+    // Store a flag to show notification after reload
+    sessionStorage.setItem('showRefreshNotification', 'true');
+    
+    // Reload the page after a short delay
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
 }
 
 function exportFarmCSV() {
@@ -1018,27 +1004,22 @@ function exportFarmPDF() {
     }
 }
 
-// Notification function (matching user directory)
+// Notification function (matching other super admin pages)
 function showNotification(message, type) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    `;
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
     
-    // Add to page
-    document.body.appendChild(notification);
+    $('body').append(notification);
     
-    // Auto remove after 5 seconds
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
+        notification.alert('close');
     }, 5000);
 }
 

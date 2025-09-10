@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -137,6 +138,24 @@ class AuthController extends Controller
         }
 
         $user = User::create($userData);
+
+        // Send notification to super admins if someone registers as admin
+        if ($request->role === 'admin') {
+            notifySuperAdmins(
+                'admin_registration',
+                'New Admin Registration',
+                "A new admin '{$user->name}' has registered and is pending approval.",
+                'fas fa-user-plus',
+                '/superadmin/admins',
+                'info',
+                [
+                    'user_id' => $user->id,
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'registration_date' => $user->created_at->toISOString()
+                ]
+            );
+        }
 
         return redirect('/login')->with('success', 'Registration successful! Please wait for admin approval.');
     }

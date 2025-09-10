@@ -304,6 +304,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/system-overview', [SuperAdminController::class, 'getSystemOverview'])->name('system-overview');
         Route::get('/system-settings', function () { return view('superadmin.settings'); })->name('settings');
         
+        // Notification routes
+        Route::get('/notifications', [SuperAdminController::class, 'getNotifications'])->name('notifications');
+        Route::post('/notifications/{id}/mark-read', [SuperAdminController::class, 'markNotificationAsRead'])->name('notifications.mark-read');
+        Route::post('/notifications/mark-all-read', [SuperAdminController::class, 'markAllNotificationsAsRead'])->name('notifications.mark-all-read');
+        
         // Additional routes for superadmin functionality
         Route::get('/users/index', function () { return view('superadmin.users'); })->name('users.index');
         Route::get('/users/list', [SuperAdminController::class, 'getUsersList'])->name('users.list');

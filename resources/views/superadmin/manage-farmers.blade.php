@@ -718,14 +718,14 @@
 </div>
 
 <!-- Add User Modal -->
-<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade superadmin-modal" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="addUserModalLabel">
                     <i class="fas fa-user-plus"></i> Add New User
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -837,15 +837,15 @@
 </div>
 
 <!-- Farmer Details Modal -->
-<div class="modal fade" id="farmerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmerDetailsModalLabel" aria-hidden="true">
+<div class="modal fade superadmin-modal" id="farmerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmerDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="farmerDetailsModalLabel">
                     <i class="fas fa-user"></i>
                     Farmer Details
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -860,7 +860,7 @@
 </div>
 
 <!-- Edit Farmer Modal -->
-<div class="modal fade" id="editFarmerModal" tabindex="-1" role="dialog" aria-labelledby="editFarmerModalLabel" aria-hidden="true">
+<div class="modal fade superadmin-modal" id="editFarmerModal" tabindex="-1" role="dialog" aria-labelledby="editFarmerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -1504,8 +1504,33 @@ function printFarmersTable() {
 
 // Refresh Farmers Table
 function refreshFarmers() {
-    location.reload();
+    // Show loading indicator
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+    
+    // Since the table is server-side rendered (not AJAX), we'll reload the page
+    // Store a flag to show notification after reload
+    sessionStorage.setItem('showRefreshNotification', 'true');
+    
+    // Reload the page after a short delay
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
 }
+
+// Check for refresh notification flag after page loads
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotification') === 'true') {
+        // Clear the flag
+        sessionStorage.removeItem('showRefreshNotification');
+        // Show notification after a short delay to ensure page is fully loaded
+        setTimeout(() => {
+            showNotification('Farmers data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
 
 // Download counter for file naming
 let farmersDownloadCounter = 1;
@@ -1759,8 +1784,7 @@ function exportPNG(tableId) {
 // System-wide notification function (matching user directory standard)
 function showNotification(message, type) {
     const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-             style="top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
             ${message}
             <button type="button" class="close" data-dismiss="alert">

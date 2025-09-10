@@ -3,7 +3,7 @@
 @section('title', 'LBDAIRY: SuperAdmin - System Settings')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid superadmin-settings">
     <br><br><br><br>
     
     <!-- Page Header -->

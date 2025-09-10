@@ -262,6 +262,7 @@
 @endpush
 
 @section('content')
+<div class="superadmin-profile">
 <!-- Page Header -->
 <div class="page-header fade-in">
     <h1>
@@ -375,10 +376,10 @@
             <div class="card shadow profile-card">
                 <div class="card-body text-center">
                     <div class="profile-picture-container">
-                        <img id="profilePicture" src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" alt="Profile Picture" class="img-profile rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;">
+                        <img id="profilePicture" src="{{ auth()->user()->profile_image ? asset('storage/' . auth()->user()->profile_image) : asset('img/LBDairy.png') }}?t={{ time() }}" alt="Profile Picture" class="img-profile rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;" onerror="this.src='{{ asset('img/LBDairy.png') }}'">
                     </div>
-                    <h5 class="font-weight-bold mb-1">{{ auth()->user()->name }}</h5>
-                    <p class="text-muted mb-3">{{ auth()->user()->email }}</p>
+                    <h5 class="font-weight-bold mb-1">{{ auth()->user()->name ?? 'No Name Set' }}</h5>
+                    <p class="text-muted mb-3">{{ auth()->user()->email ?? 'No Email Set' }}</p>
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-primary btn-sm" onclick="document.getElementById('uploadProfilePicture').click()">
                             <i class="fas fa-camera mr-2"></i>Change Picture
@@ -416,13 +417,13 @@
                                 <th scope="row">
                                     <i class="fas fa-user" style="color: #18375d;"></i>Full Name
                                 </th>
-                                <td>{{ auth()->user()->name }}</td>
+                                <td>{{ auth()->user()->name ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
                                     <i class="fas fa-envelope" style="color: #18375d;"></i>Email
                                 </th>
-                                <td>{{ auth()->user()->email }}</td>
+                                <td>{{ auth()->user()->email ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
@@ -452,13 +453,25 @@
                                 <th scope="row">
                                     <i class="fas fa-calendar-alt" style="color: #18375d;"></i>Member Since
                                 </th>
-                                <td>{{ auth()->user()->created_at ? auth()->user()->created_at->format('F Y') : 'Unknown' }}</td>
+                                <td>{{ auth()->user()->created_at ? auth()->user()->created_at->format('F j, Y') : 'Unknown' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">
                                     <i class="fas fa-clock" style="color: #18375d;"></i>Last Updated
                                 </th>
                                 <td>{{ auth()->user()->updated_at ? auth()->user()->updated_at->format('F j, Y g:i A') : 'Never' }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <i class="fas fa-user-tag" style="color: #18375d;"></i>Role
+                                </th>
+                                <td><span class="badge badge-primary">{{ ucfirst(auth()->user()->role ?? 'Unknown') }}</span></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <i class="fas fa-check-circle" style="color: #18375d;"></i>Status
+                                </th>
+                                <td><span class="badge badge-success">{{ ucfirst(auth()->user()->status ?? 'Active') }}</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -485,34 +498,34 @@
       <div class="modal-body">
           <div class="form-group">
               <label for="editFullName">
-                  <i class="fas fa-user"></i>Full Name
+                  <i class="fas fa-user mr-2"></i>Full Name
               </label>
-              <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name) }}" required>
+              <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" required placeholder="Enter your full name">
               @error('name')
                   <div class="invalid-feedback">{{ $message }}</div>
               @enderror
           </div>
           <div class="form-group">
               <label for="editEmail">
-                  <i class="fas fa-envelope"></i>Email
+                  <i class="fas fa-envelope mr-2"></i>Email
               </label>
-              <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email) }}" required>
+              <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required placeholder="Enter your email address">
               @error('email')
                   <div class="invalid-feedback">{{ $message }}</div>
               @enderror
           </div>
           <div class="form-group">
               <label for="editPhone">
-                  <i class="fas fa-phone"></i>Contact Number
+                  <i class="fas fa-phone mr-2"></i>Contact Number
               </label>
-              <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone) }}">
+              <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone ?? '') }}" placeholder="Enter your contact number">
               @error('phone')
                   <div class="invalid-feedback">{{ $message }}</div>
               @enderror
           </div>
           <div class="form-group">
               <label for="editBarangay">
-                  <i class="fas fa-map-marker-alt"></i>Barangay
+                  <i class="fas fa-map-marker-alt mr-2"></i>Barangay
               </label>
               <select class="form-control @error('barangay') is-invalid @enderror" id="editBarangay" name="barangay" required>
                   <option value="">Select Barangay</option>
@@ -555,18 +568,18 @@
           </div>
           <div class="form-group">
               <label for="editPosition">
-                  <i class="fas fa-user-shield"></i>Position
+                  <i class="fas fa-user-shield mr-2"></i>Position
               </label>
-              <input type="text" class="form-control @error('position') is-invalid @enderror" id="editPosition" name="position" value="{{ old('position', auth()->user()->position ?? 'Super Admin') }}">
+              <input type="text" class="form-control @error('position') is-invalid @enderror" id="editPosition" name="position" value="{{ old('position', auth()->user()->position ?? 'Super Admin') }}" placeholder="Enter your position">
               @error('position')
                   <div class="invalid-feedback">{{ $message }}</div>
               @enderror
           </div>
           <div class="form-group">
               <label for="editAddress">
-                  <i class="fas fa-map-marker-alt"></i>Address
+                  <i class="fas fa-map-marker-alt mr-2"></i>Address
               </label>
-              <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address) }}">
+              <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address ?? '') }}" placeholder="Enter your address">
               @error('address')
                   <div class="invalid-feedback">{{ $message }}</div>
               @enderror
@@ -600,7 +613,7 @@
       <div class="modal-body">
           <div class="form-group">
               <label for="currentPassword">
-                  <i class="fas fa-lock"></i>Current Password
+                  <i class="fas fa-lock mr-2"></i>Current Password
               </label>
               <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
               @error('current_password')
@@ -609,7 +622,7 @@
           </div>
           <div class="form-group">
               <label for="newPassword">
-                  <i class="fas fa-key"></i>New Password
+                  <i class="fas fa-key mr-2"></i>New Password
               </label>
               <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
               @error('password')
@@ -618,7 +631,7 @@
           </div>
           <div class="form-group">
               <label for="confirmPassword">
-                  <i class="fas fa-check-circle"></i>Confirm New Password
+                  <i class="fas fa-check-circle mr-2"></i>Confirm New Password
               </label>
               <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="confirmPassword" name="password_confirmation" required>
               @error('password_confirmation')
@@ -636,6 +649,7 @@
       </div>
     </form>
   </div>
+</div>
 </div>
 @endsection
 
