@@ -4,8 +4,558 @@
 
 @push('styles')
 <style>
-    /* Custom styles for farmer management */
+    /* Custom styles for user management */
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
     
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+    
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .badge-pill {
+        border-radius: 50rem;
+        padding-left: 0.75em;
+        padding-right: 0.75em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Ensure all role badges have identical pill shape */
+    .badge-danger.badge-pill,
+    .badge-primary.badge-pill,
+    .badge-success.badge-pill,
+    .badge-secondary.badge-pill {
+        border-radius: 50rem !important;
+        padding: 0.5em 1em !important;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: baseline;
+    }
+    
+    /* Force pill shape override for any conflicting styles */
+    .badge.badge-pill {
+        border-radius: 50rem !important;
+        padding: 0.5em 1em !important;
+    }
+    
+    /* Make admin badge (primary) look identical to superadmin pill shape */
+    .badge-primary {
+        border-radius: 50rem !important;
+        padding: 0.5em 1em !important;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: baseline;
+    }
+
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    .badge-sm {
+        font-size: 0.6em;
+        padding: 0.2em 0.4em;
+    }
+    
+    .badge-success .fas.fa-circle {
+        animation: pulse 2s infinite;
+    }
+    
+    /* Override badge colors for status column to ensure proper colors */
+    #usersTable .badge-danger {
+        background-color: #dc3545 !important;
+        color: white !important;
+    }
+    
+    #usersTable .badge-warning {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+    }
+    
+    #usersTable .badge-success {
+        background-color: #387057 !important;
+        color: white !important;
+    }
+    
+    /* Fix admin role badge text color */
+    #usersTable .badge-warning {
+        background-color: #fca700 !important;
+        color: white !important;
+    }
+    
+    /* Ensure superadmin stays dark blue */
+    #usersTable .badge-primary {
+        background-color: #18375d !important;
+        color: white !important;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-delete {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-delete:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+    
+    /* Header action buttons styling to match Edit/Delete buttons */
+    .btn-action-add {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-add:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    
+    .btn-action-refresh {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+    
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
+    
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #usersTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #usersTable th,
+    #usersTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure Registration Date column has enough space */
+    #usersTable th:nth-child(6),
+    #usersTable td:nth-child(6) {
+        min-width: 220px !important;
+        width: 220px !important;
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: initial;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #usersTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #usersTable thead th.sorting,
+    #usersTable thead th.sorting_asc,
+    #usersTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #usersTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #usersTable thead th.sorting::after,
+    #usersTable thead th.sorting_asc::after,
+    #usersTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+
+    
+
+    
+    /* DataTables Pagination Styling */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #18375d;
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+    }
+    
+    /* Ensure pagination container is properly positioned */
+    .dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+    
+    .dataTables_wrapper .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0;
+    }
+
+    /* User Details Modal Styling */
+    #userDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #userDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #userDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #userDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #userDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #userDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #userDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
     .card-header .btn-group {
         margin-left: 0.5rem;
     }
@@ -307,46 +857,46 @@
     <!-- Pending Farmers Card -->
     <div class="card shadow mb-4 fade-in">
         <div class="card-header bg-primary text-white">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                <h6 class="mb-0 mb-md-0">
-                    <i class="fas fa-clock"></i>
-                    Pending Farmer Registrations
-                </h6>
-                <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
-                    <div class="input-group" style="max-width: 300px;">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
+            <h6 class="mb-0">
+                <i class="fas fa-list"></i>
+                Pending Farmer Registrations
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
                     </div>
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-download"></i> Export
+                    <input type="text" class="form-control" placeholder="Search pending farmer..." id="pendingSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')" title="Print">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshData('pendingFarmersTable')">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" href="#" onclick="exportCSV('pendingFarmersTable')">
-                                <i class="fas fa-file-csv"></i> CSV
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPDF('pendingFarmersTable')">
-                                <i class="fas fa-file-pdf"></i> PDF
+                                <i class="fas fa-file-csv"></i> Download CSV
                             </a>
                             <a class="dropdown-item" href="#" onclick="exportPNG('pendingFarmersTable')">
-                                <i class="fas fa-image"></i> PNG
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPDF('pendingFarmersTable')">
+                                <i class="fas fa-file-pdf"></i> Download PDF
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable('pendingFarmersTable')" title="Print">
-                        <i class="fas fa-print"></i>
-                    </button>
-                    <button class="btn btn-info btn-sm" onclick="refreshPendingData()" title="Refresh">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="pendingFarmersTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
@@ -369,6 +919,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Active Farmers Card -->
     <div class="card shadow mb-4 fade-in">
