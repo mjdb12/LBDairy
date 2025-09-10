@@ -3,9 +3,7 @@
 @section('title', 'Issue Management')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
+    <div class="page-header fade-in">
         <h1>
             <i class="fas fa-exclamation-triangle"></i>
             Issue Management
@@ -137,7 +135,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Add Issue Modal -->
 <div class="modal fade" id="addIssueModal" tabindex="-1" role="dialog" aria-labelledby="addIssueLabel" aria-hidden="true">

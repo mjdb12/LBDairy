@@ -3,8 +3,6 @@
 @section('title', 'Farmer Alerts')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
             <i class="fas fa-bell"></i>
@@ -15,69 +13,54 @@
 
     <!-- Statistics Cards -->
     <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Alerts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bell fa-2x text-gray-300"></i>
-                        </div>
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Total Alerts</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAlerts }}</div>
+                    </div>
+                    <div class="icon" style="color: #18375d !important;">
+                        <i class="fas fa-bell fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Active Alerts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Active Alerts</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeAlerts }}</div>
+                    </div>
+                    <div class="icon" style="color: #18375d !important;">
+                        <i class="fas fa-circle-exclamation fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Critical Alerts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-fire fa-2x text-gray-300"></i>
-                        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Critical Alerts</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalAlerts }}</div>
+                    </div>
+                    <div class="icon" style="color: #18375d !important;">
+                        <i class="fas fa-fire fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Resolved</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $resolvedAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Resolved Alerts</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $resolvedAlerts }}</div>
+                    </div>
+                    <div class="icon" style="color: #18375d !important;">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
@@ -208,7 +191,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Alert Details Modal -->
 <div class="modal fade" id="alertDetailsModal" tabindex="-1" role="dialog" aria-labelledby="alertDetailsLabel" aria-hidden="true">

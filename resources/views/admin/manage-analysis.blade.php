@@ -3,8 +3,6 @@
 @section('title', 'Productivity Analysis')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
             <i class="fas fa-chart-line"></i>
@@ -251,7 +249,6 @@
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @push('styles')
