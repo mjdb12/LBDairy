@@ -287,6 +287,7 @@
 
         @elseif(auth()->user()->isSuperAdmin())
             <!-- Super Admin Navigation -->
+             
             <li class="nav-item {{ isCurrentRoute('superadmin.dashboard') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('superadmin.dashboard') }}" data-toggle="tooltip" data-placement="right" data-original-title="Dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>

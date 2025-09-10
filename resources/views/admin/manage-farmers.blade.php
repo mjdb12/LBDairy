@@ -5,21 +5,6 @@
 @push('styles')
 <style>
     /* Custom styles for farmer management */
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
-    
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
-    
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
-    
-    .border-left-danger {
-        border-left: 0.25rem solid #e74a3b !important;
-    }
     
     .card-header .btn-group {
         margin-left: 0.5rem;
@@ -254,7 +239,6 @@
 @endpush
 
 @section('content')
-<div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -267,55 +251,52 @@
     <!-- Stats Cards -->
     <div class="row fade-in">
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Approvals</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingCount">0</div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Pending Approvals</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingCount">0</div>
                     </div>
-                    <div class="icon text-warning">
+                    <div class="icon" style="color: #18375d !important;">
                         <i class="fas fa-clock fa-2x"></i>
                     </div>
                 </div>
             </div>
         </div>
-        
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Farmers</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeCount">0</div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Active Farmer</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeCount">0</div>
                     </div>
-                    <div class="icon text-success">
+                    <div class="icon" style="color: #18375d !important;">
                         <i class="fas fa-user-check fa-2x"></i>
                     </div>
                 </div>
             </div>
         </div>
-        
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farmers</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCount">0</div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Total Farmer</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCount">0</div>
                     </div>
-                    <div class="icon text-info">
+                    <div class="icon" style="color: #18375d !important;">
                         <i class="fas fa-users fa-2x"></i>
                     </div>
                 </div>
             </div>
         </div>
-        
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Rejected</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="rejectedCount">0</div>
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Rejected Farmer</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="rejectedCount">0</div>
                     </div>
-                    <div class="icon text-danger">
+                    <div class="icon" style="color: #18375d !important;">
                         <i class="fas fa-user-times fa-2x"></i>
                     </div>
                 </div>
@@ -619,7 +600,6 @@
             </form>
         </div>
     </div>
-</div>
 @endsection
 
 @push('scripts')

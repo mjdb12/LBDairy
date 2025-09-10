@@ -3,9 +3,7 @@
 @section('title', 'Livestock Management')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
+    <div class="page-header fade-in">
         <h1>
             <i class="fas fa-cow"></i>
             Livestock Management
@@ -318,7 +316,6 @@
             </form>
         </div>
     </div>
-</div>
 @endsection
 
 @push('styles')

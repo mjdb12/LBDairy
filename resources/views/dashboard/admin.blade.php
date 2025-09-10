@@ -14,10 +14,10 @@
 <div class="row fade-in">
     <!-- Active Farms -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Active Farms</div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Active Farms</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Farm::where('status', 'active')->count() }}</div>
                 </div>
                 <div class="icon" style="color: #18375d !important;">
@@ -29,10 +29,10 @@
 
     <!-- Total Farmers -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Farmers</div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Total Farmers</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->count() }}</div>
                 </div>
                 <div class="icon" style="color: #18375d !important;">
@@ -44,10 +44,10 @@
 
     <!-- New Requests -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">New Requests</div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">New Requests</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'pending')->count() }}</div>
                 </div>
                 <div class="icon" style="color: #18375d !important;">
@@ -57,46 +57,16 @@
         </div>
     </div>
 
-    <!-- Service Areas -->
-    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Service Areas</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Farm::distinct('location')->count() }}</div>
-                </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-map-marker-alt fa-2x"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Total Livestock -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Livestock::count() }}</div>
                 </div>
                 <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-cow fa-2x"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Efficiency Rate -->
-    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 dashboard-card stat-card">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="color: #18375d !important;">Efficiency Rate</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">53<sup class="font-size-4">%</sup></div>
-                </div>
-                <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-chart-line fa-2x"></i>
                 </div>
             </div>
         </div>
@@ -149,7 +119,7 @@
     <div class="col-12">
         <div class="card shadow">
             <div class="card-header">
-                <h6 class="m-0 font-weight-bold text-primary">
+                <h6 class="mb-0">
                     <i class="fas fa-history"></i>
                     Recent System Activity
                 </h6>
@@ -227,7 +197,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary" id="taskSubmitBtn">Add Task</button>
+                <button type="submit" class="btn btn-user text-white font-semibold" id="taskSubmitBtn">Add Task</button>
             </div>
         </form>
     </div>

@@ -283,6 +283,29 @@
             border-color: #122a47 !important;
         }
 
+        .btn-user {
+            background: #18375d;
+            border-radius: 15px;
+            padding: 1.25rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-user:hover {
+            background-color: #fca700;
+            color: #ffffffff;
+            border-color: #fca700;
+            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 1rem 2rem rgba(24, 55, 93, 0.4);
+        }
+
         .border-primary {
             border-color: #18375d !important;
         }

@@ -3,8 +3,6 @@
 @section('title', 'LBDAIRY: Admin - User Approvals')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
             <i class="fas fa-user-check"></i>
@@ -196,7 +194,6 @@
             @endif
         </div>
     </div>
-</div>
 
 <!-- Approve User Modal -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">

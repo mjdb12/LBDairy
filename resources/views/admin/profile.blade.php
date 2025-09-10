@@ -5,25 +5,6 @@
 @push('styles')
 <style>
     /* Custom styles for admin profile */
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
-    
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
-    
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
-    
-    .border-left-primary {
-        border-left: 0.25rem solid #18375d !important;
-    }
-    
-    .border-left-danger {
-        border-left: 0.25rem solid #e74a3b !important;
-    }
     
     /* Profile Picture Enhancement */
     .profile-picture-container {
@@ -206,73 +187,63 @@
 @endif
 
 <!-- Stats Cards -->
-<div class="row fade-in stagger-animation">
+<div class="row fade-in">
     <!-- Total Farmers -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Farmers</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->count() }}</div>
-                </div>
-                <div class="icon text-info">
-                    <i class="fas fa-users fa-2x"></i>
-                </div>
-            </div>
-            <a href="{{ route('admin.manage-farmers') }}" class="card-footer text-info small d-flex justify-content-between align-items-center">
-                View Farmers <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <!-- Active Farmers -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Farmers</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->where('is_active', true)->count() }}</div>
-                </div>
-                <div class="icon text-success">
-                    <i class="fas fa-user-check fa-2x"></i>
-                </div>
-            </div>
-            <a href="{{ route('admin.manage-farmers') }}" class="card-footer text-success small d-flex justify-content-between align-items-center">
-                View Active <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <!-- Pending Issues -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Issues</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'open')->count() }}</div>
-                </div>
-                <div class="icon text-warning">
-                    <i class="fas fa-exclamation-triangle fa-2x"></i>
-                </div>
-            </div>
-            <a href="{{ route('admin.issues.index') }}" class="card-footer text-warning small d-flex justify-content-between align-items-center">
-                View Issues <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <!-- Days as Admin -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Days as Admin</div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Total Farmers</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->count() }}</div>
+                </div>
+                <div class="icon" style="color: #18375d !important;">
+                    <i class="fas fa-users fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Active Farmers -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Active Farmers</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'farmer')->where('is_active', true)->count() }}</div>
+                </div>
+                <div class="icon" style="color: #18375d !important;">
+                    <i class="fas fa-user-check fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Issues -->
+     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Pending Issues</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'open')->count() }}</div>
+                </div>
+                <div class="icon" style="color: #18375d !important;">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Days as Admin -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Days as Admin</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format(\Carbon\Carbon::parse(auth()->user()->created_at)->diffInDays(now()), 2) }}</div>
                 </div>
-                <div class="icon text-primary">
+                <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-user-shield fa-2x"></i>
                 </div>
             </div>
-            <a href="{{ route('admin.profile') }}" class="card-footer text-primary small d-flex justify-content-between align-items-center">
-                See Profile <i class="fas fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div>
 </div>
