@@ -370,7 +370,7 @@ class FarmerController extends Controller
                 'livestock' => $livestock
             ]);
         } catch (\Exception $e) {
-            \Log::error('Livestock creation error: ' . $e->getMessage());
+            Log::error('Livestock creation error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to add livestock. Please try again.'
@@ -2650,5 +2650,73 @@ class FarmerController extends Controller
         }
 
         return $insights;
+    }
+
+    /**
+     * Scan livestock by ID for QR code scanner.
+     */
+    public function scanLivestock($id)
+    {
+        try {
+            $user = Auth::user();
+            
+            // First try to find by tag_number (primary identifier)
+            $livestock = Livestock::with(['farm.owner'])
+                ->whereHas('farm', function($query) use ($user) {
+                    $query->where('owner_id', $user->id);
+                })
+                ->where('tag_number', $id)
+                ->first();
+            
+            // If not found by tag_number, try by database ID
+            if (!$livestock) {
+                $livestock = Livestock::with(['farm.owner'])
+                    ->whereHas('farm', function($query) use ($user) {
+                        $query->where('owner_id', $user->id);
+                    })
+                    ->where('id', $id)
+                    ->first();
+            }
+            
+            // If still not found, try registry_id if it exists
+            if (!$livestock) {
+                $livestock = Livestock::with(['farm.owner'])
+                    ->whereHas('farm', function($query) use ($user) {
+                        $query->where('owner_id', $user->id);
+                    })
+                    ->where('registry_id', $id)
+                    ->first();
+            }
+            
+            if (!$livestock) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No livestock found with ID: ' . $id
+                ], 404);
+            }
+            
+            // Log the scan action
+            AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'livestock_scanned',
+                'description' => "QR code scanned for livestock: {$livestock->tag_number}",
+                'severity' => 'info',
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'livestock' => $livestock,
+                'message' => 'Livestock found successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Livestock scan error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error scanning livestock: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -46,8 +46,22 @@ class DashboardController extends Controller
             }
             
             $livestock = Livestock::whereIn('farm_id', $userFarms)->with('farm')->latest()->take(5)->get();
-            $recentProduction = ProductionRecord::whereIn('farm_id', $userFarms)->with('livestock')->latest()->take(5)->get();
-            $recentSales = Sale::whereIn('farm_id', $userFarms)->latest()->take(5)->get();
+            
+            // Get recent production records with proper relationships and ordering
+            $recentProduction = ProductionRecord::whereIn('farm_id', $userFarms)
+                ->with(['livestock', 'farm'])
+                ->orderBy('production_date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
+            
+            // Get recent sales with proper relationships and ordering
+            $recentSales = Sale::whereIn('farm_id', $userFarms)
+                ->with('farm')
+                ->orderBy('sale_date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
             
             $totalLivestock = Livestock::whereIn('farm_id', $userFarms)->count();
             $totalProduction = ProductionRecord::whereIn('farm_id', $userFarms)->sum('milk_quantity') ?? 0;

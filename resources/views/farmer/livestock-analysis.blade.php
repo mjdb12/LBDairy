@@ -123,71 +123,63 @@
     </div>
 </div>
 
-<!-- Statistics Cards Row -->
-<div class="row mb-4">
-    <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-left-primary shadow-sm h-100">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Livestock</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-cow fa-2x text-gray-300"></i>
-                    </div>
+<!-- Statistics Grid -->
+<div class="row fade-in">
+    <!-- Total Livestock -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-cow fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-left-success shadow-sm h-100">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Healthy Animals</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $healthyAnimals }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-heart fa-2x text-gray-300"></i>
-                    </div>
+    <!-- Healthy Animals -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Healthy Animals</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $healthyAnimals }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-heart fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-left-info shadow-sm h-100">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Breeding Age</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $breedingAge }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-baby fa-2x text-gray-300"></i>
-                    </div>
+    <!-- Breeding Age -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Breeding Age</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $breedingAge }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-baby fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-left-warning shadow-sm h-100">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Under Treatment</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $underTreatment }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-stethoscope fa-2x text-gray-300"></i>
-                    </div>
+    <!-- Under Treatment -->
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Under Treatment</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $underTreatment }}</div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-stethoscope fa-2x" style="color: #18375d !important;"></i>
                 </div>
             </div>
         </div>

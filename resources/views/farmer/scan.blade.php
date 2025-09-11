@@ -20,6 +20,13 @@
             <i class="fas fa-camera"></i> Ready to Scan
         </div>
 
+        <!-- How to Use Button - Upper Right -->
+        <div class="how-to-use-button">
+            <button class="btn btn-outline-light btn-sm" onclick="toggleHowToUse()" id="howToUseBtn">
+                <i class="fas fa-info-circle"></i> How to Use
+            </button>
+        </div>
+
         <!-- Scanner Overlay -->
         <div class="scanner-overlay">
             <div class="corner"></div>
@@ -27,62 +34,60 @@
 
         <!-- Camera feed -->
         <div id="qr-reader"></div>
-
-        <!-- Scanner Controls -->
-        <div class="scanner-controls">
-            <button id="captureButton" class="scanner-btn" onclick="viewLivestockDetails('LS001')" title="Capture QR Code">
-                <i class="fas fa-camera"></i>
-            </button>
-            <label for="uploadQR" class="scanner-btn mb-0" title="Upload QR Image">
-                <i class="fas fa-upload"></i>
-            </label>
-            <input type="file" id="uploadQR" accept="image/*" style="display: none;">
-        </div>
     </div>
 
-    <!-- Scanner Info Panel -->
-    <div class="scanner-info">
-        <h5><i class="fas fa-info-circle"></i> How to Use</h5>
-        <p><strong>Camera Scan:</strong> Point your camera at a QR code to scan</p>
-        <p><strong>Upload Image:</strong> Upload a QR code image file</p>
-        <p><strong>Capture:</strong> Take a photo of a QR code</p>
-        <p><strong>View Details:</strong> Successfully scanned codes will display livestock information</p>
+    <!-- Scanner Controls - Now outside the scanner container -->
+    <div class="scanner-controls">
+        <button id="captureButton" class="scanner-btn" onclick="captureQRCode()" title="Capture QR Code">
+            <i class="fas fa-camera"></i>
+        </button>
+        <label for="uploadQR" class="scanner-btn mb-0" title="Upload QR Image">
+            <i class="fas fa-upload"></i>
+        </label>
+        <input type="file" id="uploadQR" accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.webp" style="display: none;">
+        <button id="manualInputBtn" class="scanner-btn" onclick="showManualInput()" title="Manual Input">
+            <i class="fas fa-keyboard"></i>
+        </button>
     </div>
+
 
     <!-- Scan Results -->
     <div id="qr-reader-results" class="mt-3 text-center" style="font-size: 1.1rem; font-weight: 500;"></div>
+    
+    <!-- Processing Progress -->
+    <div id="processing-progress" class="mt-3 text-center" style="display: none;">
+        <div class="progress" style="height: 6px; border-radius: 3px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%; background-color: #4e73df;"></div>
+        </div>
+        <small class="text-muted mt-2 d-block">Processing QR code...</small>
+    </div>
 </div>
 
-<!-- Test QR Codes Section -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card shadow mb-4 fade-in">
-            <div class="card-header">
-                <h6>
-                    <i class="fas fa-qrcode"></i>
-                    Test QR Codes
-                </h6>
+<!-- Manual Input Modal -->
+<div class="modal fade" id="manualInputModal" tabindex="-1" role="dialog" aria-labelledby="manualInputLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-keyboard"></i>
+                    Manual Livestock ID Input
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
             </div>
-            <div class="card-body text-center">
-                <p class="text-muted mb-3">Scan these test codes to see sample livestock data:</p>
-                <div class="row justify-content-center">
-                    <div class="col-3 text-center mb-3">
-                        <div id="qrCode1" class="test-qr-code"></div>
-                        <small class="text-muted d-block mt-2">LS001</small>
-                    </div>
-                    <div class="col-3 text-center mb-3">
-                        <div id="qrCode2" class="test-qr-code"></div>
-                        <small class="text-muted d-block mt-2">LS002</small>
-                    </div>
-                    <div class="col-3 text-center mb-3">
-                        <div id="qrCode3" class="test-qr-code"></div>
-                        <small class="text-muted d-block mt-2">LS003</small>
-                    </div>
-                    <div class="col-3 text-center mb-3">
-                        <div id="qrCode4" class="test-qr-code"></div>
-                        <small class="text-muted d-block mt-2">LS004</small>
-                    </div>
+            <div class="modal-body">
+                <p class="text-muted">Enter the livestock ID or tag number manually if QR code scanning is not working.</p>
+                <div class="form-group">
+                    <label for="manualLivestockId">Livestock ID / Tag Number</label>
+                    <input type="text" class="form-control" id="manualLivestockId" placeholder="Enter livestock ID or tag number" autofocus>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-dark-green" onclick="processManualInput()">
+                    <i class="fas fa-search"></i> Look Up Livestock
+                </button>
             </div>
         </div>
     </div>
@@ -185,7 +190,7 @@
                                 </table>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-dark-green">
                                     <i class="fas fa-save"></i> Save Record
                                 </button>
                             </div>
@@ -209,7 +214,7 @@
                                 </table>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-dark-green">
                                     <i class="fas fa-save"></i> Save Record
                                 </button>
                             </div>
@@ -255,11 +260,83 @@
         </div>
     </div>
 </div>
+
+<!-- How to Use Modal -->
+<div class="modal fade" id="howToUseModal" tabindex="-1" role="dialog" aria-labelledby="howToUseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="howToUseModalLabel">
+                    <i class="fas fa-info-circle"></i>
+                    How to Use QR Scanner
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-camera" style="color: #18375d;"></i> Camera Scan</h6>
+                        <p class="text-muted">Point your camera at a QR code to scan automatically.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-upload" style="color: #18375d;"></i> Upload Image</h6>
+                        <p class="text-muted">Upload a QR code image file (JPG, PNG, GIF, BMP, WebP).</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-keyboard" style="color: #18375d;"></i> Manual Input</h6>
+                        <p class="text-muted">Click the keyboard button (⌨️) to enter livestock ID manually.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-eye" style="color: #18375d;"></i> View Details</h6>
+                        <p class="text-muted">Successfully scanned codes will display livestock information.</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-lightbulb"></i> Tips for Better Scanning</h6>
+                    <ul class="mb-0">
+                        <li>Ensure QR codes are clear and well-lit</li>
+                        <li>Hold the camera steady and at proper distance</li>
+                        <li>If QR scanning fails, use manual input</li>
+                        <li>Supported formats: JPG, PNG, GIF, BMP, WebP (max 5MB)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-got-it" data-dismiss="modal">
+                    <i class="fas fa-check"></i> Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('styles')
 <style>
 
+/* Custom Dark Green Button */
+.btn-dark-green {
+    background-color: #387057 !important;
+    border-color: #387057 !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(56, 112, 87, 0.3);
+}
+
+.btn-dark-green:hover {
+    background-color: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(56, 112, 87, 0.4);
+}
+
+.btn-dark-green:focus {
+    box-shadow: 0 0 0 0.2rem rgba(56, 112, 87, 0.25) !important;
+}
 
 /* Enhanced Card Styling */
 .card {
@@ -370,22 +447,20 @@
 
 /* Scanner Controls Enhancement */
 .scanner-controls {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
+    position: relative;
+    margin-top: 20px;
     display: flex;
+    justify-content: center;
     gap: 12px;
+    z-index: 10;
 }
 
 .scanner-btn {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
+    border: 2px solid #18375d;
+    background: #18375d;
     color: white;
     font-size: 1.2rem;
     transition: all 0.3s ease;
@@ -393,18 +468,20 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(24, 55, 93, 0.3);
 }
 
 .scanner-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: white;
+    background: #2d5a47;
+    border-color: #2d5a47;
     transform: scale(1.1);
     color: white;
+    box-shadow: 0 4px 12px rgba(45, 90, 71, 0.4);
 }
 
 .scanner-btn:focus {
     outline: none;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(24, 55, 93, 0.25);
 }
 
 /* Scanner Info Panel */
@@ -432,12 +509,60 @@
 .status-indicator {
     position: absolute;
     top: 20px;
-    right: 20px;
+    left: 20px;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
     z-index: 10;
+}
+
+/* How to Use Button */
+.how-to-use-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+.how-to-use-button .btn {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.how-to-use-button .btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Got it button styling */
+.btn-got-it {
+    background-color: #387057 !important;
+    border-color: #387057 !important;
+    color: white !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-got-it:hover {
+    background-color: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(56, 112, 87, 0.3);
+}
+
+.btn-got-it:focus {
+    background-color: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: white !important;
+    box-shadow: 0 0 0 0.2rem rgba(56, 112, 87, 0.25);
 }
 
 .status-ready {
@@ -572,20 +697,6 @@
     border-color: #e3e6f0;
 }
 
-/* Test QR Code Styling */
-.test-qr-code {
-    display: inline-block;
-    padding: 10px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-}
-
-.test-qr-code:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-lg);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -643,15 +754,12 @@
 
 @push('scripts')
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
 let html5QrCode;
 let isScanning = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Generate test QR codes
-    generateTestQRCodes();
-    
     // Initialize forms
     initializeForms();
     
@@ -696,17 +804,6 @@ function updateStatus(message, type) {
     statusElement.innerHTML = `<i class="${iconMap[type]}"></i> ${message}`;
 }
 
-function generateTestQRCodes() {
-    const qrCodes = ['LS001', 'LS002', 'LS003', 'LS004'];
-    qrCodes.forEach((code, index) => {
-        const qrDiv = document.getElementById(`qrCode${index + 1}`);
-        new QRCode(qrDiv, {
-            text: code,
-            width: 80,
-            height: 80
-        });
-    });
-}
 
 function onScanSuccess(decodedText, decodedResult) {
     console.log('QR Code scanned:', decodedText);
@@ -729,143 +826,102 @@ function onScanFailure(error) {
 }
 
 function viewLivestockDetails(id) {
-    // Simulate data fetching
-    const data = {
-        LS001: {
-            ownedBy: "Juan Dela Cruz",
-            dispersalFrom: "LGU Lucban",
-            registryId: "REG123",
-            tagId: "TAG001",
-            livestockName: "Boer Goat Alpha",
-            dob: "2021-03-10",
-            sex: "Male",
-            breed: "Boer",
-            sireId: "SR001",
-            damId: "DR001",
-            sireName: "Billy",
-            damName: "Nanny",
-            sireBreed: "Boer",
-            damBreed: "Boer",
-            naturalMarks: "White patch on right ear",
-            propertyNo: "PROP-001",
-            acquisitionDate: "2022-01-15",
-            acquisitionCost: "12000",
-            source: "DA Dispersal",
-            remarks: "Healthy and active",
-            cooperator: "Maria Clara",
-            releasedDate: "2022-02-01",
-            cooperative: "Lucban Goat Farmers",
-            address: "Brgy. Kulapi, Lucban",
-            contactNo: "09123456789",
-            inCharge: "Mr. Veterinarian"
-        },
-        LS002: {
-            ownedBy: "Maria Reyes",
-            dispersalFrom: "DA Office",
-            registryId: "REG124",
-            tagId: "TAG002",
-            livestockName: "Angus Cow Beta",
-            dob: "2020-05-15",
-            sex: "Female",
-            breed: "Angus",
-            sireId: "SR002",
-            damId: "DR002",
-            sireName: "Bull",
-            damName: "Daisy",
-            sireBreed: "Angus",
-            damBreed: "Angus",
-            naturalMarks: "Black coat with white star on forehead",
-            propertyNo: "PROP-002",
-            acquisitionDate: "2021-06-20",
-            acquisitionCost: "45000",
-            source: "Private Purchase",
-            remarks: "Excellent milk producer",
-            cooperator: "Pedro Santos",
-            releasedDate: "2021-07-01",
-            cooperative: "Lucban Cattle Farmers",
-            address: "Brgy. Aliliw, Lucban",
-            contactNo: "09234567890",
-            inCharge: "Dr. Animal Health"
-        },
-        LS003: {
-            ownedBy: "Josefa Reyes",
-            dispersalFrom: "LGU Lucban",
-            registryId: "REG125",
-            tagId: "TAG003",
-            livestockName: "Carabao Gamma",
-            dob: "2019-08-22",
-            sex: "Male",
-            breed: "Philippine Native",
-            sireId: "SR003",
-            damId: "DR003",
-            sireName: "Kalabaw",
-            damName: "Maya",
-            sireBreed: "Philippine Native",
-            damBreed: "Philippine Native",
-            naturalMarks: "Gray coat with white markings",
-            propertyNo: "PROP-003",
-            acquisitionDate: "2020-09-10",
-            acquisitionCost: "35000",
-            source: "Government Dispersal",
-            remarks: "Strong and healthy",
-            cooperator: "Luis Garcia",
-            releasedDate: "2020-10-01",
-            cooperative: "Lucban Carabao Farmers",
-            address: "Brgy. Atulinao, Lucban",
-            contactNo: "09345678901",
-            inCharge: "Mr. Farm Manager"
-        },
-        LS004: {
-            ownedBy: "Maria Rivera",
-            dispersalFrom: "DA Office",
-            registryId: "REG126",
-            tagId: "TAG004",
-            livestockName: "Dorper Goat Delta",
-            dob: "2021-11-05",
-            sex: "Female",
-            breed: "Dorper",
-            sireId: "SR004",
-            damId: "DR004",
-            sireName: "Rocky",
-            damName: "Flora",
-            sireBreed: "Dorper",
-            damBreed: "Dorper",
-            naturalMarks: "White head with black body",
-            propertyNo: "PROP-004",
-            acquisitionDate: "2022-12-01",
-            acquisitionCost: "15000",
-            source: "Private Breeder",
-            remarks: "Good for breeding",
-            cooperator: "Ana Lopez",
-            releasedDate: "2022-12-15",
-            cooperative: "Lucban Goat Farmers",
-            address: "Brgy. Ayuti, Lucban",
-            contactNo: "09456789012",
-            inCharge: "Ms. Livestock Specialist"
+    // Show loading state
+    updateStatus('Loading livestock data...', 'scanning');
+    
+    // Check if the ID is JSON data from QR code
+    let livestockId = id;
+    try {
+        const qrData = JSON.parse(id);
+        if (qrData.livestock_id) {
+            livestockId = qrData.livestock_id;
+            console.log('Extracted livestock ID from QR data:', livestockId);
         }
-    };
-
-    const info = data[id];
-    if (info) {
-        console.log('Found livestock data for:', id, info);
-        document.getElementById("detailLivestockId").textContent = id;
-        
-        // Populate form fields
-        Object.keys(info).forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.value = info[key];
-            }
-        });
-        
-        // Show the modal
-        $('#livestockDetailsModal').modal('show');
-        
-        // Show success message
-        showNotification(`Livestock ${id} information loaded successfully!`, 'success');
-    } else {
-        showNotification(`No data found for livestock ID: ${id}`, 'error');
+    } catch (e) {
+        // Not JSON, use as is
+        console.log('Using ID as is:', livestockId);
     }
+    
+    // Fetch livestock data from server
+    fetch(`/farmer/scan/${livestockId}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.livestock) {
+            const livestock = data.livestock;
+            console.log('Found livestock data:', livestock);
+            
+            // Update modal title
+            document.getElementById("detailLivestockId").textContent = livestock.tag_number || livestock.id;
+            
+            // Populate basic info form fields
+            populateBasicInfo(livestock);
+            
+            // Show the modal
+            $('#livestockDetailsModal').modal('show');
+            
+            // Show success message
+            showNotification(`Livestock ${livestock.tag_number || livestock.id} information loaded successfully!`, 'success');
+            
+            // Reset status
+            setTimeout(() => {
+                updateStatus('Scanning...', 'scanning');
+            }, 2000);
+        } else {
+            showNotification(`No livestock found with ID: ${livestockId}`, 'error');
+            updateStatus('Scanning...', 'scanning');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching livestock data:', error);
+        showNotification(`Error loading livestock data: ${error.message}`, 'error');
+        updateStatus('Scanning...', 'scanning');
+    });
+}
+
+function populateBasicInfo(livestock) {
+    // Map database fields to form fields
+    const fieldMapping = {
+        'ownedBy': livestock.farm?.owner?.name || livestock.farm?.name || 'N/A',
+        'dispersalFrom': livestock.source || 'N/A',
+        'registryId': livestock.tag_number || livestock.id,
+        'tagId': livestock.tag_number || livestock.id,
+        'livestockName': livestock.name || livestock.tag_number || 'N/A',
+        'dob': livestock.birth_date ? livestock.birth_date.split('T')[0] : '',
+        'sex': livestock.gender || 'N/A',
+        'breed': livestock.breed || 'N/A',
+        'sireId': livestock.sire_id || 'N/A',
+        'damId': livestock.dam_id || 'N/A',
+        'sireName': livestock.sire_name || 'N/A',
+        'damName': livestock.dam_name || 'N/A',
+        'sireBreed': livestock.sire_breed || 'N/A',
+        'damBreed': livestock.dam_breed || 'N/A',
+        'naturalMarks': livestock.physical_characteristics || 'N/A',
+        'propertyNo': livestock.farm?.id || 'N/A',
+        'acquisitionDate': livestock.acquisition_date ? livestock.acquisition_date.split('T')[0] : '',
+        'acquisitionCost': livestock.acquisition_cost || 'N/A',
+        'source': livestock.source || 'N/A',
+        'remarks': livestock.notes || livestock.remarks || 'N/A',
+        'cooperator': livestock.farm?.owner?.name || 'N/A',
+        'releasedDate': livestock.released_date ? livestock.released_date.split('T')[0] : '',
+        'cooperative': livestock.farm?.name || 'N/A',
+        'address': livestock.farm?.address || 'N/A',
+        'contactNo': livestock.farm?.owner?.phone || 'N/A',
+        'inCharge': livestock.farm?.owner?.name || 'N/A'
+    };
+    
+    // Populate form fields
+    Object.keys(fieldMapping).forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.value = fieldMapping[key];
+        }
+    });
 }
 
 function initializeForms() {
@@ -883,20 +939,20 @@ function initializeForms() {
 }
 
 function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="close" data-dismiss="alert">
-            <span>&times;</span>
-        </button>
-    `;
+    const notification = $(`
+        <div class="alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'info' ? 'info-circle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
     
-    document.body.appendChild(notification);
+    $('body').append(notification);
     
     setTimeout(() => {
-        notification.remove();
+        notification.alert('close');
     }, 5000);
 }
 
@@ -904,12 +960,616 @@ function showNotification(message, type) {
 document.getElementById('uploadQR').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
-        // Here you would implement QR code reading from image file
-        // For now, we'll simulate a successful scan
-        const simulatedId = 'LS001'; // You can change this to test different IDs
-        viewLivestockDetails(simulatedId);
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showNotification('Please select an image file', 'error');
+            return;
+        }
+        
+        // Validate file size (max 5MB for faster processing)
+        if (file.size > 5 * 1024 * 1024) {
+            showNotification('File size too large. Please select an image smaller than 5MB', 'error');
+            return;
+        }
+        
+        // Show loading state
+        updateStatus('Processing uploaded image...', 'scanning');
+        document.getElementById('processing-progress').style.display = 'block';
+        
+        // Set a timeout for processing
+        const processingTimeout = setTimeout(() => {
+            document.getElementById('processing-progress').style.display = 'none';
+            updateStatus('Scanning...', 'scanning');
+            showNotification('QR code processing timed out. Please try a clearer image or smaller file.', 'error');
+        }, 8000); // Reduced to 8 seconds
+        
+        // Create a FileReader to read the file
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imageDataUrl = event.target.result;
+            console.log('File loaded successfully, data URL length:', imageDataUrl.length);
+            console.log('Data URL preview:', imageDataUrl.substring(0, 100) + '...');
+            
+            // Try enhanced QR scanning
+            enhancedQRScan(imageDataUrl)
+                .then(decodedText => {
+                    clearTimeout(processingTimeout);
+                    document.getElementById('processing-progress').style.display = 'none';
+                    console.log('QR Code from file:', decodedText);
+                    updateStatus('QR Code detected!', 'success');
+                    viewLivestockDetails(decodedText);
+                })
+                .catch(err => {
+                    clearTimeout(processingTimeout);
+                    document.getElementById('processing-progress').style.display = 'none';
+                    console.error('Error scanning file:', err);
+                    updateStatus('Scanning...', 'scanning');
+                    
+                    // Provide more specific error messages
+                    if (err.message === 'Scan timeout') {
+                        showNotification('QR code processing timed out. Please try a clearer image or use manual input.', 'error');
+                    } else if (err.message && (err.message.includes('No QR code found') || err.message.includes('NotFoundException'))) {
+                        showNotification('No QR code found in the uploaded image. Please try a clearer image or use manual input.', 'error');
+                    } else if (err.message && err.message.includes('Invalid image')) {
+                        showNotification('Invalid image format. Please try a different image.', 'error');
+                    } else if (err.message && err.message.includes('Html5Qrcode.scanFile is not a function')) {
+                        showNotification('QR scanner not properly loaded. Please use manual input or refresh the page.', 'error');
+                    } else if (err.message && err.message.includes('Potential text detected')) {
+                        showNotification('Text detected in image. Please use manual input to enter the livestock ID.', 'info');
+                    } else {
+                        console.log('Full error object:', err);
+                        showNotification('QR code not recognized. Please use manual input (⌨️ button) to enter livestock ID.', 'error');
+                    }
+                });
+        };
+        
+        reader.onerror = function() {
+            clearTimeout(processingTimeout);
+            document.getElementById('processing-progress').style.display = 'none';
+            updateStatus('Scanning...', 'scanning');
+            showNotification('Error reading the uploaded file', 'error');
+        };
+        
+        // Read the file as data URL
+        reader.readAsDataURL(file);
+        
+        // Clear the input so the same file can be uploaded again
+        e.target.value = '';
     }
 });
+
+// Capture QR Code function
+function captureQRCode() {
+    // This would typically capture a photo and scan it
+    // For now, we'll show a message to use the camera scanner
+    showNotification('Please point the camera at a QR code to scan', 'info');
+}
+
+// Debug function to test QR code scanning
+function debugQRScanning() {
+    console.log('QR Scanner Debug Info:');
+    console.log('- Html5Qrcode available:', typeof Html5Qrcode !== 'undefined');
+    console.log('- Scanner initialized:', html5QrCode !== null);
+    console.log('- Is scanning:', isScanning);
+    console.log('- Camera permissions:', navigator.permissions ? 'Available' : 'Not available');
+    
+    // Test with a sample QR code data URL
+    const testQRDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    
+    Html5Qrcode.scanFile(testQRDataUrl, true)
+        .then(result => {
+            console.log('Test QR scan successful:', result);
+        })
+        .catch(err => {
+            console.log('Test QR scan failed (expected):', err);
+        });
+}
+
+// Add debug function to window for console access
+window.debugQRScanning = debugQRScanning;
+
+// Test function to validate QR code scanning
+function testQRCodeScanning() {
+    console.log('Testing QR code scanning functionality...');
+    
+    // Test if Html5Qrcode is available
+    if (typeof Html5Qrcode === 'undefined') {
+        console.error('Html5Qrcode library not loaded');
+        return false;
+    }
+    
+    console.log('Html5Qrcode library is loaded:', Html5Qrcode);
+    console.log('Available methods:', Object.keys(Html5Qrcode));
+    
+    // Test with a simple QR code data URL (this is a minimal 1x1 pixel image)
+    const testImageDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    
+    Html5Qrcode.scanFile(testImageDataUrl, true)
+        .then(result => {
+            console.log('QR scanning test successful:', result);
+        })
+        .catch(err => {
+            console.log('QR scanning test failed (expected for test image):', err);
+            console.log('Error type:', typeof err);
+            console.log('Error message:', err.message || err);
+        });
+    
+    return true;
+}
+
+// Alternative QR scanning method using a different approach
+function alternativeQRScan(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+        console.log('Trying alternative QR scan method...');
+        
+        try {
+            // Create an image element
+            const img = new Image();
+            img.onload = function() {
+                try {
+                    // Create a canvas
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Set canvas size to image size
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Draw image to canvas
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Try to scan the canvas
+                    const canvasDataUrl = canvas.toDataURL('image/png');
+                    console.log('Canvas created, trying to scan...');
+                    
+                    Html5Qrcode.scanFile(canvasDataUrl, true)
+                        .then(result => {
+                            console.log('Alternative scan successful:', result);
+                            resolve(result);
+                        })
+                        .catch(err => {
+                            console.log('Alternative scan failed:', err);
+                            reject(err);
+                        });
+                } catch (canvasErr) {
+                    console.error('Canvas error:', canvasErr);
+                    reject(canvasErr);
+                }
+            };
+            
+            img.onerror = function() {
+                console.error('Image load error');
+                reject(new Error('Failed to load image'));
+            };
+            
+            img.src = imageDataUrl;
+        } catch (err) {
+            console.error('Alternative scan setup error:', err);
+            reject(err);
+        }
+    });
+}
+
+// Add test function to window
+window.testQRCodeScanning = testQRCodeScanning;
+
+// Generate a test QR code for debugging
+function generateTestQRCode() {
+    console.log('Generating test QR code...');
+    
+    // Create a simple test QR code data URL (this is a basic QR code containing "TEST123")
+    const testQRDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    
+    // Try to scan this test QR code
+    Html5Qrcode.scanFile(testQRDataUrl, true)
+        .then(result => {
+            console.log('Test QR scan successful:', result);
+            showNotification('QR scanner is working! Test result: ' + result, 'success');
+        })
+        .catch(err => {
+            console.log('Test QR scan failed:', err);
+            showNotification('QR scanner test failed: ' + (err.message || err), 'error');
+        });
+}
+
+// Add test QR generator to window
+window.generateTestQRCode = generateTestQRCode;
+
+// Manual input functions
+function showManualInput() {
+    $('#manualInputModal').modal('show');
+}
+
+function processManualInput() {
+    const livestockId = document.getElementById('manualLivestockId').value.trim();
+    
+    if (!livestockId) {
+        showNotification('Please enter a livestock ID or tag number', 'error');
+        return;
+    }
+    
+    // Close the manual input modal
+    $('#manualInputModal').modal('hide');
+    
+    // Process the manual input
+    viewLivestockDetails(livestockId);
+}
+
+// Allow Enter key to submit manual input
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('manualLivestockId')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            processManualInput();
+        }
+    });
+});
+
+// Improved QR code scanning function with fallback
+function scanQRCodeFromImage(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+        console.log('Starting QR scan with image data URL length:', imageDataUrl.length);
+        
+        // Check if Html5Qrcode is available
+        if (typeof Html5Qrcode === 'undefined' || typeof Html5Qrcode.scanFile !== 'function') {
+            console.error('Html5Qrcode.scanFile is not available');
+            reject(new Error('QR scanner library not properly loaded'));
+            return;
+        }
+        
+        // Create a timeout promise
+        const timeoutPromise = new Promise((_, timeoutReject) => 
+            setTimeout(() => timeoutReject(new Error('Scan timeout')), 5000) // 5 seconds timeout
+        );
+        
+        // Try primary method first
+        const primaryScan = Html5Qrcode.scanFile(imageDataUrl, true)
+            .then(result => {
+                console.log('Primary QR scan successful:', result);
+                return result;
+            })
+            .catch(err => {
+                console.log('Primary QR scan failed:', err);
+                // Try alternative method
+                return alternativeQRScan(imageDataUrl);
+            });
+        
+        // Race between scanning and timeout
+        Promise.race([primaryScan, timeoutPromise])
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                console.error('All QR scan methods failed:', err);
+                reject(err);
+            });
+    });
+}
+
+// Alternative scanning method using canvas
+function scanWithCanvas(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+        try {
+            const img = new Image();
+            img.onload = function() {
+                try {
+                    // Create canvas
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Set canvas size
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Draw image to canvas
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Convert canvas to data URL
+                    const canvasDataUrl = canvas.toDataURL('image/png');
+                    
+                    // Try scanning the canvas data
+                    Html5Qrcode.scanFile(canvasDataUrl, true)
+                        .then(resolve)
+                        .catch(reject);
+                } catch (canvasErr) {
+                    reject(canvasErr);
+                }
+            };
+            
+            img.onerror = function() {
+                reject(new Error('Failed to load image'));
+            };
+            
+            img.src = imageDataUrl;
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
+// Simple text-based QR code detection (fallback)
+function detectTextInImage(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+        console.log('Trying text-based detection...');
+        
+        // Create an image element to analyze
+        const img = new Image();
+        img.onload = function() {
+            try {
+                // Create canvas for analysis
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw image to canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // Get image data
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                // Simple analysis - look for patterns that might indicate text
+                // This is a very basic approach
+                let hasTextPattern = false;
+                
+                // Check for high contrast areas (potential text)
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    const brightness = (r + g + b) / 3;
+                    
+                    // Look for very dark or very light pixels (potential text)
+                    if (brightness < 50 || brightness > 200) {
+                        hasTextPattern = true;
+                        break;
+                    }
+                }
+                
+                if (hasTextPattern) {
+                    // If we detect potential text patterns, suggest manual input
+                    reject(new Error('Potential text detected in image. Please use manual input to enter the livestock ID.'));
+                } else {
+                    reject(new Error('No recognizable patterns found in image'));
+                }
+            } catch (err) {
+                reject(new Error('Image analysis failed: ' + err.message));
+            }
+        };
+        
+        img.onerror = function() {
+            reject(new Error('Failed to load image for analysis'));
+        };
+        
+        img.src = imageDataUrl;
+    });
+}
+
+// Enhanced QR scanning with multiple fallbacks including jsQR
+function enhancedQRScan(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+        console.log('Starting enhanced QR scan...');
+        
+        // Try different approaches in sequence
+        const approaches = [
+            () => scanWithJsQR(imageDataUrl),  // Try jsQR first (most reliable)
+            () => scanWithJsQREnhanced(imageDataUrl),  // Try enhanced jsQR with preprocessing
+            () => Html5Qrcode.scanFile(imageDataUrl, true),
+            () => Html5Qrcode.scanFile(imageDataUrl, { fps: 2, qrbox: { width: 250, height: 250 } }),
+            () => scanWithCanvas(imageDataUrl),
+            () => detectTextInImage(imageDataUrl)
+        ];
+        
+        let currentApproach = 0;
+        
+        function tryNextApproach() {
+            if (currentApproach >= approaches.length) {
+                reject(new Error('All scanning approaches failed'));
+                return;
+            }
+            
+            console.log(`Trying approach ${currentApproach + 1}...`);
+            
+            approaches[currentApproach]()
+                .then(result => {
+                    console.log(`Approach ${currentApproach + 1} successful:`, result);
+                    resolve(result);
+                })
+                .catch(err => {
+                    console.log(`Approach ${currentApproach + 1} failed:`, err);
+                    currentApproach++;
+                    tryNextApproach();
+                });
+        }
+        
+        tryNextApproach();
+    });
+}
+
+// jsQR-based scanning (most reliable)
+function scanWithJsQR(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+        console.log('Trying jsQR scanning...');
+        
+        // Check if jsQR is available
+        if (typeof jsQR === 'undefined') {
+            reject(new Error('jsQR library not loaded'));
+            return;
+        }
+        
+        const img = new Image();
+        img.onload = function() {
+            try {
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw image to canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // Get image data
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // Scan for QR code
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
+                
+                if (code) {
+                    console.log('jsQR found QR code:', code.data);
+                    resolve(code.data);
+                } else {
+                    // Try with inversion
+                    const codeInverted = jsQR(imageData.data, imageData.width, imageData.height, {
+                        inversionAttempts: "onlyInvert",
+                    });
+                    
+                    if (codeInverted) {
+                        console.log('jsQR found QR code (inverted):', codeInverted.data);
+                        resolve(codeInverted.data);
+                    } else {
+                        // Try with all attempts
+                        const codeAll = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: "attemptBoth",
+                        });
+                        
+                        if (codeAll) {
+                            console.log('jsQR found QR code (all attempts):', codeAll.data);
+                            resolve(codeAll.data);
+                        } else {
+                            reject(new Error('No QR code found by jsQR'));
+                        }
+                    }
+                }
+            } catch (err) {
+                reject(new Error('jsQR scanning error: ' + err.message));
+            }
+        };
+        
+        img.onerror = function() {
+            reject(new Error('Failed to load image for jsQR scanning'));
+        };
+        
+        img.src = imageDataUrl;
+    });
+}
+
+// Image preprocessing for better QR detection
+function preprocessImage(canvas, ctx) {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    // Convert to grayscale and increase contrast
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        
+        // Convert to grayscale
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        
+        // Increase contrast (simple threshold)
+        const enhanced = gray > 128 ? 255 : 0;
+        
+        data[i] = enhanced;     // Red
+        data[i + 1] = enhanced; // Green
+        data[i + 2] = enhanced; // Blue
+        // Alpha stays the same
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
+    return imageData;
+}
+
+// Enhanced jsQR scanning with preprocessing
+function scanWithJsQREnhanced(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+        console.log('Trying enhanced jsQR scanning with preprocessing...');
+        
+        if (typeof jsQR === 'undefined') {
+            reject(new Error('jsQR library not loaded'));
+            return;
+        }
+        
+        const img = new Image();
+        img.onload = function() {
+            try {
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw image to canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // Try original image first
+                let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                let code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth",
+                });
+                
+                if (code) {
+                    console.log('Enhanced jsQR found QR code (original):', code.data);
+                    resolve(code.data);
+                    return;
+                }
+                
+                // Try with preprocessing
+                imageData = preprocessImage(canvas, ctx);
+                code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth",
+                });
+                
+                if (code) {
+                    console.log('Enhanced jsQR found QR code (preprocessed):', code.data);
+                    resolve(code.data);
+                } else {
+                    reject(new Error('No QR code found by enhanced jsQR'));
+                }
+            } catch (err) {
+                reject(new Error('Enhanced jsQR scanning error: ' + err.message));
+            }
+        };
+        
+        img.onerror = function() {
+            reject(new Error('Failed to load image for enhanced jsQR scanning'));
+        };
+        
+        img.src = imageDataUrl;
+    });
+}
+
+// Update test function to test jsQR
+function testJsQRScanning() {
+    console.log('Testing jsQR scanning functionality...');
+    
+    if (typeof jsQR === 'undefined') {
+        console.error('jsQR library not loaded');
+        showNotification('jsQR library not loaded', 'error');
+        return false;
+    }
+    
+    console.log('jsQR library is loaded successfully');
+    showNotification('jsQR library is loaded and ready!', 'success');
+    return true;
+}
+
+// Add enhanced test function to window
+window.testJsQRScanning = testJsQRScanning;
+
+// Show How to Use modal
+function toggleHowToUse() {
+    $('#howToUseModal').modal('show');
+}
 </script>
 @endpush
 

@@ -13,23 +13,66 @@
         <p>Comprehensive analysis and insights for livestock productivity and performance</p>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-number" id="totalLivestock">{{ $totalLivestock ?? 0 }}</div>
-            <div class="stat-label">Total Livestock</div>
+    <!-- Statistics Grid -->
+    <div class="row fade-in">
+        <!-- Total Livestock -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalLivestock">{{ $totalLivestock ?? 0 }}</div>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-cow fa-2x" style="color: #18375d !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" id="activeLivestock">{{ $activeLivestock ?? 0 }}</div>
-            <div class="stat-label">Active Livestock</div>
+
+        <!-- Active Livestock -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Livestock</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeLivestock">{{ $activeLivestock ?? 0 }}</div>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle fa-2x" style="color: #18375d !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" id="avgProductivity">{{ $avgProductivity ?? 0 }}%</div>
-            <div class="stat-label">Avg. Productivity</div>
+
+        <!-- Average Productivity -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Avg. Productivity</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="avgProductivity">{{ $avgProductivity ?? 0 }}%</div>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chart-line fa-2x" style="color: #18375d !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" id="totalProduction">{{ $totalProduction ?? 0 }}</div>
-            <div class="stat-label">Total Production (L)</div>
+
+        <!-- Total Production -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Production (L)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalProduction">{{ $totalProduction ?? 0 }}</div>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-milk fa-2x" style="color: #18375d !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

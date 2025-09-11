@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/suppliers', [App\Http\Controllers\FarmerController::class, 'suppliers'])->name('suppliers');
         Route::get('/schedule', function () { return view('farmer.schedule'); })->name('schedule');
         Route::get('/scan', function () { return view('farmer.scan'); })->name('scan');
+        Route::get('/scan/{id}', [FarmerController::class, 'scanLivestock'])->name('scan.livestock');
         Route::get('/farms', [FarmerController::class, 'farms'])->name('farms');
         Route::post('/farms', [FarmerController::class, 'storeFarm'])->name('farms.store');
         Route::get('/farm-details/{id}', [FarmerController::class, 'farmDetails'])->name('farm-details');

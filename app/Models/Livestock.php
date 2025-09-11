@@ -24,11 +24,25 @@ class Livestock extends Model
         'farm_id',
         'owner_id',
         'status',
+        'owned_by',
+        'dispersal_from',
+        'registry_id',
+        'sire_id',
+        'dam_id',
+        'sire_name',
+        'dam_name',
+        'natural_marks',
+        'property_no',
+        'acquisition_date',
+        'acquisition_cost',
+        'remarks',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
+        'acquisition_date' => 'date',
         'weight' => 'decimal:2',
+        'acquisition_cost' => 'decimal:2',
     ];
 
     /**

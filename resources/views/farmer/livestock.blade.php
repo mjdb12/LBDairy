@@ -13,23 +13,66 @@
         <p>Manage your livestock inventory, health records, and productivity data</p>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-container fade-in">
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--success-color);" id="activeCount">{{ $totalLivestock }}</div>
-            <div class="stat-label">Total Livestock</div>
+    <!-- Statistics Grid -->
+    <div class="row fade-in">
+        <!-- Total Livestock -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeCount">{{ $totalLivestock }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--success-color);" id="healthyCount">{{ $healthyLivestock }}</div>
-            <div class="stat-label">Healthy</div>
+
+        <!-- Healthy Livestock -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Healthy</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="healthyCount">{{ $healthyLivestock }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-heart fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--warning-color);" id="attentionCount">{{ $attentionNeeded }}</div>
-            <div class="stat-label">Needs Attention</div>
+
+        <!-- Needs Attention -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Needs Attention</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="attentionCount">{{ $attentionNeeded }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-exclamation-triangle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: var(--info-color);" id="productionCount">{{ $productionReady }}</div>
-            <div class="stat-label">Production Ready</div>
+
+        <!-- Production Ready -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Production Ready</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="productionCount">{{ $productionReady }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-tint fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

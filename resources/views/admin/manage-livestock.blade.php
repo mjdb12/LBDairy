@@ -615,35 +615,62 @@
                 </div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-3">
-                    <div class="card border-left-primary shadow ">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Livestock</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalLivestock">0</div>
+                <!-- Total Livestock -->
+                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalLivestock">0</div>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-cow fa-2x" style="color: #18375d !important;"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card border-left-primary shadow ">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Active Livestock</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerActiveLivestock">0</div>
+
+                <!-- Active Livestock -->
+                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Livestock</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerActiveLivestock">0</div>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-check-circle fa-2x" style="color: #18375d !important;"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card border-left-primary shadow ">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Inactive Livestock</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerInactiveLivestock">0</div>
+
+                <!-- Inactive Livestock -->
+                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Inactive Livestock</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerInactiveLivestock">0</div>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-times-circle fa-2x" style="color: #18375d !important;"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card border-left-primary shadow ">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Livestock</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalFarms">0</div>
+
+                <!-- Total Farms -->
+                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Farms</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalFarms">0</div>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-university fa-2x" style="color: #18375d !important;"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
