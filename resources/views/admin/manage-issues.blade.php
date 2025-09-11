@@ -14,20 +14,31 @@
     </div>
 
     <!-- Farmer Selection Section -->
-    <div class="card shadow mb-4" id="farmerSelectionCard">
-        <div class="card-header">
-            <h6>
+    
+    <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 Select Farmer
             </h6>
-            <div class="d-flex gap-2">
-                <input type="text" class="form-control" id="farmerSearch" placeholder="Search farmers..." style="max-width: 300px;">
-                <button class="btn btn-info btn-sm" onclick="refreshData()">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
         </div>
         <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="farmerSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="farmersTable">
                     <thead>
@@ -46,6 +57,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
         </div>
     </div>
 
@@ -248,7 +260,105 @@
         border-radius: 12px;
         margin-bottom: 2rem;
     }
+
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
     
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    .btn-action-refresh-admins, .btn-action-refresh-farmers {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
     .farmer-link {
         color: #18375d;
         text-decoration: none;
@@ -289,6 +399,7 @@
     let selectedFarmerName = '';
     let selectedLivestockId = null;
 
+    
     $(document).ready(function() {
         console.log('Document ready, loading farmers...');
         loadFarmers();
@@ -311,6 +422,39 @@
             });
         });
     });
+
+    // Refresh Pending Farmers Table
+function refreshPendingFarmersTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh-farmers');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for farmers
+    sessionStorage.setItem('showRefreshNotificationFarmers', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationFarmers') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationFarmers');
+        setTimeout(() => {
+            showNotification('Issues data refreshed successfully!', 'success');
+        }, 500);
+    }
+
+    if (sessionStorage.getItem('showRefreshNotificationAdmins') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAdmins');
+        setTimeout(() => {
+            showNotification('Issues data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+
 
     function loadFarmers() {
         $('#farmersTableBody').html('<tr><td colspan="7" class="text-center">Loading farmers...</td></tr>');

@@ -36,40 +36,50 @@
     </div>
 
     <!-- Farmers List Card -->
+     <!-- Pending Farmers Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header">
-            <h6>
-                <i class="fas fa-users"></i>
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">
+                <i class="fas fa-list"></i>
                 Farmer Productivity Overview
             </h6>
-            <div class="table-controls">
-                <div class="search-container">
-                    <input type="text" class="form-control custom-search" placeholder="Search farmers...">
+        </div>
+        <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
                 </div>
-                <div class="export-controls">
-                    <div class="btn-group">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            <i class="fas fa-download"></i> Export
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" onclick="exportCSV()">
-                                <i class="fas fa-file-csv"></i> CSV
+                            <a class="dropdown-item" href="#" onclick="exportCSV('pendingFarmersTable')">
+                                <i class="fas fa-file-csv"></i> Download CSV
                             </a>
-                            <a class="dropdown-item" href="#" onclick="exportPNG()">
-                                <i class="fas fa-image"></i> PNG
+                            <a class="dropdown-item" href="#" onclick="exportPNG('pendingFarmersTable')">
+                                <i class="fas fa-image"></i> Download PNG
                             </a>
-                            <a class="dropdown-item" href="#" onclick="exportPDF()">
-                                <i class="fas fa-file-pdf"></i> PDF
+                            <a class="dropdown-item" href="#" onclick="exportPDF('pendingFarmersTable')">
+                                <i class="fas fa-file-pdf"></i> Download PDF
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="printTable()">
-                        <i class="fas fa-print"></i>
-                    </button>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
+            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -127,8 +137,10 @@
                 </table>
             </div>
         </div>
+        </div>
     </div>
-</div>
+
+    
 
 <!-- Productivity Analysis Modal -->
 <div class="modal fade" id="productivityModal" tabindex="-1" aria-labelledby="productivityModalLabel" aria-hidden="true">
@@ -253,127 +265,553 @@
 
 @push('styles')
 <style>
-    /* Stats Cards */
-    .stats-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 1.5rem;
+    /* Farmer Details Modal Styling (ensure header doesn't cover content) */
+    #farmerDetailsModal .modal-content {
+        border: none;
         border-radius: 12px;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-        text-align: center;
-        transition: all 0.3s ease;
-        position: relative;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
         overflow: hidden;
     }
 
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    #farmerDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
     }
 
-    .stat-card h3 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #18375d;
-        margin: 0;
-        position: relative;
-        z-index: 1;
+    #farmerDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
     }
 
-    .stat-card p {
-        color: #5a5c69;
-        margin: 0.5rem 0 0 0;
-        font-weight: 500;
-        position: relative;
-        z-index: 1;
-    }
-
-    .stat-card .stat-icon {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        font-size: 2rem;
-        color: rgba(24, 55, 93, 0.2);
-        z-index: 1;
-    }
-
-    /* Page Header */
-    .page-header {
-        background: #18375d;
-        color: white;
+    #farmerDetailsModal .modal-body {
         padding: 2rem;
-        border-radius: 12px;
-        margin-bottom: 2rem;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    }
-
-    .page-header h1 {
-        margin: 0;
-        font-weight: 700;
-        font-size: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .page-header p {
-        margin: 0.5rem 0 0 0;
-        opacity: 0.9;
-        font-size: 1.1rem;
-    }
-
-    /* Table Controls */
-    .table-controls {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .search-container {
+        background: #ffffff;
         position: relative;
-        min-width: 250px;
+        z-index: 1;
     }
 
-    .search-container input {
-        border-radius: 25px;
-        border: 2px solid transparent;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 0.6rem 1rem 0.6rem 2.5rem;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-        width: 100%;
+    #farmerDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
     }
 
-    .search-container input:focus {
-        border-color: #4e73df;
-        background: white;
-        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-        outline: none;
+    /* Prevent dark blue bars behind headings in farmer details */
+    #farmerDetailsModal .text-primary {
+        background-color: transparent !important;
+        color: #18375d !important;
     }
 
-    .search-container::before {
-        content: '\f002';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
+    #farmerDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+
+    #farmerDetailsModal .modal-footer {
+        background: #ffffff;
+    }
+    /* Custom styles for farmer management */
+    .border-left-primary {
+        border-left: 0.25rem solid #18375d !important;
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.6s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+
+    /* Action buttons styling to match admin management */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-add {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-add:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    
+    .btn-action-refresh {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+    
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .d-flex.flex-column.flex-sm-row {
+            flex-direction: column !important;
+        }
+        
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+    }
+    
+    /* Dashboard-style stat card styling */
+    .dashboard-card {
+        transition: transform 0.2s ease-in-out;
+        background: #fff !important;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Force override any blue styling on stat cards */
+    .card.stat-card,
+    .card.dashboard-card {
+        background: #fff !important;
+        background-color: #fff !important;
+    }
+    
+    .card.stat-card .card-body,
+    .card.dashboard-card .card-body {
+        background: #fff !important;
+        background-color: #fff !important;
+        color: inherit !important;
+    }
+    
+    .stat-card {
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff !important;
+    }
+    
+    .stat-card .card-body {
+        padding: 1.5rem;
+        background: #fff !important;
+    }
+    
+    .stat-card .icon {
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .stat-card:hover .icon {
+        opacity: 1;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #farmersTable th,
+    #farmersTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #farmersTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #farmersTable thead th.sorting,
+    #farmersTable thead th.sorting_asc,
+    #farmersTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #farmersTable thead th::after {
+        content: '';
         position: absolute;
-        left: 1rem;
+        right: 0.5rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #5a5c69;
-        z-index: 1;
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #farmersTable thead th.sorting::after,
+    #farmersTable thead th.sorting_asc::after,
+    #farmersTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+    /* DataTables Pagination Styling - FIXED */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #18375d !important; /* Darker blue color for numbers */
+        border: 1px solid #18375d !important;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+        text-align: left !important;
+        float: left !important;
+        clear: both;
+    }
+    
+    .dataTables_wrapper .dataTables_length {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+    
+    /* Force DataTables wrapper to have proper layout */
+    .dataTables_wrapper .row {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0 !important;
+        width: 100% !important;
+        float: left !important;
+        clear: both !important;
+    }
+    .btn-action-refresh-admins, .btn-action-refresh-farmers {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
     }
 
-    .export-controls {
+    /* Ensure pagination container stays left */
+    .dataTables_wrapper .dataTables_paginate,
+    .dataTables_wrapper .dataTables_info {
+        text-align: left !important;
+        float: left !important;
+        clear: both !important;
+        display: block !important;
+        width: auto !important;
+        margin-right: 1rem !important;
+    }
+    
+    /* Override any Bootstrap or other framework styles that might interfere */
+    .dataTables_wrapper .col-sm-12.col-md-7,
+    .dataTables_wrapper .col-sm-12.col-md-5 {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    /* Additional override to ensure left positioning */
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
+        text-align: left !important;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button {
+        color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    /* Table-responsive wrapper positioning - match active admins spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+    
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+    
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
+    
+    /* Action buttons styling to match active admins table */
+    .action-buttons {
         display: flex;
         gap: 0.5rem;
-        margin-left: auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-delete {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-delete:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Responsive action buttons */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
     }
 
     /* Chart Container */
@@ -486,6 +924,39 @@ $(document).ready(function () {
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
 });
+
+// Refresh Pending Farmers Table
+function refreshPendingFarmersTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh-farmers');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for farmers
+    sessionStorage.setItem('showRefreshNotificationFarmers', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationFarmers') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationFarmers');
+        setTimeout(() => {
+            showNotification('Farmers data refreshed successfully!', 'success');
+        }, 500);
+    }
+
+    if (sessionStorage.getItem('showRefreshNotificationAdmins') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAdmins');
+        setTimeout(() => {
+            showNotification('Admins data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+
 
 function openDetailsModal(farmerId) {
     // Fetch farmer productivity data

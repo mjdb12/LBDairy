@@ -1,6 +1,529 @@
 @extends('layouts.app')
 
 @section('title', 'Livestock Management')
+@push('styles')
+<style>
+    /* Farmer Details Modal Styling (ensure header doesn't cover content) */
+    #farmerDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        overflow: hidden;
+    }
+
+    #farmerDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+    }
+
+    #farmerDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+
+    #farmerDetailsModal .modal-body {
+        padding: 2rem;
+        background: #ffffff;
+        position: relative;
+        z-index: 1;
+    }
+
+    #farmerDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Prevent dark blue bars behind headings in farmer details */
+    #farmerDetailsModal .text-primary {
+        background-color: transparent !important;
+        color: #18375d !important;
+    }
+
+    #farmerDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+
+    #farmerDetailsModal .modal-footer {
+        background: #ffffff;
+    }
+    /* Custom styles for farmer management */
+    .border-left-primary {
+        border-left: 0.25rem solid #18375d !important;
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.6s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+
+    /* Action buttons styling to match admin management */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-add {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-add:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-refresh-admins, .btn-action-refresh-farmers {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .d-flex.flex-column.flex-sm-row {
+            flex-direction: column !important;
+        }
+        
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+    }
+    
+    /* Dashboard-style stat card styling */
+    .dashboard-card {
+        transition: transform 0.2s ease-in-out;
+        background: #fff !important;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Force override any blue styling on stat cards */
+    .card.stat-card,
+    .card.dashboard-card {
+        background: #fff !important;
+        background-color: #fff !important;
+    }
+    
+    .card.stat-card .card-body,
+    .card.dashboard-card .card-body {
+        background: #fff !important;
+        background-color: #fff !important;
+        color: inherit !important;
+    }
+    
+    .stat-card {
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff !important;
+    }
+    
+    .stat-card .card-body {
+        padding: 1.5rem;
+        background: #fff !important;
+    }
+    
+    .stat-card .icon {
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .stat-card:hover .icon {
+        opacity: 1;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #farmersTable th,
+    #farmersTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #farmersTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #farmersTable thead th.sorting,
+    #farmersTable thead th.sorting_asc,
+    #farmersTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #farmersTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #farmersTable thead th.sorting::after,
+    #farmersTable thead th.sorting_asc::after,
+    #farmersTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+    /* DataTables Pagination Styling - FIXED */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #18375d !important; /* Darker blue color for numbers */
+        border: 1px solid #18375d !important;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+        text-align: left !important;
+        float: left !important;
+        clear: both;
+    }
+    
+    .dataTables_wrapper .dataTables_length {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+    
+    /* Force DataTables wrapper to have proper layout */
+    .dataTables_wrapper .row {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0 !important;
+        width: 100% !important;
+        float: left !important;
+        clear: both !important;
+    }
+    
+    /* Ensure pagination container stays left */
+    .dataTables_wrapper .dataTables_paginate,
+    .dataTables_wrapper .dataTables_info {
+        text-align: left !important;
+        float: left !important;
+        clear: both !important;
+        display: block !important;
+        width: auto !important;
+        margin-right: 1rem !important;
+    }
+    
+    /* Override any Bootstrap or other framework styles that might interfere */
+    .dataTables_wrapper .col-sm-12.col-md-7,
+    .dataTables_wrapper .col-sm-12.col-md-5 {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    /* Additional override to ensure left positioning */
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
+        text-align: left !important;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button {
+        color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    /* Table-responsive wrapper positioning - match active admins spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+    
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+    
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
+    
+    /* Action buttons styling to match active admins table */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-view {
+        background-color: #  #4466ca;
+        border-color: #  #4466ca;
+        color: white;
+    }
+
+    .btn-action-delete {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+  
+    .btn-action-delete:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Responsive action buttons */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+</style>
+@endpush
 
 @section('content')
     <div class="page-header fade-in">
@@ -12,21 +535,32 @@
     </div>
 
     <!-- Farmer Selection Section -->
-    <div class="card shadow mb-4" id="farmerSelectionCard">
-        <div class="card-header">
-            <h6>
+     <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 Select Farmer
             </h6>
-            <div class="d-flex gap-2">
-                <input type="text" class="form-control" id="farmerSearch" placeholder="Search farmers..." style="max-width: 300px;">
-                <button class="btn btn-info btn-sm" onclick="refreshData()">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
         </div>
         <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
             <div class="table-responsive">
+                <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="farmersTable">
                     <thead>
                         <tr>
@@ -44,66 +578,76 @@
                     </tbody>
                 </table>
             </div>
+            </div>
+        </div>
         </div>
     </div>
+    
 
     <!-- Livestock Section (Initially Hidden) -->
-    <div class="card shadow mb-4" id="livestockCard" style="display: none;">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h6>
-                        <i class="fas fa-cow"></i>
-                        Livestock for: <span id="selectedFarmerName" class="text-primary font-weight-bold"></span>
-                    </h6>
+    <div class="card shadow mb-4" id="livestockCard" style="display: none;" id="selectedLivestockId">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">
+                <i class="fas fa-list"></i>
+                Active Farmers
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search livestock..." id="activeSearch">
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-secondary btn-sm" onclick="backToFarmers()">
-                        <i class="fas fa-arrow-left"></i> Back to Farmers
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-secondary btn-sm" onclick="backToFarmers()">
+                        <i class="fas fa-arrow-left"></i> Back
                     </button>
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addLivestockModal">
+                    <button class="btn-action btn-action-add btn-sm" data-toggle="modal" data-target="#addLivestockModal">
                         <i class="fas fa-plus"></i> Add Livestock
+                    </button>
+                    <button class="btn-action btn-action-refresh-admins" onclick="refreshAdminsTable('activeFarmersTable')">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
-            <!-- Statistics Cards -->
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <div class="card border-left-success">
+                    <div class="card border-left-primary shadow ">
                         <div class="card-body">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Livestock</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Livestock</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalLivestock">0</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card border-left-info">
+                    <div class="card border-left-primary shadow ">
                         <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Active</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Active Livestock</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerActiveLivestock">0</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card border-left-warning">
+                    <div class="card border-left-primary shadow ">
                         <div class="card-body">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Inactive</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Inactive Livestock</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerInactiveLivestock">0</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card border-left-primary">
+                    <div class="card border-left-primary shadow ">
                         <div class="card-body">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Farms</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Livestock</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalFarms">0</div>
                         </div>
                     </div>
                 </div>
             </div>
-
             <!-- Livestock Table -->
             <div class="table-responsive">
                 <table class="table table-bordered" id="livestockTable">
@@ -353,13 +897,14 @@
 <script>
     let selectedFarmerId = null;
     let selectedFarmerName = '';
+    let selectedLivestockId = null;
 
     $(document).ready(function() {
         console.log('Document ready, loading farmers...');
         loadFarmers();
         
         // Search functionality
-        $('#farmerSearch').on('keyup', function() {
+        $('#activeSearch').on('keyup', function() {
             const searchTerm = $(this).val().toLowerCase();
             $('#farmersTable tbody tr').each(function() {
                 const text = $(this).text().toLowerCase();
@@ -367,6 +912,84 @@
             });
         });
     });
+
+// Refresh Pending Farmers Table
+function refreshPendingFarmersTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh-farmers');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for farmers
+    sessionStorage.setItem('showRefreshNotificationFarmers', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationFarmers') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationFarmers');
+        setTimeout(() => {
+            showNotification('Farmers data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+// Refresh Admins Table
+function refreshAdminsTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh-admins');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Save which tab is active
+    const activeTab = $('.nav-tabs .nav-link.active').attr('id'); 
+    sessionStorage.setItem('activeTab', activeTab);
+
+    // Use unique flag for admins refresh
+    sessionStorage.setItem('showRefreshNotificationAdmins', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Restore tab + check notifications after reload
+$(document).ready(function () {
+    // Restore active tab
+    const activeTab = sessionStorage.getItem('activeTab');
+    if (activeTab) {
+        $(`#${activeTab}`).tab('show'); 
+        sessionStorage.removeItem('activeTab');
+    }
+
+    // Show notification if refresh happened
+    if (sessionStorage.getItem('showRefreshNotificationAdmins') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAdmins');
+        setTimeout(() => {
+            showNotification('Livestock data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+
+
+    let farmersTable;
+
+$(document).ready(function () {
+    // Initialize DataTables
+    initializeDataTables();
+    
+    // Load data
+    loadfarmersTable();
+    updateStats();
+
+    // Custom search functionality
+    $('#pendingSearch').on('keyup', function() {
+        pendingFarmersTable.search(this.value).draw();
+    });
+    
+});
 
     function loadFarmers() {
         $('#farmersTableBody').html('<tr><td colspan="7" class="text-center">Loading farmers...</td></tr>');
@@ -395,7 +1018,7 @@
                                     <td>${farmer.livestock_count || 0}</td>
                                     <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</span></td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                        <button class="btn btn-action-view btn-sm" onclick="selectFarmer('${farmer.id}', '${displayName}')">
                                             <i class="fas fa-cow"></i> View Livestock
                                         </button>
                                     </td>
