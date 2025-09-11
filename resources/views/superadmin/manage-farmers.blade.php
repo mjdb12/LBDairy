@@ -545,7 +545,6 @@
 @endpush
 
 @section('content')
-<div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -715,7 +714,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Add User Modal -->
 <div class="modal fade superadmin-modal" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">

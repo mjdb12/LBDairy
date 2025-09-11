@@ -26,7 +26,7 @@
         :root {
             --primary-color: #4e73df;
             --primary-dark: #3c5aa6;
-            --success-color: #1cc88a;
+            --success-color: #387057;
             --warning-color: #f6c23e;
             --danger-color: #e74a3b;
             --info-color: #36b9cc;
