@@ -454,10 +454,6 @@
         display: none;
     }
     
-
-    
-
-    
     /* DataTables Pagination Styling */
     .dataTables_wrapper .dataTables_paginate {
         text-align: left !important;
