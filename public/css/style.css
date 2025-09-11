@@ -10,37 +10,70 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
- :root {
-    --blue: #18375d;
-    --indigo: #6610f2;
-    --purple: #6f42c1;
-    --pink: #e83e8c;
-    --red: #e74a3b;
-    --orange: #fd7e14;
-    --yellow: #f6c23e;
-    --green: #1cc88a;
-    --teal: #20c9a6;
-    --cyan: #36b9cc;
-    --white: #fff;
-    --gray: #858796;
-    --gray-dark: #5a5c69;
-    --primary: #18375d;
-    --secondary: #858796;
-    --success: #1cc88a;
-    --info: #36b9cc;
-    --warning: #f6c23e;
-    --danger: #e74a3b;
-    --light: #fff;
-    --dark: #5a5c69;
-    --breakpoint-xs: 0;
-    --breakpoint-sm: 576px;
-    --breakpoint-md: 768px;
-    --breakpoint-lg: 992px;
-    --breakpoint-xl: 1200px;
-    --font-family-sans-serif: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
-  
+:root {
+    /* Primary Colors */
+    --primary-color: #18375d;
+    --primary-dark: #3c5aa6;
+    --primary-light: #bac8f3;
+    
+    /* Secondary Colors */
+    --secondary-color: #858796;
+    --secondary-dark: #6b6d7d;
+    --secondary-light: #d1d3e2;
+    
+    /* Success Colors */
+    --success-color: #1cc88a;
+    --success-dark: #17a673;
+    --success-light: #bff0de;
+    
+    /* Warning Colors */
+    --warning-color: #f6c23e;
+    --warning-dark: #f4b30d;
+    --warning-light: #fceec9;
+    
+    /* Danger Colors */
+    --danger-color: #e74a3b;
+    --danger-dark: #e02d1b;
+    --danger-light: #f8ccc8;
+    
+    /* Info Colors */
+    --info-color: #36b9cc;
+    --info-dark: #2c9faf;
+    --info-light: #c7ebf1;
+    
+    /* Neutral Colors */
+    --light-color: #fff;
+    --dark-color: #5a5c69;
+    --gray-color: #858796;
+    --border-color: #e3e6f0;
+    --text-muted: #6b7280;
+    
+    /* Gradients */
+    --gradient-primary: var(--primary-color);
+    --gradient-success: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
+    --gradient-warning: linear-gradient(135deg, var(--warning-color) 0%, var(--warning-dark) 100%);
+    --gradient-danger: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-dark) 100%);
+    --gradient-info: linear-gradient(135deg, var(--info-color) 0%, var(--info-dark) 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    --shadow-xl: 0 1.5rem 4rem rgba(0, 0, 0, 0.2);
+    
+    /* Transitions */
+    --transition: all 0.3s ease;
+    --transition-fast: all 0.15s ease;
+    --transition-slow: all 0.5s ease;
+    
+    /* Border Radius */
+    --border-radius: 0.35rem;
+    --border-radius-sm: 0.2rem;
+    --border-radius-lg: 0.5rem;
+    --border-radius-xl: 1rem;
+    --border-radius-pill: 50rem;
+}
   *,
   *::before,
   *::after {
@@ -4911,12 +4944,12 @@
   
   .badge-success {
     color: #fff;
-    background-color: #1cc88a;
+    background-color: #387057;
   }
   
   a.badge-success:hover, a.badge-success:focus {
     color: #fff;
-    background-color: #169b6b;
+    background-color: #387057;
   }
   
   a.badge-success:focus, a.badge-success.focus {
@@ -5076,9 +5109,9 @@
   }
   
   .alert-success {
-    color: #0f6848;
-    background-color: #d2f4e8;
-    border-color: #bff0de;
+    background: #387057;
+    border-color: #387057;
+    color: white;
   }
   
   .alert-success hr {

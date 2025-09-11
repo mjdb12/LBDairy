@@ -4,33 +4,28 @@
 
 @push('styles')
 <style>
-/* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
-.admin-modal select.form-control,
-.admin-modal-modal select.form-control,
-.admin-modal .modal-body select.form-control {
-    min-width: 250px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    padding: 0.75rem 2rem 0.75rem 0.75rem !important;
-    white-space: nowrap !important;
-    text-overflow: clip !important;
-    overflow: visible !important;
-    font-size: 0.875rem !important;
-    line-height: 1.5 !important;
-}
-
-/* Ensure columns don't constrain dropdowns */
-.admin-modal .col-md-6 {
-    min-width: 280px !important;
-    overflow: visible !important;
-}
-
-/* Custom styles for user management */
-.border-left-success {
-    border-left: 0.25rem solid #1cc88a !important;
-}
-
+    /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
+    .admin-modal select.form-control,
+    .modal.admin-modal select.form-control,
+    .admin-modal .modal-body select.form-control {
+        min-width: 250px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Ensure columns don't constrain dropdowns */
+    .admin-modal .col-md-6 {
+        min-width: 280px !important;
+        overflow: visible !important;
+    }
+    
     /* Custom styles for user management */
     .border-left-success {
         border-left: 0.25rem solid #1cc88a !important;
@@ -322,36 +317,29 @@
         color: white !important;
     }
     
-/* Refresh buttons */
-.btn-action-refresh,
-.btn-action-refresh-admins,
-.btn-action-refresh-farmers {
-    background-color: #fca700;
-    border-color: #fca700;
-    color: white;
-}
+    .btn-action-refresh-admins, .btn-action-refresh-farmers {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
 
-.btn-action-refresh:hover,
-.btn-action-refresh-admin:hover,
-.btn-action-refresh-farmers:hover {
-    background-color: #e69500;
-    border-color: #e69500;
-    color: white;
-}
-
-/* Reject button */
-.btn-action-reject {
-    background-color: #fca700;
-    border-color: #fca700;
-    color: white;
-}
-
-.btn-action-reject:hover {
-    background-color: #e69500;
-    border-color: #e69500;
-    color: white;
-}
-
+    .btn-action-reject {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-reject:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
     
     .btn-action-tools {
         background-color: #f8f9fa;
@@ -415,17 +403,7 @@
         background-color: rgba(0,0,0,.075);
     }
     
-#farmersTable th,
-#farmersTable td,
-#usersTable th,
-#usersTable td {
-    vertical-align: middle;
-    padding: 0.75rem;
-    text-align: center;
-    border: 1px solid #dee2e6;
-    white-space: nowrap;
-    overflow: visible;
-}
+    #farmersTable th,
     #usersTable td {
         vertical-align: middle;
         padding: 0.75rem;
@@ -489,352 +467,181 @@
     }
     
 
-/* Ensure consistent table styling */
-.table {
-    margin-bottom: 0;
-}
-
-.table-bordered {
-    border: 1px solid #dee2e6;
-}
-
-.table-hover tbody tr:hover {
-    background-color: rgba(0,0,0,.075);
-}
-
-#farmersTable th,
-#farmersTable td {
-    vertical-align: middle;
-    padding: 0.75rem;
-    text-align: center;
-    border: 1px solid #dee2e6;
-    white-space: nowrap;
-    overflow: visible;
-}
-
-/* Ensure all table headers have consistent styling */
-#farmersTable thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    font-weight: bold;
-    color: #495057;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 1rem 0.75rem;
-    text-align: left;
-    vertical-align: middle;
-    position: relative;
-    white-space: nowrap;
-}
-
-/* Fix DataTables sorting button overlap */
-#farmersTable thead th.sorting,
-#farmersTable thead th.sorting_asc,
-#farmersTable thead th.sorting_desc {
-    padding-right: 2rem !important;
-}
-
-/* Ensure proper spacing for sort indicators */
-#farmersTable thead th::after {
-    content: '';
-    position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-}
-
-/* Remove default DataTables sort indicators to prevent overlap */
-#farmersTable thead th.sorting::after,
-#farmersTable thead th.sorting_asc::after,
-#farmersTable thead th.sorting_desc::after {
-    display: none;
-}
-
-/* DataTables Pagination Styling - FIXED */
-.dataTables_wrapper .dataTables_paginate {
-    text-align: left !important;
-    margin-top: 1rem;
-    clear: both;
-    width: 100%;
-    float: left !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    display: inline-block;
-    min-width: 2.5rem;
-    padding: 0.5rem 0.75rem;
-    margin: 0 0.125rem;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    color: #18375d !important; /* Darker blue color for numbers */
-    border: 1px solid #18375d !important;
-    border-radius: 0.25rem;
-    background-color: #fff;
-    transition: all 0.15s ease-in-out;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    color: #fff !important;
-    background-color: #18375d !important;
-    border-color: #18375d !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button.current {
-    color: #fff !important;
-    background-color: #18375d !important;
-    border-color: #18375d !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-    color: #6c757d !important;
-    background-color: #fff !important;
-    border-color: #dee2e6 !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.dataTables_wrapper .dataTables_info {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    color: #495057;
-    font-size: 0.875rem;
-    text-align: left !important;
-    float: left !important;
-    clear: both;
-}
-
-.dataTables_wrapper .dataTables_length {
-    margin-bottom: 1rem;
-}
-
-.dataTables_wrapper .dataTables_filter {
-    margin-bottom: 1rem;
-}
-
-/* Force DataTables wrapper to have proper layout */
-.dataTables_wrapper .row {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 !important;
-}
-
-.dataTables_wrapper .row > div {
-    padding: 0 !important;
-    width: 100% !important;
-    float: left !important;
-    clear: both !important;
-}
-
-/* Ensure pagination container stays left */
-.dataTables_wrapper .dataTables_paginate,
-.dataTables_wrapper .dataTables_info {
-    text-align: left !important;
-    float: left !important;
-    clear: both !important;
-    display: block !important;
-    width: auto !important;
-    margin-right: 1rem !important;
-}
-
-/* Override any Bootstrap or other framework styles that might interfere */
-.dataTables_wrapper .col-sm-12.col-md-7,
-.dataTables_wrapper .col-sm-12.col-md-5 {
-    width: 100% !important;
-    padding: 0 !important;
-}
-
-/* Additional override to ensure left positioning */
-.dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
-    text-align: left !important;
-    float: left !important;
-}
-
-.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button {
-    color: #18375d !important;
-    border-color: #18375d !important;
-}
-
-/* Table-responsive wrapper positioning - match active admins spacing */
-.table-responsive {
-    overflow-x: auto;
-    min-width: 100%;
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* Ensure DataTables controls are properly positioned */
-.table-responsive + .dataTables_wrapper,
-.table-responsive .dataTables_wrapper {
-    width: 100%;
-    position: relative;
-}
-
-/* Fix pagination positioning for wide tables - match active admins spacing */
-.table-responsive .dataTables_wrapper .dataTables_paginate {
-    position: relative;
-    width: 100%;
-    text-align: left;
-    margin: 1rem 0;
-    left: 0;
-    right: 0;
-}
-
-/* User ID link styling - superadmin theme */
-.user-id-link {
-    color: #18375d;
-    text-decoration: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    background-color: rgba(24, 55, 93, 0.1);
-    border: 1px solid rgba(24, 55, 93, 0.2);
-}
-
-.user-id-link:hover {
-    color: #fff;
-    background-color: #18375d;
-    border-color: #18375d;
-    text-decoration: none;
-}
-
-.user-id-link:active {
-    color: #fff;
-    background-color: #122a4e;
-    border-color: #122a4e;
-}
-
-/* Action buttons styling to match active admins table */
-.action-buttons {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    min-width: 200px;
-}
-
-.btn-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border: 1px solid transparent;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: all 0.15s ease-in-out;
-    white-space: nowrap;
-}
-
-.btn-action-edit {
-    background-color: #387057;
-    border-color: #387057;
-    color: white;
-}
-
-.btn-action-edit:hover {
-    background-color: #2d5a47;
-    border-color: #2d5a47;
-    color: white;
-}
-
-.btn-action-delete {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    color: white;
-}
-
-.btn-action-delete:hover {
-    background-color: #c82333;
-    border-color: #c82333;
-    color: white;
-}
-
-/* Ensure table has enough space for actions column */
-.table th:last-child,
-.table td:last-child {
-    min-width: 200px;
-    width: auto;
-    text-align: center;
-    vertical-align: middle;
-}
-
-
-    
-    /* DataTables Pagination Styling */
-    .dataTables_wrapper .dataTables_paginate {
-        text-align: left !important;
-        margin-top: 1rem;
-        clear: both;
-        width: 100%;
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
     }
     
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        display: inline-block;
-        min-width: 2.5rem;
-        padding: 0.5rem 0.75rem;
-        margin: 0 0.125rem;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        color: #495057;
+    .table-bordered {
         border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-        background-color: #fff;
-        transition: all 0.15s ease-in-out;
     }
     
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #farmersTable th,
+    #farmersTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #farmersTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #farmersTable thead th.sorting,
+    #farmersTable thead th.sorting_asc,
+    #farmersTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #farmersTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #farmersTable thead th.sorting::after,
+    #farmersTable thead th.sorting_asc::after,
+    #farmersTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+    
+    /* Table-responsive wrapper positioning - match active admins spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
         color: #18375d;
-        background-color: #e9ecef;
-        border-color: #adb5bd;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
     }
     
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    .user-id-link:hover {
         color: #fff;
         background-color: #18375d;
         border-color: #18375d;
+        text-decoration: none;
     }
     
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-        color: #6c757d;
-        background-color: #fff;
-        border-color: #dee2e6;
-        cursor: not-allowed;
-        opacity: 0.5;
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
     }
     
-    .dataTables_wrapper .dataTables_info {
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-        color: #495057;
-        font-size: 0.875rem;
-    }
-    
-    /* Ensure pagination container is properly positioned */
-    .dataTables_wrapper {
-        width: 100%;
-        margin: 0 auto;
-    }
-    
-    .dataTables_wrapper .row {
+    /* Action buttons styling to match active admins table */
+    .action-buttons {
         display: flex;
+        gap: 0.5rem;
         flex-wrap: wrap;
-        margin: 0;
+        justify-content: center;
+        min-width: 200px;
     }
     
-    .dataTables_wrapper .row > div {
-        padding: 0;
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
     }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-delete {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-delete:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+
 
     /* User Details Modal Styling */
     #userDetailsModal .modal-content {
@@ -877,21 +684,6 @@
         color: #5a5c69 !important;
         font-weight: 600;
     }
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-    .action-buttons {
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-    
-    .btn-action {
-        font-size: 0.8rem;
-        padding: 0.25rem 0.5rem;
-    }
-}
-
-/* Custom styles for farmer management */
-
     
     /* Responsive adjustments */
     @media (max-width: 1200px) {
@@ -905,6 +697,8 @@
             padding: 0.25rem 0.5rem;
         }
     }
+    /* Custom styles for farmer management */
+    
     .card-header .btn-group {
         margin-left: 0.5rem;
     }
@@ -1004,111 +798,87 @@
         right: 0;
     }
     
-    /* DataTables Pagination Styling - FIXED */
-    .dataTables_wrapper .dataTables_paginate {
-        text-align: left !important;
-        margin-top: 1rem;
-        clear: both;
-        width: 100%;
-        float: left !important;
-    }
-    
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        display: inline-block;
-        min-width: 2.5rem;
-        padding: 0.5rem 0.75rem;
-        margin: 0 0.125rem;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        color: #18375d !important; /* Admin theme color for numbers */
-        border: 1px solid #18375d !important;
-        border-radius: 0.25rem;
-        background-color: #fff;
-        transition: all 0.15s ease-in-out;
-    }
-    
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        color: #fff !important;
-        background-color: #18375d !important;
-        border-color: #18375d !important;
-    }
-    
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        color: #fff !important;
-        background-color: #18375d !important;
-        border-color: #18375d !important;
-    }
-    
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-        color: #6c757d !important;
-        background-color: #fff !important;
-        border-color: #dee2e6 !important;
-        cursor: not-allowed;
-        opacity: 0.5;
-    }
-    
-    .dataTables_wrapper .dataTables_info {
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-        color: #495057;
-        font-size: 0.875rem;
-        text-align: left !important;
-        float: left !important;
-        clear: both;
-    }
-    
-    .dataTables_wrapper .dataTables_length {
-        margin-bottom: 1rem;
-    }
-    
-    .dataTables_wrapper .dataTables_filter {
-        margin-bottom: 1rem;
-    }
-    
-    /* Force DataTables wrapper to have proper layout */
-    .dataTables_wrapper .row {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-    }
-    
-    .dataTables_wrapper .row > div {
-        padding: 0 !important;
-        width: 100% !important;
-        float: left !important;
-        clear: both !important;
-    }
-    
-    /* Ensure pagination container stays left */
-    .dataTables_wrapper .dataTables_paginate,
-    .dataTables_wrapper .dataTables_info {
-        text-align: left !important;
-        float: left !important;
-        clear: both !important;
-        display: block !important;
-        width: auto !important;
-        margin-right: 1rem !important;
-    }
-    
-    /* Override any Bootstrap or other framework styles that might interfere */
-    .dataTables_wrapper .col-sm-12.col-md-7,
-    .dataTables_wrapper .col-sm-12.col-md-5 {
-        width: 100% !important;
-        padding: 0 !important;
-    }
-    
-    /* Additional override to ensure left positioning */
-    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
-        text-align: left !important;
-        float: left !important;
-    }
-    
-    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button {
-        color: #18375d !important;
-        border-color: #18375d !important;
-    }
-    
+    /* ===== DATATABLE STYLES ===== */
+.dataTables_length {
+    margin-bottom: 1rem;
+}
+
+.dataTables_length select {
+    min-width: 80px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    margin: 0 0.5rem;
+}
+
+.dataTables_length label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_info {
+    padding-top: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_paginate {
+    margin-top: 1rem;
+}
+
+.dataTables_paginate .paginate_button {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: var(--light-color);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.dataTables_paginate .paginate_button.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    background-color: var(--light-color);
+    border-color: var(--border-color);
+}
+
+.dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_filter input {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    transition: var(--transition-fast);
+}
+
+.dataTables_filter input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    outline: 0;
+}
     
 </style>
 @endpush
@@ -1195,17 +965,13 @@
                             <i class="fas fa-search"></i>
                         </span>
                     </div>
-<input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
-</div>
-<div class="d-flex flex-column flex-sm-row align-items-center">
-    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')" title="Print">
-        <i class="fas fa-print"></i> Print
-    </button>
-    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')" title="Refresh">
-        <i class="fas fa-sync-alt"></i> Refresh
-    </button>
-</div>
-
+                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
@@ -1226,7 +992,7 @@
                     </div>
                 </div>
             </div>
-<div class="card-body">
+            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="pendingFarmersTable" width="100%" cellspacing="0">
                     <thead class="thead-light">

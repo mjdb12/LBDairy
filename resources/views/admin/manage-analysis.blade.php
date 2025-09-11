@@ -52,7 +52,7 @@
                             <i class="fas fa-search"></i>
                         </span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
+                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="custom-search">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
                     <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
@@ -915,10 +915,10 @@ $(document).ready(function () {
         }
     });
 
-    // Custom search functionality
-    $('.custom-search').on('keyup', function() {
-        dataTable.search(this.value).draw();
-    });
+   $('#custom-search').on('keyup', function() {
+    dataTable.search(this.value).draw();
+});
+
 
     // Hide default DataTables elements
     $('.dataTables_filter').hide();

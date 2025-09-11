@@ -74,54 +74,66 @@
 </div>
 
 <!-- Audit Logs Table Card -->
-<div class="card shadow mb-4 fade-in">
-    <div class="card-header">
-        <h6>
-            <i class="fas fa-clipboard-list"></i>
+ <div class="card shadow mb-4 fade-in">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">
+                <i class="fas fa-clipboard-list"></i>
             System Activity Logs
-        </h6>
-        <div class="table-controls">
-            <div class="search-container">
-                <input type="text" class="form-control custom-search" placeholder="Search logs...">
-            </div>
-            <div class="export-controls">
-                <div class="btn-group">
-                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                        <i class="fas fa-download"></i> Export
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search logs..." id="auditSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-print" onclick="printTable()">
+                        <i class="fas fa-print"></i> Print
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" onclick="exportCSV()">
-                            <i class="fas fa-file-csv"></i> CSV
-                        </a>
-                        <a class="dropdown-item" href="#" onclick="exportPDF()">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </a>
-                        <a class="dropdown-item" href="#" onclick="exportPNG()">
-                            <i class="fas fa-image"></i> PNG
-                        </a>
+                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshAuditData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-secondary btn-sm" onclick="printTable()">
-                    <i class="fas fa-print"></i>
-                </button>
             </div>
-        </div>
-    </div>
-    
-    <!-- Filter Controls -->
-    <div class="filter-controls">
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+    <div class="filter-row">
+        <!-- Role Filter -->
         <div class="filter-group">
             <label for="roleFilter">Role</label>
-            <select id="roleFilter">
+            <select id="roleFilter" class="filter-input">
                 <option value="">All Roles</option>
                 <option value="admin">Admin</option>
                 <option value="farmer">Farmer</option>
                 <option value="superadmin">Super Admin</option>
             </select>
         </div>
+
+        <!-- Action Filter -->
         <div class="filter-group">
             <label for="actionFilter">Action</label>
-            <select id="actionFilter">
+            <select id="actionFilter" class="filter-input">
                 <option value="">All Actions</option>
                 <option value="login">Login</option>
                 <option value="update">Update</option>
@@ -130,30 +142,32 @@
                 <option value="export">Export</option>
             </select>
         </div>
+
+        <!-- Date Range -->
         <div class="filter-group">
-            <label for="dateFrom">From Date</label>
-            <input type="date" id="dateFrom">
+            <label for="dateFrom">From</label>
+            <input type="date" id="dateFrom" class="filter-input">
         </div>
         <div class="filter-group">
-            <label for="dateTo">To Date</label>
-            <input type="date" id="dateTo">
+            <label for="dateTo">To</label>
+            <input type="date" id="dateTo" class="filter-input">
         </div>
-        <div class="filter-group">
-            <label>&nbsp;</label>
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="btn-filter" onclick="applyFilters()">
-                    <i class="fas fa-filter"></i> Apply
-                </button>
-                <button class="btn-clear" onclick="clearFilters()">
-                    <i class="fas fa-times"></i> Clear
-                </button>
-            </div>
+
+        <!-- Buttons -->
+        <div class="filter-actions">
+            <button class="btn btn-filter" onclick="applyFilters()">
+                <i class="fas fa-filter"></i> Apply
+            </button>
+            <button class="btn btn-clear" onclick="clearFilters()">
+                <i class="fas fa-times"></i> Clear
+            </button>
         </div>
     </div>
+</div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="auditLogsTable" width="100%" cellspacing="0">
+            <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="auditLogsTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>Log ID</th>
@@ -200,7 +214,11 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
+        </div>
+    </div>
+
         
         <!-- Pagination -->
         @if($auditLogs->hasPages())
@@ -278,72 +296,70 @@
         gap: 0.5rem;
     }
 
-    /* Filter Controls */
     .filter-controls {
+    background: #ffffffff;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    }
+
+    .filter-row {
         display: flex;
-        align-items: end;
-        gap: 1rem;
-        padding: 1.5rem;
-        background: #f8f9fc;
-        border-bottom: 1px solid var(--border-color);
         flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-end;
     }
 
     .filter-group {
         display: flex;
         flex-direction: column;
-        min-width: 150px;
+        flex: 1 1 180px;
     }
 
     .filter-group label {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--dark-color);
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .filter-group select,
-    .filter-group input {
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        padding: 0.5rem;
         font-size: 0.9rem;
-        background: white;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: #333;
     }
 
-    .btn-filter,
-    .btn-clear {
-        padding: 0.5rem 1rem;
-        border: none;
+    .filter-input {
+        padding: 0.5rem;
         border-radius: 6px;
-        font-size: 0.85rem;
-        font-weight: 500;
+        border: 1px solid #ccc;
+        font-size: 0.9rem;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .btn {
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.2s;
     }
 
     .btn-filter {
-        background: var(--primary-color);
+        background: #387057; /* success green */
         color: white;
-    }
-
-    .btn-filter:hover {
-        background: var(--primary-dark);
-        transform: translateY(-1px);
     }
 
     .btn-clear {
-        background: #6c757d;
+        background: #f44336; /* red */
         color: white;
     }
-
-    .btn-clear:hover {
-        background: #5a6268;
-        transform: translateY(-1px);
-    }
-
+    
     /* Role and Action Badges */
     .role-badge,
     .action-badge {
@@ -451,11 +467,994 @@
             align-items: stretch;
         }
     }
+    /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
+    .admin-modal select.form-control,
+    .modal.admin-modal select.form-control,
+    .admin-modal .modal-body select.form-control {
+        min-width: 250px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Ensure columns don't constrain dropdowns */
+    .admin-modal .col-md-6 {
+        min-width: 280px !important;
+        overflow: visible !important;
+    }
+    
+    /* Custom styles for user management */
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+    
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .badge-pill {
+        border-radius: 50rem;
+        padding-left: 0.75em;
+        padding-right: 0.75em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Ensure all role badges have identical pill shape */
+    .badge-danger.badge-pill,
+    .badge-primary.badge-pill,
+    .badge-success.badge-pill,
+    .badge-secondary.badge-pill {
+        border-radius: 50rem !important;
+        padding: 0.5em 1em !important;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: baseline;
+    }
+    
+    /* Force pill shape override for any conflicting styles */
+    .badge.badge-pill {
+        border-radius: 50rem !important;
+        padding: 0.5em 1em !important;
+    }
+    
+    /* Make admin badge (primary) look identical to superadmin pill shape */
+    .badge-primary {
+        border-radius: 50rem !important;
+        padding: 0.5em 1em !important;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: baseline;
+    }
+
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    .badge-sm {
+        font-size: 0.6em;
+        padding: 0.2em 0.4em;
+    }
+    
+    .badge-success .fas.fa-circle {
+        animation: pulse 2s infinite;
+    }
+    
+    /* Override badge colors for status column to ensure proper colors */
+    #usersTable .badge-danger {
+        background-color: #dc3545 !important;
+        color: white !important;
+    }
+    
+    #usersTable .badge-warning {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+    }
+    
+    #usersTable .badge-success {
+        background-color: #387057 !important;
+        color: white !important;
+    }
+    
+    /* Fix admin role badge text color */
+    #usersTable .badge-warning {
+        background-color: #fca700 !important;
+        color: white !important;
+    }
+    
+    /* Ensure superadmin stays dark blue */
+    #usersTable .badge-primary {
+        background-color: #18375d !important;
+        color: white !important;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-delete {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-delete:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+    
+    /* Header action buttons styling to match Edit/Delete buttons */
+    .btn-action-add {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-add:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    
+    .btn-action-refresh-alerts, .btn-action-refresh-farmers {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-alerts:hover, .btn-action-refresh-farmers:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+
+    .btn-action-reject {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-reject:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+    
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
+    
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #usersTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #farmersTable th,
+    #usersTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure Registration Date column has enough space */
+    #usersTable th:nth-child(6),
+    #usersTable td:nth-child(6) {
+        min-width: 220px !important;
+        width: 220px !important;
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: initial;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #usersTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #usersTable thead th.sorting,
+    #usersTable thead th.sorting_asc,
+    #usersTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #usersTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #usersTable thead th.sorting::after,
+    #usersTable thead th.sorting_asc::after,
+    #usersTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #farmersTable th,
+    #farmersTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #farmersTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #farmersTable thead th.sorting,
+    #farmersTable thead th.sorting_asc,
+    #farmersTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #farmersTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #farmersTable thead th.sorting::after,
+    #farmersTable thead th.sorting_asc::after,
+    #farmersTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+    
+    /* Table-responsive wrapper positioning - match active admins spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+    
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+    
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
+    
+    /* Action buttons styling to match active admins table */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #2d5a47;
+        border-color: #2d5a47;
+        color: white;
+    }
+    
+    .btn-action-delete {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-delete:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+
+    /* User Details Modal Styling */
+    #userDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #userDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #userDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #userDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #userDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #userDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #userDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+    /* Custom styles for farmer management */
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    /* Status badges */
+    .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-approved {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-active {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    /* Table-responsive wrapper positioning */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* ===== DATATABLE STYLES ===== */
+.dataTables_length {
+    margin-bottom: 1rem;
+}
+
+.dataTables_length select {
+    min-width: 80px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    margin: 0 0.5rem;
+}
+
+.dataTables_length label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_info {
+    padding-top: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_paginate {
+    margin-top: 1rem;
+}
+
+.dataTables_paginate .paginate_button {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: var(--light-color);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.dataTables_paginate .paginate_button.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    background-color: var(--light-color);
+    border-color: var(--border-color);
+}
+
+.dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_filter input {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    transition: var(--transition-fast);
+}
+
+.dataTables_filter input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    outline: 0;
+}
+
 </style>
 @endpush
 
 @push('scripts')
 <script>
+let auditLogsTable; // global reference
+
+$(document).ready(function () {
+    // ✅ Initialize DataTable
+    initializeAuditLogsTable();
+
+    // ✅ Load your data (replace with your own function if needed)
+    loadAuditLogs();
+
+    // ✅ Custom search functionality
+    $('#auditSearch').on('keyup', function () {
+        if (auditLogsTable) {
+            auditLogsTable.search(this.value).draw();
+        }
+    });
+});
+
+function initializeAuditLogsTable() {
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        processing: true,
+        serverSide: false,
+        language: {
+            search: "",
+            emptyTable: `
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h5>No data available</h5>
+                    <p>No audit logs found at this time.</p>
+                </div>`,
+            processing: '<i class="fas fa-spinner fa-spin"></i> Loading...'
+        }
+    };
+
+    auditLogsTable = $('#auditLogsTable').DataTable({
+        ...commonConfig,
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                title: 'Audit_Logs',
+                className: 'export-csv d-none'   // ✅ added unique class
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Audit_Logs',
+                orientation: 'landscape',
+                pageSize: 'Letter',
+                className: 'export-pdf d-none'   // ✅ added unique class
+            },
+            {
+                extend: 'print',
+                title: 'Audit Logs',
+                className: 'export-print d-none' // ✅ added unique class
+            }
+        ]
+    });
+
+    // Hide DataTables default filter + buttons
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
+}
+
+function refreshAuditData() {
+    const refreshBtn = $('button[onclick="refreshAuditData()"]');
+    const originalIcon = refreshBtn.html();
+
+    // Show spinner
+    refreshBtn.html('<i class="fas fa-spinner fa-spin"></i> Refreshing...');
+    refreshBtn.prop('disabled', true);
+
+    // After reload, reset button & show notification
+    setTimeout(() => {
+        refreshBtn.html(originalIcon);
+        refreshBtn.prop('disabled', false);
+        showNotification('Audit logs data refreshed successfully!', 'success');
+    }, 800);
+}
+
+function exportCSV() {
+    auditLogsTable.button('.export-csv').trigger();
+}
+
+function exportPDF() {
+    auditLogsTable.button('.export-pdf').trigger();
+}
+
+function exportPNG() {
+    const tableElement = document.getElementById('auditLogsTable');
+    html2canvas(tableElement).then(canvas => {
+        let link = document.createElement('a');
+        link.download = 'Audit_Logs.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+}
+
+function printTable() {
+    auditLogsTable.button('.export-print').trigger();
+}
+
+
 function applyFilters() {
     const roleFilter = document.getElementById('roleFilter').value;
     const actionFilter = document.getElementById('actionFilter').value;
@@ -474,20 +1473,5 @@ function clearFilters() {
     document.getElementById('dateTo').value = '';
 }
 
-function exportCSV() {
-    alert('CSV export functionality would be implemented here');
-}
-
-function exportPDF() {
-    alert('PDF export functionality would be implemented here');
-}
-
-function exportPNG() {
-    alert('PNG export functionality would be implemented here');
-}
-
-function printTable() {
-    window.print();
-}
 </script>
 @endpush
