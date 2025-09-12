@@ -25,7 +25,83 @@
         min-width: 280px !important;
         overflow: visible !important;
     }
+
+    /* Apply consistent styling for Farmers, Livestock, and Issues tables */
+#farmersTable th,
+#farmersTable td,
+#inspectionsTable th,
+#inspectionsTable td,
+#issuesTable th,
+#issuesTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#farmersTable thead th,
+#inspectionsTable thead th,
+#issuesTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#farmersTable thead th.sorting,
+#farmersTable thead th.sorting_asc,
+#farmersTable thead th.sorting_desc,
+#inspectionsTable thead th.sorting,
+#inspectionsTable thead th.sorting_asc,
+#inspectionsTable thead th.sorting_desc,
+#issuesTable thead th.sorting,
+#issuesTable thead th.sorting_asc,
+#issuesTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#farmersTable thead th::after,
+#inspectionsTable thead th::after,
+#issuesTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#farmersTable thead th.sorting::after,
+#farmersTable thead th.sorting_asc::after,
+#farmersTable thead th.sorting_desc::after,
+#inspectionsTable thead th.sorting::after,
+#inspectionsTable thead th.sorting_asc::after,
+#inspectionsTable thead th.sorting_desc::after,
+#issuesTable thead th.sorting::after,
+#issuesTable thead th.sorting_asc::after,
+#issuesTable thead th.sorting_desc::after {
+    display: none;
+}
+
     
+
     /* Custom styles for user management */
     .border-left-success {
         border-left: 0.25rem solid #1cc88a !important;
@@ -273,10 +349,21 @@
         border-color: #387057;
         color: white;
     }
+
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -300,8 +387,8 @@
     }
     
     .btn-action-add:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -403,15 +490,6 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #usersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
     
     /* Ensure Registration Date column has enough space */
     #usersTable th:nth-child(6),
@@ -479,60 +557,6 @@
     .table-hover tbody tr:hover {
         background-color: rgba(0,0,0,.075);
     }
-    
-    #farmersTable th,
-    #farmersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #farmersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #farmersTable thead th.sorting,
-    #farmersTable thead th.sorting_asc,
-    #farmersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #farmersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmersTable thead th.sorting::after,
-    #farmersTable thead th.sorting_asc::after,
-    #farmersTable thead th.sorting_desc::after {
-        display: none;
-    }
-    
     
     /* Table-responsive wrapper positioning - match active admins spacing */
     .table-responsive {
@@ -798,6 +822,59 @@
         right: 0;
     }
     
+    **************
+    /* User Details Modal Styling */
+    #scheduleInspectionModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #scheduleInspectionModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #scheduleInspectionModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #scheduleInspectionModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #scheduleInspectionModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #scheduleInspectionModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #scheduleInspectionModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+
+    /* Style all labels inside form Modal */
+    #scheduleInspectionModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+
     /* ===== DATATABLE STYLES ===== */
 .dataTables_length {
     margin-bottom: 1rem;
@@ -991,7 +1068,6 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="farmersTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
@@ -1010,7 +1086,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
         </div>
     </div>
     
@@ -1058,7 +1133,6 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="inspectionsTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
@@ -1079,7 +1153,6 @@
                 </table>
             </div>
         </div>
-        </div>
     </div>
 
 <!-- Schedule Inspection Modal -->
@@ -1088,7 +1161,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="scheduleInspectionModalLabel">
-                    <i class="fas fa-calendar-check"></i>
+                    <i class="fas fa-calendar-check mr-2"></i>
                     Schedule Farm Inspection
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1101,7 +1174,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="inspectionFarmer">Select Farmer</label>
+                                <label for="inspectionFarmer">Select Farmer <span class="text-danger">*</span></label>
                                 <select class="form-control" id="inspectionFarmer" required>
                                     <option value="">Select Farmer</option>
                                     <!-- Farmers will be loaded here -->
@@ -1110,7 +1183,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="inspectionDate">Inspection Date</label>
+                                <label for="inspectionDate">Inspection Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="inspectionDate" required min="{{ date('Y-m-d') }}">
                             </div>
                         </div>
@@ -1118,13 +1191,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="inspectionTime">Inspection Time</label>
+                                <label for="inspectionTime">Inspection Time <span class="text-danger">*</span></label>
                                 <input type="time" class="form-control" id="inspectionTime" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="inspectionPriority">Priority Level</label>
+                                <label for="inspectionPriority">Priority Level <span class="text-danger">*</span></label>
                                 <select class="form-control" id="inspectionPriority" required>
                                     <option value="">Select Priority</option>
                                     <option value="low">Low</option>
@@ -1136,13 +1209,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inspectionNotes">Inspection Notes</label>
+                        <label for="inspectionNotes">Inspection Notes <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="inspectionNotes" rows="3" placeholder="Enter any specific notes or instructions for the inspection..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-ok">
                         <i class="fas fa-calendar-check"></i> Schedule Inspection
                     </button>
                 </div>
@@ -1404,11 +1477,11 @@ function loadFarmersTable() {
                         farmer.barangay || 'N/A',
                         `<span class="badge badge-success">Active</span>`,
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-approve" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
+                            <button class="btn-action btn-action-add" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
                                 <i class="fas fa-calendar-check"></i>
                                 <span>Schedule</span>
                             </button>
-                            <button class="btn-action btn-action-view" onclick="viewFarmerDetails('${farmer.id}')" title="View Details">
+                            <button class="btn-action btn-action-ok" onclick="viewFarmerDetails('${farmer.id}')" title="View Details">
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </button>
@@ -1489,7 +1562,7 @@ function openScheduleModal() {
 
 function viewFarmerDetails(farmerId) {
     $.ajax({
-        url: `{{ route("admin.farmers.show", ":id") }}`.replace(':id', farmerId),
+        url: `{{ url('admin/farmers') }}/${farmerId}`,
         method: 'GET',
         success: function(response) {
             if (response.success) {
@@ -1511,7 +1584,7 @@ function viewFarmerDetails(farmerId) {
                             <table class="table table-borderless">
                                 <tr><td><strong>Farm Name:</strong></td><td>${farmer.farm_name || 'N/A'}</td></tr>
                                 <tr><td><strong>Barangay:</strong></td><td>${farmer.barangay || 'N/A'}</td></tr>
-                                <tr><td><strong>Status:</strong></td><td><span class="badge badge-success">Active</span></td></tr>
+                                <tr><td><strong>Status:</strong></td><td><span class="badge badge-${farmer.status === 'active' ? 'success' : 'warning'}">${farmer.status}</span></td></tr>
                             </table>
                         </div>
                     </div>

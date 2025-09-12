@@ -18,6 +18,7 @@
         overflow: visible !important;
         font-size: 0.875rem !important;
         line-height: 1.5 !important;
+        height: auto;
     }
     
     /* Ensure columns don't constrain dropdowns */

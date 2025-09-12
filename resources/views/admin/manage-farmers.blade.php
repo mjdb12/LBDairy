@@ -25,24 +25,7 @@
         min-width: 280px !important;
         overflow: visible !important;
     }
-    
-    /* Custom styles for user management */
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
-    
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
-    
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
-    
-    .border-left-danger {
-        border-left: 0.25rem solid #e74a3b !important;
-    }
-    
+
     /* Search and button group alignment */
     .search-controls {
         display: flex;
@@ -211,33 +194,6 @@
         animation: pulse 2s infinite;
     }
     
-    /* Override badge colors for status column to ensure proper colors */
-    #usersTable .badge-danger {
-        background-color: #dc3545 !important;
-        color: white !important;
-    }
-    
-    #usersTable .badge-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
-    }
-    
-    #usersTable .badge-success {
-        background-color: #387057 !important;
-        color: white !important;
-    }
-    
-    /* Fix admin role badge text color */
-    #usersTable .badge-warning {
-        background-color: #fca700 !important;
-        color: white !important;
-    }
-    
-    /* Ensure superadmin stays dark blue */
-    #usersTable .badge-primary {
-        background-color: #18375d !important;
-        color: white !important;
-    }
     
     @keyframes pulse {
         0% { opacity: 1; }
@@ -275,33 +231,31 @@
     }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
-    .btn-action-delete {
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-deletes {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
     }
     
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
-    
-    /* Header action buttons styling to match Edit/Delete buttons */
-    .btn-action-add {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-add:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -316,6 +270,12 @@
         border-color: #5a6268 !important;
         color: white !important;
     }
+
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
     
     .btn-action-refresh-admins, .btn-action-refresh-farmers {
         background-color: #fca700;
@@ -329,17 +289,6 @@
         color: white;
     }
 
-    .btn-action-reject {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-reject:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
     
     .btn-action-tools {
         background-color: #f8f9fa;
@@ -403,69 +352,137 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #usersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
+    
+    /* Apply consistent styling for Pending Farmers and Active Farmers tables */
+#pendingFarmersTable th,
+#pendingFarmersTable td,
+#activeFarmersTable th,
+#activeFarmersTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#pendingFarmersTable thead th,
+#activeFarmersTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#pendingFarmersTable thead th.sorting,
+#pendingFarmersTable thead th.sorting_asc,
+#pendingFarmersTable thead th.sorting_desc,
+#activeFarmersTable thead th.sorting,
+#activeFarmersTable thead th.sorting_asc,
+#activeFarmersTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#pendingFarmersTable thead th::after,
+#activeFarmersTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#pendingFarmersTable thead th.sorting::after,
+#pendingFarmersTable thead th.sorting_asc::after,
+#pendingFarmersTable thead th.sorting_desc::after,
+#activeFarmersTable thead th.sorting::after,
+#activeFarmersTable thead th.sorting_asc::after,
+#activeFarmersTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* Allow table to scroll horizontally if too wide */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Make table cells wrap instead of forcing them all inline */
+#issuesTable td, 
+#issuesTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#issuesTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#issuesTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
+    /* User Details Modal Styling */
+    #detailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
     }
     
-    /* Ensure Registration Date column has enough space */
-    #usersTable th:nth-child(6),
-    #usersTable td:nth-child(6) {
-        min-width: 220px !important;
-        width: 220px !important;
-        white-space: nowrap;
-        overflow: visible;
-        text-overflow: initial;
+    #detailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
     }
     
-    /* Ensure all table headers have consistent styling */
-    #usersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
+    #detailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
     }
     
-    /* Fix DataTables sorting button overlap */
-    #usersTable thead th.sorting,
-    #usersTable thead th.sorting_asc,
-    #usersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
+    #detailsModal .modal-body {
+        padding: 2rem;
+        background: white;
     }
     
-    /* Ensure proper spacing for sort indicators */
-    #usersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
+    #detailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
     }
     
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #usersTable thead th.sorting::after,
-    #usersTable thead th.sorting_asc::after,
-    #usersTable thead th.sorting_desc::after {
-        display: none;
+    #detailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
     }
     
+    #detailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
 
     /* Ensure consistent table styling */
     .table {
@@ -479,60 +496,6 @@
     .table-hover tbody tr:hover {
         background-color: rgba(0,0,0,.075);
     }
-    
-    #farmersTable th,
-    #farmersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #farmersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #farmersTable thead th.sorting,
-    #farmersTable thead th.sorting_asc,
-    #farmersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #farmersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmersTable thead th.sorting::after,
-    #farmersTable thead th.sorting_asc::after,
-    #farmersTable thead th.sorting_desc::after {
-        display: none;
-    }
-    
     
     /* Table-responsive wrapper positioning - match active admins spacing */
     .table-responsive {
@@ -586,52 +549,6 @@
         border-color: #122a4e;
     }
     
-    /* Action buttons styling to match active admins table */
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        min-width: 200px;
-    }
-    
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: 1px solid transparent;
-        border-radius: 0.375rem;
-        cursor: pointer;
-        transition: all 0.15s ease-in-out;
-        white-space: nowrap;
-    }
-    
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
-        color: white;
-    }
-    
-    .btn-action-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
     
     /* Ensure table has enough space for actions column */
     .table th:last-child,
@@ -640,49 +557,6 @@
         width: auto;
         text-align: center;
         vertical-align: middle;
-    }
-
-
-    /* User Details Modal Styling */
-    #userDetailsModal .modal-content {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-    }
-    
-    #userDetailsModal .modal-header {
-        background: #18375d !important;
-        color: white !important;
-        border-bottom: none !important;
-        border-radius: 12px 12px 0 0 !important;
-    }
-    
-    #userDetailsModal .modal-title {
-        color: white !important;
-        font-weight: 600;
-    }
-    
-    #userDetailsModal .modal-body {
-        padding: 2rem;
-        background: white;
-    }
-    
-    #userDetailsModal .modal-body h6 {
-        color: #18375d !important;
-        font-weight: 600 !important;
-        border-bottom: 2px solid #e3e6f0;
-        padding-bottom: 0.5rem;
-        margin-bottom: 1rem !important;
-    }
-    
-    #userDetailsModal .modal-body p {
-        margin-bottom: 0.75rem;
-        color: #333 !important;
-    }
-    
-    #userDetailsModal .modal-body strong {
-        color: #5a5c69 !important;
-        font-weight: 600;
     }
     
     /* Responsive adjustments */
@@ -798,6 +672,20 @@
         right: 0;
     }
     
+        /* Style all labels inside form Modal */
+    #rejectionModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+    #contactModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
     /* ===== DATATABLE STYLES ===== */
 .dataTables_length {
     margin-bottom: 1rem;
@@ -992,7 +880,6 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="pendingFarmersTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
@@ -1013,7 +900,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
         </div>
     </div>
 
@@ -1061,7 +947,6 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="activeFarmersTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
@@ -1082,7 +967,6 @@
                 </table>
             </div>
         </div>
-        </div>
     </div>
 
 
@@ -1094,7 +978,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="detailsModalLabel">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-user mr-2"></i>
                     Farmer Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1105,8 +989,8 @@
                 <div id="farmerDetails"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="openContactModal()">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-action-ok" onclick="openContactModal()">
                     <i class="fas fa-envelope"></i> Contact Farmer
                 </button>
                 
@@ -1121,7 +1005,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="contactModalLabel">
-                    <i class="fas fa-paper-plane"></i>
+                    <i class="fas fa-paper-plane mr-2"></i>
                     Send Message to Farmer
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1133,18 +1017,18 @@
                 <div class="modal-body">
                     <input type="hidden" id="farmerNameHidden">
                     <div class="form-group">
-                        <label for="messageSubject">Subject</label>
-                        <input type="text" class="form-control" id="messageSubject" required>
+                        <label for="messageSubject">Subject <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="messageSubject" required placeholder="Enter a clear subject (e.g., Farm Visit Schedule, Account Update)">
                     </div>
                     <div class="form-group">
-                        <label for="messageBody">Message</label>
-                        <textarea class="form-control" id="messageBody" rows="4" required></textarea>
+                        <label for="messageBody">Message <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="messageBody" rows="4" required placeholder="Write your message to the farmer here... (e.g., details about schedule, updates, or reminders)"></textarea>
                     </div>
                     <div id="messageNotification" class="mt-2" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="button" class="btn-action btn-action-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-ok">
                         <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </div>
@@ -1159,7 +1043,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectionModalLabel">
-                    <i class="fas fa-times-circle"></i>
+                    <i class="fas fa-times-circle mr-2"></i>
                     Reject Farmer Registration
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1171,13 +1055,13 @@
                 <div class="modal-body">
                     <input type="hidden" id="farmerIdHidden">
                     <div class="form-group">
-                        <label for="rejectionReason">Reason for Rejection</label>
+                        <label for="rejectionReason">Reason for Rejection <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="rejectionReason" rows="4" required placeholder="Please provide a reason for rejecting this farmer registration..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-deletes">
                         <i class="fas fa-times"></i> Reject Registration
                     </button>
                 </div>
@@ -1185,6 +1069,35 @@
         </div>
     </div>
 </div>
+<!-- Reject User Modal -->
+<div class="modal fade" id="rejectionModal" tabindex="-1" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectionModalLabel">Reject Farmer Registration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject this user registration?</p>
+                <div class="mb-3">
+                    <label for="rejectionReason" class="form-label">Rejection Reason <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="rejectionReason" name="rejection_reason" rows="3" required placeholder="Please provide a reason for rejection..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+                <form id="rejectForm" method="POST" style="display: inline;">
+                    @csrf
+                    <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
+                    <button type="submit" class="btn-action btn-action-deletes">
+                        <i class="fas fa-times me-2"></i>Reject Farmer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Approve Farmer Modal -->
 <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
@@ -1192,7 +1105,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-check-circle mr-2"></i>
                     Approve Farmer Registration
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
@@ -1206,8 +1119,8 @@
                     <p>Are you sure you want to <strong>approve</strong> this farmer’s registration?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-edit">
                         <i class="fas fa-check"></i> Approve Registration
                     </button>
                 </div>
@@ -1560,11 +1473,11 @@ function loadPendingFarmers() {
                         farmer.username || 'N/A',
                         farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-approve" onclick="approveFarmer('${farmer.id}')" title="Approve">
+                            <button class="btn-action btn-action-ok" onclick="approveFarmer('${farmer.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
                                 <span>Approve</span>
                             </button>
-                            <button class="btn-action btn-action-reject" onclick="showRejectionModal('${farmer.id}')" title="Reject">
+                            <button class="btn-action btn-action-deletes" onclick="showRejectionModal('${farmer.id}')" title="Reject">
                                 <i class="fas fa-times"></i>
                                 <span>Reject</span>
                             </button>

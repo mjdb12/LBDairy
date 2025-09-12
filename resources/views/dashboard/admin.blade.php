@@ -1,5 +1,255 @@
 @extends('layouts.app')
+@push('styles')
+<style>
+.dashboard-card {
+    transition: transform 0.2s ease-in-out;
+}
 
+.dashboard-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.stat-card .card-body {
+    padding: 1.5rem;
+}
+
+.stat-card .icon {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card:hover .icon {
+    opacity: 1;
+}
+
+/* User Details Modal Styling */
+    #taskModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #taskModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #taskModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #taskModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #taskModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #taskModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #taskModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #taskModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+/* Apply consistent buttons */
+/* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+
+     .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+     .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-edit-profile {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+        .btn-action-edit-profile:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+        .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-view-livestock, .btn-action-report-livestock {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-view-livestock:hover, .btn-action-report-livestock:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+
+    /* Header action buttons styling to match Edit/Delete buttons */
+    .btn-action-add {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
+    
+    .btn-action-refresh-, .btn-action-refresh- {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-:hover, .btn-action-refresh-:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.font-size-4 {
+    font-size: 0.6em;
+}
+</style>
+@endpush
 @section('content')
 <!-- Page Header -->
 <div class="page-header fade-in">
@@ -83,7 +333,7 @@
                     <i class="fas fa-tasks"></i>
                     Task Board
                 </h6>
-                <button class="btn btn-sm btn-primary" id="addTaskBtn">
+                <button class="btn-action btn-sm btn-action-edit" id="addTaskBtn">
                     <i class="fas fa-plus"></i> New Task
                 </button>
             </div>
@@ -162,7 +412,7 @@
 
 <!-- Task Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <form class="modal-content" id="taskForm">
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalTitle">New Task</h5>
@@ -173,16 +423,16 @@
             <div class="modal-body">
                 <input type="hidden" id="taskId">
                 <div class="form-group">
-                    <label for="taskTitle">Title</label>
+                    <label for="taskTitle">Title <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="taskTitle" required maxlength="255">
                 </div>
                 <div class="form-group">
-                    <label for="taskDescription">Description</label>
+                    <label for="taskDescription">Description <span class="text-danger">*</span></label>
                     <textarea class="form-control" id="taskDescription" rows="3"></textarea>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="taskPriority">Priority</label>
+                        <label for="taskPriority">Priority <span class="text-danger">*</span></label>
                         <select class="form-control" id="taskPriority">
                             <option value="low">Low</option>
                             <option value="medium" selected>Medium</option>
@@ -190,74 +440,19 @@
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="taskDueDate">Due Date</label>
+                        <label for="taskDueDate">Due Date <span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="taskDueDate">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-user text-white font-semibold" id="taskSubmitBtn">Add Task</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn-action btn-action-edit" id="taskSubmitBtn">Add Task</button>
             </div>
         </form>
     </div>
 </div>
 @endsection
-
-@push('styles')
-<style>
-.dashboard-card {
-    transition: transform 0.2s ease-in-out;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-2px);
-}
-
-.stat-card {
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.stat-card .card-body {
-    padding: 1.5rem;
-}
-
-.stat-card .icon {
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-}
-
-.stat-card:hover .icon {
-    opacity: 1;
-}
-
-
-
-.table-responsive {
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.badge {
-    font-size: 0.75rem;
-    padding: 0.375rem 0.75rem;
-}
-
-.fade-in {
-    animation: fadeIn 0.6s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.font-size-4 {
-    font-size: 0.6em;
-}
-</style>
-@endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -306,11 +501,11 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <div class="mt-2 mt-md-0 d-flex align-items-center">
                 <span class="badge badge-${priorityBadge(task.priority)} mr-2"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
-                <button class="btn-action btn-action-edit btn-action-sm edit-task" title="Edit Task">
+                <button class="btn-action btn-action-edit" title="Edit Task">
                     <i class="fas fa-edit"></i>
                     <span>Edit</span>
                 </button>
-                <button class="btn-action btn-action-delete btn-action-sm delete-task" title="Delete Task">
+                <button class="btn-action btn-action-deletes" title="Delete Task">
                     <i class="fas fa-trash"></i>
                     <span>Delete</span>
                 </button>

@@ -1,158 +1,152 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">User Registration Details</h1>
+<div class="page-header fade-in d-flex justify-content-between align-items-center">
+    <div>
+        <h1>
+            <i class="fas fa-user-check"></i>
+            User Registration Details
+        </h1>
+    </div>
+    <div>
         <a href="{{ route('admin.approvals') }}" class="btn-action btn-secondary btn-sm">
             <i class="fas fa-arrow-left"></i> Back
         </a>
     </div>
+</div>
 
-    <!-- User Information Card -->
-    <div class="row">
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-user me-2"></i>
-                        Registration Information
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Full Name</label>
-                                <p class="form-control-plaintext">{{ $user->first_name }} {{ $user->last_name }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Username</label>
-                                <p class="form-control-plaintext">{{ $user->username }}</p>
-                            </div>
-                        </div>
-                    </div>
+  <!-- User Information Card -->
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4 userinfo-card">
+      <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 fw-bold text-white">
+          <i class="fas fa-user me-2"></i>
+          Registration Information
+        </h6>
+      </div>
+      <div class="card-body" id="userinfoCardBody">
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Email Address</label>
-                                <p class="form-control-plaintext">{{ $user->email }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Contact Number</label>
-                                <p class="form-control-plaintext">{{ $user->phone ?? 'Not provided' }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Role</label>
-                                <p class="form-control-plaintext">
-                                    <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
-                                        <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>
-                                        {{ ucfirst($user->role) }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Barangay</label>
-                                <p class="form-control-plaintext">{{ $user->barangay }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if($user->role === 'admin')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Admin Code</label>
-                                    <p class="form-control-plaintext">{{ $user->admin_code }}</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Position</label>
-                                    <p class="form-control-plaintext">{{ $user->position }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if($user->role === 'farmer')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Farmer Code</label>
-                                    <p class="form-control-plaintext">{{ $user->farmer_code }}</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Farm Name</label>
-                                    <p class="form-control-plaintext">{{ $user->farm_name }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Farm Address</label>
-                                    <p class="form-control-plaintext">{{ $user->farm_address }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Registration Date</label>
-                                <p class="form-control-plaintext">{{ $user->created_at->format('F d, Y \a\t g:i A') }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Status</label>
-                                <p class="form-control-plaintext">
-                                    <span class="badge bg-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
-                                        <i class="fas fa-{{ $user->status === 'pending' ? 'clock' : ($user->status === 'approved' ? 'check' : 'times') }} me-1"></i>
-                                        {{ ucfirst($user->status) }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if($user->terms_accepted)
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Terms Accepted</label>
-                                    <p class="form-control-plaintext text-success">
-                                        <i class="fas fa-check-circle me-2"></i>
-                                        User has accepted the terms and conditions
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
+        <!-- Section: Basic Info -->
+        <h6><i class="fas fa-user me-2"></i> Basic Information</h6>
+        <div class="row">
+          <div class="col-md-6 mb-3 form-group">
+            <label>Full Name</label>
+            <p class="form-control-plaintext">{{ $user->first_name }} {{ $user->last_name }}</p>
+          </div>
+          <div class="col-md-6 mb-3 form-group">
+            <label>Username</label>
+            <p class="form-control-plaintext">{{ $user->username }}</p>
+          </div>
         </div>
+
+        <!-- Section: Contact -->
+        <h6><i class="fas fa-envelope me-2"></i> Contact Information</h6>
+        <div class="row">
+          <div class="col-md-6 mb-3 form-group">
+            <label>Email Address</label>
+            <p class="form-control-plaintext">{{ $user->email }}</p>
+          </div>
+          <div class="col-md-6 mb-3 form-group">
+            <label>Contact Number</label>
+            <p class="form-control-plaintext">{{ $user->phone ?? 'Not provided' }}</p>
+          </div>
+        </div>
+
+        <!-- Section: Role -->
+        <h6><i class="fas fa-id-badge me-2"></i> Role Details</h6>
+        <div class="row">
+          <div class="col-md-6 mb-3 form-group">
+            <label>Role</label>
+            <p class="form-control-plaintext">
+              <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
+                <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>
+                {{ ucfirst($user->role) }}
+              </span>
+            </p>
+          </div>
+          <div class="col-md-6 mb-3 form-group">
+            <label>Barangay</label>
+            <p class="form-control-plaintext">{{ $user->barangay }}</p>
+          </div>
+        </div>
+
+        @if($user->role === 'admin')
+        <h6><i class="fas fa-user-shield me-2"></i> Admin Details</h6>
+        <div class="row">
+          <div class="col-md-6 mb-3 form-group">
+            <label>Admin Code</label>
+            <p class="form-control-plaintext">{{ $user->admin_code }}</p>
+          </div>
+          <div class="col-md-6 mb-3 form-group">
+            <label>Position</label>
+            <p class="form-control-plaintext">{{ $user->position }}</p>
+          </div>
+        </div>
+        @endif
+
+        @if($user->role === 'farmer')
+        <h6><i class="fas fa-seedling me-2"></i> Farmer Details</h6>
+        <div class="row">
+          <div class="col-md-6 mb-3 form-group">
+            <label>Farmer Code</label>
+            <p class="form-control-plaintext">{{ $user->farmer_code }}</p>
+          </div>
+          <div class="col-md-6 mb-3 form-group">
+            <label>Farm Name</label>
+            <p class="form-control-plaintext">{{ $user->farm_name }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-3 form-group">
+            <label>Farm Address</label>
+            <p class="form-control-plaintext">{{ $user->farm_address }}</p>
+          </div>
+        </div>
+        @endif
+
+        <!-- Section: Registration -->
+        <h6><i class="fas fa-calendar-alt me-2"></i> Registration</h6>
+        <div class="row">
+          <div class="col-md-6 mb-3 form-group">
+            <label>Registration Date</label>
+            <p class="form-control-plaintext">{{ $user->created_at->format('F d, Y \a\t g:i A') }}</p>
+          </div>
+          <div class="col-md-6 mb-3 form-group">
+            <label>Status</label>
+            <p class="form-control-plaintext">
+              <span class="badge bg-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
+                <i class="fas fa-{{ $user->status === 'pending' ? 'clock' : ($user->status === 'approved' ? 'check' : 'times') }} me-1"></i>
+                {{ ucfirst($user->status) }}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        @if($user->terms_accepted)
+        <h6><i class="fas fa-file-contract me-2"></i> Terms</h6>
+        <div class="row">
+          <div class="col-12 mb-3 form-group">
+            <label>Terms Accepted</label>
+            <p class="form-control-plaintext text-success">
+              <i class="fas fa-check-circle me-2"></i>
+              User has accepted the terms and conditions
+            </p>
+          </div>
+        </div>
+        @endif
+
+      </div>
+    </div>
+  </div>
+
+
 
         <!-- Action Card -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-cogs me-2"></i>
                         Actions
                     </h6>
@@ -160,11 +154,11 @@
                 <div class="card-body">
                     @if($user->status === 'pending')
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-success btn-lg" onclick="approveUser({{ $user->id }})">
+                            <button type="button" class="btn-action btn-success btn-lg" onclick="approveUser({{ $user->id }})">
                                 <i class="fas fa-check me-2"></i>
                                 Approve Registration
                             </button>
-                            <button type="button" class="btn btn-danger btn-lg" onclick="rejectUser({{ $user->id }})">
+                            <button type="button" class="btn-action btn-danger btn-lg" onclick="rejectUser({{ $user->id }})">
                                 <i class="fas fa-times me-2"></i>
                                 Reject Registration
                             </button>
@@ -186,7 +180,7 @@
                     <hr>
 
                     <div class="text-center">
-                        <a href="mailto:{{ $user->email }}" class="btn btn-outline-primary btn-sm">
+                        <a href="mailto:{{ $user->email }}" class="btn-action btn-action-send">
                             <i class="fas fa-envelope me-2"></i>
                             Send Email
                         </a>
@@ -197,7 +191,7 @@
             <!-- Quick Stats -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold ">
                         <i class="fas fa-chart-bar me-2"></i>
                         Quick Stats
                     </h6>
@@ -206,7 +200,7 @@
                     <div class="row text-center">
                         <div class="col-6">
                             <div class="border-end">
-                                <div class="h4 mb-0 text-primary">{{ $user->created_at->diffForHumans() }}</div>
+                                <div class="h4 mb-0 ">{{ $user->created_at->diffForHumans() }}</div>
                                 <div class="small text-muted">Registered</div>
                             </div>
                         </div>
@@ -219,12 +213,13 @@
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 
 <!-- Approve User Modal -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">Approve User Registration</h5>
@@ -235,10 +230,10 @@
                 <p class="text-muted">The user will be able to access the system immediately after approval.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-cancel" data-dismiss="modal">Cancel</button>
                 <form method="POST" action="{{ route('admin.approvals.approve', $user->id) }}" style="display: inline;">
                     @csrf
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn-action btn-action-edit">
                         <i class="fas fa-check me-2"></i>Approve User
                     </button>
                 </form>
@@ -249,7 +244,7 @@
 
 <!-- Reject User Modal -->
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">Reject User Registration</h5>
@@ -263,11 +258,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-cancel" data-dismiss="modal">Cancel</button>
                 <form method="POST" action="{{ route('admin.approvals.reject', $user->id) }}" style="display: inline;">
                     @csrf
                     <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="btn-action btn-action-deletes">
                         <i class="fas fa-times me-2"></i>Reject User
                     </button>
                 </form>
@@ -320,6 +315,100 @@
         min-width: 280px !important;
         overflow: visible !important;
     }
+
+    #approveModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#approveModal .modal-header {
+    background: #18375d !important; /* vivid green for approve */
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#approveModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#approveModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#approveModal .modal-body h6 {
+    color: #18375d !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #e3e6f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem !important;
+}
+
+#approveModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #333 !important;
+}
+
+#approveModal .modal-body strong {
+    color: #5a5c69 !important;
+    font-weight: 600;
+}
+
+#approveModal .form-group label {
+    font-weight: 600;
+    color: #39a400;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+#rejectModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#rejectModal .modal-header {
+    background: #18375d !important; /* red for reject */
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#rejectModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#rejectModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#rejectModal .modal-body h6 {
+    color: #18375d !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #e3e6f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem !important;
+}
+
+#rejectModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #18375d !important;
+}
+#rejectModal .modal-body strong {
+    color: #18375d !important;
+    font-weight: 600;
+}
+
+#rejectModal .form-group label {
+    font-weight: 600;
+    color: #18375d;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
     
     /* Custom styles for user management */
     .border-left-success {
@@ -505,6 +594,58 @@
     .badge-success .fas.fa-circle {
         animation: pulse 2s infinite;
     }
+
+  /* User Info Card Styling */
+.userinfo-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.userinfo-card .card-header {
+  background: #18375d !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.userinfo-card .card-header h6 {
+  color: white !important;
+  font-weight: 600;
+}
+
+#userinfoCardBody {
+  padding: 2rem;
+  background: #fff;
+}
+
+#userinfoCardBody h6 {
+  color: #18375d !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #e3e6f0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem !important;
+}
+
+#userinfoCardBody p {
+  margin-bottom: 0.75rem;
+  color: #333 !important;
+}
+
+#userinfoCardBody strong {
+  color: #5a5c69 !important;
+  font-weight: 600;
+}
+
+/* Style all labels inside the card */
+#userinfoCardBody .form-group label {
+  font-weight: 600;
+  color: #18375d;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+
     
     /* Override badge colors for status column to ensure proper colors */
     #usersTable .badge-danger {
@@ -540,7 +681,8 @@
         100% { opacity: 1; }
     }
     
-    /* Action buttons styling */
+   /* Apply consistent buttons */
+/* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -570,33 +712,61 @@
     }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
+        color: #ffffffff;
+    }
+
+    .btn-action-send {
+        background-color: #ffffffff;
+        border-color: #ffffffff;
+        color: #18375d;
+    }
+    
+    .btn-action-send:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
-    .btn-action-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
+    .btn-action-view-livestock, .btn-action-report-livestock {
+        background-color: #18375d;
+        border-color: #18375d;
         color: white;
     }
     
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
+    .btn-action-view-livestock:hover, .btn-action-report-livestock:hover {
+        background-color: #e69500;
+        border-color: #e69500;
         color: white;
     }
-    
+
     /* Header action buttons styling to match Edit/Delete buttons */
     .btn-action-add {
         background-color: #387057;
         border-color: #387057;
         color: white;
     }
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
     
-    .btn-action-add:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -612,30 +782,24 @@
         color: white !important;
     }
     
-    .btn-action-refresh-pending, .btn-action-refresh-farmers {
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
+    
+    .btn-action-refresh-, .btn-action-refresh- {
         background-color: #fca700;
         border-color: #fca700;
         color: white;
     }
     
-    .btn-action-refresh-pending:hover, .btn-action-refresh-farmers:hover {
+    .btn-action-refresh-:hover, .btn-action-refresh-:hover {
         background-color: #e69500;
         border-color: #e69500;
         color: white;
     }
 
-    .btn-action-reject {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-reject:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
-    
     .btn-action-tools {
         background-color: #f8f9fa;
         border-color: #dee2e6;
@@ -698,69 +862,6 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #usersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure Registration Date column has enough space */
-    #usersTable th:nth-child(6),
-    #usersTable td:nth-child(6) {
-        min-width: 220px !important;
-        width: 220px !important;
-        white-space: nowrap;
-        overflow: visible;
-        text-overflow: initial;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #usersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #usersTable thead th.sorting,
-    #usersTable thead th.sorting_asc,
-    #usersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #usersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #usersTable thead th.sorting::after,
-    #usersTable thead th.sorting_asc::after,
-    #usersTable thead th.sorting_desc::after {
-        display: none;
-    }
-    
 
     /* Ensure consistent table styling */
     .table {
@@ -773,59 +874,6 @@
     
     .table-hover tbody tr:hover {
         background-color: rgba(0,0,0,.075);
-    }
-    
-    #farmersTable th,
-    #farmersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #farmersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #farmersTable thead th.sorting,
-    #farmersTable thead th.sorting_asc,
-    #farmersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #farmersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmersTable thead th.sorting::after,
-    #farmersTable thead th.sorting_asc::after,
-    #farmersTable thead th.sorting_desc::after {
-        display: none;
     }
     
     
@@ -855,32 +903,6 @@
         right: 0;
     }
     
-    /* User ID link styling - superadmin theme */
-    .user-id-link {
-        color: #18375d;
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-        transition: color 0.2s ease;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        background-color: rgba(24, 55, 93, 0.1);
-        border: 1px solid rgba(24, 55, 93, 0.2);
-    }
-    
-    .user-id-link:hover {
-        color: #fff;
-        background-color: #18375d;
-        border-color: #18375d;
-        text-decoration: none;
-    }
-    
-    .user-id-link:active {
-        color: #fff;
-        background-color: #122a4e;
-        border-color: #122a4e;
-    }
-    
     /* Action buttons styling to match active admins table */
     .action-buttons {
         display: flex;
@@ -904,18 +926,6 @@
         white-space: nowrap;
     }
     
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
-        color: white;
-    }
-    
     .btn-action-delete {
         background-color: #dc3545;
         border-color: #dc3545;
@@ -935,49 +945,6 @@
         width: auto;
         text-align: center;
         vertical-align: middle;
-    }
-
-
-    /* User Details Modal Styling */
-    #userDetailsModal .modal-content {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-    }
-    
-    #userDetailsModal .modal-header {
-        background: #18375d !important;
-        color: white !important;
-        border-bottom: none !important;
-        border-radius: 12px 12px 0 0 !important;
-    }
-    
-    #userDetailsModal .modal-title {
-        color: white !important;
-        font-weight: 600;
-    }
-    
-    #userDetailsModal .modal-body {
-        padding: 2rem;
-        background: white;
-    }
-    
-    #userDetailsModal .modal-body h6 {
-        color: #18375d !important;
-        font-weight: 600 !important;
-        border-bottom: 2px solid #e3e6f0;
-        padding-bottom: 0.5rem;
-        margin-bottom: 1rem !important;
-    }
-    
-    #userDetailsModal .modal-body p {
-        margin-bottom: 0.75rem;
-        color: #333 !important;
-    }
-    
-    #userDetailsModal .modal-body strong {
-        color: #5a5c69 !important;
-        font-weight: 600;
     }
     
     /* Responsive adjustments */

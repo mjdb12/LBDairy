@@ -3,6 +3,28 @@
 @section('title', 'Livestock Management')
 @push('styles')
 <style>
+    /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
+    .admin-modal select.form-control,
+    .modal.admin-modal select.form-control,
+    .admin-modal .modal-body select.form-control {
+        min-width: 250px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Ensure columns don't constrain dropdowns */
+    .admin-modal .col-md-6 {
+        min-width: 280px !important;
+        overflow: visible !important;
+    }
+
     /* Farmer Details Modal Styling (ensure header doesn't cover content) */
     #farmerDetailsModal .modal-content {
         border: none;
@@ -238,58 +260,86 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #farmersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #farmersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #farmersTable thead th.sorting,
-    #farmersTable thead th.sorting_asc,
-    #farmersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #farmersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmersTable thead th.sorting::after,
-    #farmersTable thead th.sorting_asc::after,
-    #farmersTable thead th.sorting_desc::after {
-        display: none;
-    }
+    /* Apply consistent styling for tables */
+#livestockTable th,
+#livestockTable td,
+#farmersTable th,
+#farmersTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#livestockTable thead th,
+#farmersTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#livestockTable thead th.sorting,
+#livestockTable thead th.sorting_asc,
+#livestockTable thead th.sorting_desc,
+#farmersTable thead th.sorting,
+#farmersTable thead th.sorting_asc,
+#farmersTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#livestockTable thead th::after,
+#farmersTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#livestockTable thead th.sorting::after,
+#livestockTable thead th.sorting_asc::after,
+#livestockTable thead th.sorting_desc::after,
+#farmersTable thead th.sorting::after,
+#farmersTable thead th.sorting_asc::after,
+#farmersTable thead th.sorting_desc::after {
+    display: none;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+    /* Make sure action buttons don’t overflow */
+#livestockTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#livestockTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
     
     /* DataTables Pagination Styling - FIXED */
     .dataTables_wrapper .dataTables_paginate {
@@ -448,7 +498,8 @@
         border-color: #122a4e;
     }
     
-    /* Action buttons styling to match active admins table */
+    /* Apply consistent buttons */
+/* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -463,17 +514,29 @@
         gap: 0.25rem;
         padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
-        font-weight: 500;
+        border-radius: 0.25rem;
+        text-decoration: none;
         border: 1px solid transparent;
-        border-radius: 0.375rem;
         cursor: pointer;
         transition: all 0.15s ease-in-out;
         white-space: nowrap;
     }
     
-    .btn-action-edit {
+    .btn-action-add-live {
         background-color: #387057;
         border-color: #387057;
+        color: white;
+    }
+
+    .btn-action-add-live:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -483,24 +546,280 @@
         color: white;
     }
     
-    .btn-action-view {
-        background-color: #  #4466ca;
-        border-color: #  #4466ca;
+    .btn-action-view-livestock, .btn-action-report-livestock {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-view-livestock:hover, .btn-action-report-livestock:hover {
+        background-color: #e69500;
+        border-color: #e69500;
         color: white;
     }
 
-    .btn-action-delete {
+    /* Header action buttons styling to match Edit/Delete buttons */
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-view-live {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+
+    .btn-action-view-live:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-qr {
+        background-color: #4466ca;
+        border-color: #4466ca;
+        color: white;
+    }
+
+    .btn-action-qr:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-issue {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-issue:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-deletes {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
     }
-  
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
+    
+    .btn-action-refresh-, .btn-action-refresh- {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-:hover, .btn-action-refresh-:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    /* Add Livestock Modal Styling */
+#addLivestockModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#addLivestockModal .modal-header {
+    background: #18375d !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#addLivestockModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#addLivestockModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#addLivestockModal .modal-body h6 {
+    color: #18375d !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #e3e6f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem !important;
+}
+
+#addLivestockModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #333 !important;
+}
+
+#addLivestockModal .modal-body strong {
+    color: #5a5c69 !important;
+    font-weight: 600;
+}
+
+/* Style all labels inside Add Livestock form */
+#addLivestockModal .form-group label {
+    font-weight: 600;
+    color: #18375d;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+/* User Details Modal Styling */
+    #livestockDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #livestockDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #livestockDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #livestockDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #livestockDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #livestockDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #livestockDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    /* Style all labels inside form Modal */
+    #livestockDetailsModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    /* User Details Modal Styling */
+    #issueAlertModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #issueAlertModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #issueAlertModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #issueAlertModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #issueAlertModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #issueAlertModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #issueAlertModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    /* Style all labels inside form Modal */
+    #issueAlertModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+
     /* Ensure table has enough space for actions column */
     .table th:last-child,
     .table td:last-child {
@@ -550,7 +869,7 @@
                             <i class="fas fa-search"></i>
                         </span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
+                    <input type="text" class="form-control" placeholder="Search farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
                     <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
@@ -558,8 +877,6 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body">
-            <div class="table-responsive">
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="farmersTable">
                     <thead>
@@ -578,8 +895,6 @@
                     </tbody>
                 </table>
             </div>
-            </div>
-        </div>
         </div>
     </div>
     
@@ -589,7 +904,7 @@
         <div class="card-header bg-primary text-white">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
-                Active Farmers
+                List of Livestock
             </h6>
         </div>
         <div class="card-body">
@@ -606,7 +921,7 @@
                     <button class="btn-action btn-secondary btn-sm" onclick="backToFarmers()">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
-                    <button class="btn-action btn-action-add btn-sm" data-toggle="modal" data-target="#addLivestockModal">
+                    <button class="btn-action btn-action-add-live" data-toggle="modal" data-target="#addLivestockModal">
                         <i class="fas fa-plus"></i> Add Livestock
                     </button>
                     <button class="btn-action btn-action-refresh-admins" onclick="refreshAdminsTable('activeFarmersTable')">
@@ -677,7 +992,7 @@
             </div>
             <!-- Livestock Table -->
             <div class="table-responsive">
-                <table class="table table-bordered" id="livestockTable">
+                <table class="table table-bordered table-hover" id="livestockTable">
                     <thead>
                         <tr>
                             <th>Tag Number</th>
@@ -703,7 +1018,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add New Livestock</h5>
+                <h5 class="modal-title"><i class="fas fa-plus mr-2"></i> Add New Livestock</h5>
                 <button type="button" class="close" data-dismiss="modal">
                     <span>&times;</span>
                 </button>
@@ -715,13 +1030,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Tag Number</label>
+                                <label>Tag Number <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="livestock_id" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Type</label>
+                                <label>Type <span class="text-danger">*</span></label>
                                 <select class="form-control" name="type" required>
                                     <option value="">Select Type</option>
                                     <option value="cow">Cow</option>
@@ -735,7 +1050,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Breed</label>
+                                <label>Breed <span class="text-danger">*</span></label>
                                 <select class="form-control" name="breed" required>
                                     <option value="">Select Breed</option>
                                     <option value="holstein">Holstein</option>
@@ -749,7 +1064,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Farm</label>
+                                <label>Farm <span class="text-danger">*</span></label>
                                 <select class="form-control" name="farm_id" required>
                                     <option value="">Select Farm</option>
                                 </select>
@@ -759,13 +1074,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Birth Date</label>
+                                <label>Birth Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" name="birth_date" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Gender</label>
+                                <label>Gender <span class="text-danger">*</span></label>
                                 <select class="form-control" name="gender" required>
                                     <option value="">Select Gender</option>
                                     <option value="male">Male</option>
@@ -776,8 +1091,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Livestock</button>
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-view-live"> <i class="fas fa-plus"></i>Add Livestock</button>
                 </div>
             </form>
         </div>
@@ -785,35 +1100,43 @@
 </div>
 
 <!-- Livestock Details Modal -->
-<div class="modal fade" id="livestockDetailsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-cow"></i>
+                <h5 class="modal-title" id="livestockDetailsLabel">
+                    <i class="fas fa-cow mr-2"></i>
                     Livestock Details
                 </h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" id="livestockDetailsContent">
-                <!-- Content will be loaded here -->
+            
+            <div class="modal-body">
+                <div id="livestockDetailsContent"></div>
             </div>
+            
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn-action btn-action-ok" onclick="openLivestockEditModal()">
+                    <i class="fas fa-edit"></i> Edit Livestock
+                </button>
             </div>
         </div>
     </div>
 </div>
 
+
 <!-- QR Code Modal -->
-<div class="modal fade" id="qrCodeModal" tabindex="-1">
-    <div class="modal-dialog modal-sm">
+<div class="modal fade" id="qrCodeModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fas fa-qrcode"></i>
+                    <i class="fas fa-qrcode mr-2"></i>
                     QR Code
                 </h5>
                 <button type="button" class="close" data-dismiss="modal">
@@ -825,22 +1148,22 @@
                 <p class="mt-3" id="qrCodeText"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="downloadQRCode()">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-action-ok" onclick="downloadQRCode()">
                     <i class="fas fa-download"></i> Download
                 </button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Issue Alert Modal -->
-<div class="modal fade" id="issueAlertModal" tabindex="-1">
+<div class="modal fade" id="issueAlertModal" tabindex="-1" role="dialog" aria-labelledby="issueAlertLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
                     Issue Alert
                 </h5>
                 <button type="button" class="close" data-dismiss="modal">
@@ -852,7 +1175,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="alertLivestockId">
                     <div class="form-group">
-                        <label for="issueType">Issue Type</label>
+                        <label for="issueType">Issue Type <span class="text-danger">*</span></label>
                         <select class="form-control" id="issueType" required>
                             <option value="">Select Issue Type</option>
                             <option value="health">Health Issue</option>
@@ -864,7 +1187,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="issuePriority">Priority</label>
+                        <label for="issuePriority">Priority <span class="text-danger">*</span></label>
                         <select class="form-control" id="issuePriority" required>
                             <option value="">Select Priority</option>
                             <option value="low">Low</option>
@@ -874,13 +1197,13 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="issueDescription">Description</label>
+                        <label for="issueDescription">Description <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="issueDescription" rows="4" required placeholder="Describe the issue in detail..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-ok">
                         <i class="fas fa-exclamation-triangle"></i> Issue Alert
                     </button>
                 </div>
@@ -929,16 +1252,27 @@
     $(document).ready(function() {
         console.log('Document ready, loading farmers...');
         loadFarmers();
+        loadFarmerLivestock();
+        updateStats();
         
-        // Search functionality
-        $('#activeSearch').on('keyup', function() {
+        // 🔍 Search functionality for Farmers Table
+        $('#farmerSearch').on('keyup', function() {
             const searchTerm = $(this).val().toLowerCase();
             $('#farmersTable tbody tr').each(function() {
                 const text = $(this).text().toLowerCase();
                 $(this).toggle(text.indexOf(searchTerm) > -1);
             });
         });
+        // 🔍 Search functionality for Livestock Table
+        $('#livestockSearch').on('keyup', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('#livestockTable tbody tr').each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(searchTerm) > -1);
+            });
+        });
     });
+
 
 // Refresh Pending Farmers Table
 function refreshPendingFarmersTable() {
@@ -1045,8 +1379,8 @@ $(document).ready(function () {
                                     <td>${farmer.livestock_count || 0}</td>
                                     <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</span></td>
                                     <td>
-                                        <button class="btn btn-action-view btn-sm" onclick="selectFarmer('${farmer.id}', '${displayName}')">
-                                            <i class="fas fa-cow"></i> View Livestock
+                                        <button class="btn-action btn-action-view-livestock" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                            <i class="fas fa-eye"></i> View Livestock
                                         </button>
                                     </td>
                                 </tr>
@@ -1118,15 +1452,15 @@ $(document).ready(function () {
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-action btn-action-view" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
+                                            <button class="btn-action btn-action-view-live" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
                                             </button>
-                                            <button class="btn-action btn-action-print" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
+                                            <button class="btn-action btn-action-qr" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
                                                 <i class="fas fa-qrcode"></i>
                                                 <span>QR Code</span>
                                             </button>
-                                            <button class="btn-action btn-action-flag" onclick="issueAlert('${animal.id}')" title="Issue Alert">
+                                            <button class="btn-action btn-action-issue" onclick="issueAlert('${animal.id}')" title="Issue Alert">
                                                 <i class="fas fa-exclamation-triangle"></i>
                                                 <span>Alert</span>
                                             </button>
@@ -1134,7 +1468,7 @@ $(document).ready(function () {
                                                 <i class="fas fa-edit"></i>
                                                 <span>Edit</span>
                                             </button>
-                                            <button class="btn-action btn-action-delete" onclick="deleteLivestock('${animal.id}')" title="Delete">
+                                            <button class="btn-action btn-action-deletes" onclick="deleteLivestock('${animal.id}')" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                                 <span>Delete</span>
                                             </button>
@@ -1271,26 +1605,28 @@ $(document).ready(function () {
                     $('#livestockDetailsContent').html(`
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="text-primary">Basic Information</h6>
-                                <table class="table table-borderless">
-                                    <tr><td><strong>Tag Number:</strong></td><td>${livestock.tag_number}</td></tr>
-                                    <tr><td><strong>Type:</strong></td><td>${livestock.type}</td></tr>
-                                    <tr><td><strong>Breed:</strong></td><td>${livestock.breed}</td></tr>
-                                    <tr><td><strong>Gender:</strong></td><td>${livestock.gender}</td></tr>
-                                    <tr><td><strong>Birth Date:</strong></td><td>${livestock.birth_date}</td></tr>
-                                </table>
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Basic Information</h6>
+                                <p><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
+                                <p><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
+                                <p><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
+                                <p><strong>Gender:</strong> ${livestock.gender || 'N/A'}</p>
+                                <p><strong>Birth Date:</strong> ${livestock.birth_date ? new Date(livestock.birth_date).toLocaleDateString() : 'N/A'}</p>
                             </div>
+
                             <div class="col-md-6">
-                                <h6 class="text-primary">Farm Information</h6>
-                                <table class="table table-borderless">
-                                    <tr><td><strong>Farm:</strong></td><td>${livestock.farm ? livestock.farm.name : 'N/A'}</td></tr>
-                                    <tr><td><strong>Status:</strong></td><td><span class="badge badge-${livestock.status === 'active' ? 'success' : 'danger'}">${livestock.status}</span></td></tr>
-                                    <tr><td><strong>Health Status:</strong></td><td>${livestock.health_status || 'N/A'}</td></tr>
-                                    <tr><td><strong>Weight:</strong></td><td>${livestock.weight || 'N/A'}</td></tr>
-                                    <tr><td><strong>Registration Date:</strong></td><td>${livestock.created_at}</td></tr>
-                                </table>
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farm Information</h6>
+                                <p><strong>Farm:</strong> ${livestock.farm ? livestock.farm.name : 'N/A'}</p>
+                                <p><strong>Status:</strong> 
+                                    <span class="badge badge-${livestock.status === 'active' ? 'success' : 'danger'}">
+                                        ${livestock.status || 'N/A'}
+                                    </span>
+                                </p>
+                                <p><strong>Health Status:</strong> ${livestock.health_status || 'N/A'}</p>
+                                <p><strong>Weight:</strong> ${livestock.weight ? livestock.weight + ' kg' : 'N/A'}</p>
+                                <p><strong>Registration Date:</strong> ${livestock.created_at ? new Date(livestock.created_at).toLocaleDateString() : 'N/A'}</p>
                             </div>
                         </div>
+
                         ${livestock.description ? `
                         <div class="row mt-3">
                             <div class="col-12">
