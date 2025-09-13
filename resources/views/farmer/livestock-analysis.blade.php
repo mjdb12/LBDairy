@@ -110,17 +110,12 @@
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header mb-4">
-    <div class="row align-items-center">
-        <div class="col-md-6">
-            <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-chart-line text-primary"></i>
-                Livestock Analysis Dashboard
-            </h1>
-            <p class="text-muted mb-0">Comprehensive analysis of livestock performance and health metrics</p>
-        </div>
-
-    </div>
+<div class="page-header fade-in">
+    <h1>
+        <i class="fas fa-chart-line"></i>
+        Livestock Analysis Dashboard
+    </h1>
+    <p>Comprehensive analysis of livestock performance and health metrics</p>
 </div>
 
 <!-- Statistics Grid -->

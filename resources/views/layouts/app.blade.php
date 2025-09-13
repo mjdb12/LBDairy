@@ -529,6 +529,16 @@
             z-index: 1;
         }
 
+        /* Ensure all page header icons are visible */
+        .page-header h1 i {
+            color: white !important;
+            font-size: 1.2em !important;
+            margin-right: 0.5rem !important;
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
         .page-header p {
             color: white !important;
             margin: 0.5rem 0 0 0;

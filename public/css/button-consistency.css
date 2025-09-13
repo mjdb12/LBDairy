@@ -71,16 +71,20 @@
     box-shadow: 0 4px 8px rgba(56, 112, 87, 0.4);
 }
 
-.btn-action-delete {
-    background: linear-gradient(135deg, #e74a3b 0%, #e02d1b 100%);
-    color: white;
-    box-shadow: 0 2px 4px rgba(231, 74, 59, 0.3);
+.btn-action-delete,
+.action-buttons .btn-action-delete,
+#livestockTable .btn-action-delete {
+    background: #c82333 !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(200, 35, 51, 0.3) !important;
 }
 
-.btn-action-delete:hover {
-    background: linear-gradient(135deg, #e74a3b 0%, #e02d1b 100%);
-    color: white;
-    box-shadow: 0 4px 8px rgba(231, 74, 59, 0.4);
+.btn-action-delete:hover,
+.action-buttons .btn-action-delete:hover,
+#livestockTable .btn-action-delete:hover {
+    background: #a71e2a !important;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(200, 35, 51, 0.4) !important;
 }
 
 .btn-action-print {

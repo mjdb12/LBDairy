@@ -460,34 +460,49 @@ class LivestockController extends Controller
     }
 
     /**
-     * Generate QR code for livestock.
+     * Generate QR code for livestock (admin only).
      */
     public function generateQRCode($id)
     {
         try {
-            $livestock = Livestock::findOrFail($id);
+            $livestock = Livestock::with(['farm', 'owner'])->findOrFail($id);
             
             // Generate QR code data
             $qrData = json_encode([
                 'livestock_id' => $livestock->tag_number,
+                'livestock_name' => $livestock->name,
                 'type' => $livestock->type,
                 'breed' => $livestock->breed,
-                'farm_id' => $livestock->farm_id
+                'farm_id' => $livestock->farm_id,
+                'farm_name' => $livestock->farm ? $livestock->farm->name : 'Unknown',
+                'owner_id' => $livestock->owner_id,
+                'owner_name' => $livestock->owner ? $livestock->owner->name : 'Unknown',
+                'generated_at' => now()->toISOString(),
+                'generated_by' => Auth::user()->name
             ]);
             
-            // For now, return a placeholder QR code URL
-            // In a real implementation, you would use a QR code library
+            // Generate QR code URL using QR Server API
             $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($qrData);
+            
+            // Save QR code information to database
+            $livestock->update([
+                'qr_code_generated' => true,
+                'qr_code_url' => $qrCodeUrl,
+                'qr_code_generated_at' => now(),
+                'qr_code_generated_by' => Auth::id()
+            ]);
             
             return response()->json([
                 'success' => true,
                 'qr_code' => $qrCodeUrl,
-                'livestock_id' => $livestock->tag_number
+                'livestock_id' => $livestock->tag_number,
+                'generated_at' => $livestock->qr_code_generated_at,
+                'generated_by' => Auth::user()->name
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to generate QR code'
+                'message' => 'Failed to generate QR code: ' . $e->getMessage()
             ], 500);
         }
     }

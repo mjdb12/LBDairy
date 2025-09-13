@@ -443,6 +443,42 @@ class FarmerController extends Controller
     }
 
     /**
+     * Check QR code status for livestock (farmers can only view/download).
+     */
+    public function generateQRCode($id)
+    {
+        try {
+            $user = Auth::user();
+            $livestock = Livestock::whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })->with('qrCodeGenerator')->findOrFail($id);
+            
+            // Check if QR code has been generated
+            if ($livestock->qr_code_generated && $livestock->qr_code_url) {
+                return response()->json([
+                    'success' => true,
+                    'qr_code_exists' => true,
+                    'qr_code' => $livestock->qr_code_url,
+                    'livestock_id' => $livestock->tag_number,
+                    'generated_at' => $livestock->qr_code_generated_at,
+                    'generated_by' => $livestock->qrCodeGenerator ? $livestock->qrCodeGenerator->name : 'Unknown'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'qr_code_exists' => false,
+                    'message' => 'QR code has not been generated yet. Please contact an administrator to generate the QR code.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to check QR code status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Show the form for editing the specified livestock.
      */
     public function editLivestock($id)

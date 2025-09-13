@@ -36,6 +36,10 @@ class Livestock extends Model
         'acquisition_date',
         'acquisition_cost',
         'remarks',
+        'qr_code_generated',
+        'qr_code_url',
+        'qr_code_generated_at',
+        'qr_code_generated_by',
     ];
 
     protected $casts = [
@@ -67,5 +71,13 @@ class Livestock extends Model
     public function productionRecords()
     {
         return $this->hasMany(ProductionRecord::class);
+    }
+
+    /**
+     * Get the user who generated the QR code.
+     */
+    public function qrCodeGenerator()
+    {
+        return $this->belongsTo(User::class, 'qr_code_generated_by');
     }
 }
