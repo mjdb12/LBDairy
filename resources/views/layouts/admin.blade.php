@@ -217,6 +217,47 @@
             position: relative !important;
             z-index: 1000 !important;
         }
+
+        /* Admin Notification Styling - Match SuperAdmin Dark Green */
+        .alert-success {
+            background-color: var(--success-color) !important;
+            border-color: var(--success-color) !important;
+            color: #fff !important;
+        }
+
+        .alert-success .close {
+            color: #fff !important;
+            opacity: 0.8;
+        }
+
+        .alert-success .close:hover {
+            opacity: 1;
+        }
+
+        .alert-success i {
+            color: #fff !important;
+        }
+
+        /* Ensure notification positioning */
+        .refresh-notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
     
     @stack('styles')

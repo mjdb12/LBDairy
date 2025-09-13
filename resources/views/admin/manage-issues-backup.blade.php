@@ -814,7 +814,53 @@
     }
 
     function exportCSV() {
-        dataTable.button('.buttons-csv').trigger();
+        // Get current table data without actions column
+        const tableData = dataTable.data().toArray();
+        const csvData = [];
+        
+        // Add headers (excluding Actions column)
+        const headers = ['Issue ID', 'Livestock ID', 'Type', 'Description', 'Severity', 'Status', 'Date Reported'];
+        csvData.push(headers.join(','));
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            // Extract text content from each cell, excluding the last column (Actions)
+            const rowData = [];
+            for (let i = 0; i < row.length - 1; i++) {
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text (remove extra spaces, newlines)
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                // Escape commas and quotes for CSV
+                if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                    cellText = '"' + cellText.replace(/"/g, '""') + '"';
+                }
+                rowData.push(cellText);
+            }
+            csvData.push(rowData.join(','));
+        });
+        
+        // Create and download CSV file
+        const csvContent = csvData.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Admin_ManageIssuesReport_${downloadCounter}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showNotification('CSV exported successfully!', 'success');
     }
 
     function exportPDF() {
@@ -822,8 +868,62 @@
     }
 
     function exportPNG() {
-        // Implementation for PNG export
-        showNotification('PNG export feature coming soon', 'info');
+        // Create a temporary table without the Actions column for export
+        const originalTable = document.getElementById('issuesTable');
+        const tempTable = originalTable.cloneNode(true);
+        
+        // Remove the Actions column header
+        const headerRow = tempTable.querySelector('thead tr');
+        if (headerRow) {
+            const lastHeaderCell = headerRow.lastElementChild;
+            if (lastHeaderCell) {
+                lastHeaderCell.remove();
+            }
+        }
+        
+        // Remove the Actions column from all data rows
+        const dataRows = tempTable.querySelectorAll('tbody tr');
+        dataRows.forEach(row => {
+            const lastDataCell = row.lastElementChild;
+            if (lastDataCell) {
+                lastDataCell.remove();
+            }
+        });
+        
+        // Temporarily add the temp table to the DOM (hidden)
+        tempTable.style.position = 'absolute';
+        tempTable.style.left = '-9999px';
+        tempTable.style.top = '-9999px';
+        document.body.appendChild(tempTable);
+        
+        // Generate PNG using html2canvas
+        html2canvas(tempTable, {
+            scale: 2, // Higher quality
+            backgroundColor: '#ffffff',
+            width: tempTable.offsetWidth,
+            height: tempTable.offsetHeight
+        }).then(canvas => {
+            // Create download link
+            const link = document.createElement('a');
+            link.download = `Admin_ManageIssuesReport_${downloadCounter}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            
+            // Increment download counter
+            downloadCounter++;
+            
+            // Clean up - remove temporary table
+            document.body.removeChild(tempTable);
+            
+            showNotification('PNG exported successfully!', 'success');
+        }).catch(error => {
+            console.error('Error generating PNG:', error);
+            // Clean up on error
+            if (document.body.contains(tempTable)) {
+                document.body.removeChild(tempTable);
+            }
+            showNotification('Error generating PNG export', 'danger');
+        });
     }
 
     function printTable() {

@@ -1021,6 +1021,7 @@
 <script>
 let dataTable;
 let chartInstance;
+let downloadCounter = 1;
 
 $(document).ready(function () {
     // Initialize DataTable
@@ -1265,16 +1266,237 @@ function deleteFarmer(farmerId) {
 }
 
 // Export functions
-function exportCSV() { dataTable.button('.buttons-csv').trigger(); }
-function exportPDF() { dataTable.button('.buttons-pdf').trigger(); }
-function printTable() { dataTable.button('.buttons-print').trigger(); }
+function exportCSV() {
+    const tableData = dataTable.data().toArray();
+    const csvData = [];
+    
+    // Add headers (excluding Actions column)
+    const headers = ['Farmer ID', 'Name', 'Email', 'Phone', 'Location', 'Status'];
+    csvData.push(headers.join(','));
+    
+    // Add data rows (excluding Actions column)
+    tableData.forEach(row => {
+        const rowData = [];
+        for (let i = 0; i < row.length - 1; i++) {
+            let cellText = '';
+            if (row[i]) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = row[i];
+                cellText = tempDiv.textContent || tempDiv.innerText || '';
+                cellText = cellText.replace(/\s+/g, ' ').trim();
+            }
+            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                cellText = '"' + cellText.replace(/"/g, '""') + '"';
+            }
+            rowData.push(cellText);
+        }
+        csvData.push(rowData.join(','));
+    });
+    
+    const csvContent = csvData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `FarmersAnalysis_Report_${downloadCounter}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    downloadCounter++;
+}
+function exportPDF() {
+    try {
+        // Force custom PDF generation to match superadmin styling
+        // Don't fall back to DataTables PDF export as it has different styling
+        
+        const tableData = dataTable.data().toArray();
+        const pdfData = [];
+        
+        const headers = ['Farmer ID', 'Name', 'Email', 'Phone', 'Location', 'Status'];
+        
+        tableData.forEach(row => {
+            const rowData = [];
+            for (let i = 0; i < row.length - 1; i++) {
+                let cellText = '';
+                if (row[i]) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                rowData.push(cellText);
+            }
+            pdfData.push(rowData);
+        });
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        
+        // Set title
+        doc.setFontSize(18);
+        doc.text('Admin Farmers Analysis Report', 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        
+        doc.autoTable({
+            head: [headers],
+            body: pdfData,
+            startY: 40,
+            styles: {
+                fontSize: 8,
+                cellPadding: 2
+            },
+            headStyles: {
+                fillColor: [24, 55, 93],
+                textColor: 255,
+                fontStyle: 'bold'
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245]
+            }
+        });
+        
+        // Save PDF with counter
+        doc.save(`Admin_FarmersAnalysisReport_${downloadCounter}.pdf`);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showNotification('PDF exported successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showNotification('Error generating PDF. Falling back to DataTables export.', 'warning');
+        dataTable.button('.buttons-pdf').trigger();
+    }
+}
+function printTable() {
+    try {
+        const tableData = dataTable.data().toArray();
+        
+        if (!tableData || tableData.length === 0) {
+            showNotification('No data available to print', 'warning');
+            return;
+        }
+        
+        // Create print content directly in current page
+        const originalContent = document.body.innerHTML;
+        
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">Farmers Analysis Report</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                    <thead>
+                        <tr>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farmer ID</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Email</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Phone</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Location</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            printContent += '<tr>';
+            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
+            }
+            printContent += '</tr>';
+        });
+        
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+        
+        // Replace page content with print content
+        document.body.innerHTML = printContent;
+        
+        // Print the page
+        window.print();
+        
+        // Restore original content after print dialog closes
+        setTimeout(() => {
+            document.body.innerHTML = originalContent;
+            // Re-initialize any JavaScript that might be needed
+            location.reload(); // Reload to restore full functionality
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in print function:', error);
+        showNotification('Error generating print. Please try again.', 'danger');
+        
+        // Fallback to DataTables print
+        try {
+            dataTable.button('.buttons-print').trigger();
+        } catch (fallbackError) {
+            console.error('Fallback print also failed:', fallbackError);
+            showNotification('Print failed. Please try again.', 'danger');
+        }
+    }
+}
 
 function exportPNG() {
-    html2canvas(document.querySelector("#dataTable")).then(canvas => {
-        let link = document.createElement('a');
-        link.download = 'Farmers_Productivity_Report.png';
+    const originalTable = document.getElementById('dataTable');
+    const tempTable = originalTable.cloneNode(true);
+    
+    const headerRow = tempTable.querySelector('thead tr');
+    if (headerRow) {
+        const lastHeaderCell = headerRow.lastElementChild;
+        if (lastHeaderCell) {
+            lastHeaderCell.remove();
+        }
+    }
+    
+    const dataRows = tempTable.querySelectorAll('tbody tr');
+    dataRows.forEach(row => {
+        const lastDataCell = row.lastElementChild;
+        if (lastDataCell) {
+            lastDataCell.remove();
+        }
+    });
+    
+    tempTable.style.position = 'absolute';
+    tempTable.style.left = '-9999px';
+    tempTable.style.top = '-9999px';
+    document.body.appendChild(tempTable);
+    
+    html2canvas(tempTable, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        width: tempTable.offsetWidth,
+        height: tempTable.offsetHeight
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `FarmersAnalysis_Report_${downloadCounter}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
+        
+        downloadCounter++;
+        document.body.removeChild(tempTable);
+    }).catch(error => {
+        console.error('Error generating PNG:', error);
+        if (document.body.contains(tempTable)) {
+            document.body.removeChild(tempTable);
+        }
+        showNotification('Error generating PNG export', 'danger');
     });
 }
 

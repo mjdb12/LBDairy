@@ -77,6 +77,18 @@
         margin-bottom: 0.5rem;      /* add spacing below */
     }
 
+    /* Ensure input fields are interactive */
+    #taskModal input[type="text"],
+    #taskModal input[type="date"],
+    #taskModal textarea,
+    #taskModal select {
+        pointer-events: auto !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+    }
+
 /* Apply consistent buttons */
 /* Action buttons styling */
     .action-buttons {
@@ -248,6 +260,117 @@
 .font-size-4 {
     font-size: 0.6em;
 }
+
+/* Task Board Styling */
+.task-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #18375d !important;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+/* Task board container styling */
+#taskList {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+#taskList .list-group-item:first-child {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+#taskList .list-group-item:last-child {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.task-checkbox:checked {
+    background-color: #18375d !important;
+    border-color: #18375d !important;
+}
+
+.task-checkbox:focus {
+    outline: 2px solid #18375d;
+    outline-offset: 2px;
+}
+
+.task-checkbox:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Task action buttons spacing */
+.action-buttons {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Ensure proper alignment of task items */
+.list-group-item {
+    padding: 1rem;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid #e3e6f0;
+    border-bottom: 1px solid #e3e6f0;
+    transition: all 0.2s ease;
+    background-color: #fff;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fc;
+    transform: translateX(2px);
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item .d-flex {
+    gap: 0.5rem;
+}
+
+/* Task title and description alignment */
+.list-group-item .font-weight-bold {
+    color: #18375d;
+    margin-bottom: 0.25rem;
+}
+
+.list-group-item .text-muted {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Priority badge styling */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+}
+
+/* Priority badge specific colors */
+.badge-danger {
+    background-color: #e74a3b !important;
+    color: #fff !important;
+}
+
+.badge-warning {
+    background-color: #f6c23e !important;
+    color: #fff !important;
+}
+
+.badge-secondary {
+    background-color: #858796 !important;
+    color: #fff !important;
+}
+
 </style>
 @endpush
 @section('content')
@@ -333,8 +456,8 @@
                     <i class="fas fa-tasks"></i>
                     Task Board
                 </h6>
-                <button class="btn-action btn-sm btn-action-edit" id="addTaskBtn">
-                    <i class="fas fa-plus"></i> New Task
+                <button class="btn-action btn-action-edit" id="addTaskBtn">
+                    <i class="fas fa-plus mr-2"></i> New Task
                 </button>
             </div>
             <div class="card-body">
@@ -415,7 +538,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form class="modal-content" id="taskForm">
             <div class="modal-header">
-                <h5 class="modal-title" id="taskModalTitle"><i class="fas fa-plus mr-2"></i> Add New Livestock</h5>
+                <h5 class="modal-title" id="taskModalTitle">New Task</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -423,16 +546,16 @@
             <div class="modal-body">
                 <input type="hidden" id="taskId">
                 <div class="form-group">
-                    <label for="taskTitle">Title <span class="text-danger">*</span></label>
+                    <label for="taskTitle">Title<span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="taskTitle" required maxlength="255">
                 </div>
                 <div class="form-group">
-                    <label for="taskDescription">Description <span class="text-danger">*</span></label>
+                    <label for="taskDescription">Description<span class="text-danger">*</span></label>
                     <textarea class="form-control" id="taskDescription" rows="3"></textarea>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="taskPriority">Priority <span class="text-danger">*</span></label>
+                        <label for="taskPriority">Priority<span class="text-danger">*</span></label>
                         <select class="form-control" id="taskPriority">
                             <option value="low">Low</option>
                             <option value="medium" selected>Medium</option>
@@ -440,7 +563,7 @@
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="taskDueDate">Due Date <span class="text-danger">*</span></label>
+                        <label for="taskDueDate">Due Date<span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="taskDueDate">
                     </div>
                 </div>
@@ -450,6 +573,32 @@
                 <button type="submit" class="btn-action btn-action-edit" id="taskSubmitBtn">Add Task</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Delete Task Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteTaskLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteTaskLabel">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteTaskBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Yes, Delete
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -468,10 +617,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (!data.success) return;
                 renderTasks(data.tasks);
-            })
-            .catch(() => {
-                // Fallback to empty task list if endpoint doesn't exist
-                renderTasks([]);
             });
     }
 
@@ -492,23 +637,25 @@ document.addEventListener('DOMContentLoaded', function () {
         li.className = 'list-group-item d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between';
         li.dataset.id = task.id;
         li.innerHTML = `
-            <div class="d-flex align-items-start">
-                <input type="checkbox" class="mr-2" ${task.status === 'done' ? 'checked' : ''}>
+            <div class="d-flex align-items-center">
+                <input type="checkbox" class="task-checkbox mr-3" ${task.status === 'done' ? 'checked' : ''}>
                 <div>
                     <div class="font-weight-bold">${escapeHtml(task.title)}</div>
                     <small class="text-muted">${escapeHtml(task.description || '')}</small>
                 </div>
             </div>
             <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-2"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
-                <button class="btn-action btn-action-edit" title="Edit Task">
+                <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
+                <div class="action-buttons">
+                    <button class="btn-action btn-action-edit btn-action-sm edit-task" title="Edit Task">
                     <i class="fas fa-edit"></i>
                     <span>Edit</span>
                 </button>
-                <button class="btn-action btn-action-deletes" title="Delete Task">
+                    <button class="btn-action btn-action-delete btn-action-sm delete-task" title="Delete Task">
                     <i class="fas fa-trash"></i>
                     <span>Delete</span>
                 </button>
+                </div>
             </div>
         `;
 
@@ -544,6 +691,17 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('taskSubmitBtn').textContent = 'Add Task';
         document.getElementById('taskModalTitle').textContent = 'New Task';
         $('#taskModal').modal('show');
+        
+        // Focus the title field after modal is shown
+        $('#taskModal').on('shown.bs.modal', function () {
+            setTimeout(() => {
+                const titleField = document.getElementById('taskTitle');
+                if (titleField) {
+                    titleField.focus();
+                    titleField.select(); // Select any existing text
+                }
+            }, 100);
+        });
     }
 
     function startEditTask(task) {
@@ -614,8 +772,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }).catch(() => alert('Failed to update task: network error'));
     }
 
+    let taskToDelete = null;
+
     function deleteTask(id) {
-        if (!confirm('Delete this task?')) return;
+        taskToDelete = id;
+        $('#confirmDeleteTaskModal').modal('show');
+    }
+
+    document.getElementById('confirmDeleteTaskBtn').addEventListener('click', function() {
+        if (taskToDelete) {
+            performTaskDeletion(taskToDelete);
+            taskToDelete = null;
+            $('#confirmDeleteTaskModal').modal('hide');
+        }
+    });
+
+    function performTaskDeletion(id) {
         fetch(`/admin/tasks/${id}`, {
             method: 'DELETE',
             credentials: 'same-origin',
@@ -624,11 +796,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         }).then(r => r.json()).then(data => {
-            if (data.success) fetchTasks(); else alert('Failed to delete task');
+            if (data.success) {
+                fetchTasks();
+                showNotification('Task deleted successfully', 'success');
+            } else {
+                showNotification('Failed to delete task', 'danger');
+            }
+        }).catch(() => {
+            showNotification('Failed to delete task: network error', 'danger');
         });
     }
 
+    function showNotification(message, type) {
+        const notification = $(`
+            <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        setTimeout(() => {
+            notification.alert('close');
+        }, 5000);
+    }
+
     addTaskBtn?.addEventListener('click', () => startNewTask());
+    document.getElementById('taskCancelEditBtn')?.addEventListener('click', () => hideTaskForm());
     document.getElementById('taskForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const id = document.getElementById('taskId').value;

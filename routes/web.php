@@ -282,6 +282,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit-logs');
         Route::get('/audit-logs/{id}/details', [AdminController::class, 'getAuditLogDetails'])->name('audit-logs.details');
         Route::get('/audit-logs/export', [AdminController::class, 'exportAuditLogs'])->name('audit-logs.export');
+        
+        // Task management routes for admin dashboard
+        Route::get('/tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
+        Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+        Route::get('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'show'])->name('tasks.show');
+        Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
+        Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
     });
     
     // Super Admin routes

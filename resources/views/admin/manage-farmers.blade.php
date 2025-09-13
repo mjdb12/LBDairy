@@ -1252,7 +1252,6 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
 
 <!-- Required libraries for PDF/Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -1260,9 +1259,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+<!-- jsPDF and autoTable for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
 <script>
 let pendingFarmersTable;
 let activeFarmersTable;
+let downloadCounter = 1;
 
 $(document).ready(function () {
     // Initialize DataTables
@@ -1883,26 +1888,305 @@ function showNotification(message, type) {
 // Export functions
 function exportCSV(tableId) {
     const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
-    table.button('.buttons-csv').trigger();
+    const tableData = table.data().toArray();
+    const csvData = [];
+    
+    // Determine headers based on table type
+    let headers = [];
+    let reportTitle = '';
+    
+    if (tableId === 'pendingFarmersTable') {
+        headers = ['User ID', 'Name', 'Farm Name', 'Barangay', 'Contact', 'Email', 'Username', 'Registration Date'];
+        reportTitle = 'PendingFarmers';
+    } else {
+        headers = ['User ID', 'Name', 'Farm Name', 'Barangay', 'Contact', 'Username', 'Registration Date'];
+        reportTitle = 'ActiveFarmers';
+    }
+    
+    csvData.push(headers.join(','));
+    
+    // Add data rows (excluding Actions column)
+    tableData.forEach(row => {
+        // Extract text content from each cell, excluding the last column (Actions)
+        const rowData = [];
+        for (let i = 0; i < row.length - 1; i++) {
+            let cellText = '';
+            if (row[i]) {
+                // Remove HTML tags and get clean text
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = row[i];
+                cellText = tempDiv.textContent || tempDiv.innerText || '';
+                // Clean up the text (remove extra spaces, newlines)
+                cellText = cellText.replace(/\s+/g, ' ').trim();
+            }
+            // Escape commas and quotes for CSV
+            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                cellText = '"' + cellText.replace(/"/g, '""') + '"';
+            }
+            rowData.push(cellText);
+        }
+        csvData.push(rowData.join(','));
+    });
+    
+    // Create and download CSV file
+    const csvContent = csvData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${reportTitle}_Report_${downloadCounter}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Increment download counter
+    downloadCounter++;
 }
 
 function exportPDF(tableId) {
-    const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
-    table.button('.buttons-pdf').trigger();
+    try {
+        // Force custom PDF generation to match superadmin styling
+        // Don't fall back to DataTables PDF export as it has different styling
+        
+        const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
+        const tableData = table.data().toArray();
+        const pdfData = [];
+        
+        // Determine headers and title based on table type
+        let headers = [];
+        let reportTitle = '';
+        
+        if (tableId === 'pendingFarmersTable') {
+            headers = ['User ID', 'Name', 'Farm Name', 'Barangay', 'Contact', 'Email', 'Username', 'Registration Date'];
+            reportTitle = 'Admin Pending Registrations Report';
+        } else {
+            headers = ['User ID', 'Name', 'Farm Name', 'Barangay', 'Contact', 'Username', 'Registration Date'];
+            reportTitle = 'Admin Active Farmers Report';
+        }
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            const rowData = [];
+            for (let i = 0; i < row.length - 1; i++) {
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text (remove extra spaces, newlines)
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                rowData.push(cellText);
+            }
+            pdfData.push(rowData);
+        });
+        
+        // Create PDF using jsPDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        
+        // Set title
+        doc.setFontSize(18);
+        doc.text(reportTitle, 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        
+        // Add table
+        doc.autoTable({
+            head: [headers],
+            body: pdfData,
+            startY: 40,
+            styles: {
+                fontSize: 8,
+                cellPadding: 2
+            },
+            headStyles: {
+                fillColor: [24, 55, 93],
+                textColor: 255,
+                fontStyle: 'bold'
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245]
+            }
+        });
+        
+        // Save PDF with counter
+        const fileName = tableId === 'pendingFarmersTable' ? 'Admin_PendingRegistrationsReport' : 'Admin_ActiveFarmersReport';
+        doc.save(`${fileName}_${downloadCounter}.pdf`);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showNotification('PDF exported successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showNotification('Error generating PDF. Please try again.', 'danger');
+    }
 }
 
 function printTable(tableId) {
-    const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
-    table.button('.buttons-print').trigger();
+    try {
+        const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
+        const tableData = table.data().toArray();
+        
+        if (!tableData || tableData.length === 0) {
+            showNotification('No data available to print', 'warning');
+            return;
+        }
+        
+        // Determine report title based on table type
+        const reportTitle = tableId === 'pendingFarmersTable' ? 'Pending Farmers Report' : 'Active Farmers Report';
+        
+        // Create print content directly in current page
+        const originalContent = document.body.innerHTML;
+        
+        // Determine column headers based on table type
+        let columnHeaders = '';
+        if (tableId === 'pendingFarmersTable') {
+            columnHeaders = `
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farm Name</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Email</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>`;
+        } else {
+            // Active Farmers Table (no Email column)
+            columnHeaders = `
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farm Name</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>`;
+        }
+
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">${reportTitle}</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                    <thead>
+                        <tr>
+                            ${columnHeaders}
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            printContent += '<tr>';
+            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
+            }
+            printContent += '</tr>';
+        });
+        
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+        
+        // Replace page content with print content
+        document.body.innerHTML = printContent;
+        
+        // Print the page
+        window.print();
+        
+        // Restore original content after print dialog closes
+        setTimeout(() => {
+            document.body.innerHTML = originalContent;
+            // Re-initialize any JavaScript that might be needed
+            location.reload(); // Reload to restore full functionality
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in print function:', error);
+        showNotification('Error generating print. Please try again.', 'danger');
+        
+        // Fallback to DataTables print
+        try {
+            const table = tableId === 'pendingFarmersTable' ? pendingFarmersTable : activeFarmersTable;
+            table.button('.buttons-print').trigger();
+        } catch (fallbackError) {
+            console.error('Fallback print also failed:', fallbackError);
+            showNotification('Print failed. Please try again.', 'danger');
+        }
+    }
 }
 
 function exportPNG(tableId) {
-    const tableElement = document.getElementById(tableId);
-    html2canvas(tableElement).then(canvas => {
-        let link = document.createElement('a');
-        link.download = `${tableId}_Report.png`;
+    // Create a temporary table without the Actions column for export
+    const originalTable = document.getElementById(tableId);
+    const tempTable = originalTable.cloneNode(true);
+    
+    // Remove the Actions column header
+    const headerRow = tempTable.querySelector('thead tr');
+    if (headerRow) {
+        const lastHeaderCell = headerRow.lastElementChild;
+        if (lastHeaderCell) {
+            lastHeaderCell.remove();
+        }
+    }
+    
+    // Remove the Actions column from all data rows
+    const dataRows = tempTable.querySelectorAll('tbody tr');
+    dataRows.forEach(row => {
+        const lastDataCell = row.lastElementChild;
+        if (lastDataCell) {
+            lastDataCell.remove();
+        }
+    });
+    
+    // Temporarily add the temp table to the DOM (hidden)
+    tempTable.style.position = 'absolute';
+    tempTable.style.left = '-9999px';
+    tempTable.style.top = '-9999px';
+    document.body.appendChild(tempTable);
+    
+    // Generate PNG using html2canvas
+    html2canvas(tempTable, {
+        scale: 2, // Higher quality
+        backgroundColor: '#ffffff',
+        width: tempTable.offsetWidth,
+        height: tempTable.offsetHeight
+    }).then(canvas => {
+        // Create download link
+        const link = document.createElement('a');
+        const fileName = tableId === 'pendingFarmersTable' ? 'PendingFarmers' : 'ActiveFarmers';
+        link.download = `${fileName}_Report_${downloadCounter}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        // Clean up - remove temporary table
+        document.body.removeChild(tempTable);
+    }).catch(error => {
+        console.error('Error generating PNG:', error);
+        // Clean up on error
+        if (document.body.contains(tempTable)) {
+            document.body.removeChild(tempTable);
+        }
+        showNotification('Error generating PNG export', 'danger');
     });
 }
 </script>

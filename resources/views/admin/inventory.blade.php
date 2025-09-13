@@ -310,9 +310,22 @@
 @endsection
 
 @push('scripts')
+<!-- DataTables Core -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<!-- Required libraries for PDF/Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- jsPDF and autoTable for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 let inventoryTable;
 let currentEditId = null;
@@ -455,44 +468,168 @@ function loadInventoryHistory() {
 
 // Export functions
 function exportCSV() {
-    const table = document.getElementById('inventoryTable');
-    let csv = 'Inventory ID,Date,Category,Name,Quantity,Farm ID\n';
+    // Get current table data without actions column
+    const tableData = inventoryTable.data().toArray();
+    const csvData = [];
     
-    const rows = table.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length > 0) {
-            const rowData = Array.from(cells).map(cell => {
-                let text = cell.textContent.trim();
-                // Remove action buttons text
-                if (cell.querySelector('.btn-group')) {
-                    text = '';
-                }
-                return `"${text}"`;
-            }).filter(text => text !== '""');
-            csv += rowData.join(',') + '\n';
+    // Add headers (excluding Actions column)
+    const headers = ['Inventory ID', 'Date', 'Category', 'Name', 'Quantity', 'Farm ID', 'Status'];
+    csvData.push(headers.join(','));
+    
+    // Add data rows (excluding Actions column)
+    tableData.forEach(row => {
+        // Extract text content from each cell, excluding the last column (Actions)
+        const rowData = [];
+        for (let i = 0; i < row.length - 1; i++) {
+            let cellText = '';
+            if (row[i]) {
+                // Remove HTML tags and get clean text
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = row[i];
+                cellText = tempDiv.textContent || tempDiv.innerText || '';
+                // Clean up the text (remove extra spaces, newlines)
+                cellText = cellText.replace(/\s+/g, ' ').trim();
+            }
+            // Escape commas and quotes for CSV
+            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                cellText = '"' + cellText.replace(/"/g, '""') + '"';
+            }
+            rowData.push(cellText);
         }
+        csvData.push(rowData.join(','));
     });
     
-    downloadCSV(csv, 'inventory_export.csv');
+    // Create and download CSV file
+    const csvContent = csvData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Admin_InventoryReport_${downloadCounter}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Increment download counter
+    downloadCounter++;
+    
+    showNotification('CSV exported successfully!', 'success');
 }
 
 function exportPDF() {
-    // PDF export functionality would be implemented here
-    alert('PDF export functionality coming soon!');
+    try {
+        // Force custom PDF generation to match superadmin styling
+        // Don't fall back to DataTables PDF export as it has different styling
+        
+        const tableData = inventoryTable.data().toArray();
+        const pdfData = [];
+        
+        const headers = ['Item ID', 'Name', 'Category', 'Quantity', 'Unit Price', 'Total Value', 'Status'];
+        
+        tableData.forEach(row => {
+            const rowData = [
+                row[0] || '', // Item ID
+                row[1] || '', // Name
+                row[2] || '', // Category
+                row[3] || '', // Quantity
+                row[4] || '', // Unit Price
+                row[5] || '',  // Total Value
+                row[6] || ''   // Status
+            ];
+            pdfData.push(rowData);
+        });
+        
+        // Create PDF using jsPDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        
+        // Set title
+        doc.setFontSize(18);
+        doc.text('Admin Inventory Report', 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        
+        // Create table
+        doc.autoTable({
+            head: [headers],
+            body: pdfData,
+            startY: 40,
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
+            alternateRowStyles: { fillColor: [245, 245, 245] }
+        });
+        
+        // Save the PDF
+        doc.save(`Admin_InventoryReport_${downloadCounter}.pdf`);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showNotification('PDF exported successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showNotification('Error generating PDF. Please try again.', 'danger');
+    }
 }
 
 function exportPNG() {
-    const tableElement = document.getElementById('inventoryTable');
-    html2canvas(tableElement, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true
+    // Create a temporary table without the Actions column for export
+    const originalTable = document.getElementById('inventoryTable');
+    const tempTable = originalTable.cloneNode(true);
+    
+    // Remove the Actions column header
+    const headerRow = tempTable.querySelector('thead tr');
+    if (headerRow) {
+        const lastHeaderCell = headerRow.lastElementChild;
+        if (lastHeaderCell) {
+            lastHeaderCell.remove();
+        }
+    }
+    
+    // Remove the Actions column from all data rows
+    const dataRows = tempTable.querySelectorAll('tbody tr');
+    dataRows.forEach(row => {
+        const lastDataCell = row.lastElementChild;
+        if (lastDataCell) {
+            lastDataCell.remove();
+        }
+    });
+    
+    // Temporarily add the temp table to the DOM (hidden)
+    tempTable.style.position = 'absolute';
+    tempTable.style.left = '-9999px';
+    tempTable.style.top = '-9999px';
+    document.body.appendChild(tempTable);
+    
+    // Generate PNG using html2canvas
+    html2canvas(tempTable, {
+        scale: 2, // Higher quality
+        backgroundColor: '#ffffff',
+        width: tempTable.offsetWidth,
+        height: tempTable.offsetHeight
     }).then(canvas => {
+        // Create download link
         const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'inventory_table.png';
+        link.download = `Admin_InventoryReport_${downloadCounter}.png`;
+        link.href = canvas.toDataURL("image/png");
         link.click();
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        // Clean up - remove temporary table
+        document.body.removeChild(tempTable);
+        
+        showNotification('PNG exported successfully!', 'success');
+    }).catch(error => {
+        console.error('Error generating PNG:', error);
+        // Clean up on error
+        if (document.body.contains(tempTable)) {
+            document.body.removeChild(tempTable);
+        }
+        showNotification('Error generating PNG export', 'danger');
     });
 }
 

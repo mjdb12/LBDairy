@@ -12,7 +12,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         
-        if ($user->role === 'superadmin') {
+        if ($user->role === 'superadmin' || $user->role === 'admin') {
             $tasks = Task::orderBy('sort_order')
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -32,7 +32,7 @@ class TaskController extends Controller
         $user = Auth::user();
         
         // Check if user can view this task
-        if ($user->role !== 'superadmin' && $task->assigned_to !== $user->id) {
+        if ($user->role !== 'superadmin' && $user->role !== 'admin' && $task->assigned_to !== $user->id) {
             abort(403);
         }
 
@@ -43,8 +43,8 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         
-        // Allow superadmin to create tasks for anyone, farmers can only create tasks for themselves
-        if ($user->role !== 'superadmin') {
+        // Allow superadmin and admin to create tasks for anyone, farmers can only create tasks for themselves
+        if ($user->role !== 'superadmin' && $user->role !== 'admin') {
             $data = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
@@ -91,7 +91,7 @@ class TaskController extends Controller
         $user = Auth::user();
         
         // Check if user can update this task
-        if ($user->role !== 'superadmin' && $task->assigned_to !== $user->id) {
+        if ($user->role !== 'superadmin' && $user->role !== 'admin' && $task->assigned_to !== $user->id) {
             abort(403);
         }
 
@@ -103,8 +103,8 @@ class TaskController extends Controller
             'status' => 'sometimes|required|in:todo,in_progress,done',
         ]);
 
-        // Only superadmin can change assigned_to
-        if ($user->role === 'superadmin') {
+        // Only superadmin and admin can change assigned_to
+        if ($user->role === 'superadmin' || $user->role === 'admin') {
             $data['assigned_to'] = $request->input('assigned_to');
         }
 
@@ -118,7 +118,7 @@ class TaskController extends Controller
         $user = Auth::user();
         
         // Check if user can delete this task
-        if ($user->role !== 'superadmin' && $task->assigned_to !== $user->id) {
+        if ($user->role !== 'superadmin' && $user->role !== 'admin' && $task->assigned_to !== $user->id) {
             abort(403);
         }
         

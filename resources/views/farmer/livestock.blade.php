@@ -368,6 +368,16 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
+<!-- Required libraries for PDF/Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- jsPDF and autoTable for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 let currentLivestockId = null;
 
@@ -986,26 +996,111 @@ function addBreedingRecord(livestockId) {
 }
 
 function exportToCSV() {
-    const table = $('#livestockTable').DataTable();
-    const data = table.data().toArray();
+    // Get current table data without actions column
+    const tableData = livestockTable.data().toArray();
+    const csvData = [];
     
-    let csv = 'Livestock ID,Type,Breed\n';
-    data.forEach(row => {
-        // Only export the first 3 columns that match our table structure
-        csv += `${row[0]},${row[1]},${row[2]}\n`;
+    // Add headers (excluding Actions column)
+    const headers = ['Livestock ID', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Location', 'Registration Date'];
+    csvData.push(headers.join(','));
+    
+    // Add data rows (excluding Actions column)
+    tableData.forEach(row => {
+        // Extract text content from each cell, excluding the last column (Actions)
+        const rowData = [];
+        for (let i = 0; i < row.length - 1; i++) {
+            let cellText = '';
+            if (row[i]) {
+                // Remove HTML tags and get clean text
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = row[i];
+                cellText = tempDiv.textContent || tempDiv.innerText || '';
+                // Clean up the text (remove extra spaces, newlines)
+                cellText = cellText.replace(/\s+/g, ' ').trim();
+            }
+            // Escape commas and quotes for CSV
+            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                cellText = '"' + cellText.replace(/"/g, '""') + '"';
+            }
+            rowData.push(cellText);
+        }
+        csvData.push(rowData.join(','));
     });
     
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'livestock_inventory.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+    // Create and download CSV file
+    const csvContent = csvData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Farmer_LivestockReport_${downloadCounter}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Increment download counter
+    downloadCounter++;
+    
+    showToast('CSV exported successfully!', 'success');
 }
 
 function exportToPDF() {
-    showToast('PDF export feature coming soon!', 'info');
+    try {
+        // Force custom PDF generation to match superadmin styling
+        // Don't fall back to DataTables PDF export as it has different styling
+        
+        const tableData = livestockTable.data().toArray();
+        const pdfData = [];
+        
+        const headers = ['Livestock ID', 'Tag Number', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Location'];
+        
+        tableData.forEach(row => {
+            const rowData = [
+                row[0] || '', // Livestock ID
+                row[1] || '', // Tag Number
+                row[2] || '', // Type
+                row[3] || '', // Breed
+                row[4] || '', // Age
+                row[5] || '', // Weight
+                row[6] || '', // Health Status
+                row[7] || ''  // Location
+            ];
+            pdfData.push(rowData);
+        });
+        
+        // Create PDF using jsPDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        
+        // Set title
+        doc.setFontSize(18);
+        doc.text('Farmer Livestock Report', 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        
+        // Create table
+        doc.autoTable({
+            head: [headers],
+            body: pdfData,
+            startY: 40,
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
+            alternateRowStyles: { fillColor: [245, 245, 245] }
+        });
+        
+        // Save the PDF
+        doc.save(`Farmer_LivestockReport_${downloadCounter}.pdf`);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showToast('PDF exported successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showToast('Error generating PDF. Please try again.', 'error');
+    }
 }
 
 function printTable() {
@@ -1013,7 +1108,62 @@ function printTable() {
 }
 
 function exportToPNG() {
-    showToast('PNG export functionality will be implemented soon', 'info');
+    // Create a temporary table without the Actions column for export
+    const originalTable = document.getElementById('livestockTable');
+    const tempTable = originalTable.cloneNode(true);
+    
+    // Remove the Actions column header
+    const headerRow = tempTable.querySelector('thead tr');
+    if (headerRow) {
+        const lastHeaderCell = headerRow.lastElementChild;
+        if (lastHeaderCell) {
+            lastHeaderCell.remove();
+        }
+    }
+    
+    // Remove the Actions column from all data rows
+    const dataRows = tempTable.querySelectorAll('tbody tr');
+    dataRows.forEach(row => {
+        const lastDataCell = row.lastElementChild;
+        if (lastDataCell) {
+            lastDataCell.remove();
+        }
+    });
+    
+    // Temporarily add the temp table to the DOM (hidden)
+    tempTable.style.position = 'absolute';
+    tempTable.style.left = '-9999px';
+    tempTable.style.top = '-9999px';
+    document.body.appendChild(tempTable);
+    
+    // Generate PNG using html2canvas
+    html2canvas(tempTable, {
+        scale: 2, // Higher quality
+        backgroundColor: '#ffffff',
+        width: tempTable.offsetWidth,
+        height: tempTable.offsetHeight
+    }).then(canvas => {
+        // Create download link
+        const link = document.createElement('a');
+        link.download = `Farmer_LivestockReport_${downloadCounter}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        // Clean up - remove temporary table
+        document.body.removeChild(tempTable);
+        
+        showToast('PNG exported successfully!', 'success');
+    }).catch(error => {
+        console.error('Error generating PNG:', error);
+        // Clean up on error
+        if (document.body.contains(tempTable)) {
+            document.body.removeChild(tempTable);
+        }
+        showToast('Error generating PNG export', 'error');
+    });
 }
 
 function importCSV(event) {

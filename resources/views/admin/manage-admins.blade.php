@@ -362,6 +362,22 @@
 @endsection
 
 @section('scripts')
+<!-- DataTables Core -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<!-- Required libraries for PDF/Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- jsPDF and autoTable for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 // Initialize DataTable when page loads
 document.addEventListener('DOMContentLoaded', function() {
@@ -521,20 +537,169 @@ $('#adminForm').on('submit', function(e) {
 });
 
 function exportCSV() {
-    // Export table data to CSV
-    const table = $('#adminDataTable').DataTable();
-    const data = table.data().toArray();
-    // Implementation for CSV export
+    // Get current table data without actions column
+    const tableData = adminDataTable.data().toArray();
+    const csvData = [];
+    
+    // Add headers (excluding Actions column)
+    const headers = ['Admin ID', 'Name', 'Email', 'Role', 'Status', 'Registration Date', 'Last Login'];
+    csvData.push(headers.join(','));
+    
+    // Add data rows (excluding Actions column)
+    tableData.forEach(row => {
+        // Extract text content from each cell, excluding the last column (Actions)
+        const rowData = [];
+        for (let i = 0; i < row.length - 1; i++) {
+            let cellText = '';
+            if (row[i]) {
+                // Remove HTML tags and get clean text
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = row[i];
+                cellText = tempDiv.textContent || tempDiv.innerText || '';
+                // Clean up the text (remove extra spaces, newlines)
+                cellText = cellText.replace(/\s+/g, ' ').trim();
+            }
+            // Escape commas and quotes for CSV
+            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                cellText = '"' + cellText.replace(/"/g, '""') + '"';
+            }
+            rowData.push(cellText);
+        }
+        csvData.push(rowData.join(','));
+    });
+    
+    // Create and download CSV file
+    const csvContent = csvData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Admin_ManageAdminsReport_${downloadCounter}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Increment download counter
+    downloadCounter++;
+    
+    showNotification('CSV exported successfully!', 'success');
 }
 
 function exportPNG() {
-    // Export table as PNG
-    window.print();
+    // Create a temporary table without the Actions column for export
+    const originalTable = document.getElementById('dataTable');
+    const tempTable = originalTable.cloneNode(true);
+    
+    // Remove the Actions column header
+    const headerRow = tempTable.querySelector('thead tr');
+    if (headerRow) {
+        const lastHeaderCell = headerRow.lastElementChild;
+        if (lastHeaderCell) {
+            lastHeaderCell.remove();
+        }
+    }
+    
+    // Remove the Actions column from all data rows
+    const dataRows = tempTable.querySelectorAll('tbody tr');
+    dataRows.forEach(row => {
+        const lastDataCell = row.lastElementChild;
+        if (lastDataCell) {
+            lastDataCell.remove();
+        }
+    });
+    
+    // Temporarily add the temp table to the DOM (hidden)
+    tempTable.style.position = 'absolute';
+    tempTable.style.left = '-9999px';
+    tempTable.style.top = '-9999px';
+    document.body.appendChild(tempTable);
+    
+    // Generate PNG using html2canvas
+    html2canvas(tempTable, {
+        scale: 2, // Higher quality
+        backgroundColor: '#ffffff',
+        width: tempTable.offsetWidth,
+        height: tempTable.offsetHeight
+    }).then(canvas => {
+        // Create download link
+        const link = document.createElement('a');
+        link.download = `Admin_ManageAdminsReport_${downloadCounter}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        // Clean up - remove temporary table
+        document.body.removeChild(tempTable);
+        
+        showNotification('PNG exported successfully!', 'success');
+    }).catch(error => {
+        console.error('Error generating PNG:', error);
+        // Clean up on error
+        if (document.body.contains(tempTable)) {
+            document.body.removeChild(tempTable);
+        }
+        showNotification('Error generating PNG export', 'danger');
+    });
 }
 
 function exportPDF() {
-    // Export as PDF
-    window.print();
+    try {
+        // Force custom PDF generation to match superadmin styling
+        // Don't fall back to DataTables PDF export as it has different styling
+        
+        const tableData = dataTable.data().toArray();
+        const pdfData = [];
+        
+        const headers = ['Admin ID', 'Name', 'Email', 'Username', 'Role', 'Status', 'Created At'];
+        
+        tableData.forEach(row => {
+            const rowData = [
+                row[0] || '', // Admin ID
+                row[1] || '', // Name
+                row[2] || '', // Email
+                row[3] || '', // Username
+                row[4] || '', // Role
+                row[5] || '',  // Status
+                row[6] || ''  // Created At
+            ];
+            pdfData.push(rowData);
+        });
+        
+        // Create PDF using jsPDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        
+        // Set title
+        doc.setFontSize(18);
+        doc.text('Admin Manage Admins Report', 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        
+        // Create table
+        doc.autoTable({
+            head: [headers],
+            body: pdfData,
+            startY: 40,
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
+            alternateRowStyles: { fillColor: [245, 245, 245] }
+        });
+        
+        // Save the PDF
+        doc.save(`Admin_ManageAdminsReport_${downloadCounter}.pdf`);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showNotification('PDF exported successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showNotification('Error generating PDF. Please try again.', 'danger');
+    }
 }
 
 function printTable() {

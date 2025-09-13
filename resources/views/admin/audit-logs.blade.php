@@ -1176,8 +1176,25 @@
 @endpush
 
 @push('scripts')
+<!-- DataTables Core -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<!-- Required libraries for PDF/Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- jsPDF and autoTable for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 let auditLogsTable; // global reference
+let downloadCounter = 1;
 
 $(document).ready(function () {
     // ✅ Initialize DataTable
@@ -1262,25 +1279,225 @@ function refreshAuditData() {
 }
 
 function exportCSV() {
-    auditLogsTable.button('.export-csv').trigger();
+    const tableData = auditLogsTable.data().toArray();
+    const csvData = [];
+    
+    // Add headers (all columns for audit logs)
+    const headers = ['Log ID', 'User', 'Role', 'Action', 'Details', 'Timestamp'];
+    csvData.push(headers.join(','));
+    
+    // Add data rows (all columns)
+    tableData.forEach(row => {
+        const rowData = [];
+        for (let i = 0; i < row.length; i++) {
+            let cellText = '';
+            if (row[i]) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = row[i];
+                cellText = tempDiv.textContent || tempDiv.innerText || '';
+                cellText = cellText.replace(/\s+/g, ' ').trim();
+            }
+            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                cellText = '"' + cellText.replace(/"/g, '""') + '"';
+            }
+            rowData.push(cellText);
+        }
+        csvData.push(rowData.join(','));
+    });
+    
+    const csvContent = csvData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Admin_AuditLogsReport_${downloadCounter}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    downloadCounter++;
 }
 
 function exportPDF() {
-    auditLogsTable.button('.export-pdf').trigger();
+    try {
+        // Force custom PDF generation to match superadmin styling
+        // Don't fall back to DataTables PDF export as it has different styling
+        
+        const tableData = auditLogsTable.data().toArray();
+        const pdfData = [];
+        
+        const headers = ['Log ID', 'User', 'Role', 'Action', 'Details', 'Timestamp'];
+        
+        tableData.forEach(row => {
+            const rowData = [];
+            for (let i = 0; i < row.length; i++) {
+                let cellText = '';
+                if (row[i]) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                rowData.push(cellText);
+            }
+            pdfData.push(rowData);
+        });
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+        
+        // Set title
+        doc.setFontSize(18);
+        doc.text('Admin Audit Logs Report', 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        
+        // Add table
+        doc.autoTable({
+            head: [headers],
+            body: pdfData,
+            startY: 40,
+            styles: {
+                fontSize: 8,
+                cellPadding: 2
+            },
+            headStyles: {
+                fillColor: [24, 55, 93],
+                textColor: 255,
+                fontStyle: 'bold'
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245]
+            }
+        });
+        
+        // Save PDF with counter
+        doc.save(`Admin_AuditLogsReport_${downloadCounter}.pdf`);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showNotification('PDF exported successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showNotification('Error generating PDF. Please try again.', 'danger');
+    }
 }
 
 function exportPNG() {
-    const tableElement = document.getElementById('auditLogsTable');
-    html2canvas(tableElement).then(canvas => {
-        let link = document.createElement('a');
-        link.download = 'Audit_Logs.png';
+    const originalTable = document.getElementById('auditLogsTable');
+    const tempTable = originalTable.cloneNode(true);
+    
+    // For audit logs, we include all columns (no Actions column to remove)
+    
+    tempTable.style.position = 'absolute';
+    tempTable.style.left = '-9999px';
+    tempTable.style.top = '-9999px';
+    document.body.appendChild(tempTable);
+    
+    html2canvas(tempTable, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        width: tempTable.offsetWidth,
+        height: tempTable.offsetHeight
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Admin_AuditLogsReport_${downloadCounter}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
+        
+        downloadCounter++;
+        document.body.removeChild(tempTable);
+    }).catch(error => {
+        console.error('Error generating PNG:', error);
+        if (document.body.contains(tempTable)) {
+            document.body.removeChild(tempTable);
+        }
+        showNotification('Error generating PNG export', 'danger');
     });
 }
 
 function printTable() {
-    auditLogsTable.button('.export-print').trigger();
+    try {
+        const tableData = auditLogsTable.data().toArray();
+        
+        if (!tableData || tableData.length === 0) {
+            showNotification('No data available to print', 'warning');
+            return;
+        }
+        
+        // Create print content directly in current page
+        const originalContent = document.body.innerHTML;
+        
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">Audit Logs Report</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                    <thead>
+                        <tr>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Log ID</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Role</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Action</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Details</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+        // Add data rows (excluding Actions column if it exists)
+        tableData.forEach(row => {
+            printContent += '<tr>';
+            for (let i = 0; i < row.length; i++) { // Include all columns for audit logs
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
+            }
+            printContent += '</tr>';
+        });
+        
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+        
+        // Replace page content with print content
+        document.body.innerHTML = printContent;
+        
+        // Print the page
+        window.print();
+        
+        // Restore original content after print dialog closes
+        setTimeout(() => {
+            document.body.innerHTML = originalContent;
+            // Re-initialize any JavaScript that might be needed
+            location.reload(); // Reload to restore full functionality
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in print function:', error);
+        showNotification('Error generating print. Please try again.', 'danger');
+        
+        // Fallback to DataTables print
+        try {
+            auditLogsTable.button('.export-print').trigger();
+        } catch (fallbackError) {
+            console.error('Fallback print also failed:', fallbackError);
+            showNotification('Print failed. Please try again.', 'danger');
+        }
+    }
 }
 
 
