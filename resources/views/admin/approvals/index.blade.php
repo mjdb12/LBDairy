@@ -218,7 +218,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="approveModalLabel">Approve User Registration</h5>
+                <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle mr-2"></i>Approve User Registration</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -243,15 +243,14 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="rejectModalLabel">Reject User Registration</h5>
+                <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle mr-2"></i>Reject User Registration</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to reject this user registration?</p>
-                <div class="mb-3">
-                    <label for="rejectionReason" class="form-label">Rejection Reason <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="rejectionReason" name="rejection_reason" rows="3" required placeholder="Please provide a reason for rejection..."></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="rejectionReason">Reason for Rejection <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="rejectionReason" rows="4" required placeholder="Please provide a reason for rejecting this farmer registration..."></textarea>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>

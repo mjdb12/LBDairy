@@ -316,7 +316,7 @@
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Livestock::count() }}</div>
                 </div>
                 <div class="icon" style="color: #18375d !important;">
-                    <i class="fas fa-cow fa-2x"></i>
+                    <i class="fas fa-tractor fa-2x mr-2"></i>
                 </div>
             </div>
         </div>
@@ -415,7 +415,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form class="modal-content" id="taskForm">
             <div class="modal-header">
-                <h5 class="modal-title" id="taskModalTitle">New Task</h5>
+                <h5 class="modal-title" id="taskModalTitle"><i class="fas fa-plus mr-2"></i> Add New Livestock</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

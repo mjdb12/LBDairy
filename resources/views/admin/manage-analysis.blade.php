@@ -52,7 +52,7 @@
                             <i class="fas fa-search"></i>
                         </span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="custom-search">
+                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="customSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
                     <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
@@ -1053,19 +1053,25 @@ $(document).ready(function () {
         ],
         language: {
             search: "",
-            emptyTable: '<div class="empty-state"><i class="fas fa-chart-line"></i><h5>No productivity data available</h5><p>There are no farms to analyze at this time.</p></div>'
+            emptyTable: `
+                <div class="empty-state">
+                    <i class="fas fa-chart-line"></i>
+                    <h5>No productivity data available</h5>
+                    <p>There are no farms to analyze at this time.</p>
+                </div>`
         }
     });
 
-   $('#custom-search').on('keyup', function() {
-    dataTable.search(this.value).draw();
-});
-
+    // 🔍 Custom search input
+    $('#customSearch').on('keyup', function() {
+        dataTable.search(this.value).draw();
+    });
 
     // Hide default DataTables elements
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
 });
+
 
 // Refresh Pending Farmers Table
 function refreshPendingFarmersTable() {

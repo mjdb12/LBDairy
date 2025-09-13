@@ -929,67 +929,7 @@
                     </button>
                 </div>
             </div>
-            <div class="row mb-3">
-                <!-- Total Livestock -->
-                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalLivestock">0</div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-cow fa-2x" style="color: #18375d !important;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Active Livestock -->
-                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Livestock</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerActiveLivestock">0</div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-check-circle fa-2x" style="color: #18375d !important;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Inactive Livestock -->
-                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Inactive Livestock</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerInactiveLivestock">0</div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-times-circle fa-2x" style="color: #18375d !important;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Total Farms -->
-                <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Farms</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="farmerTotalFarms">0</div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-university fa-2x" style="color: #18375d !important;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <!-- Livestock Table -->
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="livestockTable">
@@ -1011,11 +951,10 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Add Livestock Modal -->
 <div class="modal fade" id="addLivestockModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="fas fa-plus mr-2"></i> Add New Livestock</h5>
@@ -1249,16 +1188,22 @@
     let selectedFarmerName = '';
     let selectedLivestockId = null;
 
-    $(document).ready(function() {
+   $(document).ready(function() {
         console.log('Document ready, loading farmers...');
         loadFarmers();
-        loadFarmerLivestock();
-        updateStats();
         
         // 🔍 Search functionality for Farmers Table
         $('#farmerSearch').on('keyup', function() {
             const searchTerm = $(this).val().toLowerCase();
             $('#farmersTable tbody tr').each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(searchTerm) > -1);
+            });
+        });
+        // Search functionality
+        $('#activeSearch').on('keyup', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('#livestockTable tbody tr').each(function() {
                 const text = $(this).text().toLowerCase();
                 $(this).toggle(text.indexOf(searchTerm) > -1);
             });

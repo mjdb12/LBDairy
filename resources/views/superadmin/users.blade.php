@@ -4,6 +4,55 @@
 
 @push('styles')
 <style>
+     /* User Details Modal Styling */
+    #confirmDeleteModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #confirmDeleteModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #confirmDeleteModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #confirmDeleteModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #confirmDeleteModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #confirmDeleteModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #confirmDeleteModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #confirmDeleteModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
     /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
     .superadmin-modal select.form-control,
     .modal.superadmin-modal select.form-control,
@@ -246,7 +295,7 @@
         100% { opacity: 1; }
     }
     
-    /* Action buttons styling */
+   /* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -268,28 +317,38 @@
         transition: all 0.15s ease-in-out;
         white-space: nowrap;
     }
-    
-    .btn-action-edit {
+
+     .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+     .btn-action-edit {
         background-color: #387057;
         border-color: #387057;
         color: white;
     }
-    
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
-    .btn-action-delete {
+    .btn-action-deletes {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
     }
     
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -422,7 +481,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         padding: 1rem 0.75rem;
-        text-align: left;
+        text-align: center;
         vertical-align: middle;
         position: relative;
         white-space: nowrap;
@@ -575,6 +634,56 @@
             padding: 0.25rem 0.5rem;
         }
     }
+
+    /* User Details Modal Styling */
+    #rejectionModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #rejectionModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #rejectionModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #rejectionModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #rejectionModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #rejectionModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #000000ff !important;
+    }
+    
+    #rejectionModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #rejectionModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
 </style>
 @endpush
 
@@ -676,7 +785,7 @@
                     <input type="text" class="form-control" placeholder="Search users..." id="userSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-add" onclick="showAddUserModal()">
+                    <button class="btn-action btn-action-edit" onclick="showAddUserModal()">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
                     <button class="btn-action btn-action-print" onclick="printTable()">
@@ -821,7 +930,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="userRole">Role *</label>
+                                <label for="userRole">Role <span class="text-danger">*</span></label>
                                 <select class="form-control" id="userRole" name="role" required>
                                     <option value="">Select Role</option>
                                     <option value="farmer">Farmer</option>
@@ -832,7 +941,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="userStatus">Status *</label>
+                                <label for="userStatus">Status <span class="text-danger">*</span></label>
                                 <select class="form-control" id="userStatus" name="status" required>
                                     <option value="pending">Pending</option>
                                     <option value="approved">Approved</option>
@@ -844,14 +953,14 @@
                     <div class="row" id="passwordFields">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="password">Password *</label>
+                                <label for="password">Password <span class="text-danger">*</span></label>
                                 <input type="password" class="form-control" id="password" name="password">
                                 <small class="form-text text-muted">Leave blank to keep existing password when editing</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="passwordConfirmation">Confirm Password *</label>
+                                <label for="passwordConfirmation">Confirm Password <span class="text-danger">*</span></label>
                                 <input type="password" class="form-control" id="passwordConfirmation" name="password_confirmation">
                             </div>
                         </div>
@@ -859,8 +968,8 @@
                     <div id="formNotification" class="mt-2" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-edit">
                         <i class="fas fa-save"></i> Save User
                     </button>
                 </div>
@@ -870,12 +979,13 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
+                <h5 class="modal-title" id="confirmDeleteModalLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
                     Confirm Delete
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -883,17 +993,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+                <p>Are you sure you want to delete this farmer? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteBtn" class="btn-action btn-action-deletes">
                     <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>
     </div>
-</div>
 
 <!-- User Details Modal -->
 <div class="modal fade" id="userDetailsModal" tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
@@ -1652,7 +1761,7 @@ function refreshData() {
     // Show loading indicator
     const refreshBtn = $('button[onclick="refreshData()"]');
     const originalIcon = refreshBtn.html();
-    refreshBtn.html('<i class="fas fa-spinner fa-spin"></i>');
+    refreshBtn.html('<i class="fas fa-spinner fa-spin"></i>Refreshing...');
     refreshBtn.prop('disabled', true);
     
     // Refresh data

@@ -4,6 +4,55 @@
 
 @push('styles')
 <style>
+     /* User Details Modal Styling */
+    #confirmDeleteFarmerModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #confirmDeleteFarmerModal .modal-header { 
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #confirmDeleteFarmerModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #confirmDeleteFarmerModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #confirmDeleteFarmerModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #confirmDeleteFarmerModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #confirmDeleteFarmerModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #confirmDeleteFarmerModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
     /* Farmer Details Modal Styling (ensure header doesn't cover content) */
     #farmerDetailsModal .modal-content {
         border: none;
@@ -283,7 +332,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         padding: 1rem 0.75rem;
-        text-align: left;
+        text-align: center;
         vertical-align: middle;
         position: relative;
         white-space: nowrap;
@@ -503,8 +552,8 @@
     }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -540,6 +589,28 @@
             font-size: 0.8rem;
             padding: 0.25rem 0.5rem;
         }
+    }
+    /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
+    .superadmin-modal select.form-control,
+    .modal.superadmin-modal select.form-control,
+    .superadmin-modal .modal-body select.form-control {
+        min-width: 250px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+        height: auto;
+    }
+    
+    /* Ensure columns don't constrain dropdowns */
+    .superadmin-modal .col-md-6 {
+        min-width: 280px !important;
+        overflow: visible !important;
     }
 </style>
 @endpush
@@ -632,7 +703,7 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmersSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-add" onclick="showAddUserModal()">
+                    <button class="btn-action btn-action-edit" onclick="showAddUserModal()">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
                     <button class="btn-action btn-action-print" onclick="printFarmersTable()">
@@ -789,32 +860,18 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="row">
+                    <div class="row" id="passwordFields">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="userPassword" class="font-weight-bold">Password <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="userPassword" name="password" placeholder="Enter password" required>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('userPassword')">
-                                            <i class="fas fa-eye" id="userPasswordIcon"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                <label for="userPassword">Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="userPassword" name="password" required>
+                                <small class="form-text text-muted">Leave blank to keep existing password when editing</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="userConfirmPassword" class="font-weight-bold">Confirm Password <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="userConfirmPassword" name="confirm_password" placeholder="Confirm password" required>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('userConfirmPassword')">
-                                            <i class="fas fa-eye" id="userConfirmPasswordIcon"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                <label for="userConfirmPassword">Confirm Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="userConfirmPassword" name="confirm_password" required>
                             </div>
                         </div>
                     </div>
@@ -822,10 +879,10 @@
                     
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="fas fa-times"></i> Cancel
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
+                        Cancel
                     </button>
-                                         <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn-action btn-action-edit">
                          <i class="fas fa-save"></i> Save User
                      </button>
                 </div>
@@ -851,7 +908,7 @@
                 <div id="farmerDetailsContent"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -863,7 +920,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editFarmerModalLabel">
-                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit mr-2"></i>
                     Edit Farmer
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -876,13 +933,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFarmerName">Full Name *</label>
+                                <label for="editFarmerName">Full Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editFarmerName" name="name" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFarmerEmail">Email *</label>
+                                <label for="editFarmerEmail">Email <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="editFarmerEmail" name="email" required>
                             </div>
                         </div>
@@ -896,7 +953,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFarmerUsername">Username *</label>
+                                <label for="editFarmerUsername">Username <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editFarmerUsername" name="username" required>
                             </div>
                         </div>
@@ -904,7 +961,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFarmerBarangay">Barangay *</label>
+                                <label for="editFarmerBarangay">Barangay <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editFarmerBarangay" name="barangay" required>
                                     <option value="">Select Barangay</option>
                                     <option value="Abang">Abang</option>
@@ -944,7 +1001,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFarmerStatus">Status *</label>
+                                <label for="editFarmerStatus">Status <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editFarmerStatus" name="status" required>
                                     <option value="">Select Status</option>
                                     <option value="pending">Pending</option>
@@ -965,8 +1022,8 @@
                     <div id="editFarmerFormNotification" class="mt-2" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="updateFarmerBtn">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-edit" id="updateFarmerBtn">
                         <i class="fas fa-save"></i> Update Farmer
                     </button>
                 </div>
@@ -981,7 +1038,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmDeleteFarmerLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
                     Confirm Delete
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -992,8 +1049,8 @@
                 <p>Are you sure you want to delete this farmer? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteFarmerBtn" class="btn btn-danger">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteFarmerBtn" class="btn-action btn-action-deletes">
                     <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
