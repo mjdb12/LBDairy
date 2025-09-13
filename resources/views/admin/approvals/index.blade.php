@@ -56,11 +56,10 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
                 @if($pendingUsers->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="pendingTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-hover" id="pendingTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -102,13 +101,13 @@
                                 <td>{{ $user->created_at->format('M d, Y H:i') }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="{{ route('admin.approvals.show', $user->id) }}" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ route('admin.approvals.show', $user->id) }}" class="btn-action btn-action-ok">
                                             <i class="fas fa-eye mr-1"></i>View
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-success" onclick="approveUser({{ $user->id }})">
+                                        <button type="button" class="btn-action btn-action-edit" onclick="approveUser({{ $user->id }})">
                                             <i class="fas fa-check mr-1"></i>Approve
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="rejectUser({{ $user->id }})">
+                                        <button type="button" class="btn-action btn-action-deletes" onclick="rejectUser({{ $user->id }})">
                                             <i class="fas fa-times mr-1"></i>Reject
                                         </button>
                                     </div>
@@ -127,7 +126,6 @@
             @endif
             </div>
         </div>
-        </div>
     </div>
 
 
@@ -142,7 +140,7 @@
         <div class="card-body">
             @if($approvedUsers->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-hover" id="approvedTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -184,7 +182,7 @@
         <div class="card-body">
             @if($rejectedUsers->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-hover" id="rejectedTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -217,7 +215,7 @@
 
 <!-- Approve User Modal -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">Approve User Registration</h5>
@@ -228,10 +226,10 @@
                 <p class="text-muted">The user will be able to access the system immediately after approval.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
                 <form id="approveForm" method="POST" style="display: inline;">
                     @csrf
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn-action btn-action-edit">
                         <i class="fas fa-check me-2"></i>Approve User
                     </button>
                 </form>
@@ -242,7 +240,7 @@
 
 <!-- Reject User Modal -->
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">Reject User Registration</h5>
@@ -256,11 +254,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
                 <form id="rejectForm" method="POST" style="display: inline;">
                     @csrf
                     <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="btn-action btn-action-deletes">
                         <i class="fas fa-times me-2"></i>Reject User
                     </button>
                 </form>
@@ -413,29 +411,6 @@ function refreshPendingData() {
         line-height: 1.5 !important;
     }
     
-    /* Ensure columns don't constrain dropdowns */
-    .admin-modal .col-md-6 {
-        min-width: 280px !important;
-        overflow: visible !important;
-    }
-    
-    /* Custom styles for user management */
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
-    
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
-    
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
-    
-    .border-left-danger {
-        border-left: 0.25rem solid #e74a3b !important;
-    }
-    
     /* Search and button group alignment */
     .search-controls {
         display: flex;
@@ -519,6 +494,33 @@ function refreshPendingData() {
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
+    /* Custom Badges */
+    .badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35em 0.65em;
+        border-radius: 0.5rem;
+    }
+
+    .badge-success {
+        background-color: #39a400;
+        color: #fff;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .badge-warning {
+        background-color: #f39c12;
+        color: #fff;
+    }
+
+    .badge-info {
+        background-color: #17a2b8;
+        color: #fff;
+    }
     
     /* Ensure all role badges have identical pill shape */
     .badge-danger.badge-pill,
@@ -556,32 +558,6 @@ function refreshPendingData() {
         white-space: nowrap;
         vertical-align: baseline;
     }
-
-    /* User ID link styling - superadmin theme */
-    .user-id-link {
-        color: #18375d;
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-        transition: color 0.2s ease;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        background-color: rgba(24, 55, 93, 0.1);
-        border: 1px solid rgba(24, 55, 93, 0.2);
-    }
-
-    .user-id-link:hover {
-        color: #fff;
-        background-color: #18375d;
-        border-color: #18375d;
-        text-decoration: none;
-    }
-
-    .user-id-link:active {
-        color: #fff;
-        background-color: #122a4e;
-        border-color: #122a4e;
-    }
     
     .btn-group .btn {
         margin-right: 0.25rem;
@@ -604,41 +580,117 @@ function refreshPendingData() {
         animation: pulse 2s infinite;
     }
     
-    /* Override badge colors for status column to ensure proper colors */
-    #usersTable .badge-danger {
-        background-color: #dc3545 !important;
-        color: white !important;
-    }
-    
-    #usersTable .badge-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
-    }
-    
-    #usersTable .badge-success {
-        background-color: #387057 !important;
-        color: white !important;
-    }
-    
-    /* Fix admin role badge text color */
-    #usersTable .badge-warning {
-        background-color: #fca700 !important;
-        color: white !important;
-    }
-    
-    /* Ensure superadmin stays dark blue */
-    #usersTable .badge-primary {
-        background-color: #18375d !important;
-        color: white !important;
-    }
-    
     @keyframes pulse {
         0% { opacity: 1; }
         50% { opacity: 0.5; }
         100% { opacity: 1; }
     }
     
-    /* Action buttons styling */
+    /* ========================= */
+/* Approve Modal Styling     */
+/* ========================= */
+#approveModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#approveModal .modal-header {
+    background: #18375d !important; /* vivid green for approve */
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#approveModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#approveModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#approveModal .modal-body h6 {
+    color: #18375d !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #e3e6f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem !important;
+}
+
+#approveModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #333 !important;
+}
+
+#approveModal .modal-body strong {
+    color: #5a5c69 !important;
+    font-weight: 600;
+}
+
+#approveModal .form-group label {
+    font-weight: 600;
+    color: #39a400;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+
+/* ========================= */
+/* Reject Modal Styling      */
+/* ========================= */
+#rejectModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#rejectModal .modal-header {
+    background: #18375d !important; /* red for reject */
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#rejectModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#rejectModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#rejectModal .modal-body h6 {
+    color: #18375d !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #e3e6f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem !important;
+}
+
+#rejectModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #18375d !important;
+}
+#rejectModal .modal-body strong {
+    color: #18375d !important;
+    font-weight: 600;
+}
+
+#rejectModal .form-group label {
+    font-weight: 600;
+    color: #18375d;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+
+    /* Apply consistent buttons */
+/* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -668,23 +720,23 @@ function refreshPendingData() {
     }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
-    .btn-action-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
+    .btn-action-view-livestock, .btn-action-report-livestock {
+        background-color: #18375d;
+        border-color: #18375d;
         color: white;
     }
     
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
+    .btn-action-view-livestock:hover, .btn-action-report-livestock:hover {
+        background-color: #e69500;
+        border-color: #e69500;
         color: white;
     }
-    
+
     /* Header action buttons styling to match Edit/Delete buttons */
     .btn-action-add {
         background-color: #387057;
@@ -692,9 +744,27 @@ function refreshPendingData() {
         color: white;
     }
     
-    .btn-action-add:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+    .btn-action-ok{
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -710,30 +780,24 @@ function refreshPendingData() {
         color: white !important;
     }
     
-    .btn-action-refresh-pending, .btn-action-refresh-farmers {
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
+    
+    .btn-action-refresh-pending, .btn-action-refresh- {
         background-color: #fca700;
         border-color: #fca700;
         color: white;
     }
     
-    .btn-action-refresh-pending:hover, .btn-action-refresh-farmers:hover {
+    .btn-action-refresh-pending:hover, .btn-action-refresh-:hover {
         background-color: #e69500;
         border-color: #e69500;
         color: white;
     }
 
-    .btn-action-reject {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-reject:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
-    
     .btn-action-tools {
         background-color: #f8f9fa;
         border-color: #dee2e6;
@@ -746,7 +810,7 @@ function refreshPendingData() {
         color: #495057;
     }
     
-    /* Ensure table has enough space for actions column */
+   /* Ensure table has enough space for actions column */
     .table th:last-child,
     .table td:last-child {
         min-width: 200px;
@@ -777,13 +841,7 @@ function refreshPendingData() {
         right: 0;
     }
     
-    #usersTable {
-        width: 100% !important;
-        min-width: 1280px;
-        border-collapse: collapse;
-    }
-    
-    /* Ensure consistent table styling */
+     /* Ensure consistent table styling */
     .table {
         margin-bottom: 0;
     }
@@ -795,70 +853,102 @@ function refreshPendingData() {
     .table-hover tbody tr:hover {
         background-color: rgba(0,0,0,.075);
     }
-    
-    #farmersTable th,
-    #usersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure Registration Date column has enough space */
-    #usersTable th:nth-child(6),
-    #usersTable td:nth-child(6) {
-        min-width: 220px !important;
-        width: 220px !important;
-        white-space: nowrap;
-        overflow: visible;
-        text-overflow: initial;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #usersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #usersTable thead th.sorting,
-    #usersTable thead th.sorting_asc,
-    #usersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #usersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #usersTable thead th.sorting::after,
-    #usersTable thead th.sorting_asc::after,
-    #usersTable thead th.sorting_desc::after {
-        display: none;
-    }
-    
+
+/* General cell styling */
+#pendingTable th,
+#pendingTable td,
+#approvedTable th,
+#approvedTable td,
+#rejectedTable th,
+#rejectedTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Consistent header styling */
+#pendingTable thead th,
+#approvedTable thead th,
+#rejectedTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#pendingTable thead th.sorting,
+#pendingTable thead th.sorting_asc,
+#pendingTable thead th.sorting_desc,
+#approvedTable thead th.sorting,
+#approvedTable thead th.sorting_asc,
+#approvedTable thead th.sorting_desc,
+#rejectedTable thead th.sorting,
+#rejectedTable thead th.sorting_asc,
+#rejectedTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Custom sort indicator positioning */
+#pendingTable thead th::after,
+#approvedTable thead th::after,
+#rejectedTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators */
+#pendingTable thead th.sorting::after,
+#pendingTable thead th.sorting_asc::after,
+#pendingTable thead th.sorting_desc::after,
+#approvedTable thead th.sorting::after,
+#approvedTable thead th.sorting_asc::after,
+#approvedTable thead th.sorting_desc::after,
+#rejectedTable thead th.sorting::after,
+#rejectedTable thead th.sorting_asc::after,
+#rejectedTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* Make table cells wrap instead of forcing them all inline */
+#pendingTable td, 
+#pendingTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#pendingTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#pendingTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
+
 
     /* Ensure consistent table styling */
     .table {
@@ -871,59 +961,6 @@ function refreshPendingData() {
     
     .table-hover tbody tr:hover {
         background-color: rgba(0,0,0,.075);
-    }
-    
-    #farmersTable th,
-    #farmersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #farmersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #farmersTable thead th.sorting,
-    #farmersTable thead th.sorting_asc,
-    #farmersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #farmersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmersTable thead th.sorting::after,
-    #farmersTable thead th.sorting_asc::after,
-    #farmersTable thead th.sorting_desc::after {
-        display: none;
     }
     
     
@@ -952,79 +989,7 @@ function refreshPendingData() {
         left: 0;
         right: 0;
     }
-    
-    /* User ID link styling - superadmin theme */
-    .user-id-link {
-        color: #18375d;
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-        transition: color 0.2s ease;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        background-color: rgba(24, 55, 93, 0.1);
-        border: 1px solid rgba(24, 55, 93, 0.2);
-    }
-    
-    .user-id-link:hover {
-        color: #fff;
-        background-color: #18375d;
-        border-color: #18375d;
-        text-decoration: none;
-    }
-    
-    .user-id-link:active {
-        color: #fff;
-        background-color: #122a4e;
-        border-color: #122a4e;
-    }
-    
-    /* Action buttons styling to match active admins table */
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        min-width: 200px;
-    }
-    
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: 1px solid transparent;
-        border-radius: 0.375rem;
-        cursor: pointer;
-        transition: all 0.15s ease-in-out;
-        white-space: nowrap;
-    }
-    
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
-        color: white;
-    }
-    
-    .btn-action-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
+
     
     /* Ensure table has enough space for actions column */
     .table th:last-child,
@@ -1035,49 +1000,6 @@ function refreshPendingData() {
         vertical-align: middle;
     }
 
-
-    /* User Details Modal Styling */
-    #userDetailsModal .modal-content {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-    }
-    
-    #userDetailsModal .modal-header {
-        background: #18375d !important;
-        color: white !important;
-        border-bottom: none !important;
-        border-radius: 12px 12px 0 0 !important;
-    }
-    
-    #userDetailsModal .modal-title {
-        color: white !important;
-        font-weight: 600;
-    }
-    
-    #userDetailsModal .modal-body {
-        padding: 2rem;
-        background: white;
-    }
-    
-    #userDetailsModal .modal-body h6 {
-        color: #18375d !important;
-        font-weight: 600 !important;
-        border-bottom: 2px solid #e3e6f0;
-        padding-bottom: 0.5rem;
-        margin-bottom: 1rem !important;
-    }
-    
-    #userDetailsModal .modal-body p {
-        margin-bottom: 0.75rem;
-        color: #333 !important;
-    }
-    
-    #userDetailsModal .modal-body strong {
-        color: #5a5c69 !important;
-        font-weight: 600;
-    }
-    
     /* Responsive adjustments */
     @media (max-width: 1200px) {
         .action-buttons {
@@ -1146,22 +1068,22 @@ function refreshPendingData() {
     }
     
     .status-pending {
-        background-color: #fff3cd;
+        background-color: #ffffffff;
         color: #856404;
     }
     
     .status-approved {
-        background-color: #d4edda;
+        background-color: #ffffffff;
         color: #155724;
     }
     
     .status-rejected {
-        background-color: #f8d7da;
+        background-color: #ffffffff;
         color: #721c24;
     }
     
     .status-active {
-        background-color: #d1ecf1;
+        background-color: #ffffffff;
         color: #0c5460;
     }
     
@@ -1191,87 +1113,72 @@ function refreshPendingData() {
         right: 0;
     }
     
-    /* ===== DATATABLE STYLES ===== */
-.dataTables_length {
-    margin-bottom: 1rem;
-}
+  /* DataTables Pagination Styling */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #18375d;
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+    }
+    
+    /* Ensure pagination container is properly positioned */
+    .dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+    
+    .dataTables_wrapper .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0;
+    }
 
-.dataTables_length select {
-    min-width: 80px;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background-color: #fff;
-    margin: 0 0.5rem;
-}
-
-.dataTables_length label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0;
-    font-weight: 500;
-    color: var(--dark-color);
-}
-
-.dataTables_info {
-    padding-top: 0.5rem;
-    font-weight: 500;
-    color: var(--dark-color);
-}
-
-.dataTables_paginate {
-    margin-top: 1rem;
-}
-
-.dataTables_paginate .paginate_button {
-    padding: 0.5rem 0.75rem;
-    margin: 0 0.125rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background-color: #fff;
-    color: var(--dark-color);
-    text-decoration: none;
-    transition: var(--transition-fast);
-}
-
-.dataTables_paginate .paginate_button:hover {
-    background-color: var(--light-color);
-    border-color: var(--primary-light);
-    color: var(--primary-color);
-}
-
-.dataTables_paginate .paginate_button.current {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: white;
-}
-
-.dataTables_paginate .paginate_button.disabled {
-    color: var(--text-muted);
-    cursor: not-allowed;
-    background-color: var(--light-color);
-    border-color: var(--border-color);
-}
-
-.dataTables_filter {
-    margin-bottom: 1rem;
-}
-
-.dataTables_filter input {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background-color: #fff;
-    transition: var(--transition-fast);
-}
-
-.dataTables_filter input:focus {
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-    outline: 0;
-}
     
 </style>
 @endpush

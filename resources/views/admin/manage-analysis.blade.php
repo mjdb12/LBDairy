@@ -79,9 +79,8 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover"s id="farmersTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Farmer ID</th>
@@ -111,11 +110,11 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-action btn-action-view" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="View Details">
+                                    <button class="btn-action btn-action-view-live" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
                                         <span>View</span>
                                     </button>
-                                    <button class="btn-action btn-action-delete" onclick="deleteFarmer('{{ $farmer->id }}')" title="Delete">
+                                    <button class="btn-action btn-action-deletes" onclick="deleteFarmer('{{ $farmer->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
                                         <span>Delete</span>
                                     </button>
@@ -136,7 +135,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
         </div>
     </div>
 
@@ -238,7 +236,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmDeleteModalLabel">
-                    <i class="fas fa-exclamation-triangle text-danger"></i>
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
                     Confirm Deletion
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -250,11 +248,11 @@
                 <p><strong>Farmer ID:</strong> <span id="deleteFarmerId">-</span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                 <form id="deleteFarmerForm" method="POST" style="display: inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="btn-action btn-action-deletes">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </form>
@@ -265,32 +263,30 @@
 
 @push('styles')
 <style>
-    /* Farmer Details Modal Styling (ensure header doesn't cover content) */
+    /* User Details Modal Styling */
     #farmerDetailsModal .modal-content {
         border: none;
         border-radius: 12px;
         box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-        overflow: hidden;
     }
-
+    
     #farmerDetailsModal .modal-header {
         background: #18375d !important;
         color: white !important;
         border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
     }
-
+    
     #farmerDetailsModal .modal-title {
         color: white !important;
         font-weight: 600;
     }
-
+    
     #farmerDetailsModal .modal-body {
         padding: 2rem;
-        background: #ffffff;
-        position: relative;
-        z-index: 1;
+        background: white;
     }
-
+    
     #farmerDetailsModal .modal-body h6 {
         color: #18375d !important;
         font-weight: 600 !important;
@@ -298,21 +294,59 @@
         padding-bottom: 0.5rem;
         margin-bottom: 1rem !important;
     }
-
-    /* Prevent dark blue bars behind headings in farmer details */
-    #farmerDetailsModal .text-primary {
-        background-color: transparent !important;
-        color: #18375d !important;
-    }
-
+    
     #farmerDetailsModal .modal-body p {
         margin-bottom: 0.75rem;
         color: #333 !important;
     }
-
-    #farmerDetailsModal .modal-footer {
-        background: #ffffff;
+    
+    #farmerDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
     }
+
+    /* User Details Modal Styling */
+    #confirmDeleteModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #confirmDeleteModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #confirmDeleteModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #confirmDeleteModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #confirmDeleteModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #confirmDeleteModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #confirmDeleteModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
     /* Custom styles for farmer management */
     .border-left-primary {
         border-left: 0.25rem solid #18375d !important;
@@ -443,6 +477,18 @@
         border-color: #e69500;
         color: white;
     }
+
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
     
     .btn-action-tools {
         background-color: #f8f9fa;
@@ -524,58 +570,80 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #farmersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #farmersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #farmersTable thead th.sorting,
-    #farmersTable thead th.sorting_asc,
-    #farmersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #farmersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmersTable thead th.sorting::after,
-    #farmersTable thead th.sorting_asc::after,
-    #farmersTable thead th.sorting_desc::after {
-        display: none;
-    }
+   /* Apply consistent styling for Farmers, Livestock, and Issues tables */
+#farmersTable th,
+#farmersTable td,
+#livestockTable th,
+#livestockTable td,
+#issuesTable th,
+#issuesTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#farmersTable thead th,
+#livestockTable thead th,
+#issuesTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#farmersTable thead th.sorting,
+#farmersTable thead th.sorting_asc,
+#farmersTable thead th.sorting_desc,
+#livestockTable thead th.sorting,
+#livestockTable thead th.sorting_asc,
+#livestockTable thead th.sorting_desc,
+#issuesTable thead th.sorting,
+#issuesTable thead th.sorting_asc,
+#issuesTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#farmersTable thead th::after,
+#livestockTable thead th::after,
+#issuesTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#farmersTable thead th.sorting::after,
+#farmersTable thead th.sorting_asc::after,
+#farmersTable thead th.sorting_desc::after,
+#livestockTable thead th.sorting::after,
+#livestockTable thead th.sorting_asc::after,
+#livestockTable thead th.sorting_desc::after,
+#issuesTable thead th.sorting::after,
+#issuesTable thead th.sorting_asc::after,
+#issuesTable thead th.sorting_desc::after {
+    display: none;
+}
+
     
     /* DataTables Pagination Styling - FIXED */
     .dataTables_wrapper .dataTables_paginate {
@@ -744,8 +812,15 @@
         background-color: #122a4e;
         border-color: #122a4e;
     }
+    /* Style all labels inside form Modal */
+    #confirmDeleteModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
     
-    /* Action buttons styling to match active admins table */
+/* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -760,9 +835,9 @@
         gap: 0.25rem;
         padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
-        font-weight: 500;
+        border-radius: 0.25rem;
+        text-decoration: none;
         border: 1px solid transparent;
-        border-radius: 0.375rem;
         cursor: pointer;
         transition: all 0.15s ease-in-out;
         white-space: nowrap;
@@ -780,16 +855,83 @@
         color: white;
     }
     
-    .btn-action-delete {
+    .btn-action-view-live, .btn-action-report-livestock {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-view-live:hover, .btn-action-report-livestock:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+
+    /* Header action buttons styling to match Edit/Delete buttons */
+    .btn-action-add {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-deletes {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
     }
     
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
+    
+    .btn-action-refresh-, .btn-action-refresh- {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-:hover, .btn-action-refresh-:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
     }
     
     /* Ensure table has enough space for actions column */

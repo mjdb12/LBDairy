@@ -11,10 +11,12 @@
             </div>
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn-action btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 <form method="POST" action="{{ route('logout') }}" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-logout">Logout</button>
+                    <button type="submit" class="btn-action btn-action-deletes">
+    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+</button>
                 </form>
             </div>
         </div>
@@ -28,7 +30,17 @@
     border-color: #c82333 !important;
     color: white !important;
 }
-
+.btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
 .btn-logout:hover,
 .btn-logout:focus {
     background-color: #a71e2a !important;

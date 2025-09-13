@@ -132,9 +132,8 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="alertsTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Farmer</th>
@@ -175,16 +174,16 @@
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-action btn-action-view" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
+                                            <button class="btn-action btn-action-ok" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
                                             </button>
                                             @if($alert->status === 'active')
-                                            <button class="btn-action btn-action-approve" onclick="markAsResolved('{{ $alert->id }}')" title="Mark as Resolved">
+                                            <button class="btn-action btn-action-edit" onclick="markAsResolved('{{ $alert->id }}')" title="Mark as Resolved">
                                                 <i class="fas fa-check"></i>
                                                 <span>Resolve</span>
                                             </button>
-                                            <button class="btn-action btn-action-reject" onclick="dismissAlert('{{ $alert->id }}')" title="Dismiss Alert">
+                                            <button class="btn-action btn-action-deletes" onclick="dismissAlert('{{ $alert->id }}')" title="Dismiss Alert">
                                                 <i class="fas fa-times"></i>
                                                 <span>Dismiss</span>
                                             </button>
@@ -204,7 +203,6 @@
                         </table>
                     </div>
                 </div>
-                </div>
     </div>
 
 <!-- Alert Details Modal -->
@@ -213,7 +211,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="alertDetailsLabel">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle mr-2"></i>
                     Alert Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -224,7 +222,7 @@
                 <!-- Content will be loaded dynamically -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -236,7 +234,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="statusUpdateLabel">
-                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit mr-2"></i>
                     Update Alert Status
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -248,13 +246,13 @@
                 @method('PATCH')
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="resolution_notes">Response Notes</label>
+                        <label for="resolution_notes">Response Notes <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="resolution_notes" name="resolution_notes" rows="3" placeholder="Add your response or resolution notes for the farmer"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-ok">
                         <i class="fas fa-save"></i> Update Status
                     </button>
                 </div>
@@ -396,76 +394,83 @@ function viewAlertDetails(alertId) {
 }
 
 function loadAlertDetails(alertId) {
+    
     $.ajax({
         url: `/admin/farmer-alerts/${alertId}`,
         method: 'GET',
         success: function(response) {
             if (response.success) {
                 const alert = response.alert;
+                const createdDate = new Date(alert.alert_date).toLocaleString();
+                const resolvedDate = alert.resolved_at ? new Date(alert.resolved_at).toLocaleString() : null;
                 $('#alertDetailsContent').html(`
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Alert Information</h6>
+                                    <h6 class="mb-0">Alert Information</h6>
                                 </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>Topic:</strong></td><td>${alert.topic}</td></tr>
-                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${alert.status_badge_class}">${alert.status}</span></td></tr>
-                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${alert.severity_badge_class}">${alert.severity}</span></td></tr>
-                                        <tr><td><strong>Created:</strong></td><td>${alert.alert_date}</td></tr>
-                                        ${alert.resolved_at ? `<tr><td><strong>Resolved:</strong></td><td>${alert.resolved_at}</td></tr>` : ''}
-                                    </table>
+                                <div class="card-body alert-info-card">
+                                    <p><span class="label">Topic:</span> ${alert.topic}</p>
+                                    <p><span class="label">Status:</span> 
+                                        <span class=label${alert.status_badge_class}">${alert.status}</span>
+                                    </p>
+                                    <p><span class="label">Severity:</span> 
+                                        <span class="label${alert.severity_badge_class}">${alert.severity}</span>
+                                    </p>
+                                    <p><span class="label">Created:</span> ${new Date(alert.alert_date).toLocaleString()}</p>
+                                        ${alert.resolved_at ? `
+                                    <p><span class="label">Resolved:</span> ${new Date(alert.resolved_at).toLocaleString()}</p>
+                                        ` : ''}
                                 </div>
+
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0"><i class="fas fa-user"></i> Farmer Information</h6>
+                                    <h6 class="mb-0">Farmer Information</h6>
                                 </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>Name:</strong></td><td>${alert.issued_by ? alert.issued_by.name : 'N/A'}</td></tr>
-                                        <tr><td><strong>Email:</strong></td><td>${alert.issued_by ? alert.issued_by.email : 'N/A'}</td></tr>
-                                        <tr><td><strong>Phone:</strong></td><td>${alert.issued_by ? alert.issued_by.phone : 'N/A'}</td></tr>
-                                        <tr><td><strong>Farm:</strong></td><td>${alert.livestock && alert.livestock.farm ? alert.livestock.farm.name : 'N/A'}</td></tr>
-                                    </table>
+                                <div class="card-body farmer-info">
+                                    <p><span class="label">Name:</span> ${alert.issued_by ? alert.issued_by.name : 'N/A'}</p>
+                                    <p><span class="label">Email:</span> ${alert.issued_by ? alert.issued_by.email : 'N/A'}</p>
+                                    <p><span class="label">Phone:</span> ${alert.issued_by ? alert.issued_by.phone : 'N/A'}</p>
+                                    <p><span class="label">Farm:</span> ${alert.livestock && alert.livestock.farm ? alert.livestock.farm.name : 'N/A'}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row mt-3">
+                        <!-- Livestock Information -->
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-warning text-white">
-                                    <h6 class="mb-0"><i class="fas fa-paw"></i> Livestock Information</h6>
+                                    <h6 class="mb-0">Livestock Information</h6>
                                 </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>ID:</strong></td><td>${alert.livestock ? alert.livestock.livestock_id : 'N/A'}</td></tr>
-                                        <tr><td><strong>Type:</strong></td><td>${alert.livestock ? alert.livestock.type : 'N/A'}</td></tr>
-                                        <tr><td><strong>Breed:</strong></td><td>${alert.livestock ? alert.livestock.breed : 'N/A'}</td></tr>
-                                        <tr><td><strong>Age:</strong></td><td>${alert.livestock ? alert.livestock.age + ' years' : 'N/A'}</td></tr>
-                                        <tr><td><strong>Health Status:</strong></td><td>${alert.livestock ? alert.livestock.health_status : 'N/A'}</td></tr>
-                                    </table>
+                                <div class="card-body livestock-info-card">
+                                    <p><span class="label">ID:</span> ${alert.livestock ? alert.livestock.livestock_id : 'N/A'}</p>
+                                    <p><span class="label">Type:</span> ${alert.livestock ? alert.livestock.type : 'N/A'}</p>
+                                    <p><span class="label">Breed:</span> ${alert.livestock ? alert.livestock.breed : 'N/A'}</p>
+                                    <p><span class="label">Age:</span> ${alert.livestock ? alert.livestock.age + ' years' : 'N/A'}</p>
+                                    <p><span class="label">Health Status:</span> ${alert.livestock ? alert.livestock.health_status : 'N/A'}</p>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Alert Details -->
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-success text-white">
-                                    <h6 class="mb-0"><i class="fas fa-file-alt"></i> Alert Details</h6>
+                                    <h6 class="mb-0">Alert Details</h6>
                                 </div>
-                                <div class="card-body">
-                                    <h6>Description:</h6>
-                                    <p>${alert.description}</p>
-                                    ${alert.resolution_notes ? `<h6>Resolution Notes:</h6><p>${alert.resolution_notes}</p>` : ''}
+                                <div class="card-body alert-details-card">
+                                    <p><span class="label">Description:</span> ${alert.description}</p>
+                                    ${alert.resolution_notes ? `<p><span class="label">Resolution Notes: </span> ${alert.resolution_notes}</p>` : ''}
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 `);
             }
         },
@@ -480,7 +485,7 @@ function markAsResolved(alertId) {
     currentAction = 'resolved';
     $('#statusUpdateForm').attr('action', `/admin/farmer-alerts/${alertId}/status`);
     $('#statusUpdateForm').append('<input type="hidden" name="status" value="resolved">');
-    $('#statusUpdateLabel').html('<i class="fas fa-check"></i> Mark as Resolved');
+    $('#statusUpdateLabel').html('<i class="fas fa-check mr-2"></i> Mark as Resolved');
     $('#statusUpdateModal').modal('show');
 }
 
@@ -489,7 +494,7 @@ function dismissAlert(alertId) {
     currentAction = 'dismissed';
     $('#statusUpdateForm').attr('action', `/admin/farmer-alerts/${alertId}/status`);
     $('#statusUpdateForm').append('<input type="hidden" name="status" value="dismissed">');
-    $('#statusUpdateLabel').html('<i class="fas fa-times"></i> Dismiss Alert');
+    $('#statusUpdateLabel').html('<i class="fas fa-times mr-2"></i> Dismiss Alert');
     $('#statusUpdateModal').modal('show');
 }
 
@@ -597,23 +602,159 @@ function showToast(message, type = 'info') {
         min-width: 280px !important;
         overflow: visible !important;
     }
-    
-    /* Custom styles for user management */
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
+
+    /* User Details Modal Styling */
+    #statusUpdateModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
     }
     
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
+    #statusUpdateModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
     }
     
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
+    #statusUpdateModal .modal-title {
+        color: white !important;
+        font-weight: 600;
     }
     
-    .border-left-danger {
-        border-left: 0.25rem solid #e74a3b !important;
+    #statusUpdateModal .modal-body {
+        padding: 2rem;
+        background: white;
     }
+    
+    #statusUpdateModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #statusUpdateModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #statusUpdateModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+
+    /* Style all labels inside form Modal */
+    #statusUpdateModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+        /* Farmer Info Card */
+    .farmer-info p {
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+        color: #495057;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Labels */
+    .farmer-info .label {
+        font-weight: 600;
+        color: #18375d;
+        min-width: 90px; /* keeps labels aligned */
+        display: inline-block;
+    }
+
+    /* Card adjustments */
+    .card .card-header {
+        border-radius: 0.5rem 0.5rem 0 0;
+        font-weight: 600;
+    }
+
+    .card .card-body {
+        background: #fdfdfd;
+        border-radius: 0 0 0.5rem 0.5rem;
+    }
+
+        /* Alert Info Card */
+    .alert-info-card p {
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+        color: #495057;
+        display: flex;
+        align-items: center;
+    }
+
+    .alert-info-card .label {
+        font-weight: 600;
+        color: #18375d;
+        min-width: 90px;
+        display: inline-block;
+    }
+
+    /* Custom Badges */
+    .badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35em 0.65em;
+        border-radius: 0.5rem;
+    }
+
+    .badge-success {
+        background-color: #39a400;
+        color: #fff;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .badge-warning {
+        background-color: #f39c12;
+        color: #fff;
+    }
+
+    .badge-info {
+        background-color: #17a2b8;
+        color: #fff;
+    }
+
+    /* Livestock & Alert Details Cards */
+    .livestock-info-card p,
+    .alert-details-card p {
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+        color: #495057;
+        display: flex;
+        align-items: center;
+    }
+
+    .livestock-info-card .label,
+    .alert-details-card .label {
+        font-weight: 600;
+        color: #18375d;
+        min-width: 120px;
+        display: inline-block;
+    }
+
+    /* Add spacing and readability for Alert Details */
+    .alert-details-card {
+        line-height: 1.5;
+    }
+
+    .alert-details-card .label {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    
     
     /* Search and button group alignment */
     .search-controls {
@@ -735,32 +876,6 @@ function showToast(message, type = 'info') {
         white-space: nowrap;
         vertical-align: baseline;
     }
-
-    /* User ID link styling - superadmin theme */
-    .user-id-link {
-        color: #18375d;
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-        transition: color 0.2s ease;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        background-color: rgba(24, 55, 93, 0.1);
-        border: 1px solid rgba(24, 55, 93, 0.2);
-    }
-
-    .user-id-link:hover {
-        color: #fff;
-        background-color: #18375d;
-        border-color: #18375d;
-        text-decoration: none;
-    }
-
-    .user-id-link:active {
-        color: #fff;
-        background-color: #122a4e;
-        border-color: #122a4e;
-    }
     
     .btn-group .btn {
         margin-right: 0.25rem;
@@ -783,33 +898,6 @@ function showToast(message, type = 'info') {
         animation: pulse 2s infinite;
     }
     
-    /* Override badge colors for status column to ensure proper colors */
-    #usersTable .badge-danger {
-        background-color: #dc3545 !important;
-        color: white !important;
-    }
-    
-    #usersTable .badge-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
-    }
-    
-    #usersTable .badge-success {
-        background-color: #387057 !important;
-        color: white !important;
-    }
-    
-    /* Fix admin role badge text color */
-    #usersTable .badge-warning {
-        background-color: #fca700 !important;
-        color: white !important;
-    }
-    
-    /* Ensure superadmin stays dark blue */
-    #usersTable .badge-primary {
-        background-color: #18375d !important;
-        color: white !important;
-    }
     
     @keyframes pulse {
         0% { opacity: 1; }
@@ -817,7 +905,8 @@ function showToast(message, type = 'info') {
         100% { opacity: 1; }
     }
     
-    /* Action buttons styling */
+    /* Apply consistent buttons */
+/* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -845,25 +934,36 @@ function showToast(message, type = 'info') {
         border-color: #387057;
         color: white;
     }
+
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
-    .btn-action-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
+    .btn-action-view-livestock, .btn-action-report-livestock {
+        background-color: #18375d;
+        border-color: #18375d;
         color: white;
     }
     
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
+    .btn-action-view-livestock:hover, .btn-action-report-livestock:hover {
+        background-color: #e69500;
+        border-color: #e69500;
         color: white;
     }
-    
+
     /* Header action buttons styling to match Edit/Delete buttons */
     .btn-action-add {
         background-color: #387057;
@@ -871,9 +971,21 @@ function showToast(message, type = 'info') {
         color: white;
     }
     
-    .btn-action-add:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -889,30 +1001,24 @@ function showToast(message, type = 'info') {
         color: white !important;
     }
     
-    .btn-action-refresh-alerts, .btn-action-refresh-farmers {
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
+    
+    .btn-action-refresh-, .btn-action-refresh- {
         background-color: #fca700;
         border-color: #fca700;
         color: white;
     }
     
-    .btn-action-refresh-alerts:hover, .btn-action-refresh-farmers:hover {
+    .btn-action-refresh-:hover, .btn-action-refresh-:hover {
         background-color: #e69500;
         border-color: #e69500;
         color: white;
     }
 
-    .btn-action-reject {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-reject:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
-    
     .btn-action-tools {
         background-color: #f8f9fa;
         border-color: #dee2e6;
@@ -923,6 +1029,18 @@ function showToast(message, type = 'info') {
         background-color: #e2e6ea;
         border-color: #cbd3da;
         color: #495057;
+    }
+
+    .btn-action-refresh-alerts, .btn-action-refresh-farmers {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-alerts:hover, .btn-action-refresh-farmers:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
     }
     
     /* Ensure table has enough space for actions column */
@@ -975,69 +1093,200 @@ function showToast(message, type = 'info') {
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #usersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
+    /* Apply consistent styling for Alerts table */
+#alertsTable th,
+#alertsTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure table headers have consistent styling */
+#alertsTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#alertsTable thead th.sorting,
+#alertsTable thead th.sorting_asc,
+#alertsTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#alertsTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#alertsTable thead th.sorting::after,
+#alertsTable thead th.sorting_asc::after,
+#alertsTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* Allow table to scroll horizontally if too wide */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Make table cells wrap instead of forcing them all inline */
+#alertsTable td, 
+#alertsTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#alertsTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#alertsTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
+
+     /* User Details Modal Styling */
+    #alertDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #alertDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #alertDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #alertDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #alertDetailsModal .modal-body h6 {
+        color: #ffffffff !important;
+        font-weight: 600 !important;
+    }
+    
+    #alertDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #alertDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+
+    /* Style all labels inside form Modal */
+    #alertDetailsModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+/* DataTables Pagination Styling */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
         text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #495057;
         border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
     }
     
-    /* Ensure Registration Date column has enough space */
-    #usersTable th:nth-child(6),
-    #usersTable td:nth-child(6) {
-        min-width: 220px !important;
-        width: 220px !important;
-        white-space: nowrap;
-        overflow: visible;
-        text-overflow: initial;
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #18375d;
+        background-color: #e9ecef;
+        border-color: #adb5bd;
     }
     
-    /* Ensure all table headers have consistent styling */
-    #usersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
         color: #495057;
         font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
     }
     
-    /* Fix DataTables sorting button overlap */
-    #usersTable thead th.sorting,
-    #usersTable thead th.sorting_asc,
-    #usersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
+    /* Ensure pagination container is properly positioned */
+    .dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
     }
     
-    /* Ensure proper spacing for sort indicators */
-    #usersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
+    .dataTables_wrapper .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
     }
     
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #usersTable thead th.sorting::after,
-    #usersTable thead th.sorting_asc::after,
-    #usersTable thead th.sorting_desc::after {
-        display: none;
+    .dataTables_wrapper .row > div {
+        padding: 0;
     }
-    
+
 
     /* Ensure consistent table styling */
     .table {
@@ -1179,18 +1428,6 @@ function showToast(message, type = 'info') {
         cursor: pointer;
         transition: all 0.15s ease-in-out;
         white-space: nowrap;
-    }
-    
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
-        color: white;
     }
     
     .btn-action-delete {

@@ -36,7 +36,6 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="farmersTable">
                     <thead>
@@ -55,7 +54,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
         </div>
     </div>
 
@@ -84,7 +82,7 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-bordered" id="livestockTable">
+                <table class="table table-bordered table-hover"  id="livestockTable">
                     <thead>
                         <tr>
                             <th>Tag Number</th>
@@ -129,7 +127,7 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-bordered" id="issuesTable">
+                <table class="table table-bordered table-hover" id="issuesTable">
                     <thead>
                         <tr>
                             <th>Livestock ID</th>
@@ -162,15 +160,15 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-action btn-action-view" onclick="viewIssue('{{ $issue->id }}')" title="View">
+                                    <button class="btn-action btn-action-view-issue" onclick="viewIssue('{{ $issue->id }}')" title="View">
                                         <i class="fas fa-eye"></i>
                                         <span>View</span>
                                     </button>
-                                    <button class="btn-action btn-action-edit" onclick="editIssue('{{ $issue->id }}')" title="Edit">
+                                    <button class="btn-action btn-action-edit-issue" onclick="editIssue('{{ $issue->id }}')" title="Edit">
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>
                                     </button>
-                                    <button class="btn-action btn-action-delete" onclick="deleteIssue('{{ $issue->id }}')" title="Delete">
+                                    <button class="btn-action btn-action-delete-issue" onclick="deleteIssue('{{ $issue->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
                                         <span>Delete</span>
                                     </button>
@@ -189,24 +187,28 @@
     </div>
 
 <!-- Report Issue Modal -->
-<div class="modal fade" id="reportIssueModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade admin-modal" id="reportIssueModal" tabindex="-1" role="dialog" aria-labelledby="reportIssueModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Report Issue</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
+                <h5 class="modal-title" id="reportIssueModalLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Report Issue
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="reportIssueForm">
+            <form id="reportIssueForm" onsubmit="submitIssue(event)">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" id="selectedLivestockId" name="livestock_id">
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Issue Type</label>
-                                <select class="form-control" name="issue_type" required>
+                                <label for="issueType" class="font-weight-bold ">Issue Type <span class="text-danger">*</span></label>
+                                <select class="form-control" id="issueType" name="issue_type" required>
                                     <option value="">Select Issue Type</option>
                                     <option value="Health">Health</option>
                                     <option value="Production">Production</option>
@@ -218,8 +220,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Priority</label>
-                                <select class="form-control" name="priority" required>
+                                <label for="priority">Priority <span class="text-danger">*</span></label>
+                                <select class="form-control" id="priority" name="priority" required>
                                     <option value="">Select Priority</option>
                                     <option value="Low">Low</option>
                                     <option value="Medium">Medium</option>
@@ -229,37 +231,47 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Date Reported</label>
-                                <input type="date" class="form-control" name="date_reported" required value="{{ date('Y-m-d') }}">
+                                <label for="dateReported">Date Reported <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="dateReported" name="date_reported" required value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Livestock</label>
-                                <input type="text" class="form-control" id="selectedLivestockInfo" readonly>
+                                <label for="selectedLivestockInfo">Livestock <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="selectedLivestockInfo" name="livestock_info" readonly>
                             </div>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label>Description</label>
-                        <textarea class="form-control" name="description" rows="3" required placeholder="Describe the issue in detail..."></textarea>
+                        <label for="description">Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required placeholder="Describe the issue in detail..."></textarea>
                     </div>
+
                     <div class="form-group">
-                        <label>Notes (Optional)</label>
-                        <textarea class="form-control" name="notes" rows="2" placeholder="Additional notes..."></textarea>
+                        <label for="notes">Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="Additional notes..."></textarea>
                     </div>
+
+                    <div id="formNotification" class="mt-2" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Report Issue</button>
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-action btn-action-report-issue">
+                        <i class="fas fa-paper-plane"></i> Report Issue
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('styles')
@@ -270,6 +282,13 @@
         padding: 2rem;
         border-radius: 12px;
         margin-bottom: 2rem;
+    }
+        /* Style all labels inside Report Issue Modal */
+    #reportIssueModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
     }
 
     /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
@@ -286,6 +305,7 @@
         overflow: visible !important;
         font-size: 0.875rem !important;
         line-height: 1.5 !important;
+        height: auto;
     }
     
     /* Ensure columns don't constrain dropdowns */
@@ -293,24 +313,7 @@
         min-width: 280px !important;
         overflow: visible !important;
     }
-    
-    /* Custom styles for user management */
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
-    
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
-    
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
-    
-    .border-left-danger {
-        border-left: 0.25rem solid #e74a3b !important;
-    }
-    
+  
     /* Search and button group alignment */
     .search-controls {
         display: flex;
@@ -585,15 +588,25 @@
         color: white !important;
     }
     
-    .btn-action-refresh-admins, .btn-action-refresh-farmers {
-        background-color: #fca700;
-        border-color: #fca700;
+    .btn-action-report-farmers, .btn-action-report-livestock {
+        background-color: #18375d;
+        border-color: #18375d;
         color: white;
     }
     
-    .btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
+    .btn-action-report-farmers:hover, .btn-action-report-livestock:hover {
         background-color: #e69500;
         border-color: #e69500;
+        color: white;
+    }
+    .btn-action-report-issue {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-report-issue:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
 
@@ -641,6 +654,15 @@
         width: 100%;
         position: relative;
     }
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
     
     /* Fix pagination positioning for wide tables */
     .table-responsive .dataTables_wrapper .dataTables_paginate {
@@ -671,70 +693,6 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #usersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure Registration Date column has enough space */
-    #usersTable th:nth-child(6),
-    #usersTable td:nth-child(6) {
-        min-width: 220px !important;
-        width: 220px !important;
-        white-space: nowrap;
-        overflow: visible;
-        text-overflow: initial;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #usersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #usersTable thead th.sorting,
-    #usersTable thead th.sorting_asc,
-    #usersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #usersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #usersTable thead th.sorting::after,
-    #usersTable thead th.sorting_asc::after,
-    #usersTable thead th.sorting_desc::after {
-        display: none;
-    }
-    
-
     /* Ensure consistent table styling */
     .table {
         margin-bottom: 0;
@@ -748,59 +706,106 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #farmersTable th,
-    #farmersTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #farmersTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #farmersTable thead th.sorting,
-    #farmersTable thead th.sorting_asc,
-    #farmersTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #farmersTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmersTable thead th.sorting::after,
-    #farmersTable thead th.sorting_asc::after,
-    #farmersTable thead th.sorting_desc::after {
-        display: none;
-    }
-    
+    /* Apply consistent styling for Farmers, Livestock, and Issues tables */
+#farmersTable th,
+#farmersTable td,
+#livestockTable th,
+#livestockTable td,
+#issuesTable th,
+#issuesTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#farmersTable thead th,
+#livestockTable thead th,
+#issuesTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#farmersTable thead th.sorting,
+#farmersTable thead th.sorting_asc,
+#farmersTable thead th.sorting_desc,
+#livestockTable thead th.sorting,
+#livestockTable thead th.sorting_asc,
+#livestockTable thead th.sorting_desc,
+#issuesTable thead th.sorting,
+#issuesTable thead th.sorting_asc,
+#issuesTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#farmersTable thead th::after,
+#livestockTable thead th::after,
+#issuesTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#farmersTable thead th.sorting::after,
+#farmersTable thead th.sorting_asc::after,
+#farmersTable thead th.sorting_desc::after,
+#livestockTable thead th.sorting::after,
+#livestockTable thead th.sorting_asc::after,
+#livestockTable thead th.sorting_desc::after,
+#issuesTable thead th.sorting::after,
+#issuesTable thead th.sorting_asc::after,
+#issuesTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* Allow table to scroll horizontally if too wide */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Make table cells wrap instead of forcing them all inline */
+#issuesTable td, 
+#issuesTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#issuesTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#issuesTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
+
     
     /* Table-responsive wrapper positioning - match active admins spacing */
     .table-responsive {
@@ -911,47 +916,6 @@
     }
 
 
-    /* User Details Modal Styling */
-    #userDetailsModal .modal-content {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-    }
-    
-    #userDetailsModal .modal-header {
-        background: #18375d !important;
-        color: white !important;
-        border-bottom: none !important;
-        border-radius: 12px 12px 0 0 !important;
-    }
-    
-    #userDetailsModal .modal-title {
-        color: white !important;
-        font-weight: 600;
-    }
-    
-    #userDetailsModal .modal-body {
-        padding: 2rem;
-        background: white;
-    }
-    
-    #userDetailsModal .modal-body h6 {
-        color: #18375d !important;
-        font-weight: 600 !important;
-        border-bottom: 2px solid #e3e6f0;
-        padding-bottom: 0.5rem;
-        margin-bottom: 1rem !important;
-    }
-    
-    #userDetailsModal .modal-body p {
-        margin-bottom: 0.75rem;
-        color: #333 !important;
-    }
-    
-    #userDetailsModal .modal-body strong {
-        color: #5a5c69 !important;
-        font-weight: 600;
-    }
     
     /* Responsive adjustments */
     @media (max-width: 1200px) {
@@ -1159,6 +1123,27 @@
         border-color: #e69500;
         color: white;
     }
+    .btn-action-view-issue {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-edit-issue {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    .btn-action-delete-issue {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-view-issue:hover, .btn-action-edit-issue:hover, .btn-action-delete-issue:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
     .farmer-link {
         color: #18375d;
         text-decoration: none;
@@ -1297,13 +1282,13 @@ $(document).ready(function() {
                             html += `
                                 <tr>
                                     <td>${farmer.id}</td>
-                                    <td><a href="#" class="farmer-link" onclick="selectFarmer('${farmer.id}', '${displayName}')">${displayName}</a></td>
+                                    <td><a href="#" class="farmer-link " onclick="selectFarmer('${farmer.id}', '${displayName}')">${displayName}</a></td>
                                     <td>${farmer.email}</td>
                                     <td>${farmer.contact_number || 'N/A'}</td>
                                     <td>${farmer.livestock_count || 0}</td>
                                     <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                        <button class="btn-action btn-action-report-farmers" onclick="selectFarmer('${farmer.id}', '${displayName}')">
                                             <i class="fas fa-exclamation-triangle"></i> Report Issue
                                         </button>
                                     </td>
@@ -1368,7 +1353,7 @@ $(document).ready(function() {
                                     <td>${animal.farm ? animal.farm.name : 'N/A'}</td>
                                     <td><span class="badge badge-${animal.status === 'active' ? 'success' : 'secondary'}">${animal.status}</span></td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm" onclick="selectLivestock('${animal.id}', '${animal.tag_number}')">
+                                        <button class="btn-action btn-action-report-livestock" onclick="selectLivestock('${animal.id}', '${animal.tag_number}')">
                                             <i class="fas fa-exclamation-triangle"></i> Report Issue
                                         </button>
                                     </td>
