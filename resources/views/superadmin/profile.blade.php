@@ -4,6 +4,258 @@
 
 @push('styles')
 <style>
+    /* User Details Modal Styling */
+    #editProfileModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #editProfileModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #editProfileModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #editProfileModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #editProfileModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #editProfileModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #editProfileModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #editProfileModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    #changePasswordModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #changePasswordModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #changePasswordModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #changePasswordModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #changePasswordModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #changePasswordModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #changePasswordModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #changePasswordModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    /* Profile Picture Enhancement */
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .img-profile {
+        border: 6px solid white;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .img-profile:hover {
+        transform: scale(1.08);
+        box-shadow: 0 1.5rem 4rem rgba(24, 55, 93, 0.25);
+    }
+
+    /* Profile Card Thick Blue Border */
+    .profile-card-bordered {
+        background: #18375d;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 4px 32px rgba(24, 55, 93, 0.10);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    /* Card Headers */
+    .card-header {
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+        color: white;
+        border-bottom: none;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h6 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* -------------------------
+   Profile Card (Left Column)
+-------------------------- */
+.profile-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e3e6f0;
+}
+
+.profile-header {
+    background: #f8f9fc;
+    padding: 1.5rem 1rem;
+}
+
+.img-profile {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border: 4px solid #18375d;
+    transition: transform 0.2s ease;
+}
+
+.img-profile:hover {
+    transform: scale(1.05);
+}
+
+/* Profile Picture Action (Camera Button Overlay) */
+.profile-picture-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-picture-actions {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.profile-picture-actions .btn {
+    background: #18375d;
+    color: #fff;
+    border-radius: 10px; /* perfect circle */
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+        .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+
+.profile-picture-actions .btn:hover {
+    background: #18375d;
+    transform: scale(1.1); /* subtle pop effect */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+
+/* Profile Actions */
+.profile-actions .btn {
+    margin: 0 0.25rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.profile-actions .btn-outline-primary:hover {
+    background: #18375d;
+    color: #fff;
+}
+
+.profile-actions .btn-outline-secondary:hover {
+    background: #18375d;
+    color: #fff;
+}
+
+
     /* Custom styles for superadmin profile */
     .border-left-success {
         border-left: 0.25rem solid #1cc88a !important;
@@ -91,6 +343,29 @@
         background-color: #387057 !important;
         border-color: #387057 !important;
         color: white !important;
+    }
+    .btn-action-edit-profile {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+        .btn-action-edit-profile:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-edit-pass {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+        .btn-action-edit-pass:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
     }
     
     .btn-edit-profile:hover,
@@ -372,22 +647,39 @@
 <div class="row fade-in">
     <!-- Profile Card -->
     <div class="col-12 col-md-5 col-lg-4 mb-4">
-        <div class="profile-card-bordered">
-            <div class="card shadow profile-card">
-                <div class="card-body text-center">
-                    <div class="profile-picture-container">
-                        <img id="profilePicture" src="{{ auth()->user()->profile_image ? asset('storage/' . auth()->user()->profile_image) : asset('img/LBDairy.png') }}?t={{ time() }}" alt="Profile Picture" class="img-profile rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;" onerror="this.src='{{ asset('img/LBDairy.png') }}'">
-                    </div>
-                    <h5 class="font-weight-bold mb-1">{{ auth()->user()->name ?? 'No Name Set' }}</h5>
-                    <p class="text-muted mb-3">{{ auth()->user()->email ?? 'No Email Set' }}</p>
-                    <div class="d-flex justify-content-center">
-                        <button class="btn btn-primary btn-sm" onclick="document.getElementById('uploadProfilePicture').click()">
-                            <i class="fas fa-camera mr-2"></i>Change Picture
+        <div class="card shadow profile-card h-100">
+            <!-- Profile Header -->
+            <div class="profile-header text-center p-4">
+                <div class="profile-picture-container position-relative d-inline-block">
+                    <img id="profilePicture" 
+                        src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" 
+                        alt="Profile Picture" 
+                        class="img-profile rounded-circle shadow">
+                    
+                    <!-- Camera Icon Button -->
+                    <div class="profile-picture-actions">
+                        <button class="btn-action btn-action-ok" onclick="document.getElementById('uploadProfilePicture').click()">
+                            <i class="fas fa-camera"></i>
                         </button>
                     </div>
                     <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
                 </div>
+
+                <h3 class="mt-3 mb-1 font-weight-bold">{{ auth()->user()->name }}</h3>
+                <p class="text-muted mb-2">{{ auth()->user()->email }}</p>
+                <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-action btn-action-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
+                    <i class="fas fa-edit mr-1"></i>Edit Profile
+                </button>
+                <button class="btn-action btn-action-edit-pass" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
+                    <i class="fas fa-key mr-1"></i>Change Password
+                </button>
             </div>
+            </div>
+            
+
+            
         </div>
     </div>
     
@@ -399,14 +691,6 @@
                     <i class="fas fa-user-edit"></i>
                     Profile Details
                 </h6>
-                <div class="action-buttons">
-                    <button class="btn btn-sm btn-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
-                        <i class="fas fa-edit mr-2"></i>Edit Profile
-                    </button>
-                    <button class="btn btn-sm btn-change-password" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
-                        <i class="fas fa-key mr-2"></i>Change Password
-                    </button>
-                </div>
             </div>
             
             <div class="card-body">
@@ -586,10 +870,10 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            <i class="fas fa-times mr-2"></i>Cancel
+        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
+            Cancel
         </button>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn-action btn-action-ok">
             <i class="fas fa-save mr-2"></i>Save Changes
         </button>
       </div>
@@ -640,10 +924,10 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            <i class="fas fa-times mr-2"></i>Cancel
+        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
+            Cancel
         </button>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn-action btn-action-ok">
             <i class="fas fa-save mr-2"></i>Change Password
         </button>
       </div>

@@ -4,6 +4,105 @@
 
 @push('styles')
 <style>
+    /* User Details Modal Styling */
+    #editProfileModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #editProfileModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #editProfileModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #editProfileModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #editProfileModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #editProfileModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #editProfileModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #editProfileModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    #changePasswordModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #changePasswordModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #changePasswordModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #changePasswordModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #changePasswordModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #changePasswordModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #changePasswordModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #changePasswordModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
     /* Apply consistent buttons */
 /* Action buttons styling */
     .action-buttons {
@@ -126,20 +225,187 @@
         gap: 0.5rem;
     }
 
-    /* Profile Info Table */
-    .profile-info-table td {
-        color: #333 !important;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #f8f9fc;
+    /* -------------------------
+   Profile Card (Left Column)
+-------------------------- */
+.profile-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e3e6f0;
+}
+
+.profile-header {
+    background: #f8f9fc;
+    padding: 1.5rem 1rem;
+}
+
+.img-profile {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border: 4px solid #18375d;
+    transition: transform 0.2s ease;
+}
+
+.img-profile:hover {
+    transform: scale(1.05);
+}
+
+/* Profile Picture Action (Camera Button Overlay) */
+.profile-picture-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-picture-actions {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.profile-picture-actions .btn {
+    background: #18375d;
+    color: #fff;
+    border-radius: 10px; /* perfect circle */
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
     }
     
-    .profile-info-table th {
-        color: #333 !important;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #f8f9fc;
-        font-weight: 600;
-        width: 180px;
+        .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
     }
+
+
+.profile-picture-actions .btn:hover {
+    background: #18375d;
+    transform: scale(1.1); /* subtle pop effect */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+
+/* Profile Actions */
+.profile-actions .btn {
+    margin: 0 0.25rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.profile-actions .btn-outline-primary:hover {
+    background: #18375d;
+    color: #fff;
+}
+
+.profile-actions .btn-outline-secondary:hover {
+    background: #18375d;
+    color: #fff;
+}
+
+/* -------------------------
+   Profile Info Table (Right Column)
+-------------------------- */
+.profile-info-table {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.profile-info-table th {
+    color: #18375d;
+    font-weight: 600;
+    width: 200px;
+    font-size: 0.9rem;
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #e3e6f0;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.profile-info-table th i {
+    margin-right: 0.5rem;
+    width: 18px;
+    text-align: center;
+}
+
+.profile-info-table td {
+    color: #5a5c69;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #e3e6f0;
+    vertical-align: middle;
+}
+
+.profile-info-table tbody tr:hover {
+    background-color: #f8f9fc;
+    transition: background-color 0.2s ease;
+}
+
+.profile-info-table tbody tr:last-child td,
+.profile-info-table tbody tr:last-child th {
+    border-bottom: none;
+}
+
+/* Empty cell fallback */
+.profile-info-table td:empty::after {
+    content: "Not provided";
+    color: #858796;
+    font-style: italic;
+}
+
+/* -------------------------
+   Custom Action Buttons (Details Header)
+-------------------------- */
+    .btn-action {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.5rem;
+        transition: 0.2s;
+    }
+
+    .btn-action-edit-profile {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit-profile:hover {
+    background-color: #fca700;
+    border-color: #fca700;
+    color: white;
+    }
+
+    .btn-action-edit-pass {
+        background-color: #4466ca;
+        border-color: #4466ca;
+        color: white;
+    }
+
+    .btn-action-edit-pass:hover {
+    background-color: #fca700;
+    border-color: #fca700;
+    color: white;
+    }
+
+.btn-action:hover {
+    opacity: 0.85;
+}
+
 
     /* Stagger Animation */
     .stagger-animation .col-12 {
@@ -311,120 +577,104 @@
 <div class="row fade-in">
     <!-- Profile Card -->
     <div class="col-12 col-md-5 col-lg-4 mb-4">
-        <div class="profile-card-bordered">
-            <div class="card shadow profile-card">
-                <div class="card-body text-center">
-                    <div class="profile-picture-container">
-                        <img id="profilePicture" src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" alt="Profile Picture" class="img-profile rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;">
-                    </div>
-                    <h5 class="font-weight-bold mb-1">{{ auth()->user()->name }}</h5>
-                    <p class="text-muted mb-3">{{ auth()->user()->email }}</p>
-                    <div class="d-flex justify-content-center">
+        <div class="card shadow profile-card h-100">
+            <!-- Profile Header -->
+            <div class="profile-header text-center p-4">
+                <div class="profile-picture-container position-relative d-inline-block">
+                    <img id="profilePicture" 
+                        src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" 
+                        alt="Profile Picture" 
+                        class="img-profile rounded-circle shadow">
+                    
+                    <!-- Camera Icon Button -->
+                    <div class="profile-picture-actions">
                         <button class="btn-action btn-action-ok" onclick="document.getElementById('uploadProfilePicture').click()">
-                            <i class="fas fa-camera mr-2"></i>Change Picture
+                            <i class="fas fa-camera"></i>
                         </button>
                     </div>
                     <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
                 </div>
+
+                <h3 class="mt-3 mb-1 font-weight-bold">{{ auth()->user()->name }}</h3>
+                <p class="text-muted mb-2">{{ auth()->user()->email }}</p>
+                <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-action btn-action-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
+                    <i class="fas fa-edit mr-1"></i>Edit Profile
+                </button>
+                <button class="btn-action btn-action-edit-pass" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
+                    <i class="fas fa-key mr-1"></i>Change Password
+                </button>
             </div>
+            </div>
+            
+
+            
         </div>
     </div>
     
     <!-- Profile Details -->
     <div class="col-12 col-md-7 col-lg-8 mb-4">
         <div class="card shadow h-100">
-            <div class="card-header">
-                <h6>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
                     <i class="fas fa-user-edit"></i>
                     Profile Details
                 </h6>
-                <div class="action-buttons">
-                    <button class="btn-action btn-sm btn-action-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
-                        <i class="fas fa-edit mr-2"></i>Edit Profile
-                    </button>
-                    <button class="btn-action btn-sm btn-action-edit-pass" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
-                        <i class="fas fa-key mr-2"></i>Change Password
-                    </button>
-                </div>
             </div>
             
-           <div class="card-body">
-    <div class="table-responsive">
-        <table class="table table-borderless mb-0 profile-info-table">
-            <tbody>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-user mr-2" style="color: #18375d;"></i> Full Name
-                    </th>
-                    <td>{{ auth()->user()->name ?? 'Not provided' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-envelope mr-2" style="color: #18375d;"></i> Email
-                    </th>
-                    <td>{{ auth()->user()->email ?? 'Not provided' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-phone mr-2" style="color: #18375d;"></i> Phone
-                    </th>
-                    <td>{{ auth()->user()->phone ?? 'Not provided' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-user-shield mr-2" style="color: #18375d;"></i> Position
-                    </th>
-                    <td>{{ auth()->user()->position ?? 'Super Admin' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-map-marker-alt mr-2" style="color: #18375d;"></i> Barangay
-                    </th>
-                    <td>{{ auth()->user()->barangay ?? 'Not specified' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-home mr-2" style="color: #18375d;"></i> Address
-                    </th>
-                    <td>{{ auth()->user()->address ?? 'Not provided' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-calendar-alt mr-2" style="color: #18375d;"></i> Member Since
-                    </th>
-                    <td>{{ auth()->user()->created_at ? auth()->user()->created_at->format('F j, Y') : 'Unknown' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-clock mr-2" style="color: #18375d;"></i> Last Updated
-                    </th>
-                    <td>{{ auth()->user()->updated_at ? auth()->user()->updated_at->format('F j, Y g:i A') : 'Never' }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-user-tag mr-2" style="color: #18375d;"></i> Role
-                    </th>
-                    <td>
-                        <span class="badge badge-primary">{{ ucfirst(auth()->user()->role ?? 'Unknown') }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <i class="fas fa-check-circle mr-2" style="color: #18375d;"></i> Status
-                    </th>
-                    <td>
-                        <span class="badge badge-success">{{ ucfirst(auth()->user()->status ?? 'Active') }}</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0 profile-info-table">
+                        <tbody>
+                            <tr>
+                                <th><i class="fas fa-user mr-2"></i> Full Name</th>
+                                <td>{{ auth()->user()->name ?? 'Not provided' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-envelope mr-2 "></i> Email</th>
+                                <td>{{ auth()->user()->email ?? 'Not provided' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-phone mr-2 "></i> Phone</th>
+                                <td>{{ auth()->user()->phone ?? 'Not provided' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-user-shield mr-2 "></i> Position</th>
+                                <td>{{ auth()->user()->position ?? 'Super Admin' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-map-marker-alt mr-2 "></i> Barangay</th>
+                                <td>{{ auth()->user()->barangay ?? 'Not specified' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-home mr-2 "></i> Address</th>
+                                <td>{{ auth()->user()->address ?? 'Not provided' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-calendar-alt mr-2 "></i> Member Since</th>
+                                <td>{{ auth()->user()->created_at ? auth()->user()->created_at->format('F j, Y') : 'Unknown' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-clock mr-2 "></i> Last Updated</th>
+                                <td>{{ auth()->user()->updated_at ? auth()->user()->updated_at->format('F j, Y g:i A') : 'Never' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-user-tag mr-2 "></i> Role</th>
+                                <td><span class="badge badge-primary">{{ ucfirst(auth()->user()->role ?? 'Unknown') }}</span></td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-check-circle mr-2 "></i> Status</th>
+                                <td><span class="badge badge-success">{{ ucfirst(auth()->user()->status ?? 'Active') }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 
 <!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
@@ -444,7 +694,7 @@
           <div class="form-group">
               <label for="editFullName">
                   <i class="fas fa-user mr-2"></i>Full Name
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name) }}" required>
               @error('name')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -453,7 +703,7 @@
           <div class="form-group">
               <label for="editEmail">
                   <i class="fas fa-envelope mr-2"></i>Email
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email) }}" required>
               @error('email')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -462,7 +712,7 @@
           <div class="form-group">
               <label for="editPhone">
                   <i class="fas fa-phone mr-2"></i>Contact Number
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone) }}">
               @error('phone')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -471,7 +721,7 @@
           <div class="form-group">
               <label for="editBarangay">
                   <i class="fas fa-map-marker-alt mr-2"></i>Barangay
-              </label>
+              <span class="text-danger">*</span></label>
               <select class="form-control @error('barangay') is-invalid @enderror" id="editBarangay" name="barangay" required>
                   <option value="">Select Barangay</option>
                   <option value="Abang" {{ old('barangay', auth()->user()->barangay) == 'Abang' ? 'selected' : '' }}>Abang</option>
@@ -514,7 +764,7 @@
           <div class="form-group">
               <label for="editPosition">
                   <i class="fas fa-user-shield mr-2"></i>Position
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('position') is-invalid @enderror" id="editPosition" name="position" value="{{ old('position', auth()->user()->position ?? 'Admin') }}">
               @error('position')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -523,7 +773,7 @@
           <div class="form-group">
               <label for="editAddress">
                   <i class="fas fa-map-marker-alt mr-2"></i>Address
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address) }}">
               @error('address')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -559,7 +809,7 @@
           <div class="form-group">
               <label for="currentPassword">
                   <i class="fas fa-lock mr-2"></i>Current Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
               @error('current_password')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -568,7 +818,7 @@
           <div class="form-group">
               <label for="newPassword">
                   <i class="fas fa-key mr-2"></i>New Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
               @error('password')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -577,7 +827,7 @@
           <div class="form-group">
               <label for="confirmPassword">
                   <i class="fas fa-check-circle mr-2"></i>Confirm New Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="confirmPassword" name="password_confirmation" required>
               @error('password_confirmation')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -586,7 +836,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
-            <i class="fas fa-times mr-2"></i>Cancel
+            Cancel
         </button>
         <button type="submit" class="btn-action btn-action-ok">
             <i class="fas fa-save mr-2"></i>Change Password

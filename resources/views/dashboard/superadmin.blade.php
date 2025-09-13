@@ -11,28 +11,6 @@
             </h1>
             <p>System-wide overview and management controls for the entire dairy management system.</p>
         </div>
-        <div class="notification-bell">
-            <div class="dropdown">
-                <button class="btn btn-outline-primary dropdown-toggle position-relative" type="button" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge badge-danger notification-count" id="notificationCount" style="display: none;">0</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right notification-dropdown" aria-labelledby="notificationDropdown">
-                    <h6 class="dropdown-header">
-                        <i class="fas fa-bell mr-2"></i>Notifications
-                    </h6>
-                    <div id="notificationList">
-                        <div class="dropdown-item text-center text-muted">
-                            <i class="fas fa-spinner fa-spin"></i> Loading notifications...
-                        </div>
-                    </div>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-center" href="#" onclick="markAllAsRead()">
-                        <i class="fas fa-check-double mr-2"></i>Mark all as read
-                    </a>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -111,8 +89,8 @@
                     <i class="fas fa-tasks"></i>
                     Task Board
                 </h6>
-                <button class="custom-task-btn" id="addTaskBtn">
-                    <i class="fas fa-plus"></i> New Task
+                <button class="btn-action btn-action-edit" id="addTaskBtn">
+                    <i class="fas fa-plus mr-2"></i> New Task
                 </button>
             </div>
             <div class="card-body">
@@ -190,7 +168,7 @@
 
 <!-- Task Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <form class="modal-content" id="taskForm">
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalTitle">New Task</h5>
@@ -201,16 +179,16 @@
             <div class="modal-body">
                 <input type="hidden" id="taskId">
                 <div class="form-group">
-                    <label for="taskTitle">Title</label>
+                    <label for="taskTitle">Title<span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="taskTitle" required maxlength="255">
                 </div>
                 <div class="form-group">
-                    <label for="taskDescription">Description</label>
+                    <label for="taskDescription">Description<span class="text-danger">*</span></label>
                     <textarea class="form-control" id="taskDescription" rows="3"></textarea>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="taskPriority">Priority</label>
+                        <label for="taskPriority">Priority<span class="text-danger">*</span></label>
                         <select class="form-control" id="taskPriority">
                             <option value="low">Low</option>
                             <option value="medium" selected>Medium</option>
@@ -218,14 +196,14 @@
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="taskDueDate">Due Date</label>
+                        <label for="taskDueDate">Due Date<span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="taskDueDate">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary" id="taskSubmitBtn">Add Task</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn-action btn-action-edi" id="taskSubmitBtn">Add Task</button>
             </div>
         </form>
     </div>
@@ -260,6 +238,102 @@
 
 @push('styles')
 <style>
+
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+
+     .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+     .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    /* User Details Modal Styling */
+    #taskModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #taskModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #taskModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #taskModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #taskModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #taskModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #taskModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #taskModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
 .dashboard-card {
     transition: transform 0.2s ease-in-out;
     background: #fff !important;

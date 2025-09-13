@@ -4,6 +4,56 @@
 
 @push('styles')
 <style>
+    /* User Details Modal Styling */
+    #logDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #logDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #logDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #logDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #logDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #logDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #logDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #logDetailsModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
     /* Custom styles for audit logs */
     .border-left-success {
         border-left: 0.25rem solid #1cc88a !important;
@@ -367,15 +417,15 @@
         font-size: 0.875rem;
     }
     
-    .btn-action-view {
-        background-color: #4e73df;
-        border-color: #4e73df;
+    .btn-action-add {
+        background-color: #18375d;
+        border-color: #18375d;
         color: white;
     }
     
-    .btn-action-view:hover {
-        background-color: #2e59d9;
-        border-color: #2e59d9;
+    .btn-action-add:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -455,183 +505,114 @@
         vertical-align: baseline;
     }
     
-    /* Security Alerts Table Styling - Match User Management */
-    #securityAlertsTable {
-        width: 100% !important;
-        min-width: 1000px;
-        border-collapse: collapse;
-    }
-    
-    #securityAlertsTable th,
-    #securityAlertsTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    #securityAlertsTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap for Security Alerts */
-    #securityAlertsTable thead th.sorting,
-    #securityAlertsTable thead th.sorting_asc,
-    #securityAlertsTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators - Security Alerts */
-    #securityAlertsTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* DataTables sorting arrows - Security Alerts */
-    #securityAlertsTable thead th.sorting,
-    #securityAlertsTable thead th.sorting_asc,
-    #securityAlertsTable thead th.sorting_desc {
-        cursor: pointer !important;
-        position: relative !important;
-        padding-right: 2rem !important;
-    }
-    
-    #securityAlertsTable thead th.sorting::after,
-    #securityAlertsTable thead th.sorting_asc::after,
-    #securityAlertsTable thead th.sorting_desc::after {
-        content: '' !important;
-        position: absolute !important;
-        right: 0.5rem !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        width: 0 !important;
-        height: 0 !important;
-        border-left: 4px solid transparent !important;
-        border-right: 4px solid transparent !important;
-        display: block !important;
-    }
-    
-    #securityAlertsTable thead th.sorting::after {
-        border-top: 4px solid #6c757d !important;
-        border-bottom: 4px solid #6c757d !important;
-    }
-    
-    #securityAlertsTable thead th.sorting_asc::after {
-        border-bottom: 4px solid #495057 !important;
-    }
-    
-    #securityAlertsTable thead th.sorting_desc::after {
-        border-top: 4px solid #495057 !important;
-    }
-    
-    /* User Activity Table Styling - Match User Management */
-    #userActivityTable {
-        width: 100% !important;
-        min-width: 800px;
-        border-collapse: collapse;
-    }
-    
-    #userActivityTable th,
-    #userActivityTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    #userActivityTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap for User Activity */
-    #userActivityTable thead th.sorting,
-    #userActivityTable thead th.sorting_asc,
-    #userActivityTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators - User Activity */
-    #userActivityTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* DataTables sorting arrows - User Activity */
-    #userActivityTable thead th.sorting,
-    #userActivityTable thead th.sorting_asc,
-    #userActivityTable thead th.sorting_desc {
-        cursor: pointer !important;
-        position: relative !important;
-        padding-right: 2rem !important;
-    }
-    
-    #userActivityTable thead th.sorting::after,
-    #userActivityTable thead th.sorting_asc::after,
-    #userActivityTable thead th.sorting_desc::after {
-        content: '' !important;
-        position: absolute !important;
-        right: 0.5rem !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        width: 0 !important;
-        height: 0 !important;
-        border-left: 4px solid transparent !important;
-        border-right: 4px solid transparent !important;
-        display: block !important;
-    }
-    
-    #userActivityTable thead th.sorting::after {
-        border-top: 4px solid #6c757d !important;
-        border-bottom: 4px solid #6c757d !important;
-    }
-    
-    #userActivityTable thead th.sorting_asc::after {
-        border-bottom: 4px solid #495057 !important;
-    }
-    
-    #userActivityTable thead th.sorting_desc::after {
-        border-top: 4px solid #495057 !important;
-    }
+    /* Apply consistent styling for tables */
+
+#securityAlertsTable th,
+#securityAlertsTable td{
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#securityAlertsTable thead th{
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#securityAlertsTable thead th.sorting,
+#securityAlertsTable thead th.sorting_asc,
+#securityAlertsTable thead th.sorting_desc{
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#securityAlertsTable thead th::after{
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#securityAlertsTable thead th.sorting::after,
+#securityAlertsTable thead th.sorting_asc::after,
+#securityAlertsTable thead th.sorting_desc::after{
+    display: none;
+}
+
+//
+#userActivityTable th,
+#userActivityTable td{
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#userActivityTable thead th{
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#userActivityTable thead th.sorting,
+#userActivityTable thead th.sorting_asc,
+#userActivityTable thead th.sorting_desc{
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#userActivityTable thead th::after{
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#userActivityTable thead th.sorting::after,
+#userActivityTable thead th.sorting_asc::after,
+#userActivityTable thead th.sorting_desc::after{
+    display: none;
+}
     
     /* Ensure table has enough space for actions column */
     .table th:last-child,
@@ -654,87 +635,57 @@
     }
 
     #auditDataTable th,
-    #auditDataTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
+#auditDataTable td{
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
 
-    /* Ensure all table headers have consistent styling */
-    #auditDataTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: left;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
+/* Ensure all table headers have consistent styling */
+#auditDataTable thead th{
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
 
-    /* Fix DataTables sorting button overlap for Audit Data */
-    #auditDataTable thead th.sorting,
-    #auditDataTable thead th.sorting_asc,
-    #auditDataTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
+/* Fix DataTables sorting button overlap */
+#auditDataTable thead th.sorting,
+#auditDataTable thead th.sorting_asc,
+#auditDataTable thead th.sorting_desc{
+    padding-right: 2rem !important;
+}
 
-    /* Ensure proper spacing for sort indicators - Audit Data */
-    #auditDataTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
+/* Ensure proper spacing for sort indicators */
+#auditDataTable thead th::after{
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
 
-    /* DataTables sorting arrows - Audit Data */
-    #auditDataTable thead th.sorting,
-    #auditDataTable thead th.sorting_asc,
-    #auditDataTable thead th.sorting_desc {
-        cursor: pointer !important;
-        position: relative !important;
-        padding-right: 2rem !important;
-    }
-
-    #auditDataTable thead th.sorting::after,
-    #auditDataTable thead th.sorting_asc::after,
-    #auditDataTable thead th.sorting_desc::after {
-        content: '' !important;
-        position: absolute !important;
-        right: 0.5rem !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        width: 0 !important;
-        height: 0 !important;
-        border-left: 4px solid transparent !important;
-        border-right: 4px solid transparent !important;
-        display: block !important;
-    }
-
-    #auditDataTable thead th.sorting::after {
-        border-top: 4px solid #6c757d !important;
-        border-bottom: 4px solid #6c757d !important;
-    }
-
-    #auditDataTable thead th.sorting_asc::after {
-        border-bottom: 4px solid #495057 !important;
-    }
-
-    #auditDataTable thead th.sorting_desc::after {
-        border-top: 4px solid #495057 !important;
-    }
+/* Remove default DataTables sort indicators to prevent overlap */
+#auditDataTable thead th.sorting::after,
+#auditDataTable thead th.sorting_asc::after,
+#auditDataTable thead th.sorting_desc::after{
+    display: none;
+}
     
     /* Table responsiveness and spacing */
     .table-responsive {
@@ -804,7 +755,6 @@
 @endpush
 
 @section('content')
-<div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -961,11 +911,11 @@
                     <input type="text" class="form-control" placeholder="Search alerts..." id="securitySearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh" onclick="refreshSecurityAlerts()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
                     <button class="btn-action btn-action-print" onclick="printSecurityTable()">
                         <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshSecurityAlerts()">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
@@ -1008,7 +958,7 @@
                             </td>
                             <td>{{ $alert->details ?? 'N/A' }}</td>
                             <td>
-                                <button class="btn-action btn-action-view" onclick="investigateAlert('{{ $alert->id }}')" title="Investigate">
+                                <button class="btn-action btn-action-add" onclick="investigateAlert('{{ $alert->id }}')" title="Investigate">
                                     <i class="fas fa-search"></i>
                                     <span>Investigate</span>
                                 </button>
@@ -1257,15 +1207,14 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Log Details Modal -->
 <div class="modal fade" id="logDetailsModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fas fa-history"></i>
+                    <i class="fas fa-history mr-2"></i>
                     Audit Log Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal">
@@ -1276,7 +1225,7 @@
                 <!-- Content will be loaded here -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -1934,40 +1883,22 @@ function openLogDetails(logId) {
     
     // Create compact content similar to other modals
     const logDetailsHtml = `
-        <div class="table-responsive">
-            <table class="table table-sm table-borderless">
-                <tbody>
-                    <tr>
-                        <td class="font-weight-bold text-muted" style="width: 30%;">Log ID:</td>
-                        <td>${cleanData[0]}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-weight-bold text-muted">Timestamp:</td>
-                        <td>${cleanData[1]}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-weight-bold text-muted">User:</td>
-                        <td>${cleanData[2]}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-weight-bold text-muted">Action:</td>
-                        <td>${cleanData[3]}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-weight-bold text-muted">Severity:</td>
-                        <td><span class="badge badge-${getSeverityBadgeClass(cleanData[7])}">${cleanData[7]}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="font-weight-bold text-muted">IP Address:</td>
-                        <td>${cleanData[6]}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-weight-bold text-muted">Details:</td>
-                        <td>${cleanData[5] || 'No additional details available'}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="row">
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Log Information</h6>
+        <p><strong>Log ID:</strong> ${cleanData[0]}</p>
+        <p><strong>Timestamp:</strong> ${cleanData[1]}</p>
+        <p><strong>User:</strong> ${cleanData[2]}</p>
+        <p><strong>Action:</strong> ${cleanData[3]}</p>
+    </div>
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
+        <p><strong>Severity:</strong> <span class="badge badge-${getSeverityBadgeClass(cleanData[7])}">${cleanData[7]}</span></p>
+        <p><strong>IP Address:</strong> ${cleanData[6]}</p>
+        <p><strong>Details:</strong> ${cleanData[5] || 'No additional details available'}</p>
+    </div>
+</div>
+
     `;
     
     // Set the content and show modal

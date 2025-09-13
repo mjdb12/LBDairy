@@ -4,6 +4,149 @@
 
 @push('styles')
 <style>
+     /* User Details Modal Styling */
+    #deleteConfirmModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #deleteConfirmModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #deleteConfirmModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #deleteConfirmModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #deleteConfirmModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #deleteConfirmModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #deleteConfirmModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #deleteConfirmModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+    
+    /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
+    .superadmin-modal select.form-control,
+    .modal.superadmin-modal select.form-control,
+    .superadmin-modal .modal-body select.form-control {
+        min-width: 250px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+        height: auto;
+    }
+    
+    /* Ensure columns don't constrain dropdowns */
+    .superadmin-modal .col-md-6 {
+        min-width: 280px !important;
+        overflow: visible !important;
+    }
+
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+
+     .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+     .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-edit-profile {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit-profile:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
     /* Search and button group alignment */
     .search-controls {
         display: flex;
@@ -68,6 +211,114 @@
         .search-controls .input-group {
             max-width: 100% !important;
         }
+    }
+
+    #farmAnalysisTable th,
+    #farmAnalysisTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+
+    /* Table headers styling */
+    #farmAnalysisTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    /* Fix DataTables sorting button overlap */
+    #farmAnalysisTable thead th.sorting,
+    #farmAnalysisTable thead th.sorting_asc,
+    #farmAnalysisTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #farmAnalysisTable thead th.sorting::after,
+    #farmAnalysisTable thead th.sorting_asc::after,
+    #farmAnalysisTable thead th.sorting_desc::after {
+        display: none;
+    }
+
+    /* DataTables Pagination Styling */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        margin-bottom: 0.75rem !important; /* Match farmers directory gap */
+        clear: both;
+        width: 100%;
+        float: left !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #18375d;
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+    }
+
+    /* Ensure pagination container is properly positioned */
+    .dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .dataTables_wrapper .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+
+    .dataTables_wrapper .row > div {
+        padding: 0;
     }
 </style>
 @endpush
@@ -374,7 +625,7 @@
         <div class="modal-content superadmin-modal">
             <div class="modal-header">
                 <h5 class="modal-title" id="farmEditModalLabel">
-                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit mr-2"></i>
                     Edit Farm
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -389,7 +640,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFarmName">Farm Name *</label>
+                                <label for="editFarmName">Farm Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editFarmName" name="name" required>
                             </div>
                         </div>
@@ -423,7 +674,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFarmStatus">Status *</label>
+                                <label for="editFarmStatus">Status <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editFarmStatus" name="status" required>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
@@ -437,8 +688,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-edit">
                         <i class="fas fa-save"></i> Update Farm
                     </button>
                 </div>
@@ -453,7 +704,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteConfirmModalLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
                     Confirm Delete
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -464,8 +715,8 @@
                 <p>Are you sure you want to delete this farm? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-delete" id="confirmDeleteBtn">
                     <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
@@ -1139,8 +1390,8 @@ function showNotification(message, type) {
     #farmAnalysisTable .btn-action.btn-action-edit:hover,
     .action-buttons .btn-action.btn-action-edit:hover,
     .btn-action.btn-action-edit:hover {
-        background-color: #2d5a47 !important;
-        border-color: #2d5a47 !important;
+        background-color: #fca700 !important;
+        border-color: #fca700 !important;
         color: white !important;
     }
     
@@ -1177,8 +1428,8 @@ function showNotification(message, type) {
     #farmAnalysisTable .btn-action.btn-action-delete:hover,
     .action-buttons .btn-action.btn-action-delete:hover,
     .btn-action.btn-action-delete:hover {
-        background-color: #c82333 !important;
-        border-color: #c82333 !important;
+        background-color: #fca700 !important;
+        border-color: #fca700 !important;
         color: white !important;
     }
     

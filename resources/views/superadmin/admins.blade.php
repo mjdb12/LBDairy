@@ -165,76 +165,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Action buttons styling to match user management */
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        min-width: 200px;
-    }
-    
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: 1px solid transparent;
-        border-radius: 0.375rem;
-        cursor: pointer;
-        transition: all 0.15s ease-in-out;
-        white-space: nowrap;
-    }
-    
-    .btn-action-approve {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-approve:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
-        color: white;
-    }
-    
-    .btn-action-reject {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-reject:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
-    
-    .btn-action-toggle {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-    }
-    
-    .btn-action-toggle:hover {
-        background-color: #5a6268;
-        border-color: #5a6268;
-        color: white;
-    }
-    
-    .btn-action-view {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-    }
-    
-    .btn-action-view:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-        color: white;
-    }
     
     /* Ensure table has enough space for actions column */
     .table th:last-child,
@@ -258,18 +188,113 @@
         }
     }
     
-    /* Header action buttons styling to match user management */
-    .btn-action-add {
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+
+    .btn-action-approve {
         background-color: #387057;
         border-color: #387057;
         color: white;
     }
     
-    .btn-action-add:hover {
+    .btn-action-approve:hover {
         background-color: #2d5a47;
         border-color: #2d5a47;
         color: white;
     }
+    
+    .btn-action-reject {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-reject:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+        color: white;
+    }
+
+     .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+     .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-edits {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edits:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-edit-profile {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit-profile:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
     
     .btn-action-print {
         background-color: #6c757d !important;
@@ -387,7 +412,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         padding: 1rem 0.75rem;
-        text-align: left;
+        text-align: center;
         vertical-align: middle;
         position: relative;
         white-space: nowrap;
@@ -427,6 +452,55 @@
         display: none;
     }
     
+    #addAdminModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #addAdminModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #addAdminModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #addAdminModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #addAdminModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #addAdminModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #addAdminModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #addAdminModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
     /* DataTables Pagination Styling */
     .dataTables_wrapper .dataTables_paginate {
         text-align: left !important;
@@ -522,7 +596,6 @@
 @endpush
 
 @section('content')
-<div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -651,7 +724,7 @@
                     <input type="text" class="form-control" placeholder="Search active admins..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-add" onclick="showAddAdminModal()">
+                    <button class="btn-action btn-action-edit" onclick="showAddAdminModal()">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
                     <button class="btn-action btn-action-print" onclick="printActiveAdminsTable()">
@@ -700,7 +773,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
@@ -824,7 +896,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addAdminModalLabel">
-                    <i class="fas fa-user-plus"></i>
+                    <i class="fas fa-user-plus mr-2"></i>
                     Add New Admin
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -837,13 +909,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminFirstName">First Name *</label>
+                                <label for="adminFirstName">First Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="adminFirstName" name="first_name" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminLastName">Last Name *</label>
+                                <label for="adminLastName">Last Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="adminLastName" name="last_name" required>
                             </div>
                         </div>
@@ -851,13 +923,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminEmail">Email *</label>
+                                <label for="adminEmail">Email <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="adminEmail" name="email" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminUsername">Username *</label>
+                                <label for="adminUsername">Username <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="adminUsername" name="username" required>
                             </div>
                         </div>
@@ -865,13 +937,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminPhone">Contact Number</label>
+                                <label for="adminPhone">Contact Number<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="adminPhone" name="phone">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminBarangay">Barangay</label>
+                                <label for="adminBarangay">Barangay<span class="text-danger">*</span></label>
                                 <select class="form-control" id="adminBarangay" name="barangay">
                                     <option value="">Select Barangay</option>
                                     <option value="Abang">Abang</option>
@@ -913,7 +985,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminRole">Role *</label>
+                                <label for="adminRole">Role <span class="text-danger">*</span></label>
                                 <select class="form-control" id="adminRole" name="role" required>
                                     <option value="">Select Role</option>
                                     <option value="admin" selected>Admin</option>
@@ -922,7 +994,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminStatus">Status *</label>
+                                <label for="adminStatus">Status <span class="text-danger">*</span></label>
                                 <select class="form-control" id="adminStatus" name="status" required>
                                     <option value="pending">Pending</option>
                                     <option value="approved">Approved</option>
@@ -934,40 +1006,25 @@
                     <div class="row" id="passwordFields">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminPassword">Password *</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="adminPassword" name="password" required>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminPassword')">
-                                            <i class="fas fa-eye" id="adminPasswordIcon"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <small class="form-text text-muted">Minimum 8 characters</small>
+                                <label for="adminPasswordConfirm">Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="adminPassword" name="password" required>
+                                <small class="form-text text-muted">Leave blank to keep existing password when editing</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminPasswordConfirm">Confirm Password *</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('adminPasswordConfirm')">
-                                            <i class="fas fa-eye" id="adminPasswordConfirmIcon"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                <label for="passwordConfirmation">Confirm Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
                             </div>
                         </div>
                     </div>
                     <div id="adminFormNotification" class="mt-2" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="saveAdminBtn">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-save" id="saveAdminBtn">
                         <i class="fas fa-save"></i> Save User
                     </button>
-                </div>
             </form>
         </div>
     </div>
@@ -1364,7 +1421,7 @@ function loadActiveAdmins() {
                                 <i class="fas fa-edit"></i>
                                 <span>Edit</span>
                             </button>
-                            <button class="btn-action btn-action-delete" onclick="confirmDeleteAdmin('${admin.id}')" title="Delete">
+                            <button class="btn-action btn-action-deletes" onclick="confirmDeleteAdmin('${admin.id}')" title="Delete">
                                 <i class="fas fa-trash"></i>
                                 <span>Delete</span>
                             </button>
@@ -2146,7 +2203,28 @@ function populateEditAdminForm(admin) {
     // Clear any previous notifications
     document.getElementById('editAdminFormNotification').style.display = 'none';
 }
+function confirmDelete(userId) {
+    userToDelete = userId;
+    $('#confirmDeleteModal').modal('show');
+}
 
+function deleteUser(userId) {
+    $.ajax({
+        url: `{{ route("superadmin.users.destroy", ":id") }}`.replace(':id', userId),
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            loadUsers();
+            updateStats();
+            showNotification('User deleted successfully', 'success');
+        },
+        error: function(xhr) {
+            showNotification('Error deleting user', 'danger');
+        }
+    });
+}
 function confirmDeleteAdmin(adminId) {
     adminToDelete = adminId;
     $('#confirmDeleteAdminModal').modal('show');
