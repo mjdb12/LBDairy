@@ -742,6 +742,11 @@ function loadLivestockDetails(livestockId) {
                 
                 // Load production records
                 loadProductionRecords(livestockId);
+                
+                // Automatically check QR code status
+                setTimeout(() => {
+                    checkQRCodeStatus(livestockId);
+                }, 500);
             }
         },
         error: function() {

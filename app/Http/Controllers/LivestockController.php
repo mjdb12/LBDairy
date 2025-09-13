@@ -445,7 +445,7 @@ class LivestockController extends Controller
     public function details($id)
     {
         try {
-            $livestock = Livestock::with('farm')->findOrFail($id);
+            $livestock = Livestock::with(['farm', 'qrCodeGenerator'])->findOrFail($id);
             
             return response()->json([
                 'success' => true,
