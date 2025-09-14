@@ -11,6 +11,7 @@ use App\Models\Issue;
 use App\Models\User;
 use App\Models\Task;
 use App\Models\AuditLog;
+use App\Models\LivestockAlert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -34,6 +35,7 @@ class DashboardController extends Controller
                 $recentProduction = collect();
                 $recentSales = collect();
                 $tasks = collect();
+                $livestockAlerts = collect();
                 $totalLivestock = 0;
                 $totalProduction = 0;
                 $totalSales = 0;
@@ -41,7 +43,7 @@ class DashboardController extends Controller
                 
                 return view('dashboard.farmer', compact(
                     'livestock', 'recentProduction', 'recentSales',
-                    'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses', 'tasks'
+                    'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses', 'tasks', 'livestockAlerts'
                 ));
             }
             
@@ -75,9 +77,20 @@ class DashboardController extends Controller
                 ->take(10)
                 ->get();
 
+            // Get livestock alerts for the farmer's livestock
+            $livestockAlerts = LivestockAlert::with(['livestock', 'issuedBy'])
+                ->whereHas('livestock.farm', function($query) use ($user) {
+                    $query->where('owner_id', $user->id);
+                })
+                ->where('status', 'active')
+                ->orderBy('alert_date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
+
             return view('dashboard.farmer', compact(
                 'livestock', 'recentProduction', 'recentSales',
-                'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses', 'tasks'
+                'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses', 'tasks', 'livestockAlerts'
             ));
         } catch (\Exception $e) {
             Log::error('Error in farmerDashboard: ' . $e->getMessage());
@@ -87,6 +100,7 @@ class DashboardController extends Controller
             $recentProduction = collect();
             $recentSales = collect();
             $tasks = collect();
+            $livestockAlerts = collect();
             $totalLivestock = 0;
             $totalProduction = 0;
             $totalSales = 0;
@@ -94,7 +108,7 @@ class DashboardController extends Controller
             
             return view('dashboard.farmer', compact(
                 'livestock', 'recentProduction', 'recentSales',
-                'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses', 'tasks'
+                'totalLivestock', 'totalProduction', 'totalSales', 'totalExpenses', 'tasks', 'livestockAlerts'
             ));
         }
     }

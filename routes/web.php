@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/issue-alerts', [FarmerController::class, 'storeAlert'])->name('issue-alerts.store');
         Route::get('/issue-alerts/{id}', [FarmerController::class, 'showAlert'])->name('issue-alerts.show');
         Route::patch('/issue-alerts/{id}/status', [FarmerController::class, 'updateAlertStatus'])->name('issue-alerts.update-status');
+        Route::post('/alerts/{id}/mark-read', [FarmerController::class, 'markAlertAsRead'])->name('alerts.mark-read');
         Route::get('/farm-analysis', [App\Http\Controllers\FarmerController::class, 'farmAnalysis'])->name('farm-analysis');
         Route::get('/livestock-analysis', [App\Http\Controllers\FarmerController::class, 'livestockAnalysis'])->name('livestock-analysis');
         Route::get('/livestock/{id}/analysis', [App\Http\Controllers\FarmerController::class, 'getLivestockAnalysis'])->name('livestock.analysis');

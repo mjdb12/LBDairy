@@ -127,17 +127,26 @@ class LivestockController extends Controller
         $livestock = Livestock::findOrFail($id);
         
         $validator = Validator::make($request->all(), [
-            'livestock_id' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
+            'tag_number' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
             'type' => 'required|string|max:255',
             'breed' => 'required|string|max:255',
             'farm_id' => 'required|exists:farms,id',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
-            'notes' => 'nullable|string|max:1000',
+            'health_status' => 'nullable|string|max:255',
+            'status' => 'required|in:active,inactive',
+            'description' => 'nullable|string|max:1000',
         ]);
 
         if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -145,19 +154,34 @@ class LivestockController extends Controller
 
         try {
             $livestock->update([
-                'tag_number' => $request->livestock_id,
+                'tag_number' => $request->tag_number,
                 'type' => $request->type,
                 'breed' => $request->breed,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
                 'weight' => $request->weight,
-                'health_status' => $request->notes ?? 'healthy',
+                'health_status' => $request->health_status ?? 'healthy',
+                'status' => $request->status,
+                'description' => $request->description,
             ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Livestock updated successfully!'
+                ]);
+            }
 
             return redirect()->route('admin.livestock.index')
                 ->with('success', 'Livestock updated successfully!');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update livestock. Please try again.'
+                ], 500);
+            }
             return redirect()->back()
                 ->with('error', 'Failed to update livestock. Please try again.')
                 ->withInput();
@@ -508,7 +532,7 @@ class LivestockController extends Controller
     }
 
     /**
-     * Create issue alert for livestock.
+     * Create livestock alert for farmer.
      */
     public function issueAlert(Request $request)
     {
@@ -528,28 +552,36 @@ class LivestockController extends Controller
         }
 
         try {
-            $livestock = Livestock::findOrFail($request->livestock_id);
+            $livestock = Livestock::with('farm')->findOrFail($request->livestock_id);
             
-            // Create issue record
-            $issue = \App\Models\Issue::create([
+            // Map priority to severity for LivestockAlert
+            $severityMap = [
+                'low' => 'low',
+                'medium' => 'medium', 
+                'high' => 'high',
+                'urgent' => 'critical'
+            ];
+            
+            // Create livestock alert record
+            $alert = \App\Models\LivestockAlert::create([
                 'livestock_id' => $request->livestock_id,
-                'issue_type' => $request->issue_type,
-                'priority' => $request->priority,
+                'issued_by' => Auth::id(), // Admin who issued the alert
+                'alert_date' => now()->toDateString(),
+                'topic' => $request->issue_type,
                 'description' => $request->description,
-                'status' => 'pending',
-                'reported_by' => Auth::id(),
-                'date_reported' => now(),
+                'severity' => $severityMap[$request->priority],
+                'status' => 'active',
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Issue alert created successfully',
-                'issue' => $issue
+                'message' => 'Livestock alert created successfully',
+                'alert' => $alert
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create issue alert'
+                'message' => 'Failed to create livestock alert: ' . $e->getMessage()
             ], 500);
         }
     }

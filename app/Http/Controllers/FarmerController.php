@@ -124,11 +124,27 @@ class FarmerController extends Controller
         $user = Auth::user();
         
         // Get issues for the farmer's farms that were created by admins
-        $issues = Issue::with('reportedBy')->whereHas('farm', function($query) use ($user) {
-            $query->where('owner_id', $user->id);
-        })->whereHas('reportedBy', function($query) {
-            $query->where('role', 'admin');
-        })->orderBy('date_reported', 'desc')->get();
+        $issues = Issue::with(['reportedBy', 'livestock'])
+            ->whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })
+            ->whereHas('reportedBy', function($query) {
+                $query->where('role', 'admin');
+            })
+            ->orderBy('date_reported', 'desc')
+            ->get();
+
+        // Get livestock alerts for the farmer's livestock that were created by admins
+        $livestockAlerts = LivestockAlert::with(['livestock', 'issuedBy'])
+            ->whereHas('livestock.farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })
+            ->whereHas('issuedBy', function($query) {
+                $query->where('role', 'admin');
+            })
+            ->where('status', 'active')
+            ->orderBy('alert_date', 'desc')
+            ->get();
 
         // Get livestock for the farmer's farms
         $livestock = Livestock::whereHas('farm', function($query) use ($user) {
@@ -157,6 +173,7 @@ class FarmerController extends Controller
 
         return view('farmer.issues', compact(
             'issues',
+            'livestockAlerts',
             'livestock',
             'farms',
             'totalIssues',
@@ -277,20 +294,46 @@ class FarmerController extends Controller
     }
 
     /**
-     * Show alert details.
+     * Display the specified alert (read-only for farmers).
      */
     public function showAlert($id)
     {
         $user = Auth::user();
-        $alert = LivestockAlert::with('livestock.farm')
+        $alert = LivestockAlert::with(['livestock', 'issuedBy'])
             ->whereHas('livestock.farm', function($query) use ($user) {
                 $query->where('owner_id', $user->id);
             })
-            ->where('issued_by', $user->id)
             ->findOrFail($id);
 
         return response()->json(['success' => true, 'alert' => $alert]);
     }
+
+    /**
+     * Mark livestock alert as read.
+     */
+    public function markAlertAsRead($id)
+    {
+        try {
+            $user = Auth::user();
+            
+            $alert = LivestockAlert::whereHas('livestock.farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })->findOrFail($id);
+            
+            $alert->update(['status' => 'resolved']);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Alert marked as read successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to mark alert as read'
+            ], 500);
+        }
+    }
+
 
     /**
      * Display the farmer's livestock inventory.

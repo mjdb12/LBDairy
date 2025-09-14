@@ -107,6 +107,17 @@
     </div>
     @endif
 
+    <!-- Livestock Alerts Section -->
+    @if($livestockAlerts && $livestockAlerts->count() > 0)
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-bell"></i>
+        <strong>New Livestock Alerts:</strong> You have {{ $livestockAlerts->count() }} new alerts from administrators about your livestock.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    @endif
+
     <!-- Main Content -->
     <div class="row">
         <div class="col-12">
@@ -156,10 +167,11 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {{-- Debug: Issues count: {{ $issues->count() }} --}}
                                 @forelse($issues as $issue)
                                 <tr class="{{ $issue->priority === 'Urgent' ? 'table-danger' : ($issue->status === 'Pending' ? 'table-warning' : ($issue->status === 'Resolved' ? 'table-success' : '')) }}">
                                     <td>
-                                        <strong>{{ $issue->livestock->livestock_id ?? 'N/A' }}</strong>
+                                        <strong>{{ $issue->livestock->tag_number ?? 'N/A' }}</strong>
                                     </td>
                                     <td>{{ $issue->livestock->type ?? 'N/A' }}</td>
                                     <td>{{ $issue->livestock->breed ?? 'N/A' }}</td>
@@ -209,6 +221,88 @@
             </div>
         </div>
     </div>
+
+    <!-- Livestock Alerts Section -->
+    @if($livestockAlerts && $livestockAlerts->count() > 0)
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow fade-in">
+                <div class="card-header bg-warning text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-bell"></i>
+                        Livestock Alerts from Administrators
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="alertsTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Livestock ID</th>
+                                    <th>Animal Type</th>
+                                    <th>Breed</th>
+                                    <th>Alert Topic</th>
+                                    <th>Description</th>
+                                    <th>Severity</th>
+                                    <th>Alert Date</th>
+                                    <th>Issued By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($livestockAlerts as $alert)
+                                <tr class="{{ $alert->severity === 'critical' ? 'table-danger' : ($alert->severity === 'high' ? 'table-warning' : '') }}">
+                                    <td>
+                                        <strong>{{ $alert->livestock->tag_number ?? 'N/A' }}</strong>
+                                    </td>
+                                    <td>{{ $alert->livestock->type ?? 'N/A' }}</td>
+                                    <td>{{ $alert->livestock->breed ?? 'N/A' }}</td>
+                                    <td>
+                                        <span class="alert-topic-badge alert-{{ strtolower($alert->topic) }}">
+                                            {{ $alert->topic }}
+                                        </span>
+                                    </td>
+                                    <td>{{ Str::limit($alert->description, 50) }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $alert->severity === 'critical' ? 'danger' : ($alert->severity === 'high' ? 'warning' : ($alert->severity === 'medium' ? 'info' : 'success')) }}">
+                                            {{ ucfirst($alert->severity) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $alert->alert_date ? $alert->alert_date->format('M d, Y') : $alert->created_at->format('M d, Y') }}</td>
+                                    <td>
+                                        <span class="badge badge-primary">
+                                            {{ $alert->issuedBy->name ?? 'Admin' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-action-view" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                                <span>View Details</span>
+                                            </button>
+                                            <button class="btn-action btn-action-approve" onclick="markAlertAsRead('{{ $alert->id }}')" title="Mark as Read">
+                                                <i class="fas fa-check"></i>
+                                                <span>Mark as Read</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted py-4">
+                                        <i class="fas fa-bell-slash fa-3x mb-3 text-muted"></i>
+                                        <p>No livestock alerts from administrators at this time.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Scheduled Inspections Section -->
     <div class="row mt-4">
@@ -381,27 +475,87 @@
 
 <script>
 let currentIssueId = null;
+let downloadCounter = 1;
 
 $(document).ready(function() {
-    // Initialize DataTable for issues
-    $('#issuesTable').DataTable({
-        responsive: true,
-        pageLength: 25,
-        order: [[6, 'desc']], // Sort by date reported
-        language: {
-            search: "_INPUT_",
-            searchPlaceholder: "Search issues...",
-            lengthMenu: "_MENU_ records per page",
-            info: "Showing _START_ to _END_ of _TOTAL_ records",
-            paginate: {
-                first: "First",
-                last: "Last",
-                next: "Next",
-                previous: "Previous"
+    // Debug table structure before initializing DataTable
+    const table = $('#issuesTable');
+    console.log('Table found:', table.length > 0);
+    
+    if (table.length) {
+        const headerCount = table.find('thead tr th').length;
+        const firstRow = table.find('tbody tr:first');
+        const firstRowCells = firstRow.find('td').length;
+        const isEmpty = firstRow.find('td[colspan]').length > 0;
+        
+        console.log('Header count:', headerCount);
+        console.log('First row cells:', firstRowCells);
+        console.log('Is empty row:', isEmpty);
+        console.log('First row HTML:', firstRow.html());
+        
+        // Temporarily disable DataTable initialization to test
+        console.log('DataTable initialization temporarily disabled for debugging');
+        
+        // Uncomment the code below once we identify the issue
+        /*
+        // Wait a bit for the DOM to be fully ready
+        setTimeout(function() {
+            try {
+                // Initialize DataTable with column configuration to avoid count issues
+                table.DataTable({
+                    responsive: true,
+                    pageLength: 25,
+                    order: [[6, 'desc']], // Sort by date reported
+                    columnDefs: [
+                        { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], orderable: true },
+                        { targets: [9], orderable: false } // Actions column not sortable
+                    ],
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search issues...",
+                        lengthMenu: "_MENU_ records per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ records",
+                        paginate: {
+                            first: "First",
+                            last: "Last",
+                            next: "Next",
+                            previous: "Previous"
+                        }
+                    },
+                    initComplete: function(settings, json) {
+                        console.log('Issues DataTable initialized successfully');
+                    },
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTable error:', error, thrown);
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing Issues DataTable:', error);
             }
-        }
-    });
+        }, 100);
+        */
+    }
 
+    // Debug inspections table structure
+    const inspectionsTable = $('#inspectionsTable');
+    console.log('Inspections table found:', inspectionsTable.length > 0);
+    
+    if (inspectionsTable.length) {
+        const inspectionsHeaderCount = inspectionsTable.find('thead tr th').length;
+        const inspectionsFirstRow = inspectionsTable.find('tbody tr:first');
+        const inspectionsFirstRowCells = inspectionsFirstRow.find('td').length;
+        const inspectionsIsEmpty = inspectionsFirstRow.find('td[colspan]').length > 0;
+        
+        console.log('Inspections header count:', inspectionsHeaderCount);
+        console.log('Inspections first row cells:', inspectionsFirstRowCells);
+        console.log('Inspections is empty row:', inspectionsIsEmpty);
+        console.log('Inspections first row HTML:', inspectionsFirstRow.html());
+    }
+    
+    // Temporarily disable inspections DataTable initialization as well
+    console.log('Inspections DataTable initialization temporarily disabled for debugging');
+    
+    /*
     // Initialize DataTable for inspections
     $('#inspectionsTable').DataTable({
         responsive: true,
@@ -420,6 +574,33 @@ $(document).ready(function() {
             }
         }
     });
+    */
+
+    // Temporarily disable alerts DataTable initialization as well
+    console.log('Alerts DataTable initialization temporarily disabled for debugging');
+    
+    /*
+    // Initialize DataTable for alerts (if table exists)
+    if ($('#alertsTable').length) {
+        $('#alertsTable').DataTable({
+            responsive: true,
+            pageLength: 15,
+            order: [[6, 'desc']], // Sort by alert date
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search alerts...",
+                lengthMenu: "_MENU_ records per page",
+                info: "Showing _START_ to _END_ of _TOTAL_ records",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "Next",
+                    previous: "Previous"
+                }
+            }
+        });
+    }
+    */
 });
 
 function viewIssueDetails(issueId) {
@@ -527,7 +708,8 @@ function getPriorityColor(priority) {
 
 function exportToCSV() {
     // Get current table data without actions column
-    const tableData = issuesTable.data().toArray();
+    const table = $('#issuesTable').DataTable();
+    const tableData = table.data().toArray();
     const csvData = [];
     
     // Add headers (excluding Actions column)
@@ -580,7 +762,8 @@ function exportToPDF() {
         // Force custom PDF generation to match superadmin styling
         // Don't fall back to DataTables PDF export as it has different styling
         
-        const tableData = issuesTable.data().toArray();
+        const table = $('#issuesTable').DataTable();
+        const tableData = table.data().toArray();
         const pdfData = [];
         
         const headers = ['Issue ID', 'Livestock ID', 'Type', 'Description', 'Severity', 'Status', 'Date Reported'];
@@ -899,6 +1082,92 @@ function exportInspectionsToPNG() {
 function printInspectionsTable() {
     window.print();
 }
+
+// Alert related functions
+function viewAlertDetails(alertId) {
+    $.ajax({
+        url: `/farmer/alerts/${alertId}`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const alert = response.alert;
+                $('#issueDetailsContent').html(`
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-warning text-white">
+                                    <h6 class="mb-0"><i class="fas fa-bell"></i> Alert Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-borderless">
+                                        <tr><td><strong>Topic:</strong></td><td><span class="alert-topic-badge alert-${alert.topic.toLowerCase()}">${alert.topic}</span></td></tr>
+                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${getSeverityColor(alert.severity)}">${alert.severity}</span></td></tr>
+                                        <tr><td><strong>Alert Date:</strong></td><td>${alert.alert_date}</td></tr>
+                                        <tr><td><strong>Issued By:</strong></td><td><span class="badge badge-primary">${alert.issued_by ? alert.issued_by.name : 'Admin'}</span></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="fas fa-paw"></i> Livestock Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-borderless">
+                                        <tr><td><strong>Tag Number:</strong></td><td>${alert.livestock ? alert.livestock.tag_number : 'N/A'}</td></tr>
+                                        <tr><td><strong>Type:</strong></td><td>${alert.livestock ? alert.livestock.type : 'N/A'}</td></tr>
+                                        <tr><td><strong>Breed:</strong></td><td>${alert.livestock ? alert.livestock.breed : 'N/A'}</td></tr>
+                                        <tr><td><strong>Health Status:</strong></td><td>${alert.livestock ? alert.livestock.health_status : 'N/A'}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-danger text-white">
+                                    <h6 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Alert Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Description:</h6>
+                                    <p>${alert.description}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                $('#issueDetailsModal').modal('show');
+            }
+        },
+        error: function() {
+            showToast('Error loading alert details', 'error');
+        }
+    });
+}
+
+function markAlertAsRead(alertId) {
+    $.ajax({
+        url: `/farmer/alerts/${alertId}/mark-read`,
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showToast('Alert marked as read', 'success');
+                // Remove the alert row from the table
+                $(`button[onclick="markAlertAsRead('${alertId}')"]`).closest('tr').fadeOut();
+            } else {
+                showToast(response.message || 'Error marking alert as read', 'error');
+            }
+        },
+        error: function() {
+            showToast('Error marking alert as read', 'error');
+        }
+    });
+}
 </script>
 @endpush
 
@@ -946,6 +1215,52 @@ function printInspectionsTable() {
 }
 
 .issue-other {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+/* Alert Topic Badge Styling */
+.alert-topic-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.alert-health {
+    background: rgba(231, 74, 59, 0.1);
+    color: #e74a3b;
+    border: 1px solid rgba(231, 74, 59, 0.3);
+}
+
+.alert-injury {
+    background: rgba(246, 194, 62, 0.1);
+    color: #f6c23e;
+    border: 1px solid rgba(246, 194, 62, 0.3);
+}
+
+.alert-production {
+    background: rgba(54, 185, 204, 0.1);
+    color: #36b9cc;
+    border: 1px solid rgba(54, 185, 204, 0.3);
+}
+
+.alert-behavioral {
+    background: rgba(102, 16, 242, 0.1);
+    color: #6610f2;
+    border: 1px solid rgba(102, 16, 242, 0.3);
+}
+
+.alert-environmental {
+    background: rgba(78, 115, 223, 0.1);
+    color: #4e73df;
+    border: 1px solid rgba(78, 115, 223, 0.3);
+}
+
+.alert-other {
     background: rgba(108, 117, 125, 0.1);
     color: #6c757d;
     border: 1px solid rgba(108, 117, 125, 0.3);

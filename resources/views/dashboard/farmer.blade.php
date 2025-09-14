@@ -76,6 +76,48 @@
 
 </div>
 
+<!-- Alerts Section -->
+@if(isset($livestockAlerts) && $livestockAlerts->count() > 0)
+<div class="row fade-in">
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Livestock Alerts
+                </h6>
+            </div>
+            <div class="card-body">
+                @foreach($livestockAlerts as $alert)
+                <div class="alert alert-{{ $alert->severity === 'critical' ? 'danger' : ($alert->severity === 'high' ? 'warning' : ($alert->severity === 'medium' ? 'info' : 'secondary')) }} alert-dismissible fade show" role="alert">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="alert-heading mb-1">
+                                <i class="fas fa-{{ $alert->severity === 'critical' ? 'exclamation-triangle' : ($alert->severity === 'high' ? 'exclamation-circle' : 'info-circle') }}"></i>
+                                {{ $alert->topic }} - {{ $alert->livestock->tag_number }}
+                            </h6>
+                            <p class="mb-1">{{ $alert->description }}</p>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar"></i> {{ $alert->alert_date->format('M d, Y') }}
+                                <span class="ml-3">
+                                    <span class="badge badge-{{ $alert->severity_badge_class }}">{{ ucfirst($alert->severity) }}</span>
+                                </span>
+                            </small>
+                        </div>
+                        <div class="ml-3">
+                            <button type="button" class="btn btn-sm btn-outline-{{ $alert->severity === 'critical' ? 'danger' : ($alert->severity === 'high' ? 'warning' : 'info') }}" onclick="markAlertAsRead({{ $alert->id }})">
+                                <i class="fas fa-check"></i> Mark as Read
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- Task Board Row -->
 <div class="row fade-in">
     <!-- Task Board -->
@@ -717,6 +759,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 showNotification('Failed to delete task', 'danger');
             }
         }).catch(() => showNotification('Failed to delete task: network error', 'danger'));
+    }
+
+    function markAlertAsRead(alertId) {
+        $.ajax({
+            url: `{{ route('farmer.alerts.mark-read', ':id') }}`.replace(':id', alertId),
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Hide the alert
+                    $(`[onclick="markAlertAsRead(${alertId})"]`).closest('.alert').fadeOut();
+                    showNotification('Alert marked as read', 'success');
+                } else {
+                    showNotification('Failed to mark alert as read', 'danger');
+                }
+            },
+            error: function() {
+                showNotification('Failed to mark alert as read', 'danger');
+            }
+        });
     }
 
     function showNotification(message, type) {

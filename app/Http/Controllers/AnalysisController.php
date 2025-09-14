@@ -9,6 +9,7 @@ use App\Models\Farm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class AnalysisController extends Controller
 {
@@ -72,20 +73,47 @@ class AnalysisController extends Controller
     public function getFarmerDetails($id)
     {
         try {
-            $farmer = User::with(['farm', 'livestock'])->findOrFail($id);
+            // Log the request for debugging
+            Log::info('getFarmerDetails called with ID: ' . $id);
+            
+            $farmer = User::with(['farms', 'livestock', 'productionRecords'])->findOrFail($id);
+            
+            Log::info('Farmer found: ' . $farmer->name);
             
             // Get farmer statistics
             $stats = $this->getFarmerStats($farmer->id);
             
+            Log::info('Stats calculated: ' . json_encode($stats));
+            
+            // Format farmer data for the modal
+            $farmerData = [
+                'id' => $farmer->id,
+                'name' => $farmer->name ?? ($farmer->first_name . ' ' . $farmer->last_name),
+                'email' => $farmer->email,
+                'phone' => $farmer->phone ?? $farmer->contact_number ?? 'N/A',
+                'location' => $farmer->barangay ?? $farmer->address ?? 'N/A',
+                'status' => $farmer->status ?? 'active',
+                'farm_name' => $farmer->farm_name ?? 'N/A',
+                'farm_address' => $farmer->farm_address ?? 'N/A',
+                'farmer_code' => $farmer->farmer_code ?? 'F' . str_pad($farmer->id, 3, '0', STR_PAD_LEFT),
+                'last_login_at' => $farmer->last_login_at ? $farmer->last_login_at->format('M d, Y H:i') : 'Never',
+                'created_at' => $farmer->created_at->format('M d, Y')
+            ];
+            
+            Log::info('Farmer data formatted: ' . json_encode($farmerData));
+            
             return response()->json([
                 'success' => true,
-                'farmer' => $farmer,
+                'farmer' => $farmerData,
                 'stats' => $stats
             ]);
         } catch (\Exception $e) {
+            Log::error('Error in getFarmerDetails: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to load farmer details'
+                'message' => 'Failed to load farmer details: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -249,17 +277,86 @@ class AnalysisController extends Controller
      */
     private function getFarmerStats($farmerId)
     {
-        $totalLivestock = Livestock::where('owner_id', $farmerId)->count();
-        $activeLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'active')->count();
-        $totalProduction = ProductionRecord::join('farms', 'production_records.farm_id', '=', 'farms.id')
-            ->where('farms.owner_id', $farmerId)
-            ->sum('production_records.milk_quantity');
-        
-        return [
-            'total_livestock' => $totalLivestock,
-            'active_livestock' => $activeLivestock,
-            'total_production' => round($totalProduction, 1)
-        ];
+        try {
+            // Get livestock statistics
+            $totalLivestock = Livestock::where('owner_id', $farmerId)->count();
+            $activeLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'active')->count();
+            $inactiveLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'inactive')->count();
+            
+            // Get production statistics - try multiple approaches
+            $totalProduction = 0;
+            $avgDailyProduction = 0;
+            $recentProduction = 0;
+            
+            // Method 1: Through farms
+            $farmProduction = ProductionRecord::join('farms', 'production_records.farm_id', '=', 'farms.id')
+                ->where('farms.owner_id', $farmerId);
+            
+            if ($farmProduction->exists()) {
+                $totalProduction = $farmProduction->sum('production_records.milk_quantity');
+                $avgDailyProduction = $farmProduction->avg('production_records.milk_quantity');
+                $recentProduction = $farmProduction->where('production_records.production_date', '>=', now()->subDays(30))
+                    ->sum('production_records.milk_quantity');
+            } else {
+                // Method 2: Through livestock
+                $livestockProduction = ProductionRecord::join('livestock', 'production_records.livestock_id', '=', 'livestock.id')
+                    ->where('livestock.owner_id', $farmerId);
+                
+                if ($livestockProduction->exists()) {
+                    $totalProduction = $livestockProduction->sum('production_records.milk_quantity');
+                    $avgDailyProduction = $livestockProduction->avg('production_records.milk_quantity');
+                    $recentProduction = $livestockProduction->where('production_records.production_date', '>=', now()->subDays(30))
+                        ->sum('production_records.milk_quantity');
+                } else {
+                    // Method 3: Direct relationship (if production records have recorded_by field)
+                    $directProduction = ProductionRecord::where('recorded_by', $farmerId);
+                    
+                    if ($directProduction->exists()) {
+                        $totalProduction = $directProduction->sum('milk_quantity');
+                        $avgDailyProduction = $directProduction->avg('milk_quantity');
+                        $recentProduction = $directProduction->where('production_date', '>=', now()->subDays(30))
+                            ->sum('milk_quantity');
+                    }
+                }
+            }
+            
+            // Get farm statistics
+            $totalFarms = Farm::where('owner_id', $farmerId)->count();
+            $activeFarms = Farm::where('owner_id', $farmerId)->where('status', 'active')->count();
+            
+            // Get livestock by type
+            $livestockByType = Livestock::where('owner_id', $farmerId)
+                ->selectRaw('type, COUNT(*) as count')
+                ->groupBy('type')
+                ->get()
+                ->pluck('count', 'type')
+                ->toArray();
+            
+            return [
+                'total_livestock' => $totalLivestock,
+                'active_livestock' => $activeLivestock,
+                'inactive_livestock' => $inactiveLivestock,
+                'total_production' => round($totalProduction, 1),
+                'avg_daily_production' => round($avgDailyProduction, 1),
+                'total_farms' => $totalFarms,
+                'active_farms' => $activeFarms,
+                'recent_production' => round($recentProduction, 1),
+                'livestock_by_type' => $livestockByType
+            ];
+        } catch (\Exception $e) {
+            // Return default values if there's an error
+            return [
+                'total_livestock' => 0,
+                'active_livestock' => 0,
+                'inactive_livestock' => 0,
+                'total_production' => 0,
+                'avg_daily_production' => 0,
+                'total_farms' => 0,
+                'active_farms' => 0,
+                'recent_production' => 0,
+                'livestock_by_type' => []
+            ];
+        }
     }
 
     /**

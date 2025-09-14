@@ -216,13 +216,38 @@
                         <p><strong>Email:</strong> <span id="modalFarmerEmail">-</span></p>
                         <p><strong>Phone:</strong> <span id="modalFarmerPhone">-</span></p>
                         <p><strong>Location:</strong> <span id="modalFarmerLocation">-</span></p>
+                        <p><strong>Farmer Code:</strong> <span id="modalFarmerCode">-</span></p>
+                        <p><strong>Last Login:</strong> <span id="modalLastLogin">-</span></p>
                     </div>
                     <div class="col-md-6">
-                        <h6><strong>Farm Statistics</strong></h6>
+                        <h6><strong>Farm Information</strong></h6>
+                        <p><strong>Farm Name:</strong> <span id="modalFarmName">-</span></p>
+                        <p><strong>Farm Address:</strong> <span id="modalFarmAddress">-</span></p>
+                        <p><strong>Total Farms:</strong> <span id="modalTotalFarms">-</span></p>
+                        <p><strong>Active Farms:</strong> <span id="modalActiveFarms">-</span></p>
+                        <p><strong>Status:</strong> <span id="modalFarmerStatus">-</span></p>
+                        <p><strong>Member Since:</strong> <span id="modalMemberSince">-</span></p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><strong>Livestock Statistics</strong></h6>
                         <p><strong>Total Livestock:</strong> <span id="modalTotalLivestock">-</span></p>
                         <p><strong>Active Livestock:</strong> <span id="modalActiveLivestock">-</span></p>
+                        <p><strong>Inactive Livestock:</strong> <span id="modalInactiveLivestock">-</span></p>
+                        <div id="modalLivestockByType">
+                            <strong>Livestock by Type:</strong>
+                            <ul id="livestockTypeList"></ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><strong>Production Statistics</strong></h6>
                         <p><strong>Total Production:</strong> <span id="modalTotalProduction">-</span></p>
-                        <p><strong>Status:</strong> <span id="modalFarmerStatus">-</span></p>
+                        <p><strong>Average Daily Production:</strong> <span id="modalAvgDailyProduction">-</span></p>
+                        <p><strong>Recent Production (30 days):</strong> <span id="modalRecentProduction">-</span></p>
                     </div>
                 </div>
             </div>
@@ -303,6 +328,39 @@
     #farmerDetailsModal .modal-body strong {
         color: #5a5c69 !important;
         font-weight: 600;
+    }
+    
+    #farmerDetailsModal .modal-body hr {
+        border-color: #e3e6f0;
+        margin: 1.5rem 0;
+    }
+    
+    #farmerDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    #farmerDetailsModal .modal-body ul {
+        margin-top: 0.5rem;
+        padding-left: 1.5rem;
+    }
+    
+    #farmerDetailsModal .modal-body li {
+        margin-bottom: 0.25rem;
+        color: #5a5c69;
+    }
+    
+    #farmerDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333;
+    }
+    
+    #farmerDetailsModal .modal-body span {
+        color: #18375d;
+        font-weight: 500;
     }
 
     /* User Details Modal Styling */
@@ -1204,28 +1262,161 @@ function openDetailsModal(farmerId) {
 }
 
 function viewFarmerDetails(farmerId) {
+    console.log('viewFarmerDetails called with ID:', farmerId);
+    
+    // Show loading state
+    const modal = $('#farmerDetailsModal');
+    modal.find('.modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading farmer details...</p></div>');
+    modal.modal('show');
+    
+    // Build the URL
+    const url = `{{ route('admin.analysis.farmer-details', ':id') }}`.replace(':id', farmerId);
+    console.log('Fetching URL:', url);
+    
     // Fetch farmer details
-    fetch(`{{ route('admin.analysis.farmer-details', ':id') }}`.replace(':id', farmerId))
-    .then(response => response.json())
+    fetch(url)
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
+        
         if (data.success) {
             const farmer = data.farmer;
-            document.getElementById('modalFarmerName').textContent = farmer.name || 'N/A';
-            document.getElementById('modalFarmerEmail').textContent = farmer.email || 'N/A';
-            document.getElementById('modalFarmerPhone').textContent = farmer.phone || 'N/A';
-            document.getElementById('modalFarmerLocation').textContent = farmer.location || 'N/A';
-            document.getElementById('modalTotalLivestock').textContent = data.stats.total_livestock || '0';
-            document.getElementById('modalActiveLivestock').textContent = data.stats.active_livestock || '0';
-            document.getElementById('modalTotalProduction').textContent = (data.stats.total_production || '0') + 'L';
-            document.getElementById('modalFarmerStatus').textContent = farmer.status || 'N/A';
+            const stats = data.stats;
             
-            $('#farmerDetailsModal').modal('show');
+            console.log('Farmer data:', farmer);
+            console.log('Stats data:', stats);
+            
+            // Restore the original modal body structure
+            modal.find('.modal-body').html(`
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><strong>Personal Information</strong></h6>
+                        <p><strong>Name:</strong> <span id="modalFarmerName">-</span></p>
+                        <p><strong>Email:</strong> <span id="modalFarmerEmail">-</span></p>
+                        <p><strong>Phone:</strong> <span id="modalFarmerPhone">-</span></p>
+                        <p><strong>Location:</strong> <span id="modalFarmerLocation">-</span></p>
+                        <p><strong>Farmer Code:</strong> <span id="modalFarmerCode">-</span></p>
+                        <p><strong>Last Login:</strong> <span id="modalLastLogin">-</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><strong>Farm Information</strong></h6>
+                        <p><strong>Farm Name:</strong> <span id="modalFarmName">-</span></p>
+                        <p><strong>Farm Address:</strong> <span id="modalFarmAddress">-</span></p>
+                        <p><strong>Total Farms:</strong> <span id="modalTotalFarms">-</span></p>
+                        <p><strong>Active Farms:</strong> <span id="modalActiveFarms">-</span></p>
+                        <p><strong>Status:</strong> <span id="modalFarmerStatus">-</span></p>
+                        <p><strong>Member Since:</strong> <span id="modalMemberSince">-</span></p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><strong>Livestock Statistics</strong></h6>
+                        <p><strong>Total Livestock:</strong> <span id="modalTotalLivestock">-</span></p>
+                        <p><strong>Active Livestock:</strong> <span id="modalActiveLivestock">-</span></p>
+                        <p><strong>Inactive Livestock:</strong> <span id="modalInactiveLivestock">-</span></p>
+                        <div id="modalLivestockByType">
+                            <strong>Livestock by Type:</strong>
+                            <ul id="livestockTypeList"></ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><strong>Production Statistics</strong></h6>
+                        <p><strong>Total Production:</strong> <span id="modalTotalProduction">-</span></p>
+                        <p><strong>Average Daily Production:</strong> <span id="modalAvgDailyProduction">-</span></p>
+                        <p><strong>Recent Production (30 days):</strong> <span id="modalRecentProduction">-</span></p>
+                    </div>
+                </div>
+            `);
+            
+            // Helper function to safely set text content
+            function setTextContent(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = value || 'N/A';
+                } else {
+                    console.warn(`Element with ID '${elementId}' not found`);
+                }
+            }
+            
+            // Personal Information
+            setTextContent('modalFarmerName', farmer.name);
+            setTextContent('modalFarmerEmail', farmer.email);
+            setTextContent('modalFarmerPhone', farmer.phone);
+            setTextContent('modalFarmerLocation', farmer.location);
+            setTextContent('modalFarmerCode', farmer.farmer_code);
+            setTextContent('modalLastLogin', farmer.last_login_at || 'Never');
+            
+            // Farm Information
+            setTextContent('modalFarmName', farmer.farm_name);
+            setTextContent('modalFarmAddress', farmer.farm_address);
+            setTextContent('modalTotalFarms', stats.total_farms || '0');
+            setTextContent('modalActiveFarms', stats.active_farms || '0');
+            setTextContent('modalFarmerStatus', farmer.status || 'active');
+            setTextContent('modalMemberSince', farmer.created_at);
+            
+            // Livestock Statistics
+            setTextContent('modalTotalLivestock', stats.total_livestock || '0');
+            setTextContent('modalActiveLivestock', stats.active_livestock || '0');
+            setTextContent('modalInactiveLivestock', stats.inactive_livestock || '0');
+            
+            // Livestock by Type
+            const livestockTypeList = document.getElementById('livestockTypeList');
+            if (livestockTypeList) {
+                livestockTypeList.innerHTML = '';
+                if (stats.livestock_by_type && Object.keys(stats.livestock_by_type).length > 0) {
+                    Object.entries(stats.livestock_by_type).forEach(([type, count]) => {
+                        const li = document.createElement('li');
+                        li.textContent = `${type}: ${count}`;
+                        livestockTypeList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'No livestock data available';
+                    livestockTypeList.appendChild(li);
+                }
+            } else {
+                console.warn('Element with ID "livestockTypeList" not found');
+            }
+            
+            // Production Statistics
+            setTextContent('modalTotalProduction', (stats.total_production || '0') + 'L');
+            setTextContent('modalAvgDailyProduction', (stats.avg_daily_production || '0') + 'L');
+            setTextContent('modalRecentProduction', (stats.recent_production || '0') + 'L');
+            
+            console.log('Modal populated successfully');
+            
+            // Verify all elements were found and populated
+            const requiredElements = [
+                'modalFarmerName', 'modalFarmerEmail', 'modalFarmerPhone', 'modalFarmerLocation',
+                'modalFarmerCode', 'modalLastLogin', 'modalFarmName', 'modalFarmAddress',
+                'modalTotalFarms', 'modalActiveFarms', 'modalFarmerStatus', 'modalMemberSince',
+                'modalTotalLivestock', 'modalActiveLivestock', 'modalInactiveLivestock',
+                'modalTotalProduction', 'modalAvgDailyProduction', 'modalRecentProduction'
+            ];
+            
+            const missingElements = requiredElements.filter(id => !document.getElementById(id));
+            if (missingElements.length > 0) {
+                console.warn('Missing elements:', missingElements);
+            } else {
+                console.log('All elements found and populated successfully');
+            }
+            
         } else {
-            showNotification('Failed to load farmer details', 'error');
+            console.error('API returned error:', data.message);
+            modal.find('.modal-body').html('<div class="text-center text-danger"><i class="fas fa-exclamation-triangle fa-2x"></i><p class="mt-2">Failed to load farmer details</p><p class="small">' + (data.message || 'Unknown error') + '</p></div>');
+            showNotification(data.message || 'Failed to load farmer details', 'error');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Fetch error:', error);
+        modal.find('.modal-body').html('<div class="text-center text-danger"><i class="fas fa-exclamation-triangle fa-2x"></i><p class="mt-2">An error occurred while loading farmer details</p><p class="small">' + error.message + '</p></div>');
         showNotification('An error occurred while loading farmer details', 'error');
     });
 }

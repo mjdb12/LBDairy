@@ -721,6 +721,90 @@
     margin-bottom: 0.5rem;
 }
 
+/* Edit Livestock Modal Styling */
+#editLivestockModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#editLivestockModal .modal-header {
+    background: #18375d !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#editLivestockModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#editLivestockModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#editLivestockModal .modal-body h6 {
+    color: #18375d !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #e3e6f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem !important;
+}
+
+#editLivestockModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #333 !important;
+}
+
+#editLivestockModal .modal-body strong {
+    color: #5a5c69 !important;
+    font-weight: 600;
+}
+
+/* Style all labels inside Edit Livestock form */
+#editLivestockModal .form-group label {
+    font-weight: 600;
+    color: #18375d;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+/* Delete Confirmation Modal Styling */
+#deleteConfirmationModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#deleteConfirmationModal .modal-header {
+    background: #18375d !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#deleteConfirmationModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#deleteConfirmationModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#deleteConfirmationModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #333 !important;
+}
+
+#deleteConfirmationModal .modal-footer {
+    background: white;
+    border-top: 1px solid #e3e6f0;
+}
+
 /* User Details Modal Styling */
     #livestockDetailsModal .modal-content {
         border: none;
@@ -1096,6 +1180,163 @@
     </div>
 </div>
 
+<!-- Edit Livestock Modal -->
+<div class="modal fade" id="editLivestockModal" tabindex="-1" role="dialog" aria-labelledby="editLivestockLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLivestockLabel">
+                    <i class="fas fa-edit mr-2"></i>
+                    Edit Livestock
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editLivestockForm">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <input type="hidden" id="editLivestockId" name="livestock_id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tag Number <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editTagNumber" name="tag_number" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Type <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editType" name="type" required>
+                                    <option value="">Select Type</option>
+                                    <option value="cow">Cow</option>
+                                    <option value="buffalo">Buffalo</option>
+                                    <option value="goat">Goat</option>
+                                    <option value="sheep">Sheep</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Breed <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editBreed" name="breed" required>
+                                    <option value="">Select Breed</option>
+                                    <option value="holstein">Holstein</option>
+                                    <option value="jersey">Jersey</option>
+                                    <option value="guernsey">Guernsey</option>
+                                    <option value="ayrshire">Ayrshire</option>
+                                    <option value="brown_swiss">Brown Swiss</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Farm <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editFarmId" name="farm_id" required>
+                                    <option value="">Select Farm</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Birth Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="editBirthDate" name="birth_date" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Gender <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editGender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" class="form-control" id="editWeight" name="weight" min="0" step="0.1">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Health Status</label>
+                                <select class="form-control" id="editHealthStatus" name="health_status">
+                                    <option value="healthy">Healthy</option>
+                                    <option value="sick">Sick</option>
+                                    <option value="injured">Injured</option>
+                                    <option value="pregnant">Pregnant</option>
+                                    <option value="lactating">Lactating</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Status <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editStatus" name="status" required>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Description/Notes</label>
+                                <textarea class="form-control" id="editDescription" name="description" rows="3" placeholder="Additional notes about the livestock..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-ok">
+                        <i class="fas fa-save"></i> Update Livestock
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this livestock? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-deletes" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Issue Alert Modal -->
 <div class="modal fade" id="issueAlertModal" tabindex="-1" role="dialog" aria-labelledby="issueAlertLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -1390,10 +1631,9 @@ $(document).ready(function () {
                                     <td>${animal.gender}</td>
                                     <td>${animal.farm ? animal.farm.name : 'N/A'}</td>
                                     <td>
-                                        <select class="form-control" onchange="updateStatus(this, '${animal.id}')">
-                                            <option value="active" ${animal.status === 'active' ? 'selected' : ''}>Active</option>
-                                            <option value="inactive" ${animal.status === 'inactive' ? 'selected' : ''}>Inactive</option>
-                                        </select>
+                                        <span class="badge badge-${animal.status === 'active' ? 'success' : 'danger'}">
+                                            ${animal.status === 'active' ? 'Active' : 'Inactive'}
+                                        </span>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
@@ -1452,6 +1692,24 @@ $(document).ready(function () {
         });
     }
 
+    function loadFarmerFarmsForEdit(farmerId, selectedFarmId) {
+        $.ajax({
+            url: `{{ route("admin.livestock.farmer-farms", ":id") }}`.replace(':id', farmerId),
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const farmSelect = $('#editFarmId');
+                    farmSelect.empty().append('<option value="">Select Farm</option>');
+                    
+                    response.data.forEach(farm => {
+                        const selected = farm.id == selectedFarmId ? 'selected' : '';
+                        farmSelect.append(`<option value="${farm.id}" ${selected}>${farm.name}</option>`);
+                    });
+                }
+            }
+        });
+    }
+
     function updateFarmerStats(stats) {
         $('#farmerTotalLivestock').text(stats.total || 0);
         $('#farmerActiveLivestock').text(stats.active || 0);
@@ -1476,47 +1734,49 @@ $(document).ready(function () {
         }
     }
 
-    function updateStatus(select, livestockId) {
-        const status = select.value;
-        
+
+    function editLivestock(livestockId) {
+        // Load livestock data and show edit modal
         $.ajax({
-            url: `{{ route('admin.livestock.update-status', ':id') }}`.replace(':id', livestockId),
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify({ status: status }),
+            url: `{{ route("admin.livestock.details", ":id") }}`.replace(':id', livestockId),
+            method: 'GET',
             success: function(response) {
                 if (response.success) {
-                    if (selectedFarmerId) {
-                        loadFarmerLivestock(selectedFarmerId);
-                    }
+                    const livestock = response.data;
+                    
+                    // Populate the edit form
+                    $('#editLivestockId').val(livestock.id);
+                    $('#editTagNumber').val(livestock.tag_number);
+                    $('#editType').val(livestock.type);
+                    $('#editBreed').val(livestock.breed);
+                    $('#editBirthDate').val(livestock.birth_date);
+                    $('#editGender').val(livestock.gender);
+                    $('#editWeight').val(livestock.weight);
+                    $('#editHealthStatus').val(livestock.health_status);
+                    $('#editStatus').val(livestock.status);
+                    $('#editDescription').val(livestock.description);
+                    
+                    // Load farms for the farmer
+                    loadFarmerFarmsForEdit(selectedFarmerId, livestock.farm_id);
+                    
+                    // Show the edit modal
+                    $('#editLivestockModal').modal('show');
+                } else {
+                    showNotification('Error loading livestock data', 'danger');
                 }
+            },
+            error: function() {
+                showNotification('Error loading livestock data', 'danger');
             }
         });
     }
 
-    function editLivestock(livestockId) {
-        // Implementation for editing livestock
-        alert('Edit functionality coming soon');
-    }
-
     function deleteLivestock(livestockId) {
-        if (confirm('Are you sure you want to delete this livestock?')) {
-            $.ajax({
-                url: `{{ route('admin.livestock.destroy', ':id') }}`.replace(':id', livestockId),
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (selectedFarmerId) {
-                        loadFarmerLivestock(selectedFarmerId);
-                    }
-                }
-            });
-        }
+        // Store the livestock ID for the confirmation
+        $('#confirmDeleteBtn').data('livestock-id', livestockId);
+        
+        // Show the confirmation modal
+        $('#deleteConfirmationModal').modal('show');
     }
 
     // Handle add livestock form submission
@@ -1536,11 +1796,82 @@ $(document).ready(function () {
                 $('#addLivestockModal').modal('hide');
                 $('#addLivestockForm')[0].reset();
                 loadFarmerLivestock(selectedFarmerId);
+                showNotification('Livestock added successfully!', 'success');
+            },
+            error: function(xhr) {
+                const errors = xhr.responseJSON?.errors || {};
+                let errorMessage = 'Failed to add livestock. ';
+                Object.values(errors).forEach(error => {
+                    errorMessage += error[0] + ' ';
+                });
+                showNotification(errorMessage, 'danger');
+            }
+        });
+    });
+
+    // Handle edit livestock form submission
+    $('#editLivestockForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const livestockId = $('#editLivestockId').val();
+        const formData = new FormData(this);
+        
+        $.ajax({
+            url: `{{ route("admin.livestock.update", ":id") }}`.replace(':id', livestockId),
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-HTTP-Method-Override': 'PUT'
+            },
+            success: function(response) {
+                $('#editLivestockModal').modal('hide');
+                $('#editLivestockForm')[0].reset();
+                loadFarmerLivestock(selectedFarmerId);
+                showNotification('Livestock updated successfully!', 'success');
+            },
+            error: function(xhr) {
+                const errors = xhr.responseJSON?.errors || {};
+                let errorMessage = 'Failed to update livestock. ';
+                Object.values(errors).forEach(error => {
+                    errorMessage += error[0] + ' ';
+                });
+                showNotification(errorMessage, 'danger');
+            }
+        });
+    });
+
+    // Handle delete confirmation
+    $('#confirmDeleteBtn').on('click', function() {
+        const livestockId = $(this).data('livestock-id');
+        
+        $.ajax({
+            url: `{{ route('admin.livestock.destroy', ':id') }}`.replace(':id', livestockId),
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                $('#deleteConfirmationModal').modal('hide');
+                showNotification('Livestock deleted successfully!', 'success');
+                
+                // Reload the livestock list
+                if (selectedFarmerId) {
+                    loadFarmerLivestock(selectedFarmerId);
+                }
+            },
+            error: function(xhr) {
+                $('#deleteConfirmationModal').modal('hide');
+                showNotification('Failed to delete livestock', 'danger');
             }
         });
     });
 
     function viewLivestockDetails(livestockId) {
+        // Store the livestock ID for editing
+        selectedLivestockId = livestockId;
+        
         $.ajax({
             url: `{{ route("admin.livestock.details", ":id") }}`.replace(':id', livestockId),
             method: 'GET',
@@ -1734,6 +2065,20 @@ $(document).ready(function () {
             }
         });
     });
+
+    function openLivestockEditModal() {
+        // Get the livestock ID from the current livestock details
+        // We need to store the current livestock ID when viewing details
+        if (selectedLivestockId) {
+            // Close the details modal
+            $('#livestockDetailsModal').modal('hide');
+            
+            // Open the edit modal with the livestock data
+            editLivestock(selectedLivestockId);
+        } else {
+            showNotification('No livestock selected for editing', 'warning');
+        }
+    }
 
     function showNotification(message, type) {
         const notification = $(`
