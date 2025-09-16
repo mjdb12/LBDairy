@@ -49,17 +49,39 @@ class LivestockController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'livestock_id' => 'required|string|max:255|unique:livestock,tag_number',
+            'tag_number' => 'required|string|max:255|unique:livestock,tag_number',
+            'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
             'breed' => 'required|string|max:255',
             'farm_id' => 'required|exists:farms,id',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
-            'notes' => 'nullable|string|max:1000',
+            'health_status' => 'required|string|max:255',
+            'status' => 'required|in:active,inactive',
+            'registry_id' => 'nullable|string|max:255',
+            'natural_marks' => 'nullable|string|max:255',
+            'property_no' => 'nullable|string|max:255',
+            'acquisition_date' => 'nullable|date',
+            'acquisition_cost' => 'nullable|numeric|min:0',
+            'sire_id' => 'nullable|string|max:255',
+            'sire_name' => 'nullable|string|max:255',
+            'dam_id' => 'nullable|string|max:255',
+            'dam_name' => 'nullable|string|max:255',
+            'dispersal_from' => 'nullable|string|max:255',
+            'owned_by' => 'nullable|string|max:255',
+            'remarks' => 'nullable|string|max:1000',
+            'description' => 'nullable|string|max:1000',
         ]);
 
         if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -67,21 +89,47 @@ class LivestockController extends Controller
 
         try {
             Livestock::create([
-                'tag_number' => $request->livestock_id,
+                'tag_number' => $request->tag_number,
+                'name' => $request->name,
                 'type' => $request->type,
                 'breed' => $request->breed,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
                 'weight' => $request->weight,
-                'health_status' => $request->notes ?? 'healthy',
-                'status' => 'active',
+                'health_status' => $request->health_status,
+                'status' => $request->status,
+                'registry_id' => $request->registry_id,
+                'natural_marks' => $request->natural_marks,
+                'property_no' => $request->property_no,
+                'acquisition_date' => $request->acquisition_date,
+                'acquisition_cost' => $request->acquisition_cost,
+                'sire_id' => $request->sire_id,
+                'sire_name' => $request->sire_name,
+                'dam_id' => $request->dam_id,
+                'dam_name' => $request->dam_name,
+                'dispersal_from' => $request->dispersal_from,
+                'owned_by' => $request->owned_by,
+                'remarks' => $request->remarks,
+                'description' => $request->description,
                 'owner_id' => $request->farmer_id ?? Auth::user()->id,
             ]);
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Livestock added successfully!'
+                ]);
+            }
             return redirect()->route('admin.livestock.index')
                 ->with('success', 'Livestock added successfully!');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to add livestock. Please try again.'
+                ], 500);
+            }
             return redirect()->back()
                 ->with('error', 'Failed to add livestock. Please try again.')
                 ->withInput();
@@ -128,6 +176,7 @@ class LivestockController extends Controller
         
         $validator = Validator::make($request->all(), [
             'tag_number' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
+            'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
             'breed' => 'required|string|max:255',
             'farm_id' => 'required|exists:farms,id',
@@ -136,6 +185,18 @@ class LivestockController extends Controller
             'weight' => 'nullable|numeric|min:0',
             'health_status' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
+            'registry_id' => 'nullable|string|max:255',
+            'natural_marks' => 'nullable|string|max:255',
+            'property_no' => 'nullable|string|max:255',
+            'acquisition_date' => 'nullable|date',
+            'acquisition_cost' => 'nullable|numeric|min:0',
+            'sire_id' => 'nullable|string|max:255',
+            'sire_name' => 'nullable|string|max:255',
+            'dam_id' => 'nullable|string|max:255',
+            'dam_name' => 'nullable|string|max:255',
+            'dispersal_from' => 'nullable|string|max:255',
+            'owned_by' => 'nullable|string|max:255',
+            'remarks' => 'nullable|string|max:1000',
             'description' => 'nullable|string|max:1000',
         ]);
 
@@ -155,6 +216,7 @@ class LivestockController extends Controller
         try {
             $livestock->update([
                 'tag_number' => $request->tag_number,
+                'name' => $request->name,
                 'type' => $request->type,
                 'breed' => $request->breed,
                 'farm_id' => $request->farm_id,
@@ -163,6 +225,18 @@ class LivestockController extends Controller
                 'weight' => $request->weight,
                 'health_status' => $request->health_status ?? 'healthy',
                 'status' => $request->status,
+                'registry_id' => $request->registry_id,
+                'natural_marks' => $request->natural_marks,
+                'property_no' => $request->property_no,
+                'acquisition_date' => $request->acquisition_date,
+                'acquisition_cost' => $request->acquisition_cost,
+                'sire_id' => $request->sire_id,
+                'sire_name' => $request->sire_name,
+                'dam_id' => $request->dam_id,
+                'dam_name' => $request->dam_name,
+                'dispersal_from' => $request->dispersal_from,
+                'owned_by' => $request->owned_by,
+                'remarks' => $request->remarks,
                 'description' => $request->description,
             ]);
 

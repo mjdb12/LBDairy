@@ -45,13 +45,18 @@ class AnalysisController extends Controller
     public function getFarmerData($id)
     {
         try {
-            $farmer = User::with(['farm', 'livestock', 'productionRecords'])->findOrFail($id);
+            Log::info('getFarmerData called with ID: ' . $id);
+            
+            $farmer = User::with(['farms', 'livestock', 'productionRecords'])->findOrFail($id);
+            Log::info('Farmer found: ' . $farmer->name);
             
             // Get production data for the last 6 months
             $productionData = $this->getProductionData($farmer->id);
+            Log::info('Production data: ' . json_encode($productionData));
             
             // Generate analysis text
             $analysis = $this->generateAnalysis($productionData);
+            Log::info('Analysis generated: ' . $analysis);
             
             return response()->json([
                 'success' => true,
@@ -60,9 +65,12 @@ class AnalysisController extends Controller
                 'analysis' => $analysis
             ]);
         } catch (\Exception $e) {
+            Log::error('Error in getFarmerData: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to load farmer data'
+                'message' => 'Failed to load farmer data: ' . $e->getMessage()
             ], 500);
         }
     }

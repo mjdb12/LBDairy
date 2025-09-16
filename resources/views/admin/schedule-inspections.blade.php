@@ -3,6 +3,7 @@
 @section('title', 'LBDAIRY: Admin - Schedule Inspections')
 
 @push('styles')
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css" rel="stylesheet">
 <style>
     /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
     .admin-modal select.form-control,
@@ -25,6 +26,40 @@
         min-width: 280px !important;
         overflow: visible !important;
     }
+
+    /* Cancel Confirmation Modal Styling */
+#cancelInspectionModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#cancelInspectionModal .modal-header {
+    background: #18375d !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#cancelInspectionModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#cancelInspectionModal .modal-body {
+    padding: 2rem;
+    background: white;
+}
+
+#cancelInspectionModal .modal-body p {
+    margin-bottom: 0.75rem;
+    color: #333 !important;
+}
+
+#cancelInspectionModal .modal-footer {
+    background: white;
+    border-top: 1px solid #e3e6f0;
+}
 
     /* Apply consistent styling for Farmers, Livestock, and Issues tables */
 #farmersTable th,
@@ -1171,24 +1206,28 @@
             <form onsubmit="submitInspectionSchedule(event)">
                 @csrf
                 <div class="modal-body">
+                    <input type="hidden" id="inspectionFarmer" name="farmer_id">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="inspectionFarmer">Select Farmer <span class="text-danger">*</span></label>
-                                <select class="form-control" id="inspectionFarmer" required>
-                                    <option value="">Select Farmer</option>
-                                    <!-- Farmers will be loaded here -->
-                                </select>
+                                <label for="inspectionFarmerName">Farmer Name</label>
+                                <input type="text" class="form-control" id="inspectionFarmerName" readonly>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inspectionFarmName">Farm Name</label>
+                                <input type="text" class="form-control" id="inspectionFarmName" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inspectionDate">Inspection Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="inspectionDate" required min="{{ date('Y-m-d') }}">
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inspectionTime">Inspection Time <span class="text-danger">*</span></label>
@@ -1249,7 +1288,7 @@
 
 <!-- Farmer Details Modal -->
 <div class="modal fade" id="farmerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmerDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="farmerDetailsModalLabel">
@@ -1269,9 +1308,115 @@
         </div>
     </div>
 </div>
+
+<!-- Edit Inspection Modal -->
+<div class="modal fade" id="editInspectionModal" tabindex="-1" role="dialog" aria-labelledby="editInspectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editInspectionModalLabel">
+                    <i class="fas fa-edit"></i>
+                    Edit Inspection
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editInspectionForm">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" id="editInspectionId" name="inspection_id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editInspectionDate">Inspection Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="editInspectionDate" name="inspection_date" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editInspectionTime">Inspection Time <span class="text-danger">*</span></label>
+                                <input type="time" class="form-control" id="editInspectionTime" name="inspection_time" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editInspectionPriority">Priority Level <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editInspectionPriority" name="priority" required>
+                                    <option value="">Select Priority</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editInspectionStatus">Status <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editInspectionStatus" name="status" required>
+                                    <option value="">Select Status</option>
+                                    <option value="scheduled">Scheduled</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="rescheduled">Rescheduled</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editInspectionNotes">Inspection Notes</label>
+                        <textarea class="form-control" id="editInspectionNotes" name="notes" rows="3" placeholder="Enter inspection notes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editInspectionFindings">Findings</label>
+                        <textarea class="form-control" id="editInspectionFindings" name="findings" rows="3" placeholder="Enter inspection findings..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Update Inspection
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Inspection Confirmation Modal -->
+<div class="modal fade" id="cancelInspectionModal" tabindex="-1" role="dialog" aria-labelledby="cancelInspectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelInspectionModalLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Confirm Cancel
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this inspection? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-reject" id="confirmCancelInspectionBtn">
+                    <i class="fas fa-times"></i> Yes, Cancel Inspection
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
+<!-- FullCalendar -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.js"></script>
 <!-- DataTables Core -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -1510,26 +1655,6 @@ function loadFarmersTable() {
     });
 }
 
-function loadFarmers() {
-    $.ajax({
-        url: '{{ route("admin.farmers.active") }}',
-        method: 'GET',
-        success: function(response) {
-            const farmerSelect = $('#inspectionFarmer');
-            farmerSelect.empty().append('<option value="">Select Farmer</option>');
-            
-            if (response.success && response.data) {
-                response.data.forEach(farmer => {
-                    const farmerName = `${farmer.first_name || ''} ${farmer.last_name || ''}`.trim();
-                    farmerSelect.append(`<option value="${farmer.id}">${farmerName} - ${farmer.farm_name || 'N/A'}</option>`);
-                });
-            }
-        },
-        error: function(xhr) {
-            console.error('Error loading farmers:', xhr);
-        }
-    });
-}
 
 function updateStats() {
     // Update stats via AJAX
@@ -1553,6 +1678,14 @@ function updateStats() {
 function scheduleInspectionForFarmer(farmerId, farmerName, farmName) {
     // Pre-populate the modal with farmer information
     document.getElementById('inspectionFarmer').value = farmerId;
+    document.getElementById('inspectionFarmerName').value = farmerName;
+    document.getElementById('inspectionFarmName').value = farmName;
+    
+    // Clear other fields
+    document.getElementById('inspectionDate').value = '';
+    document.getElementById('inspectionTime').value = '';
+    document.getElementById('inspectionPriority').value = '';
+    document.getElementById('inspectionNotes').value = '';
     
     // Show the modal
     $('#scheduleInspectionModal').modal('show');
@@ -1566,40 +1699,168 @@ function openScheduleModal() {
 }
 
 function viewFarmerDetails(farmerId) {
+    console.log('viewFarmerDetails called with ID:', farmerId);
+    
+    // Show loading state
+    $('#farmerDetailsContent').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading farmer details...</p></div>');
+    $('#farmerDetailsModal').modal('show');
+    
+    // Load farmer details and their scheduled inspections
     $.ajax({
-        url: `{{ url('admin/farmers') }}/${farmerId}`,
+        url: `{{ route('admin.farmers.show', ':id') }}`.replace(':id', farmerId),
         method: 'GET',
         success: function(response) {
+            console.log('Farmer response:', response);
             if (response.success) {
-                const farmer = response.data;
-                $('#farmerDetailsContent').html(`
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6 class="text-primary">Personal Information</h6>
-                            <table class="table table-borderless">
-                                <tr><td><strong>Name:</strong></td><td>${farmer.first_name || ''} ${farmer.last_name || ''}</td></tr>
-                                <tr><td><strong>Email:</strong></td><td>${farmer.email || 'N/A'}</td></tr>
-                                <tr><td><strong>Phone:</strong></td><td>${farmer.phone || 'N/A'}</td></tr>
-                                <tr><td><strong>Username:</strong></td><td>${farmer.username || 'N/A'}</td></tr>
-                                <tr><td><strong>Registration Date:</strong></td><td>${farmer.created_at || 'N/A'}</td></tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 class="text-primary">Farm Information</h6>
-                            <table class="table table-borderless">
-                                <tr><td><strong>Farm Name:</strong></td><td>${farmer.farm_name || 'N/A'}</td></tr>
-                                <tr><td><strong>Barangay:</strong></td><td>${farmer.barangay || 'N/A'}</td></tr>
-                                <tr><td><strong>Status:</strong></td><td><span class="badge badge-${farmer.status === 'active' ? 'success' : 'warning'}">${farmer.status}</span></td></tr>
-                            </table>
-                        </div>
-                    </div>
-                `);
-                $('#farmerDetailsModal').modal('show');
+                const farmer = response.farmer;
+                
+                // Load scheduled inspections for this farmer
+                $.ajax({
+                    url: `{{ route('admin.inspections.farmer', ':id') }}`.replace(':id', farmerId),
+                    method: 'GET',
+                    success: function(inspectionsResponse) {
+                        console.log('Inspections response:', inspectionsResponse);
+                        if (inspectionsResponse.success) {
+                            const inspections = inspectionsResponse.data;
+                            console.log('Inspections data:', inspections);
+                            
+                            // Create calendar HTML with inspections
+                            const calendarHtml = `
+                                <div class="container-fluid p-0">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-header bg-primary text-white">
+                                                    <h6 class="mb-0"><i class="fas fa-user"></i> Farmer Information</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table class="table table-borderless table-sm mb-0">
+                                                        <tr><td><strong>Name:</strong></td><td>${farmer.first_name || ''} ${farmer.last_name || ''}</td></tr>
+                                                        <tr><td><strong>Email:</strong></td><td>${farmer.email || 'N/A'}</td></tr>
+                                                        <tr><td><strong>Phone:</strong></td><td>${farmer.phone || 'N/A'}</td></tr>
+                                                        <tr><td><strong>Farm:</strong></td><td>${farmer.farm_name || 'N/A'}</td></tr>
+                                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${farmer.status === 'active' ? 'success' : 'warning'}">${farmer.status}</span></td></tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card shadow-sm mb-3">
+                                                <div class="card-header bg-success text-white">
+                                                    <h6 class="mb-0"><i class="fas fa-calendar"></i> Scheduled Inspections Calendar</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="farmerCalendar" style="height: 400px;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header bg-info text-white">
+                                                    <h6 class="mb-0"><i class="fas fa-list"></i> Upcoming Inspections</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm table-striped table-hover">
+                                                            <thead class="thead-light">
+                                                                <tr>
+                                                                    <th>Date</th>
+                                                                    <th>Time</th>
+                                                                    <th>Priority</th>
+                                                                    <th>Status</th>
+                                                                    <th>Notes</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                ${inspections.length > 0 ? inspections.map(inspection => `
+                                                                    <tr class="${inspection.priority === 'urgent' ? 'table-danger' : (inspection.priority === 'high' ? 'table-warning' : '')}">
+                                                                        <td>${inspection.inspection_date ? new Date(inspection.inspection_date).toLocaleDateString() : 'N/A'}</td>
+                                                                        <td>${inspection.inspection_time ? new Date('1970-01-01T' + inspection.inspection_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'}</td>
+                                                                        <td><span class="badge badge-${getPriorityBadgeClass(inspection.priority)}">${inspection.priority}</span></td>
+                                                                        <td><span class="badge badge-${getStatusBadgeClass(inspection.status)}">${inspection.status}</span></td>
+                                                                        <td>${inspection.notes ? inspection.notes.substring(0, 50) + (inspection.notes.length > 50 ? '...' : '') : 'N/A'}</td>
+                                                                    </tr>
+                                                                `).join('') : '<tr><td colspan="5" class="text-center text-muted">No scheduled inspections</td></tr>'}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            $('#farmerDetailsContent').html(calendarHtml);
+                            
+                            // Initialize calendar with inspections
+                            console.log('About to initialize calendar with inspections:', inspections);
+                            
+                            // Wait for DOM to be ready and FullCalendar to be loaded
+                            setTimeout(() => {
+                                // Check if FullCalendar is loaded
+                                if (typeof FullCalendar === 'undefined') {
+                                    console.error('FullCalendar not loaded yet, retrying...');
+                                    setTimeout(() => {
+                                        if (inspections && inspections.length > 0) {
+                                            initializeFarmerCalendar(inspections);
+                                        } else {
+                                            console.log('No inspections found for this farmer');
+                                            $('#farmerCalendar').html(`
+                                                <div class="text-center text-muted p-4">
+                                                    <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                                                    <h5>No Scheduled Inspections</h5>
+                                                    <p>This farmer has no scheduled inspections yet.</p>
+                                                </div>
+                                            `);
+                                        }
+                                    }, 500);
+                                } else {
+                                    if (inspections && inspections.length > 0) {
+                                        initializeFarmerCalendar(inspections);
+                                    } else {
+                                        console.log('No inspections found for this farmer');
+                                        $('#farmerCalendar').html(`
+                                            <div class="text-center text-muted p-4">
+                                                <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                                                <h5>No Scheduled Inspections</h5>
+                                                <p>This farmer has no scheduled inspections yet.</p>
+                                            </div>
+                                        `);
+                                    }
+                                }
+                            }, 100);
+                            
+                            $('#farmerDetailsModal').modal('show');
+                        } else {
+                            showNotification('Error loading farmer inspections', 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading farmer inspections:', xhr, status, error);
+                        $('#farmerDetailsContent').html(`
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Error loading farmer inspections: ${error}
+                            </div>
+                        `);
+                        showNotification('Error loading farmer inspections', 'danger');
+                    }
+                });
             } else {
                 showNotification('Error loading farmer details', 'danger');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('Error loading farmer details:', xhr, status, error);
+            $('#farmerDetailsContent').html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Error loading farmer details: ${error}
+                </div>
+            `);
             showNotification('Error loading farmer details', 'danger');
         }
     });
@@ -1709,32 +1970,48 @@ function viewInspectionDetails(inspectionId) {
 }
 
 function editInspection(inspectionId) {
-    // Implementation for editing inspection
-    showNotification('Edit functionality coming soon!', 'info');
+    console.log('Editing inspection:', inspectionId);
+    
+    // Show loading state
+    $('#editInspectionModal').modal('show');
+    $('#editInspectionForm')[0].reset();
+    
+    // Fetch inspection details
+    $.ajax({
+        url: `{{ route("admin.inspections.show", ":id") }}`.replace(':id', inspectionId),
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const inspection = response.data;
+                
+                // Populate form fields
+                $('#editInspectionId').val(inspection.id);
+                $('#editInspectionDate').val(inspection.inspection_date);
+                $('#editInspectionTime').val(inspection.inspection_time);
+                $('#editInspectionPriority').val(inspection.priority);
+                $('#editInspectionStatus').val(inspection.status);
+                $('#editInspectionNotes').val(inspection.notes || '');
+                $('#editInspectionFindings').val(inspection.findings || '');
+                
+                console.log('Inspection data loaded:', inspection);
+            } else {
+                showNotification('Error loading inspection details', 'danger');
+                $('#editInspectionModal').modal('hide');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading inspection:', xhr, status, error);
+            showNotification('Error loading inspection details', 'danger');
+            $('#editInspectionModal').modal('hide');
+        }
+    });
 }
 
+let currentInspectionId = null;
+
 function cancelInspection(inspectionId) {
-    if (confirm('Are you sure you want to cancel this inspection?')) {
-        $.ajax({
-            url: `{{ route("admin.inspections.cancel", ":id") }}`.replace(':id', inspectionId),
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    loadInspections();
-                    updateStats();
-                    showNotification('Inspection cancelled successfully!', 'warning');
-                } else {
-                    showNotification(response.message || 'Error cancelling inspection', 'danger');
-                }
-            },
-            error: function() {
-                showNotification('Error cancelling inspection', 'danger');
-            }
-        });
-    }
+    currentInspectionId = inspectionId;
+    $('#cancelInspectionModal').modal('show');
 }
 
 function refreshInspectionsData() {
@@ -2272,5 +2549,265 @@ function showNotification(message, type) {
         notification.alert('close');
     }, 5000);
 }
+
+function getPriorityBadgeClass(priority) {
+    switch(priority) {
+        case 'low': return 'info';
+        case 'medium': return 'warning';
+        case 'high': return 'danger';
+        case 'urgent': return 'dark';
+        default: return 'secondary';
+    }
+}
+
+function getStatusBadgeClass(status) {
+    switch(status) {
+        case 'scheduled': return 'primary';
+        case 'completed': return 'success';
+        case 'cancelled': return 'danger';
+        case 'rescheduled': return 'warning';
+        default: return 'secondary';
+    }
+}
+
+function initializeFarmerCalendar(inspections) {
+    try {
+        // Check if FullCalendar is available
+        if (typeof FullCalendar === 'undefined') {
+            console.error('FullCalendar is not loaded');
+            showNotification('Calendar library not loaded. Please refresh the page.', 'error');
+            return;
+        }
+        
+        // Destroy existing calendar if it exists
+        if (window.farmerCalendar) {
+            try {
+                if (typeof window.farmerCalendar.destroy === 'function') {
+                    window.farmerCalendar.destroy();
+                }
+            } catch (destroyError) {
+                console.warn('Error destroying existing calendar:', destroyError);
+            }
+            window.farmerCalendar = null;
+        }
+        
+        const calendarEl = document.getElementById('farmerCalendar');
+        if (!calendarEl) {
+            console.error('Calendar element not found');
+            showNotification('Calendar element not found', 'error');
+            return;
+        }
+        
+        // Clear the calendar element content
+        calendarEl.innerHTML = '';
+        
+        // Convert inspections to FullCalendar events
+        console.log('Converting inspections to calendar events:', inspections);
+        
+        const events = inspections.map(inspection => {
+            // Use the calendar_start attribute if available, otherwise construct it
+            let eventStart;
+            
+            if (inspection.calendar_start) {
+                eventStart = inspection.calendar_start;
+            } else if (inspection.inspection_date && inspection.inspection_time) {
+                // Fallback: construct the datetime
+                let startDate, startTime;
+                
+                // If inspection_time is a full datetime, extract just the time part
+                if (inspection.inspection_time.includes(' ')) {
+                    startTime = inspection.inspection_time.split(' ')[1].substring(0, 8); // Extract HH:MM:SS
+                } else {
+                    startTime = inspection.inspection_time;
+                }
+                
+                // Ensure inspection_date is just the date part
+                if (inspection.inspection_date.includes(' ')) {
+                    startDate = inspection.inspection_date.split(' ')[0]; // Extract YYYY-MM-DD
+                } else {
+                    startDate = inspection.inspection_date;
+                }
+                
+                eventStart = `${startDate}T${startTime}`;
+            } else {
+                console.warn(`Invalid date/time for inspection ${inspection.id}:`, inspection.inspection_date, inspection.inspection_time);
+                return null;
+            }
+            
+            console.log(`Creating event for inspection ${inspection.id}: ${eventStart}`);
+            
+            return {
+                id: inspection.id,
+                title: `Inspection - ${inspection.priority}`,
+                start: eventStart,
+                backgroundColor: getPriorityColor(inspection.priority),
+                borderColor: getPriorityColor(inspection.priority),
+                textColor: 'white',
+                extendedProps: {
+                    priority: inspection.priority,
+                    status: inspection.status,
+                    notes: inspection.notes,
+                    scheduledBy: inspection.scheduled_by?.name || 'Admin'
+                }
+            };
+        }).filter(event => event !== null);
+        
+        console.log('Final calendar events:', events);
+        
+        // Create new calendar instance
+        if (typeof FullCalendar.Calendar === 'undefined') {
+            console.error('FullCalendar.Calendar is not available');
+            showNotification('Calendar component not available. Please refresh the page.', 'error');
+            return;
+        }
+        
+        window.farmerCalendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            initialView: 'dayGridMonth',
+            height: 'auto',
+            events: events,
+            eventClick: function(info) {
+                const inspection = info.event;
+                const details = `
+                    <strong>Farm Inspection</strong><br>
+                    <strong>Priority:</strong> ${inspection.extendedProps.priority}<br>
+                    <strong>Status:</strong> ${inspection.extendedProps.status}<br>
+                    <strong>Scheduled By:</strong> ${inspection.extendedProps.scheduledBy}<br>
+                    ${inspection.extendedProps.notes ? `<strong>Notes:</strong> ${inspection.extendedProps.notes}` : ''}
+                `;
+                showNotification(details, 'info');
+            },
+            eventDidMount: function(info) {
+                // Add tooltip
+                $(info.el).tooltip({
+                    title: `Inspection - ${info.event.extendedProps.priority} priority`,
+                    placement: 'top',
+                    trigger: 'hover'
+                });
+            }
+        });
+        
+        window.farmerCalendar.render();
+        console.log('Farmer calendar initialized successfully');
+    } catch (error) {
+        console.error('Error initializing farmer calendar:', error);
+        showNotification('Error initializing calendar: ' + error.message, 'error');
+        
+        // Fallback: show a simple message instead of calendar
+        const calendarEl = document.getElementById('farmerCalendar');
+        if (calendarEl) {
+            calendarEl.innerHTML = `
+                <div class="text-center text-muted p-4">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h5>Calendar Error</h5>
+                    <p>Unable to load calendar. Please refresh the page and try again.</p>
+                    <p class="small">Error: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+}
+
+function getPriorityColor(priority) {
+    switch(priority) {
+        case 'urgent': return '#dc3545';
+        case 'high': return '#fd7e14';
+        case 'medium': return '#ffc107';
+        case 'low': return '#28a745';
+        default: return '#6c757d';
+    }
+}
+
+// Event handlers for modals
+$(document).ready(function() {
+    // Edit inspection form submission
+    $('#editInspectionForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const inspectionId = $('#editInspectionId').val();
+        const formData = new FormData(this);
+        
+        // Show loading state
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Updating...').prop('disabled', true);
+        
+        $.ajax({
+            url: `{{ route("admin.inspections.update", ":id") }}`.replace(':id', inspectionId),
+            method: 'PUT',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#editInspectionModal').modal('hide');
+                    loadInspections();
+                    updateStats();
+                    showNotification('Inspection updated successfully!', 'success');
+                } else {
+                    showNotification(response.message || 'Error updating inspection', 'danger');
+                }
+            },
+            error: function(xhr) {
+                console.error('Error updating inspection:', xhr);
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    // Handle validation errors
+                    let errorMessage = 'Validation errors:\n';
+                    Object.keys(xhr.responseJSON.errors).forEach(key => {
+                        errorMessage += `• ${xhr.responseJSON.errors[key].join(', ')}\n`;
+                    });
+                    showNotification(errorMessage, 'danger');
+                } else {
+                    showNotification('Error updating inspection', 'danger');
+                }
+            },
+            complete: function() {
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+    
+    // Cancel inspection confirmation
+    $('#confirmCancelInspectionBtn').on('click', function() {
+        if (currentInspectionId) {
+            const btn = $(this);
+            const originalText = btn.html();
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Cancelling...').prop('disabled', true);
+            
+            $.ajax({
+                url: `{{ route("admin.inspections.cancel", ":id") }}`.replace(':id', currentInspectionId),
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#cancelInspectionModal').modal('hide');
+                        loadInspections();
+                        updateStats();
+                        showNotification('Inspection cancelled successfully!', 'warning');
+                    } else {
+                        showNotification(response.message || 'Error cancelling inspection', 'danger');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error cancelling inspection:', xhr);
+                    showNotification('Error cancelling inspection', 'danger');
+                },
+                complete: function() {
+                    btn.html(originalText).prop('disabled', false);
+                    currentInspectionId = null;
+                }
+            });
+        }
+    });
+});
 </script>
 @endpush

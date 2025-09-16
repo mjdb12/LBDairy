@@ -176,7 +176,7 @@ class TaskController extends Controller
             $status = $task->status;
             
             return [
-                'id' => $task->id,
+                'id' => 'task_' . $task->id,
                 'title' => $task->title,
                 'start' => $task->due_date->format('Y-m-d H:i:s'),
                 'end' => $task->due_date->addHours(1)->format('Y-m-d H:i:s'), // Default 1 hour duration
@@ -193,6 +193,38 @@ class TaskController extends Controller
                 ]
             ];
         });
+
+        // Add scheduled inspections for farmers
+        if ($user->role === 'farmer') {
+            $inspections = \App\Models\Inspection::with('scheduledBy')
+                ->where('farmer_id', $user->id)
+                ->where('status', 'scheduled')
+                ->orderBy('inspection_date', 'asc')
+                ->get();
+
+            $inspectionEvents = $inspections->map(function ($inspection) {
+                $color = $this->getInspectionPriorityColor($inspection->priority);
+                
+                return [
+                    'id' => 'inspection_' . $inspection->id,
+                    'title' => 'Farm Inspection - ' . ucfirst($inspection->priority),
+                    'start' => $inspection->inspection_date->format('Y-m-d') . 'T' . $inspection->inspection_time,
+                    'end' => $inspection->inspection_date->format('Y-m-d') . 'T' . date('H:i:s', strtotime($inspection->inspection_time . ' +2 hours')), // Default 2 hour duration
+                    'backgroundColor' => $color,
+                    'borderColor' => $color,
+                    'textColor' => '#ffffff',
+                    'extendedProps' => [
+                        'description' => $inspection->notes,
+                        'priority' => $inspection->priority,
+                        'status' => $inspection->status,
+                        'scheduled_by' => $inspection->scheduledBy ? $inspection->scheduledBy->name : 'Admin',
+                        'type' => 'inspection'
+                    ]
+                ];
+            });
+
+            $events = $events->merge($inspectionEvents);
+        }
 
         return response()->json($events);
     }
@@ -253,6 +285,18 @@ class TaskController extends Controller
             'low' => '#28a745',
             'medium' => '#ffc107',
             'high' => '#dc3545'
+        ];
+        
+        return $colors[$priority] ?? '#6c757d';
+    }
+
+    private function getInspectionPriorityColor($priority)
+    {
+        $colors = [
+            'low' => '#28a745',
+            'medium' => '#ffc107',
+            'high' => '#fd7e14',
+            'urgent' => '#dc3545'
         ];
         
         return $colors[$priority] ?? '#6c757d';

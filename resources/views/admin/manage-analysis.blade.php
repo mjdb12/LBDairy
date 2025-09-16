@@ -96,17 +96,18 @@
                         @forelse($farmers as $farmer)
                         <tr>
                             <td>
-                                <a href="#" onclick="openDetailsModal('{{ $farmer->id }}')">{{ $farmer->farmer_id ?? 'F' . str_pad($farmer->id, 3, '0', STR_PAD_LEFT) }}</a>
+                                <a href="#" class="farmer-id-link" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="Click to view farmer details">
+                                    {{ $farmer->farmer_id ?? 'F' . str_pad($farmer->id, 3, '0', STR_PAD_LEFT) }}
+                                </a>
                             </td>
                             <td>{{ $farmer->name }}</td>
                             <td>{{ $farmer->email }}</td>
                             <td>{{ $farmer->phone ?? 'N/A' }}</td>
                             <td>{{ $farmer->location ?? 'N/A' }}</td>
                             <td>
-                                <select class="form-control" onchange="updateActivity(this, '{{ $farmer->id }}')">
-                                    <option value="active" {{ $farmer->status === 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="inactive" {{ $farmer->status === 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                </select>
+                                <span class="badge badge-{{ $farmer->status === 'active' ? 'success' : 'warning' }}">
+                                    {{ ucfirst($farmer->status) }}
+                                </span>
                             </td>
                             <td>
                                 <div class="action-buttons">
@@ -1058,6 +1059,32 @@
         margin-bottom: 1rem;
         opacity: 0.5;
     }
+
+    /* Farmer ID Link Styling */
+    .farmer-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        display: inline-block;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+
+    .farmer-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .farmer-id-link:focus {
+        outline: 2px solid #18375d;
+        outline-offset: 2px;
+    }
 </style>
 @endpush
 
@@ -1421,34 +1448,6 @@ function viewFarmerDetails(farmerId) {
     });
 }
 
-function updateActivity(selectElement, farmerId) {
-    const status = selectElement.value;
-    const originalValue = selectElement.getAttribute('data-original-value') || selectElement.value;
-    
-    fetch(`{{ route('admin.analysis.update-status', ':id') }}`.replace(':id', farmerId), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ status: status })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showNotification(`Farmer status updated to ${status}`, 'success');
-            selectElement.setAttribute('data-original-value', status);
-        } else {
-            showNotification('Failed to update status', 'error');
-            selectElement.value = originalValue;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotification('An error occurred', 'error');
-        selectElement.value = originalValue;
-    });
-}
 
 function deleteFarmer(farmerId) {
     document.getElementById('deleteFarmerId').textContent = 'F' + String(farmerId).padStart(3, '0');

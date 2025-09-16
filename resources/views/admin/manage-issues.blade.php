@@ -272,6 +272,133 @@
     </div>
 </div>
 
+<!-- Issue Details Modal -->
+<div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="issueDetailsLabel">
+                    <i class="fas fa-eye mr-2"></i>
+                    Issue Details
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="issueDetailsContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Issue Modal -->
+<div class="modal fade" id="editIssueModal" tabindex="-1" role="dialog" aria-labelledby="editIssueLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editIssueLabel">
+                    <i class="fas fa-edit mr-2"></i>
+                    Edit Issue
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editIssueForm">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <input type="hidden" id="editIssueId" name="issue_id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Issue Type <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editIssueType" name="issue_type" required>
+                                    <option value="">Select Issue Type</option>
+                                    <option value="Health">Health</option>
+                                    <option value="Production">Production</option>
+                                    <option value="Behavioral">Behavioral</option>
+                                    <option value="Environmental">Environmental</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Priority <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editPriority" name="priority" required>
+                                    <option value="">Select Priority</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Status <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editStatus" name="status" required>
+                                    <option value="Pending">Pending</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Resolved">Resolved</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="editDescription" name="description" rows="3" required placeholder="Describe the issue in detail..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes (Optional)</label>
+                        <textarea class="form-control" id="editNotes" name="notes" rows="2" placeholder="Additional notes..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-edit-issue">
+                        <i class="fas fa-save"></i> Update Issue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Issue Confirmation Modal -->
+<div class="modal fade" id="deleteIssueConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteIssueConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteIssueConfirmationLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this issue? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-delete-issue" id="confirmDeleteIssueBtn">
+                    <i class="fas fa-trash"></i> Delete Issue
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('styles')
@@ -1398,6 +1525,20 @@ $(document).ready(function() {
             case 'approved': return 'success';
             case 'pending': return 'warning';
             case 'suspended': return 'danger';
+            case 'Pending': return 'warning';
+            case 'In Progress': return 'info';
+            case 'Resolved': return 'success';
+            case 'Closed': return 'secondary';
+            default: return 'secondary';
+        }
+    }
+
+    function getPriorityBadgeClass(priority) {
+        switch(priority) {
+            case 'Low': return 'secondary';
+            case 'Medium': return 'info';
+            case 'High': return 'warning';
+            case 'Urgent': return 'danger';
             default: return 'secondary';
         }
     }
@@ -1449,20 +1590,146 @@ $(document).ready(function() {
         }, 3000);
     }
 
-    // Placeholder functions for existing issue management
+    // Issue management functions
     function viewIssue(issueId) {
-        alert('View issue functionality coming soon');
+        $.ajax({
+            url: `/admin/issues/${issueId}`,
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const issue = response.issue;
+                    const livestock = issue.livestock;
+                    const farm = livestock.farm;
+                    
+                    const detailsHtml = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Issue Information</h6>
+                                <p><strong>Issue Type:</strong> <span class="issue-type-${issue.issue_type.toLowerCase()}">${issue.issue_type}</span></p>
+                                <p><strong>Priority:</strong> <span class="badge badge-${getPriorityBadgeClass(issue.priority)}">${issue.priority}</span></p>
+                                <p><strong>Status:</strong> <span class="badge badge-${getStatusBadgeClass(issue.status)}">${issue.status}</span></p>
+                                <p><strong>Date Reported:</strong> ${issue.date_reported}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Livestock Information</h6>
+                                <p><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
+                                <p><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
+                                <p><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
+                                <p><strong>Farm:</strong> ${farm ? farm.name : 'N/A'}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Description</h6>
+                                <p>${issue.description}</p>
+                                ${issue.notes ? `
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Notes</h6>
+                                    <p>${issue.notes}</p>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    $('#issueDetailsContent').html(detailsHtml);
+                    $('#issueDetailsModal').modal('show');
+                } else {
+                    showNotification('Error loading issue details', 'error');
+                }
+            },
+            error: function() {
+                showNotification('Error loading issue details', 'error');
+            }
+        });
     }
 
     function editIssue(issueId) {
-        alert('Edit issue functionality coming soon');
+        $.ajax({
+            url: `/admin/issues/${issueId}`,
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const issue = response.issue;
+                    
+                    // Populate the edit form
+                    $('#editIssueId').val(issue.id);
+                    $('#editIssueType').val(issue.issue_type);
+                    $('#editPriority').val(issue.priority);
+                    $('#editStatus').val(issue.status);
+                    $('#editDescription').val(issue.description);
+                    $('#editNotes').val(issue.notes);
+                    
+                    // Show the edit modal
+                    $('#editIssueModal').modal('show');
+                } else {
+                    showNotification('Error loading issue data', 'error');
+                }
+            },
+            error: function() {
+                showNotification('Error loading issue data', 'error');
+            }
+        });
     }
 
     function deleteIssue(issueId) {
-        if (confirm('Are you sure you want to delete this issue?')) {
-            // Implementation for deleting issue
-            alert('Delete issue functionality coming soon');
-        }
+        // Store the issue ID for the confirmation
+        $('#confirmDeleteIssueBtn').data('issue-id', issueId);
+        
+        // Show the confirmation modal
+        $('#deleteIssueConfirmationModal').modal('show');
     }
+
+    // Handle edit issue form submission
+    $('#editIssueForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const issueId = $('#editIssueId').val();
+        const formData = new FormData(this);
+        
+        $.ajax({
+            url: `/admin/issues/${issueId}`,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-HTTP-Method-Override': 'PUT'
+            },
+            success: function(response) {
+                $('#editIssueModal').modal('hide');
+                $('#editIssueForm')[0].reset();
+                showNotification('Issue updated successfully!', 'success');
+                refreshIssues();
+            },
+            error: function(xhr) {
+                const errors = xhr.responseJSON?.errors || {};
+                let errorMessage = 'Failed to update issue. ';
+                Object.values(errors).forEach(error => {
+                    errorMessage += error[0] + ' ';
+                });
+                showNotification(errorMessage, 'error');
+            }
+        });
+    });
+
+    // Handle delete confirmation
+    $('#confirmDeleteIssueBtn').on('click', function() {
+        const issueId = $(this).data('issue-id');
+        
+        $.ajax({
+            url: `/admin/issues/${issueId}`,
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $('#deleteIssueConfirmationModal').modal('hide');
+                showNotification('Issue deleted successfully!', 'success');
+                refreshIssues();
+            },
+            error: function() {
+                showNotification('Error deleting issue', 'error');
+            }
+        });
+    });
 </script>
 @endpush

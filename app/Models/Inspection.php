@@ -51,6 +51,16 @@ class Inspection extends Model
     }
 
     /**
+     * Get the calendar event start datetime in ISO format.
+     */
+    public function getCalendarStartAttribute()
+    {
+        $date = $this->inspection_date->format('Y-m-d');
+        $time = $this->inspection_time->format('H:i:s');
+        return $date . 'T' . $time;
+    }
+
+    /**
      * Get the status badge class.
      */
     public function getStatusBadgeClassAttribute()

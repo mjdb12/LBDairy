@@ -1697,35 +1697,66 @@ class AdminController extends Controller
     public function showInspection($id)
     {
         try {
-            $inspection = \App\Models\Inspection::with(['farmer', 'scheduledBy'])
-                ->findOrFail($id);
+            $inspection = \App\Models\Inspection::with(['farmer', 'scheduledBy'])->findOrFail($id);
             
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'id' => $inspection->id,
-                    'farmer_id' => $inspection->farmer_id,
-                    'inspection_date' => $inspection->inspection_date,
-                    'inspection_time' => $inspection->inspection_time,
-                    'priority' => $inspection->priority,
-                    'status' => $inspection->status,
-                    'notes' => $inspection->notes,
-                    'findings' => $inspection->findings,
-                    'farmer' => [
-                        'first_name' => $inspection->farmer->first_name ?? null,
-                        'last_name' => $inspection->farmer->last_name ?? null,
-                        'email' => $inspection->farmer->email ?? null,
-                        'phone' => $inspection->farmer->phone ?? null,
-                        'farm_name' => $inspection->farmer->farm_name ?? null,
-                        'barangay' => $inspection->farmer->barangay ?? null,
-                    ],
-                    'scheduled_by' => [
-                        'name' => $inspection->scheduledBy->name ?? null,
-                    ],
-                ]
+                'data' => $inspection
             ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Inspection not found'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Inspection not found'
+            ], 404);
+        }
+    }
+
+    /**
+     * Update inspection.
+     */
+    public function updateInspection(Request $request, $id)
+    {
+        $request->validate([
+            'inspection_date' => 'required|date',
+            'inspection_time' => 'required|date_format:H:i',
+            'priority' => 'required|in:low,medium,high,urgent',
+            'status' => 'required|in:scheduled,completed,cancelled,rescheduled',
+            'notes' => 'nullable|string|max:1000',
+            'findings' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $inspection = \App\Models\Inspection::findOrFail($id);
+            
+            $inspection->update([
+                'inspection_date' => $request->inspection_date,
+                'inspection_time' => $request->inspection_time,
+                'priority' => $request->priority,
+                'status' => $request->status,
+                'notes' => $request->notes,
+                'findings' => $request->findings,
+            ]);
+
+            // Log the action
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'inspection_updated',
+                'description' => "Updated inspection #{$id}",
+                'severity' => 'info',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Inspection updated successfully',
+                'inspection' => $inspection
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update inspection'
+            ], 500);
         }
     }
 
@@ -1791,5 +1822,43 @@ class AdminController extends Controller
     public function scheduleInspectionsPage()
     {
         return view('admin.schedule-inspections');
+    }
+
+    /**
+     * Get inspections for a specific farmer.
+     */
+    public function getFarmerInspections($farmerId)
+    {
+        try {
+            $inspections = \App\Models\Inspection::with('scheduledBy')
+                ->where('farmer_id', $farmerId)
+                ->orderBy('inspection_date', 'asc')
+                ->get()
+                ->map(function ($inspection) {
+                    return [
+                        'id' => $inspection->id,
+                        'farmer_id' => $inspection->farmer_id,
+                        'inspection_date' => $inspection->inspection_date,
+                        'inspection_time' => $inspection->inspection_time,
+                        'priority' => $inspection->priority,
+                        'status' => $inspection->status,
+                        'notes' => $inspection->notes,
+                        'calendar_start' => $inspection->calendar_start,
+                        'scheduled_by' => $inspection->scheduledBy ? [
+                            'name' => $inspection->scheduledBy->name ?? 'Admin'
+                        ] : null
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $inspections
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch farmer inspections'
+            ], 500);
+        }
     }
 }

@@ -292,6 +292,78 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="registry_id">Registry ID</label>
+                                <input type="text" class="form-control" id="registry_id" name="registry_id">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="natural_marks">Natural Marks</label>
+                                <input type="text" class="form-control" id="natural_marks" name="natural_marks">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="property_no">Property Number</label>
+                                <input type="text" class="form-control" id="property_no" name="property_no">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="acquisition_date">Acquisition Date</label>
+                                <input type="date" class="form-control" id="acquisition_date" name="acquisition_date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="acquisition_cost">Acquisition Cost (₱)</label>
+                                <input type="number" class="form-control" id="acquisition_cost" name="acquisition_cost" min="0" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sire_id">Sire ID</label>
+                                <input type="text" class="form-control" id="sire_id" name="sire_id">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sire_name">Sire Name</label>
+                                <input type="text" class="form-control" id="sire_name" name="sire_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dam_id">Dam ID</label>
+                                <input type="text" class="form-control" id="dam_id" name="dam_id">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dam_name">Dam Name</label>
+                                <input type="text" class="form-control" id="dam_name" name="dam_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dispersal_from">Dispersal From</label>
+                                <input type="text" class="form-control" id="dispersal_from" name="dispersal_from">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="owned_by">Owned By</label>
+                                <input type="text" class="form-control" id="owned_by" name="owned_by">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="remarks">Remarks</label>
+                                <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -538,6 +610,18 @@ function loadLivestockData(livestockId) {
                 $('#gender').val(livestock.gender);
                 $('#health_status').val(livestock.health_status);
                 $('#status').val(livestock.status);
+                $('#registry_id').val(livestock.registry_id);
+                $('#natural_marks').val(livestock.natural_marks);
+                $('#property_no').val(livestock.property_no);
+                $('#acquisition_date').val(livestock.acquisition_date);
+                $('#acquisition_cost').val(livestock.acquisition_cost);
+                $('#sire_id').val(livestock.sire_id);
+                $('#sire_name').val(livestock.sire_name);
+                $('#dam_id').val(livestock.dam_id);
+                $('#dam_name').val(livestock.dam_name);
+                $('#dispersal_from').val(livestock.dispersal_from);
+                $('#owned_by').val(livestock.owned_by);
+                $('#remarks').val(livestock.remarks);
             }
         },
         error: function() {

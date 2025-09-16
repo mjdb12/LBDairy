@@ -199,6 +199,24 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/analysis/farmer/{id}', [App\Http\Controllers\AnalysisController::class, 'deleteFarmer'])->name('analysis.delete-farmer');
         Route::get('/analysis/export', [App\Http\Controllers\AnalysisController::class, 'export'])->name('analysis.export');
         
+        // Debug route for testing farmer data
+        Route::get('/debug/farmer/{id}', function($id) {
+            try {
+                $farmer = App\Models\User::find($id);
+                if (!$farmer) {
+                    return response()->json(['error' => 'Farmer not found'], 404);
+                }
+                return response()->json([
+                    'farmer' => $farmer,
+                    'farms_count' => $farmer->farms()->count(),
+                    'livestock_count' => $farmer->livestock()->count(),
+                    'production_records_count' => $farmer->productionRecords()->count()
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        });
+        
         // Farm analysis routes
         Route::get('/farm-analysis', [App\Http\Controllers\AdminController::class, 'farmAnalysis'])->name('farm-analysis');
         
@@ -255,8 +273,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/inspections/schedule', [App\Http\Controllers\AdminController::class, 'scheduleInspection'])->name('inspections.schedule');
         Route::get('/inspections/list', [App\Http\Controllers\AdminController::class, 'getInspectionsList'])->name('inspections.list');
         Route::get('/inspections/{id}', [App\Http\Controllers\AdminController::class, 'showInspection'])->name('inspections.show');
+        Route::put('/inspections/{id}', [App\Http\Controllers\AdminController::class, 'updateInspection'])->name('inspections.update');
         Route::post('/inspections/{id}/cancel', [App\Http\Controllers\AdminController::class, 'cancelInspection'])->name('inspections.cancel');
         Route::get('/inspections/stats', [App\Http\Controllers\AdminController::class, 'getInspectionStats'])->name('inspections.stats');
+        Route::get('/inspections/farmer/{id}', [App\Http\Controllers\AdminController::class, 'getFarmerInspections'])->name('inspections.farmer');
         
         // Schedule Inspections page
         Route::get('/schedule-inspections', [App\Http\Controllers\AdminController::class, 'scheduleInspectionsPage'])->name('schedule-inspections');

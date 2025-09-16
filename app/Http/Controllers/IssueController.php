@@ -213,7 +213,6 @@ class IssueController extends Controller
         $issue = Issue::findOrFail($id);
         
         $validator = Validator::make($request->all(), [
-            'livestock_id' => 'required|exists:livestock,id',
             'issue_type' => 'required|string|max:255',
             'priority' => 'required|string|in:Low,Medium,High,Urgent',
             'status' => 'required|string|in:Pending,In Progress,Resolved,Closed',
@@ -222,6 +221,13 @@ class IssueController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -229,7 +235,6 @@ class IssueController extends Controller
 
         try {
             $issue->update([
-                'livestock_id' => $request->livestock_id,
                 'issue_type' => $request->issue_type,
                 'priority' => $request->priority,
                 'status' => $request->status,
@@ -237,9 +242,21 @@ class IssueController extends Controller
                 'notes' => $request->notes,
             ]);
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Issue updated successfully!'
+                ]);
+            }
             return redirect()->route('admin.issues.index')
                 ->with('success', 'Issue updated successfully!');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update issue. Please try again.'
+                ], 500);
+            }
             return redirect()->back()
                 ->with('error', 'Failed to update issue. Please try again.')
                 ->withInput();
@@ -249,15 +266,27 @@ class IssueController extends Controller
     /**
      * Remove the specified issue from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             $issue = Issue::findOrFail($id);
             $issue->delete();
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Issue deleted successfully!'
+                ]);
+            }
             return redirect()->route('admin.issues.index')
                 ->with('success', 'Issue deleted successfully!');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete issue. Please try again.'
+                ], 500);
+            }
             return redirect()->back()
                 ->with('error', 'Failed to delete issue. Please try again.');
         }

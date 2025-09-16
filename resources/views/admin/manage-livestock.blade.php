@@ -1054,9 +1054,17 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tag Number <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="livestock_id" required>
+                                <input type="text" class="form-control" name="tag_number" required>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Type <span class="text-danger">*</span></label>
@@ -1069,8 +1077,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Breed <span class="text-danger">*</span></label>
@@ -1085,12 +1091,20 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Farm <span class="text-danger">*</span></label>
                                 <select class="form-control" name="farm_id" required>
                                     <option value="">Select Farm</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Registry ID</label>
+                                <input type="text" class="form-control" name="registry_id">
                             </div>
                         </div>
                     </div>
@@ -1109,6 +1123,122 @@
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" class="form-control" name="weight" min="0" step="0.1">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Health Status <span class="text-danger">*</span></label>
+                                <select class="form-control" name="health_status" required>
+                                    <option value="healthy">Healthy</option>
+                                    <option value="sick">Sick</option>
+                                    <option value="recovering">Recovering</option>
+                                    <option value="under_treatment">Under Treatment</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Status <span class="text-danger">*</span></label>
+                                <select class="form-control" name="status" required>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Natural Marks</label>
+                                <input type="text" class="form-control" name="natural_marks">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Property Number</label>
+                                <input type="text" class="form-control" name="property_no">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Acquisition Date</label>
+                                <input type="date" class="form-control" name="acquisition_date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Acquisition Cost (₱)</label>
+                                <input type="number" class="form-control" name="acquisition_cost" min="0" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sire ID</label>
+                                <input type="text" class="form-control" name="sire_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sire Name</label>
+                                <input type="text" class="form-control" name="sire_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dam ID</label>
+                                <input type="text" class="form-control" name="dam_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dam Name</label>
+                                <input type="text" class="form-control" name="dam_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dispersal From</label>
+                                <input type="text" class="form-control" name="dispersal_from">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Owned By</label>
+                                <input type="text" class="form-control" name="owned_by">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea class="form-control" name="remarks" rows="3" placeholder="Additional remarks about the livestock..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Description/Notes</label>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Additional notes about the livestock..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -1207,6 +1337,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label>Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editName" name="name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label>Type <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editType" name="type" required>
                                     <option value="">Select Type</option>
@@ -1217,8 +1355,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Breed <span class="text-danger">*</span></label>
@@ -1233,12 +1369,20 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Farm <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editFarmId" name="farm_id" required>
                                     <option value="">Select Farm</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Registry ID</label>
+                                <input type="text" class="form-control" id="editRegistryId" name="registry_id">
                             </div>
                         </div>
                     </div>
@@ -1288,6 +1432,84 @@
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Natural Marks</label>
+                                <input type="text" class="form-control" id="editNaturalMarks" name="natural_marks">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Property Number</label>
+                                <input type="text" class="form-control" id="editPropertyNo" name="property_no">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Acquisition Date</label>
+                                <input type="date" class="form-control" id="editAcquisitionDate" name="acquisition_date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Acquisition Cost (₱)</label>
+                                <input type="number" class="form-control" id="editAcquisitionCost" name="acquisition_cost" min="0" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sire ID</label>
+                                <input type="text" class="form-control" id="editSireId" name="sire_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Sire Name</label>
+                                <input type="text" class="form-control" id="editSireName" name="sire_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dam ID</label>
+                                <input type="text" class="form-control" id="editDamId" name="dam_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dam Name</label>
+                                <input type="text" class="form-control" id="editDamName" name="dam_name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Dispersal From</label>
+                                <input type="text" class="form-control" id="editDispersalFrom" name="dispersal_from">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Owned By</label>
+                                <input type="text" class="form-control" id="editOwnedBy" name="owned_by">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea class="form-control" id="editRemarks" name="remarks" rows="3" placeholder="Additional remarks about the livestock..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -1747,6 +1969,7 @@ $(document).ready(function () {
                     // Populate the edit form
                     $('#editLivestockId').val(livestock.id);
                     $('#editTagNumber').val(livestock.tag_number);
+                    $('#editName').val(livestock.name);
                     $('#editType').val(livestock.type);
                     $('#editBreed').val(livestock.breed);
                     $('#editBirthDate').val(livestock.birth_date);
@@ -1754,6 +1977,18 @@ $(document).ready(function () {
                     $('#editWeight').val(livestock.weight);
                     $('#editHealthStatus').val(livestock.health_status);
                     $('#editStatus').val(livestock.status);
+                    $('#editRegistryId').val(livestock.registry_id);
+                    $('#editNaturalMarks').val(livestock.natural_marks);
+                    $('#editPropertyNo').val(livestock.property_no);
+                    $('#editAcquisitionDate').val(livestock.acquisition_date);
+                    $('#editAcquisitionCost').val(livestock.acquisition_cost);
+                    $('#editSireId').val(livestock.sire_id);
+                    $('#editSireName').val(livestock.sire_name);
+                    $('#editDamId').val(livestock.dam_id);
+                    $('#editDamName').val(livestock.dam_name);
+                    $('#editDispersalFrom').val(livestock.dispersal_from);
+                    $('#editOwnedBy').val(livestock.owned_by);
+                    $('#editRemarks').val(livestock.remarks);
                     $('#editDescription').val(livestock.description);
                     
                     // Load farms for the farmer

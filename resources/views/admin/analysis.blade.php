@@ -134,7 +134,11 @@
                     <tbody>
                         @forelse($farmers as $farmer)
                         <tr>
-                            <td>{{ $farmer->id }}</td>
+                            <td>
+                                <a href="#" class="farmer-id-link" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="Click to view farmer details">
+                                    {{ $farmer->id }}
+                                </a>
+                            </td>
                             <td>{{ $farmer->name }}</td>
                             <td>{{ $farmer->email }}</td>
                             <td>
@@ -706,6 +710,29 @@
         font-size: 3rem;
         margin-bottom: 1rem;
         opacity: 0.5;
+    }
+
+    /* Farmer ID Link Styling */
+    .farmer-id-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .farmer-id-link:hover {
+        color: var(--primary-dark);
+        background-color: rgba(24, 55, 93, 0.1);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .farmer-id-link:focus {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
     }
 </style>
 @endpush

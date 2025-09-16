@@ -1661,6 +1661,11 @@ function showFarmerDetails(farmerId) {
 
                 document.getElementById('farmerDetails').innerHTML = details;
                 document.getElementById('farmerNameHidden').value = `${farmer.first_name || ''} ${farmer.last_name || ''}`;
+                
+                // Hide contact farmer button for all farmers when accessed via user ID click
+                const contactButton = $('#detailsModal .modal-footer button[onclick="openContactModal()"]');
+                contactButton.hide();
+                
                 $('#detailsModal').modal('show');
             } else {
                 alert('Error loading farmer details');
