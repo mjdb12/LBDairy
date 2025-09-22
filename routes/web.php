@@ -151,6 +151,7 @@ Route::middleware(['auth'])->group(function () {
         
         // User approval routes
         Route::get('/approvals', [AdminApprovalController::class, 'index'])->name('approvals');
+        Route::get('/approvals/pending-data', [AdminApprovalController::class, 'pendingData'])->name('approvals.pending-data');
         Route::get('/approvals/{id}', [AdminApprovalController::class, 'show'])->name('approvals.show');
         Route::post('/approvals/{id}/approve', [AdminApprovalController::class, 'approve'])->name('approvals.approve');
         Route::post('/approvals/{id}/reject', [AdminApprovalController::class, 'reject'])->name('approvals.reject');
@@ -190,6 +191,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/farmer-alerts/{id}', [App\Http\Controllers\AdminController::class, 'showFarmerAlert'])->name('farmer-alerts.show');
         Route::patch('/farmer-alerts/{id}/status', [App\Http\Controllers\AdminController::class, 'updateFarmerAlertStatus'])->name('farmer-alerts.update-status');
         Route::get('/farmer-alerts-stats', [App\Http\Controllers\AdminController::class, 'getAlertStats'])->name('farmer-alerts.stats');
+        Route::get('/farmer-alerts-data', [App\Http\Controllers\AdminController::class, 'getFarmerAlertsData'])->name('farmer-alerts.data');
         
         // Analysis routes
         Route::get('/manage-analysis', [App\Http\Controllers\AnalysisController::class, 'index'])->name('analysis.index');

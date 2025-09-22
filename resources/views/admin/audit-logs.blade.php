@@ -136,11 +136,6 @@
                         <label for="actionFilter">Action</label>
                         <select id="actionFilter" class="filter-input">
                             <option value="">All Actions</option>
-                            <option value="login">Login</option>
-                            <option value="update">Update</option>
-                            <option value="delete">Delete</option>
-                            <option value="create">Create</option>
-                            <option value="export">Export</option>
                         </select>
                     </div>
 
@@ -1200,14 +1195,19 @@ $(document).ready(function () {
     // ✅ Initialize DataTable
     initializeAuditLogsTable();
 
-    // ✅ Load your data (replace with your own function if needed)
-    loadAuditLogs();
+    // Data is server-rendered; no extra load needed here
 
     // ✅ Custom search functionality
     $('#auditSearch').on('keyup', function () {
         if (auditLogsTable) {
             auditLogsTable.search(this.value).draw();
         }
+    });
+
+    // Populate Action dropdown from table data after init and on redraw
+    try { populateActionFilter(); } catch (e) { console.warn(e); }
+    $('#auditLogsTable').on('draw.dt', function() {
+        try { populateActionFilter(); } catch (e) { /* ignore */ }
     });
 });
 
@@ -1260,6 +1260,132 @@ function initializeAuditLogsTable() {
     // Hide DataTables default filter + buttons
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
+}
+
+function populateActionFilter() {
+    if (!auditLogsTable) return;
+    const actionSelect = document.getElementById('actionFilter');
+    if (!actionSelect) return;
+    const current = actionSelect.value;
+    const unique = new Set();
+    // Read from DOM nodes to avoid HTML caching differences
+    $(auditLogsTable.column(3, { search: 'applied', order: 'applied' }).nodes()).each(function() {
+        const text = (this.textContent || this.innerText || '').replace(/\s+/g, ' ').trim();
+        if (text) unique.add(text);
+    });
+    const options = Array.from(unique).sort((a,b) => a.localeCompare(b));
+    // Rebuild options
+    actionSelect.innerHTML = '';
+    const allOpt = document.createElement('option');
+    allOpt.value = '';
+    allOpt.textContent = 'All Actions';
+    actionSelect.appendChild(allOpt);
+    options.forEach(label => {
+        const opt = document.createElement('option');
+        opt.value = label.toLowerCase();
+        opt.textContent = label;
+        actionSelect.appendChild(opt);
+    });
+    // Restore previous selection if still available
+    const maybe = Array.from(actionSelect.options).find(o => o.value === current);
+    if (maybe) actionSelect.value = current; else actionSelect.value = '';
+}
+
+// Keep reference to active date filter for removal
+let auditDateRangeFilter = null;
+
+function parseAuditDate(value) {
+    if (!value) return null;
+    // Expected like: "Sep 22, 2025 13:45:01"
+    const monthMap = {
+        Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+        Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+    };
+    const match = value.match(/^(\w{3})\s+(\d{1,2}),\s*(\d{4})\s+(\d{2}):(\d{2}):(\d{2})$/);
+    if (match) {
+        const mon = monthMap[match[1]];
+        const day = parseInt(match[2], 10);
+        const year = parseInt(match[3], 10);
+        const hh = parseInt(match[4], 10);
+        const mm = parseInt(match[5], 10);
+        const ss = parseInt(match[6], 10);
+        if (mon !== undefined) return new Date(year, mon, day, hh, mm, ss);
+    }
+    // Fallback: try Date constructor
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? null : d;
+}
+
+function applyFilters() {
+    if (!auditLogsTable) return;
+
+    const role = $('#roleFilter').val();
+    const action = $('#actionFilter').val();
+    const actionText = $('#actionFilter option:selected').text();
+    const fromStr = $('#dateFrom').val();
+    const toStr = $('#dateTo').val();
+
+    // Clear previous column searches
+    auditLogsTable.columns([2, 3]).search('');
+
+    // Role filter (column 2: Role)
+    if (role) {
+        const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
+        // Use plain contains search to avoid HTML/whitespace issues
+        auditLogsTable.column(2).search(roleLabel, false, false);
+    }
+
+    // Action filter (column 3: Action)
+    if (action) {
+        // Use the displayed text to match table cell content reliably
+        const label = actionText || action;
+        auditLogsTable.column(3).search(label, false, false);
+    }
+
+    // Remove existing date filter
+    if (auditDateRangeFilter) {
+        const list = $.fn.dataTable.ext.search;
+        const idx = list.indexOf(auditDateRangeFilter);
+        if (idx !== -1) list.splice(idx, 1);
+        auditDateRangeFilter = null;
+    }
+
+    // Date range filter (column 5: Timestamp)
+    const fromDate = fromStr ? new Date(fromStr + 'T00:00:00') : null;
+    const toDate = toStr ? new Date(toStr + 'T23:59:59') : null;
+
+    if (fromDate || toDate) {
+        auditDateRangeFilter = function(settings, data) {
+            const rowDate = parseAuditDate(data[5]);
+            if (!rowDate) return true;
+            if (fromDate && rowDate < fromDate) return false;
+            if (toDate && rowDate > toDate) return false;
+            return true;
+        };
+        $.fn.dataTable.ext.search.push(auditDateRangeFilter);
+    }
+
+    auditLogsTable.draw();
+}
+
+function clearFilters() {
+    if (!auditLogsTable) return;
+
+    $('#roleFilter').val('');
+    $('#actionFilter').val('');
+    $('#dateFrom').val('');
+    $('#dateTo').val('');
+
+    auditLogsTable.columns([2, 3]).search('');
+
+    if (auditDateRangeFilter) {
+        const list = $.fn.dataTable.ext.search;
+        const idx = list.indexOf(auditDateRangeFilter);
+        if (idx !== -1) list.splice(idx, 1);
+        auditDateRangeFilter = null;
+    }
+
+    auditLogsTable.draw();
 }
 
 function refreshAuditData() {
@@ -1501,23 +1627,7 @@ function printTable() {
 }
 
 
-function applyFilters() {
-    const roleFilter = document.getElementById('roleFilter').value;
-    const actionFilter = document.getElementById('actionFilter').value;
-    const dateFrom = document.getElementById('dateFrom').value;
-    const dateTo = document.getElementById('dateTo').value;
-    
-    // Here you would implement the actual filtering logic
-    console.log('Applying filters:', { roleFilter, actionFilter, dateFrom, dateTo });
-    alert('Filter functionality would be implemented here');
-}
-
-function clearFilters() {
-    document.getElementById('roleFilter').value = '';
-    document.getElementById('actionFilter').value = '';
-    document.getElementById('dateFrom').value = '';
-    document.getElementById('dateTo').value = '';
-}
+// (Removed duplicate placeholder filter handlers; real implementations defined above.)
 
 </script>
 @endpush

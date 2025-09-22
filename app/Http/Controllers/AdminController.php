@@ -1516,6 +1516,39 @@ class AdminController extends Controller
     }
 
     /**
+     * Provide farmer alerts as JSON for DataTables.
+     */
+    public function getFarmerAlertsData()
+    {
+        $alerts = LivestockAlert::with(['livestock.farm.owner', 'issuedBy'])
+            ->whereHas('issuedBy', function($query) {
+                $query->where('role', 'farmer');
+            })
+            ->orderBy('alert_date', 'desc')
+            ->get();
+
+        $data = $alerts->map(function($alert) {
+            return [
+                'id' => $alert->id,
+                'farmer_name' => optional($alert->issuedBy)->name ?? 'Unknown',
+                'farmer_email' => optional($alert->issuedBy)->email ?? '',
+                'livestock_id' => optional($alert->livestock)->livestock_id ?? 'N/A',
+                'livestock_type' => optional($alert->livestock)->type ?? '',
+                'livestock_breed' => optional($alert->livestock)->breed ?? '',
+                'topic' => $alert->topic,
+                'description' => $alert->description,
+                'severity' => $alert->severity,
+                'severity_badge_class' => $alert->severity_badge_class,
+                'alert_date' => optional($alert->alert_date)->format('M d, Y') ?? optional($alert->created_at)->format('M d, Y'),
+                'status' => $alert->status,
+                'status_badge_class' => $alert->status_badge_class,
+            ];
+        });
+
+        return response()->json($data);
+    }
+
+    /**
      * Show alert details.
      */
     public function showFarmerAlert($id)

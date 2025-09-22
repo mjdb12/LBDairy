@@ -57,7 +57,6 @@
                 </div>
             </div>
             <div class="table-responsive">
-                @if($pendingUsers->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover" id="pendingTable" width="100%" cellspacing="0">
                         <thead>
@@ -70,60 +69,9 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach($pendingUsers as $user)
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm mr-3">
-                                            @if($user->profile_image)
-                                                <img src="{{ asset('storage/' . $user->profile_image) }}" class="rounded-circle" width="40" height="40" alt="Profile">
-                                            @else
-                                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                    <span class="text-white font-weight-bold">{{ strtoupper(substr($user->first_name, 0, 1)) }}{{ strtoupper(substr($user->last_name, 0, 1)) }}</span>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold">{{ $user->first_name }} {{ $user->last_name }}</div>
-                                            <small class="text-muted">@{{ $user->username }}</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge badge-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
-                                        <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} mr-1"></i>
-                                        {{ ucfirst($user->role) }}
-                                    </span>
-                                </td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->barangay }}</td>
-                                <td>{{ $user->created_at->format('M d, Y H:i') }}</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ route('admin.approvals.show', $user->id) }}" class="btn-action btn-action-ok">
-                                            <i class="fas fa-eye mr-1"></i>View
-                                        </a>
-                                        <button type="button" class="btn-action btn-action-edit" onclick="approveUser({{ $user->id }})">
-                                            <i class="fas fa-check mr-1"></i>Approve
-                                        </button>
-                                        <button type="button" class="btn-action btn-action-deletes" onclick="rejectUser({{ $user->id }})">
-                                            <i class="fas fa-times mr-1"></i>Reject
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
-            @else
-                <div class="text-center py-4">
-                    <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3 text-muted">No pending approvals</h5>
-                    <p class="text-muted">All user registrations have been processed.</p>
-                </div>
-            @endif
             </div>
         </div>
     </div>
@@ -323,6 +271,62 @@ function initializeDataTables() {
     // ✅ Assign to global variable so search + export work
     pendingTable = $('#pendingTable').DataTable({
         ...commonConfig,
+        ajax: {
+            url: '/admin/approvals/pending-data',
+            dataSrc: function(json) {
+                return Array.isArray(json) ? json : [];
+            }
+        },
+        columns: [
+            {
+                data: null,
+                render: function(data) {
+                    const initials = `${(data.first_name||'').charAt(0)}${(data.last_name||'').charAt(0)}`.toUpperCase();
+                    const img = data.profile_image ? `<img src="/storage/${data.profile_image}" class="rounded-circle" width="40" height="40" alt="Profile">` : `<div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><span class="text-white font-weight-bold">${initials}</span></div>`;
+                    const name = `${data.first_name||''} ${data.last_name||''}`.trim();
+                    const username = data.username ? `@${data.username}` : '';
+                    return `
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm mr-3">${img}</div>
+                            <div>
+                                <div class="font-weight-bold">${name}</div>
+                                <small class="text-muted">${username}</small>
+                            </div>
+                        </div>`;
+                }
+            },
+            {
+                data: 'role',
+                render: function(role) {
+                    const cls = role === 'farmer' ? 'success' : 'info';
+                    const icon = role === 'farmer' ? 'seedling' : 'user-shield';
+                    const label = role ? role.charAt(0).toUpperCase() + role.slice(1) : '';
+                    return `<span class="badge badge-${cls}"><i class="fas fa-${icon} mr-1"></i>${label}</span>`;
+                }
+            },
+            { data: 'email' },
+            { data: 'barangay' },
+            { data: 'created_at' },
+            {
+                data: null,
+                orderable: false,
+                searchable: false,
+                render: function(row) {
+                    return `
+                        <div class="btn-group" role="group">
+                            <a href="/admin/approvals/${row.id}" class="btn-action btn-action-ok">
+                                <i class="fas fa-eye mr-1"></i>View
+                            </a>
+                            <button type="button" class="btn-action btn-action-edit" onclick="approveUser(${row.id})">
+                                <i class="fas fa-check mr-1"></i>Approve
+                            </button>
+                            <button type="button" class="btn-action btn-action-deletes" onclick="rejectUser(${row.id})">
+                                <i class="fas fa-times mr-1"></i>Reject
+                            </button>
+                        </div>`;
+                }
+            }
+        ],
         buttons: [
             {
                 extend: 'csvHtml5',

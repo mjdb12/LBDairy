@@ -22,6 +22,30 @@ class AdminApprovalController extends Controller
     }
 
     /**
+     * Provide pending users as JSON for DataTables (data-driven approvals table).
+     */
+    public function pendingData()
+    {
+        $pendingUsers = User::where('status', 'pending')->get();
+
+        $data = $pendingUsers->map(function(User $user) {
+            return [
+                'id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+                'barangay' => $user->barangay,
+                'profile_image' => $user->profile_image,
+                'created_at' => optional($user->created_at)->format('M d, Y H:i'),
+            ];
+        });
+
+        return response()->json($data);
+    }
+
+    /**
      * Show pending farmer registrations for admin users.
      */
     public function pendingRegistrations()

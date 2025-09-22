@@ -191,22 +191,16 @@
     transform: scale(1.05);
 }
 
-/* Profile Picture Action (Camera Button Overlay) */
+/* Profile Picture Container */
 .profile-picture-container {
-    position: relative;
     display: inline-block;
 }
 
-.profile-picture-actions {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-}
-
-.profile-picture-actions .btn {
+/* Camera Button Below Profile Picture */
+.btn-action-ok {
     background: #18375d;
     color: #fff;
-    border-radius: 10px; /* perfect circle */
+    border-radius: 50%; /* perfect circle */
     width: 36px;
     height: 36px;
     display: flex;
@@ -215,23 +209,12 @@
     font-size: 0.85rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     transition: all 0.2s ease-in-out;
+    border: none;
+    margin: 0 auto;
 }
 
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    
-        .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-
-
-.profile-picture-actions .btn:hover {
-    background: #18375d;
+.btn-action-ok:hover {
+    background: #fca700;
     transform: scale(1.1); /* subtle pop effect */
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
@@ -650,18 +633,18 @@
         <div class="card shadow profile-card h-100">
             <!-- Profile Header -->
             <div class="profile-header text-center p-4">
-                <div class="profile-picture-container position-relative d-inline-block">
+                <div class="profile-picture-container d-inline-block">
                     <img id="profilePicture" 
                         src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" 
                         alt="Profile Picture" 
                         class="img-profile rounded-circle shadow">
-                    
-                    <!-- Camera Icon Button -->
-                    <div class="profile-picture-actions">
-                        <button class="btn-action btn-action-ok" onclick="document.getElementById('uploadProfilePicture').click()">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                    </div>
+                </div>
+                
+                <!-- Camera Button Below Profile Picture -->
+                <div class="mt-3">
+                    <button class="btn-action btn-action-ok" onclick="document.getElementById('uploadProfilePicture').click()">
+                        <i class="fas fa-camera"></i>
+                    </button>
                     <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
                 </div>
 

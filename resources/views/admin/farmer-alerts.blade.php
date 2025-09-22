@@ -146,60 +146,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse($alerts as $alert)
-                                <tr class="{{ $alert->severity === 'critical' ? 'table-danger' : ($alert->severity === 'high' ? 'table-warning' : ($alert->status === 'resolved' ? 'table-success' : '')) }}">
-                                    <td>
-                                        <strong>{{ $alert->issuedBy->name ?? 'Unknown' }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ $alert->issuedBy->email ?? '' }}</small>
-                                    </td>
-                                    <td>
-                                        <strong>{{ $alert->livestock->livestock_id ?? 'N/A' }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ $alert->livestock->type ?? '' }} ({{ $alert->livestock->breed ?? '' }})</small>
-                                    </td>
-                                    <td>{{ $alert->topic }}</td>
-                                    <td>{{ Str::limit($alert->description, 50) }}</td>
-                                    <td>
-                                        <span class="badge badge-{{ $alert->severity_badge_class }}">
-                                            {{ ucfirst($alert->severity) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $alert->alert_date ? $alert->alert_date->format('M d, Y') : $alert->created_at->format('M d, Y') }}</td>
-                                    <td>
-                                        <span class="badge badge-{{ $alert->status_badge_class }}">
-                                            {{ ucfirst($alert->status) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-action btn-action-ok" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                                <span>View</span>
-                                            </button>
-                                            @if($alert->status === 'active')
-                                            <button class="btn-action btn-action-edit" onclick="markAsResolved('{{ $alert->id }}')" title="Mark as Resolved">
-                                                <i class="fas fa-check"></i>
-                                                <span>Resolve</span>
-                                            </button>
-                                            <button class="btn-action btn-action-deletes" onclick="dismissAlert('{{ $alert->id }}')" title="Dismiss Alert">
-                                                <i class="fas fa-times"></i>
-                                                <span>Dismiss</span>
-                                            </button>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
-                                        <i class="fas fa-bell-slash fa-3x mb-3 text-muted"></i>
-                                        <p>No alerts have been issued by farmers yet.</p>
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -291,12 +238,12 @@ $(document).ready(function () {
     initializeDataTables();
     
     // ✅ Load data
-    loadAlertsTable();   // <-- added
+    // loadAlertsTable();   // removed: function not defined and not needed for static table
     updateStats();
 
     // ✅ Custom search functionality
 
-    $('#alertsSearch').on('keyup', function() {
+    $('#farmerSearch').on('keyup', function() {
         alertsTable.search(this.value).draw();
     });
 });
@@ -343,9 +290,90 @@ function initializeDataTables() {
         ]
     };
 
-    // ✅ FIX: initialize alertsTable, not inspectionsTable
+    // ✅ Initialize alerts table via Ajax (data-driven)
     alertsTable = $('#alertsTable').DataTable({
         ...commonConfig,
+        ajax: {
+            url: '/admin/farmer-alerts-data',
+            dataSrc: function(json) {
+                return Array.isArray(json) ? json : [];
+            }
+        },
+        columns: [
+            {
+                data: null,
+                render: function(data) {
+                    const name = data.farmer_name || 'Unknown';
+                    const email = data.farmer_email || '';
+                    return `<strong>${name}</strong><br><small class="text-muted">${email}</small>`;
+                }
+            },
+            {
+                data: null,
+                render: function(data) {
+                    const id = data.livestock_id || 'N/A';
+                    const type = data.livestock_type || '';
+                    const breed = data.livestock_breed || '';
+                    const detail = [type, breed].filter(Boolean).join(' ');
+                    return `<strong>${id}</strong><br><small class="text-muted">${detail}</small>`;
+                }
+            },
+            { data: 'topic' },
+            {
+                data: 'description',
+                render: function(text) {
+                    if (!text) return '';
+                    const tmp = document.createElement('div');
+                    tmp.textContent = text;
+                    const clean = tmp.textContent || '';
+                    return clean.length > 50 ? clean.substring(0, 50) + '…' : clean;
+                }
+            },
+            {
+                data: null,
+                render: function(data) {
+                    const sev = (data.severity || '').toString();
+                    const cls = data.severity_badge_class || 'secondary';
+                    const label = sev ? sev.charAt(0).toUpperCase() + sev.slice(1) : '';
+                    return `<span class="badge badge-${cls}">${label}</span>`;
+                }
+            },
+            { data: 'alert_date' },
+            {
+                data: null,
+                render: function(data) {
+                    const st = (data.status || '').toString();
+                    const cls = data.status_badge_class || 'secondary';
+                    const label = st ? st.charAt(0).toUpperCase() + st.slice(1) : '';
+                    return `<span class="badge badge-${cls}">${label}</span>`;
+                }
+            },
+            {
+                data: null,
+                orderable: false,
+                searchable: false,
+                render: function(data) {
+                    const id = data.id;
+                    const isActive = (data.status || '') === 'active';
+                    return `
+                        <div class="action-buttons">
+                            <button class="btn-action btn-action-ok" onclick="viewAlertDetails('${id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                                <span>View</span>
+                            </button>
+                            ${isActive ? `
+                            <button class="btn-action btn-action-edit" onclick="markAsResolved('${id}')" title="Mark as Resolved">
+                                <i class="fas fa-check"></i>
+                                <span>Resolve</span>
+                            </button>
+                            <button class="btn-action btn-action-deletes" onclick="dismissAlert('${id}')" title="Dismiss Alert">
+                                <i class="fas fa-times"></i>
+                                <span>Dismiss</span>
+                            </button>` : ''}
+                        </div>`;
+                }
+            }
+        ],
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -375,7 +403,7 @@ function initializeDataTables() {
         submitStatusUpdate();
     });
 
-    $('#alertsSearch').on('keyup', function() {
+    $('#farmerSearch').on('keyup', function() {
         alertsTable.search(this.value).draw();
     });
 }
