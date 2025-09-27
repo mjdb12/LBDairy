@@ -142,6 +142,14 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
+                                        <button class="btn-action btn-action-view" onclick="viewSale('{{ $sale['id'] }}')" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                            <span>View</span>
+                                        </button>
+                                        <button class="btn-action btn-action-edit" onclick="editSale('{{ $sale['id'] }}')" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                            <span>Edit</span>
+                                        </button>
                                         <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $sale['id'] }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
                                             <span>Delete</span>
@@ -456,6 +464,99 @@ function addNewSale() {
     .catch(error => {
         console.error('Error:', error);
         showNotification('An error occurred while saving the sale record', 'error');
+    });
+}
+
+function viewSale(saleId) {
+    // Load and display sale details
+    $.ajax({
+        url: `/farmer/sales/${saleId}`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const sale = response.sale;
+                const modalHtml = `
+                    <div class="modal fade" id="viewSaleModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-eye"></i>
+                                        Sale Details
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Sale Information</h6>
+                                            <p><strong>Sale ID:</strong> ${sale.sale_id}</p>
+                                            <p><strong>Date:</strong> ${sale.sale_date}</p>
+                                            <p><strong>Customer:</strong> ${sale.customer_name}</p>
+                                            <p><strong>Quantity:</strong> ${sale.quantity} L</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Financial Details</h6>
+                                            <p><strong>Unit Price:</strong> ₱${sale.unit_price}</p>
+                                            <p><strong>Total Amount:</strong> ₱${sale.amount}</p>
+                                            <p><strong>Payment Status:</strong> <span class="badge badge-${sale.payment_status === 'paid' ? 'success' : 'warning'}">${sale.payment_status}</span></p>
+                                            <p><strong>Payment Method:</strong> ${sale.payment_method}</p>
+                                        </div>
+                                    </div>
+                                    ${sale.notes ? `<div class="row mt-3"><div class="col-12"><h6>Notes</h6><p>${sale.notes}</p></div></div>` : ''}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                $('#viewSaleModal').remove();
+                $('body').append(modalHtml);
+                $('#viewSaleModal').modal('show');
+            }
+        },
+        error: function() {
+            showNotification('Failed to load sale details.', 'danger');
+        }
+    });
+}
+
+function editSale(saleId) {
+    // Load sale data for editing
+    $.ajax({
+        url: `/farmer/sales/${saleId}/edit`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const sale = response.sale;
+                
+                // Populate the add sale modal with existing data
+                $('#addLivestockDetailsModal').modal('show');
+                $('#customer_name').val(sale.customer_name);
+                $('#customer_phone').val(sale.customer_phone);
+                $('#customer_email').val(sale.customer_email);
+                $('#quantity').val(sale.quantity);
+                $('#unit_price').val(sale.unit_price);
+                $('#sale_date').val(sale.sale_date);
+                $('#payment_method').val(sale.payment_method);
+                $('#payment_status').val(sale.payment_status);
+                $('#notes').val(sale.notes);
+                
+                // Change form action to update
+                $('#addLivestockDetailsForm').attr('action', `/farmer/sales/${saleId}`);
+                $('#addLivestockDetailsForm').attr('method', 'PUT');
+                $('#addLivestockDetailsModalLabel').html('<i class="fas fa-edit"></i> Edit Sale Record');
+                $('#saveSaleBtn').html('<i class="fas fa-save"></i> Update Sale');
+            }
+        },
+        error: function() {
+            showNotification('Failed to load sale for editing.', 'danger');
+        }
     });
 }
 

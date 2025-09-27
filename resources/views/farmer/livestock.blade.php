@@ -127,13 +127,8 @@
                                     <a class="dropdown-item" href="#" onclick="exportToPDF()">
                                         <i class="fas fa-file-pdf"></i> Download PDF
                                     </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#" onclick="document.getElementById('csvInput').click()">
-                                        <i class="fas fa-file-import"></i> Import CSV
-                                    </a>
                                 </div>
                             </div>
-                            <input type="file" id="csvInput" accept=".csv" style="display: none;" onchange="importCSV(event)">
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -143,17 +138,33 @@
                                     <th>Livestock ID</th>
                                     <th>Type</th>
                                     <th>Breed</th>
+                                    <th>Age</th>
+                                    <th>Weight (kg)</th>
+                                    <th>Health Status</th>
+                                    <th>Registration Date</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($livestock as $animal)
+                                @php
+                                    $age = $animal->birth_date ? \Carbon\Carbon::parse($animal->birth_date)->age : 'N/A';
+                                    $registrationDate = $animal->created_at ? $animal->created_at->format('M d, Y') : 'N/A';
+                                @endphp
                                 <tr>
                                     <td>
                                         <a href="#" class="livestock-id-link" onclick="openLivestockDetails('{{ $animal->id }}')">{{ $animal->tag_number }}</a>
                                     </td>
                                     <td>{{ ucfirst($animal->type) }}</td>
                                     <td>{{ ucfirst(str_replace('_', ' ', $animal->breed)) }}</td>
+                                    <td>{{ $age }}</td>
+                                    <td>{{ $animal->weight ? $animal->weight . ' kg' : 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $animal->health_status === 'healthy' ? 'success' : ($animal->health_status === 'sick' ? 'danger' : 'warning') }}">
+                                            {{ ucfirst(str_replace('_', ' ', $animal->health_status)) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $registrationDate }}</td>
                                     <td>
                                         <div class="action-buttons">
                                             <button class="btn-action btn-action-edit" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
@@ -169,7 +180,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td class="text-center text-muted py-4" colspan="4">
+                                    <td class="text-center text-muted py-4" colspan="8">
                                         @if($farms->count() > 0)
                                             <i class="fas fa-inbox fa-3x mb-3"></i>
                                             <p>No livestock records found. Add your first livestock to get started.</p>
@@ -452,12 +463,15 @@
 
 <script>
 let currentLivestockId = null;
+let downloadCounter = 1;
+let livestockTable;
+
 
 $(document).ready(function() {
     // Initialize DataTable only if the table exists
     if ($('#livestockTable').length > 0) {
         try {
-            const livestockTable = $('#livestockTable').DataTable({
+            livestockTable = $('#livestockTable').DataTable({
                 dom: 'Bfrtip',
                 searching: true,
                 paging: true,
@@ -469,8 +483,12 @@ $(document).ready(function() {
                 columnDefs: [
                     { width: '120px', targets: 0 }, // Livestock ID
                     { width: '100px', targets: 1 }, // Type
-                    { width: '150px', targets: 2 }, // Breed
-                    { width: '180px', targets: 3, className: 'text-left', orderable: false, searchable: false } // Actions
+                    { width: '120px', targets: 2 }, // Breed
+                    { width: '80px', targets: 3 }, // Age
+                    { width: '100px', targets: 4 }, // Weight
+                    { width: '120px', targets: 5 }, // Health Status
+                    { width: '130px', targets: 6 }, // Registration Date
+                    { width: '180px', targets: 7, className: 'text-left', orderable: false, searchable: false } // Actions
                 ],
                 buttons: [
                     {
@@ -1068,102 +1086,495 @@ function loadProductionRecords(livestockId) {
 }
 
 function addProductionRecord(livestockId) {
-    showToast('Production record functionality coming soon!', 'info');
+    // Check if Bootstrap modal is available
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    
+    // Create production record modal
+    const modalHtml = `
+        <div class="modal fade" id="productionRecordModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-chart-line"></i>
+                            Add Production Record
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="productionRecordForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="production_date">Production Date *</label>
+                                        <input type="date" class="form-control" id="production_date" name="production_date" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="production_type">Production Type *</label>
+                                        <select class="form-control" id="production_type" name="production_type" required>
+                                            <option value="milk">Milk</option>
+                                            <option value="eggs">Eggs</option>
+                                            <option value="meat">Meat</option>
+                                            <option value="wool">Wool</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="quantity">Quantity *</label>
+                                        <input type="number" class="form-control" id="quantity" name="quantity" min="0" step="0.1" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="quality">Quality</label>
+                                        <select class="form-control" id="quality" name="quality">
+                                            <option value="excellent">Excellent</option>
+                                            <option value="good">Good</option>
+                                            <option value="fair">Fair</option>
+                                            <option value="poor">Poor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="notes">Notes</label>
+                                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveProductionRecord(${livestockId})">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    $('#productionRecordModal').remove();
+    
+    // Add modal to body
+    $('body').append(modalHtml);
+    
+    // Show modal
+    $('#productionRecordModal').modal('show');
+}
+
+function saveProductionRecord(livestockId) {
+    const form = document.getElementById('productionRecordForm');
+    const formData = new FormData(form);
+    
+    // Add livestock ID to form data
+    formData.append('livestock_id', livestockId);
+    
+    $.ajax({
+        url: '/farmer/production-records',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('Production record added successfully!', 'success');
+                $('#productionRecordModal').modal('hide');
+                // Refresh production records if modal is open
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadProductionRecords(livestockId);
+                }
+            } else {
+                showNotification('Error adding production record: ' + (response.message || 'Unknown error'), 'danger');
+            }
+        },
+        error: function(xhr) {
+            const errorMessage = xhr.responseJSON?.message || 'Error adding production record';
+            showNotification(errorMessage, 'danger');
+        }
+    });
 }
 
 function addHealthRecord(livestockId) {
-    showToast('Health record functionality coming soon!', 'info');
+    // Check if Bootstrap modal is available
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    
+    // Create health record modal
+    const modalHtml = `
+        <div class="modal fade" id="healthRecordModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-heartbeat"></i>
+                            Add Health Record
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="healthRecordForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="health_date">Health Check Date *</label>
+                                        <input type="date" class="form-control" id="health_date" name="health_date" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="health_status">Health Status *</label>
+                                        <select class="form-control" id="health_status" name="health_status" required>
+                                            <option value="healthy">Healthy</option>
+                                            <option value="sick">Sick</option>
+                                            <option value="recovering">Recovering</option>
+                                            <option value="under_treatment">Under Treatment</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="weight">Weight (kg)</label>
+                                        <input type="number" class="form-control" id="weight" name="weight" min="0" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="temperature">Temperature (°C)</label>
+                                        <input type="number" class="form-control" id="temperature" name="temperature" min="0" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="symptoms">Symptoms/Observations</label>
+                                        <textarea class="form-control" id="symptoms" name="symptoms" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="treatment">Treatment Given</label>
+                                        <textarea class="form-control" id="treatment" name="treatment" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveHealthRecord(${livestockId})">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    $('#healthRecordModal').remove();
+    
+    // Add modal to body
+    $('body').append(modalHtml);
+    
+    // Show modal
+    $('#healthRecordModal').modal('show');
+}
+
+function saveHealthRecord(livestockId) {
+    const form = document.getElementById('healthRecordForm');
+    const formData = new FormData(form);
+    
+    // Add livestock ID to form data
+    formData.append('livestock_id', livestockId);
+    
+    $.ajax({
+        url: '/farmer/health-records',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('Health record added successfully!', 'success');
+                $('#healthRecordModal').modal('hide');
+                // Refresh livestock data to update health status
+                location.reload();
+            } else {
+                showNotification('Error adding health record: ' + (response.message || 'Unknown error'), 'danger');
+            }
+        },
+        error: function(xhr) {
+            const errorMessage = xhr.responseJSON?.message || 'Error adding health record';
+            showNotification(errorMessage, 'danger');
+        }
+    });
 }
 
 function addBreedingRecord(livestockId) {
-    showToast('Breeding record functionality coming soon!', 'info');
+    // Check if Bootstrap modal is available
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    
+    // Create breeding record modal
+    const modalHtml = `
+        <div class="modal fade" id="breedingRecordModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-heart"></i>
+                            Add Breeding Record
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="breedingRecordForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="breeding_date">Breeding Date *</label>
+                                        <input type="date" class="form-control" id="breeding_date" name="breeding_date" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="breeding_type">Breeding Type *</label>
+                                        <select class="form-control" id="breeding_type" name="breeding_type" required>
+                                            <option value="natural">Natural Breeding</option>
+                                            <option value="artificial">Artificial Insemination</option>
+                                            <option value="embryo_transfer">Embryo Transfer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="partner_livestock_id">Partner Livestock ID</label>
+                                        <input type="text" class="form-control" id="partner_livestock_id" name="partner_livestock_id">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="expected_birth_date">Expected Birth Date</label>
+                                        <input type="date" class="form-control" id="expected_birth_date" name="expected_birth_date">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="pregnancy_status">Pregnancy Status</label>
+                                        <select class="form-control" id="pregnancy_status" name="pregnancy_status">
+                                            <option value="unknown">Unknown</option>
+                                            <option value="pregnant">Pregnant</option>
+                                            <option value="not_pregnant">Not Pregnant</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="breeding_success">Breeding Success</label>
+                                        <select class="form-control" id="breeding_success" name="breeding_success">
+                                            <option value="unknown">Unknown</option>
+                                            <option value="successful">Successful</option>
+                                            <option value="unsuccessful">Unsuccessful</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="notes">Notes</label>
+                                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveBreedingRecord(${livestockId})">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    $('#breedingRecordModal').remove();
+    
+    // Add modal to body
+    $('body').append(modalHtml);
+    
+    // Show modal
+    $('#breedingRecordModal').modal('show');
+}
+
+function saveBreedingRecord(livestockId) {
+    const form = document.getElementById('breedingRecordForm');
+    const formData = new FormData(form);
+    
+    // Add livestock ID to form data
+    formData.append('livestock_id', livestockId);
+    
+    $.ajax({
+        url: '/farmer/breeding-records',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('Breeding record added successfully!', 'success');
+                $('#breedingRecordModal').modal('hide');
+            } else {
+                showNotification('Error adding breeding record: ' + (response.message || 'Unknown error'), 'danger');
+            }
+        },
+        error: function(xhr) {
+            const errorMessage = xhr.responseJSON?.message || 'Error adding breeding record';
+            showNotification(errorMessage, 'danger');
+        }
+    });
 }
 
 function exportToCSV() {
-    // Get current table data without actions column
-    const tableData = livestockTable.data().toArray();
-    const csvData = [];
-    
-    // Add headers (excluding Actions column)
-    const headers = ['Livestock ID', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Location', 'Registration Date'];
-    csvData.push(headers.join(','));
-    
-    // Add data rows (excluding Actions column)
-    tableData.forEach(row => {
-        // Extract text content from each cell, excluding the last column (Actions)
-        const rowData = [];
-        for (let i = 0; i < row.length - 1; i++) {
-            let cellText = '';
-            if (row[i]) {
-                // Remove HTML tags and get clean text
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = row[i];
-                cellText = tempDiv.textContent || tempDiv.innerText || '';
-                // Clean up the text (remove extra spaces, newlines)
-                cellText = cellText.replace(/\s+/g, ' ').trim();
-            }
-            // Escape commas and quotes for CSV
-            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
-                cellText = '"' + cellText.replace(/"/g, '""') + '"';
-            }
-            rowData.push(cellText);
+    try {
+        // Check if DataTable is initialized
+        if (!livestockTable) {
+            showNotification('Table not initialized. Please refresh the page.', 'danger');
+            return;
         }
-        csvData.push(rowData.join(','));
-    });
-    
-    // Create and download CSV file
-    const csvContent = csvData.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `Farmer_LivestockReport_${downloadCounter}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Increment download counter
-    downloadCounter++;
-    
-    showToast('CSV exported successfully!', 'success');
+        
+        // Get current table data without actions column
+        const tableData = livestockTable.data().toArray();
+        const csvData = [];
+        
+        // Add headers (excluding Actions column) - Match admin styling
+        const headers = ['Livestock ID', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Registration Date'];
+        csvData.push(headers.join(','));
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            // Extract text content from each cell, excluding the last column (Actions)
+            const rowData = [];
+            for (let i = 0; i < row.length - 1; i++) {
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text (remove extra spaces, newlines)
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                // Escape commas and quotes for CSV
+                if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                    cellText = '"' + cellText.replace(/"/g, '""') + '"';
+                }
+                rowData.push(cellText);
+            }
+            csvData.push(rowData.join(','));
+        });
+        
+        // Create and download CSV file
+        const csvContent = csvData.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Farmer_LivestockReport_${downloadCounter}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        // Increment download counter
+        downloadCounter++;
+        
+        showNotification('CSV exported successfully!', 'success');
+    } catch (error) {
+        console.error('Error generating CSV:', error);
+        showNotification('Error generating CSV. Please try again.', 'danger');
+    }
 }
 
 function exportToPDF() {
     try {
-        // Force custom PDF generation to match superadmin styling
-        // Don't fall back to DataTables PDF export as it has different styling
+        // Check if DataTable is initialized
+        if (!livestockTable) {
+            showNotification('Table not initialized. Please refresh the page.', 'danger');
+            return;
+        }
         
+        // Check if jsPDF is available - use same pattern as admin/superadmin
+        if (typeof window.jspdf === 'undefined') {
+            console.warn('jsPDF not available, falling back to DataTables PDF export');
+            // Fallback to DataTables PDF export
+            livestockTable.button('.buttons-pdf').trigger();
+            return;
+        }
+        
+        // Get table data
         const tableData = livestockTable.data().toArray();
         const pdfData = [];
         
-        const headers = ['Livestock ID', 'Tag Number', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Location'];
+        const headers = ['Livestock ID', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Registration Date'];
         
         tableData.forEach(row => {
-            const rowData = [
-                row[0] || '', // Livestock ID
-                row[1] || '', // Tag Number
-                row[2] || '', // Type
-                row[3] || '', // Breed
-                row[4] || '', // Age
-                row[5] || '', // Weight
-                row[6] || '', // Health Status
-                row[7] || ''  // Location
-            ];
+            const rowData = [];
+            for (let i = 0; i < row.length - 1; i++) { // Exclude Actions column
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text (remove extra spaces, newlines)
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                rowData.push(cellText);
+            }
             pdfData.push(rowData);
         });
         
-        // Create PDF using jsPDF
+        // Create PDF using jsPDF - match admin/superadmin pattern exactly
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('landscape', 'mm', 'a4');
         
-        // Set title
+        // Add title - match admin/superadmin styling
         doc.setFontSize(18);
         doc.text('Farmer Livestock Report', 14, 22);
         doc.setFontSize(12);
         doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
         
-        // Create table
+        // Add table - match admin/superadmin styling
         doc.autoTable({
             head: [headers],
             body: pdfData,
@@ -1179,11 +1590,19 @@ function exportToPDF() {
         // Increment download counter
         downloadCounter++;
         
-        showToast('PDF exported successfully!', 'success');
+        showNotification('PDF exported successfully!', 'success');
         
     } catch (error) {
         console.error('Error generating PDF:', error);
-        showToast('Error generating PDF. Please try again.', 'error');
+        showNotification('Error generating PDF. Falling back to DataTables export.', 'warning');
+        
+        // Fallback to DataTables PDF export
+        try {
+            livestockTable.button('.buttons-pdf').trigger();
+        } catch (fallbackError) {
+            console.error('Fallback PDF export also failed:', fallbackError);
+            showNotification('PDF export failed. Please try again.', 'danger');
+        }
     }
 }
 
@@ -1192,72 +1611,75 @@ function printTable() {
 }
 
 function exportToPNG() {
-    // Create a temporary table without the Actions column for export
-    const originalTable = document.getElementById('livestockTable');
-    const tempTable = originalTable.cloneNode(true);
-    
-    // Remove the Actions column header
-    const headerRow = tempTable.querySelector('thead tr');
-    if (headerRow) {
-        const lastHeaderCell = headerRow.lastElementChild;
-        if (lastHeaderCell) {
-            lastHeaderCell.remove();
+    try {
+        // Check if DataTable is initialized
+        if (!livestockTable) {
+            showNotification('Table not initialized. Please refresh the page.', 'danger');
+            return;
         }
-    }
-    
-    // Remove the Actions column from all data rows
-    const dataRows = tempTable.querySelectorAll('tbody tr');
-    dataRows.forEach(row => {
-        const lastDataCell = row.lastElementChild;
-        if (lastDataCell) {
-            lastDataCell.remove();
+        
+        // Create a temporary table without the Actions column for export
+        const originalTable = document.getElementById('livestockTable');
+        const tempTable = originalTable.cloneNode(true);
+        
+        // Remove the Actions column header
+        const headerRow = tempTable.querySelector('thead tr');
+        if (headerRow) {
+            const lastHeaderCell = headerRow.lastElementChild;
+            if (lastHeaderCell) {
+                lastHeaderCell.remove();
+            }
         }
-    });
-    
-    // Temporarily add the temp table to the DOM (hidden)
-    tempTable.style.position = 'absolute';
-    tempTable.style.left = '-9999px';
-    tempTable.style.top = '-9999px';
-    document.body.appendChild(tempTable);
-    
-    // Generate PNG using html2canvas
-    html2canvas(tempTable, {
-        scale: 2, // Higher quality
-        backgroundColor: '#ffffff',
-        width: tempTable.offsetWidth,
-        height: tempTable.offsetHeight
-    }).then(canvas => {
-        // Create download link
-        const link = document.createElement('a');
-        link.download = `Farmer_LivestockReport_${downloadCounter}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
         
-        // Increment download counter
-        downloadCounter++;
+        // Remove the Actions column from all data rows
+        const dataRows = tempTable.querySelectorAll('tbody tr');
+        dataRows.forEach(row => {
+            const lastDataCell = row.lastElementChild;
+            if (lastDataCell) {
+                lastDataCell.remove();
+            }
+        });
         
-        // Clean up - remove temporary table
-        document.body.removeChild(tempTable);
+        // Temporarily add the temp table to the DOM (hidden)
+        tempTable.style.position = 'absolute';
+        tempTable.style.left = '-9999px';
+        tempTable.style.top = '-9999px';
+        document.body.appendChild(tempTable);
         
-        showToast('PNG exported successfully!', 'success');
-    }).catch(error => {
-        console.error('Error generating PNG:', error);
-        // Clean up on error
-        if (document.body.contains(tempTable)) {
+        // Generate PNG using html2canvas
+        html2canvas(tempTable, {
+            scale: 2, // Higher quality
+            backgroundColor: '#ffffff',
+            width: tempTable.offsetWidth,
+            height: tempTable.offsetHeight
+        }).then(canvas => {
+            // Create download link
+            const link = document.createElement('a');
+            link.download = `Farmer_LivestockReport_${downloadCounter}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            
+            // Increment download counter
+            downloadCounter++;
+            
+            // Clean up - remove temporary table
             document.body.removeChild(tempTable);
-        }
-        showToast('Error generating PNG export', 'error');
-    });
+            
+            showNotification('PNG exported successfully!', 'success');
+        }).catch(error => {
+            console.error('Error generating PNG:', error);
+            // Clean up on error
+            if (document.body.contains(tempTable)) {
+                document.body.removeChild(tempTable);
+            }
+            showNotification('Error generating PNG export', 'danger');
+        });
+    } catch (error) {
+        console.error('Error generating PNG:', error);
+        showNotification('Error generating PNG. Please try again.', 'danger');
+    }
 }
 
-function importCSV(event) {
-    const file = event.target.files[0];
-    if (file) {
-        showToast('CSV import functionality will be implemented soon', 'info');
-        // Reset the file input
-        event.target.value = '';
-    }
-}
 
 function updateActivity(selectElement, livestockId) {
     const newStatus = selectElement.value;
@@ -1346,6 +1768,31 @@ function forcePaginationLeft() {
     
     
     console.log('Pagination positioning applied to livestock inventory');
+}
+
+function showNotification(message, type = 'info') {
+    // Create a simple alert instead of Bootstrap 5 toast for Bootstrap 4 compatibility
+    const alertClass = type === 'error' || type === 'danger' ? 'alert-danger' : type === 'success' ? 'alert-success' : 'alert-info';
+    const alert = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    `;
+    
+    // Add alert to page
+    const alertContainer = document.createElement('div');
+    alertContainer.innerHTML = alert;
+    document.body.appendChild(alertContainer);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alertContainer.parentNode) {
+            alertContainer.parentNode.removeChild(alertContainer);
+        }
+    }, 5000);
 }
 
 function showToast(message, type = 'info') {

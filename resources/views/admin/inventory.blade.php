@@ -540,24 +540,35 @@ function exportPDF() {
             pdfData.push(rowData);
         });
         
-        // Create PDF using jsPDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('landscape', 'mm', 'a4');
+        // Create PDF using jsPDF - Match superadmin styling exactly
+        const { jsPDF } = window.jsPDF;
+        const doc = new jsPDF('landscape');
         
-        // Set title
+        // Add title - Match superadmin styling exactly
         doc.setFontSize(18);
-        doc.text('Admin Inventory Report', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        doc.setFont(undefined, 'bold');
+        doc.text('Admin Inventory Report', 148, 20, { align: 'center' });
         
-        // Create table
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'normal');
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 148, 30, { align: 'center' });
+        
+        // Add table - Match superadmin styling exactly
         doc.autoTable({
             head: [headers],
             body: pdfData,
             startY: 40,
             styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] }
+            headStyles: { fillColor: [24, 55, 93], textColor: 255 },
+            columnStyles: {
+                0: { cellWidth: 25 }, // Item ID
+                1: { cellWidth: 30 }, // Name
+                2: { cellWidth: 25 }, // Category
+                3: { cellWidth: 20 }, // Quantity
+                4: { cellWidth: 25 }, // Unit Price
+                5: { cellWidth: 25 }, // Total Value
+                6: { cellWidth: 20 }  // Status
+            }
         });
         
         // Save the PDF

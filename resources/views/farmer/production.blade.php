@@ -645,6 +645,119 @@ function exportPDF() {
     }
 }
 
+function viewRecord(recordId) {
+    // Load and display production record details
+    $.ajax({
+        url: `/farmer/production/${recordId}`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const record = response.record;
+                const modalHtml = `
+                    <div class="modal fade" id="viewRecordModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-eye"></i>
+                                        Production Record Details
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Production Information</h6>
+                                            <p><strong>Date:</strong> ${record.production_date}</p>
+                                            <p><strong>Livestock:</strong> ${record.livestock_name} (${record.livestock_tag})</p>
+                                            <p><strong>Quantity:</strong> ${record.milk_quantity} L</p>
+                                            <p><strong>Quality Score:</strong> ${record.milk_quality_score}/10</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Additional Details</h6>
+                                            <p><strong>Farm:</strong> ${record.farm_name}</p>
+                                            <p><strong>Notes:</strong> ${record.notes || 'No notes'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                $('#viewRecordModal').remove();
+                $('body').append(modalHtml);
+                $('#viewRecordModal').modal('show');
+            }
+        },
+        error: function() {
+            showAlert('error', 'Failed to load record details.');
+        }
+    });
+}
+
+function editRecord(recordId) {
+    // Load record data for editing
+    $.ajax({
+        url: `/farmer/production/${recordId}/edit`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                const record = response.record;
+                
+                // Populate the add production modal with existing data
+                $('#addProductionModal').modal('show');
+                $('#production_date').val(record.production_date);
+                $('#livestock_id').val(record.livestock_id);
+                $('#milk_quantity').val(record.milk_quantity);
+                $('#milk_quality_score').val(record.milk_quality_score);
+                $('#notes').val(record.notes);
+                
+                // Change form action to update
+                $('#addProductionForm').attr('action', `/farmer/production/${recordId}`);
+                $('#addProductionForm').attr('method', 'PUT');
+                $('#addProductionModalLabel').html('<i class="fas fa-edit"></i> Edit Production Record');
+                $('#saveProductionBtn').html('<i class="fas fa-save"></i> Update Record');
+            }
+        },
+        error: function() {
+            showAlert('error', 'Failed to load record for editing.');
+        }
+    });
+}
+
+function confirmDelete(recordId) {
+    if (confirm('Are you sure you want to delete this production record? This action cannot be undone.')) {
+        deleteRecord(recordId);
+    }
+}
+
+function deleteRecord(recordId) {
+    $.ajax({
+        url: `/farmer/production/${recordId}`,
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', 'Production record deleted successfully!');
+                location.reload();
+            } else {
+                showAlert('error', 'Failed to delete record.');
+            }
+        },
+        error: function() {
+            showAlert('error', 'Failed to delete record.');
+        }
+    });
+}
+
 function exportPNG() {
     // Create a temporary table without the Actions column for export
     const originalTable = document.getElementById('productionTable');

@@ -2,6 +2,270 @@
 
 @section('title', 'LBDAIRY: Farmers-Profile')
 
+@push('styles')
+<style>
+    /* User Details Modal Styling */
+    #editProfileModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #editProfileModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #editProfileModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #editProfileModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #editProfileModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #editProfileModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #editProfileModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #editProfileModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    #changePasswordModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #changePasswordModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #changePasswordModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #changePasswordModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+
+    /* Profile Card Styling */
+    .profile-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
+        overflow: hidden;
+        background: white;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    }
+
+    .profile-picture-container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .img-profile {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .img-profile:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .btn-action {
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-action-edit-profile {
+        background: linear-gradient(135deg, #1cc88a 0%, #17a673 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(28, 200, 138, 0.3);
+    }
+
+    .btn-action-edit-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(28, 200, 138, 0.4);
+        color: white;
+    }
+
+    .btn-action-edit-pass {
+        background: linear-gradient(135deg, #f6c23e 0%, #d69e2e 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(246, 194, 62, 0.3);
+    }
+
+    .btn-action-edit-pass:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(246, 194, 62, 0.4);
+        color: white;
+    }
+
+    .btn-action-ok {
+        background: linear-gradient(135deg, #36b9cc 0%, #2c9faf 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(54, 185, 204, 0.3);
+    }
+
+    .btn-action-ok:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(54, 185, 204, 0.4);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        color: white;
+    }
+
+    .profile-info-table th {
+        font-weight: 600;
+        color: #18375d;
+        border-top: none;
+        padding: 1rem 0;
+        width: 200px;
+        vertical-align: top;
+    }
+
+    .profile-info-table td {
+        padding: 1rem 0;
+        border-top: 1px solid #f8f9fc;
+        color: #2d3436;
+        font-weight: 500;
+    }
+
+    .profile-info-table th i {
+        width: 20px;
+        margin-right: 0.5rem;
+        text-align: center;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .card-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .profile-info-table th {
+            width: 150px;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info-table td {
+            font-size: 0.9rem;
+        }
+        
+        .profile-info-table th i {
+            width: 14px;
+            margin-right: 0.4rem;
+        }
+        
+        .profile-card-bordered {
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .profile-info-table th {
+            width: 120px;
+            font-size: 0.8rem;
+            padding: 0.75rem 0;
+        }
+        
+        .profile-info-table td {
+            font-size: 0.85rem;
+            padding: 0.75rem 0;
+        }
+        
+        .profile-info-table th i {
+            width: 12px;
+            margin-right: 0.3rem;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 <!-- Success/Error Messages -->
 @if(session('success'))
@@ -112,18 +376,39 @@
 <div class="row fade-in">
     <!-- Profile Card -->
     <div class="col-12 col-md-5 col-lg-4 mb-4">
-        <div class="card shadow profile-card">
-            <div class="card-body text-center">
-                <img id="profilePicture" src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}" alt="Profile Picture" class="img-profile rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;">
-                <h5 class="font-weight-bold mb-1">{{ auth()->user()->name }}</h5>
-                <p class="text-muted mb-3">{{ auth()->user()->email }}</p>
-                <div class="d-flex justify-content-center">
-                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('uploadProfilePicture').click()">
-                        <i class="fas fa-camera mr-2"></i>Change Picture
-                    </button>
+        <div class="card shadow profile-card h-100">
+            <!-- Profile Header -->
+            <div class="profile-header text-center p-4">
+                <div class="profile-picture-container d-inline-block">
+                    <img id="profilePicture" 
+                        src="{{ asset('img/' . (auth()->user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" 
+                        alt="Profile Picture" 
+                        class="img-profile rounded-circle shadow">
                 </div>
-                <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="uploadProfilePicture(event)">
+                
+                <!-- Camera Button Below Profile Picture -->
+                <div class="mt-3">
+                    <button class="btn-action btn-action-ok" onclick="document.getElementById('uploadProfilePicture').click()">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
+                </div>
+
+                <h3 class="mt-3 mb-1 font-weight-bold">{{ auth()->user()->name }}</h3>
+                <p class="text-muted mb-2">{{ auth()->user()->email }}</p>
+                <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-action btn-action-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
+                    <i class="fas fa-edit mr-1"></i>Edit Profile
+                </button>
+                <button class="btn-action btn-action-edit-pass" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
+                    <i class="fas fa-key mr-1"></i>Change Password
+                </button>
             </div>
+            </div>
+            
+
+            
         </div>
     </div>
     
@@ -132,47 +417,56 @@
         <div class="card shadow h-100">
             <div class="card-header">
                 <h6>
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-user-edit"></i>
                     Profile Details
                 </h6>
-                <div class="action-buttons">
-                    <!-- Edit Profile Button -->
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
-                        <i class="fas fa-user-edit mr-2"></i>Edit Profile
-                    </button>
-                    <!-- Change Password Button -->
-                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
-                        <i class="fas fa-key mr-2"></i>Change Password
-                    </button>
-                </div>
             </div>
+            
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-borderless mb-0">
+                    <table class="table table-borderless mb-0 profile-info-table">
                         <tbody>
                             <tr>
-                                <th scope="row" style="width:180px;">Full Name</th>
-                                <td>{{ auth()->user()->name }}</td>
+                                <th scope="row">
+                                    <i class="fas fa-user" style="color: #18375d;"></i>Full Name
+                                </th>
+                                <td>{{ auth()->user()->name ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Email</th>
-                                <td>{{ auth()->user()->email }}</td>
+                                <th scope="row">
+                                    <i class="fas fa-envelope" style="color: #18375d;"></i>Email
+                                </th>
+                                <td>{{ auth()->user()->email ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Phone</th>
+                                <th scope="row">
+                                    <i class="fas fa-phone" style="color: #18375d;"></i>Phone
+                                </th>
                                 <td>{{ auth()->user()->phone ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Farm Name</th>
+                                <th scope="row">
+                                    <i class="fas fa-seedling" style="color: #18375d;"></i>Farm Name
+                                </th>
                                 <td>{{ auth()->user()->farms->first()->name ?? 'No farm registered' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Farm Address</th>
+                                <th scope="row">
+                                    <i class="fas fa-map-marker-alt" style="color: #18375d;"></i>Address
+                                </th>
                                 <td>{{ auth()->user()->address ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Member Since</th>
+                                <th scope="row">
+                                    <i class="fas fa-calendar-alt" style="color: #18375d;"></i>Member Since
+                                </th>
                                 <td>{{ auth()->user()->created_at->format('F Y') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <i class="fas fa-check-circle" style="color: #18375d;"></i>Status
+                                </th>
+                                <td><span class="badge badge-success">{{ ucfirst(auth()->user()->status ?? 'Active') }}</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -185,13 +479,12 @@
 <!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form class="modal-content" method="POST" action="{{ route('farmer.profile.update') }}">
+    <form class="modal-content" method="POST" action="{{ route('farmer.profile.update') }}" id="editProfileForm">
       @csrf
       @method('PUT')
       <div class="modal-header">
         <h5 class="modal-title" id="editProfileLabel">
-            <i class="fas fa-user-edit"></i>
-            Edit Profile
+            <i class="fas fa-user-edit mr-2"></i>Edit Profile
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span>&times;</span>
@@ -200,40 +493,55 @@
       <div class="modal-body">
           <div class="form-group">
               <label for="editFullName">
-                  <i class="fas fa-user"></i>Full Name
+                  <i class="fas fa-user mr-2"></i>Full Name
               </label>
-              <input type="text" class="form-control" id="editFullName" name="name" value="{{ auth()->user()->name }}" required>
+              <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" required placeholder="Enter your full name">
+              @error('name')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="editEmail">
-                  <i class="fas fa-envelope"></i>Email
+                  <i class="fas fa-envelope mr-2"></i>Email
               </label>
-              <input type="email" class="form-control" id="editEmail" name="email" value="{{ auth()->user()->email }}" required>
+              <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required placeholder="Enter your email address">
+              @error('email')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="editPhone">
-                  <i class="fas fa-phone"></i>Contact Number
+                  <i class="fas fa-phone mr-2"></i>Contact Number
               </label>
-              <input type="text" class="form-control" id="editPhone" name="phone" value="{{ auth()->user()->phone ?? '' }}" placeholder="Enter your phone number">
+              <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone ?? '') }}" placeholder="Enter your contact number">
+              @error('phone')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="editFarmName">
-                  <i class="fas fa-seedling"></i>Farm Name
+                  <i class="fas fa-seedling mr-2"></i>Farm Name
               </label>
-              <input type="text" class="form-control" id="editFarmName" name="farm_name" value="{{ auth()->user()->farms->first()->name ?? '' }}" placeholder="Enter your farm name">
+              <input type="text" class="form-control @error('farm_name') is-invalid @enderror" id="editFarmName" name="farm_name" value="{{ old('farm_name', auth()->user()->farms->first()->name ?? '') }}" placeholder="Enter your farm name">
+              @error('farm_name')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
-              <label for="editFarmAddress">
-                  <i class="fas fa-map-marker-alt"></i>Farm Address
+              <label for="editAddress">
+                  <i class="fas fa-map-marker-alt mr-2"></i>Address
               </label>
-              <input type="text" class="form-control" id="editFarmAddress" name="address" value="{{ auth()->user()->address ?? '' }}" placeholder="Enter your farm address">
+              <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address ?? '') }}" placeholder="Enter your address">
+              @error('address')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            <i class="fas fa-times mr-2"></i>Cancel
+        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
+            Cancel
         </button>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn-action btn-action-ok">
             <i class="fas fa-save mr-2"></i>Save Changes
         </button>
       </div>
@@ -244,12 +552,11 @@
 <!-- Change Password Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <form class="modal-content" method="POST" action="{{ route('farmer.profile.password') }}">
+    <form class="modal-content" method="POST" action="{{ route('farmer.profile.password') }}" id="changePasswordForm">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title" id="changePasswordLabel">
-            <i class="fas fa-key"></i>
-            Change Password
+            <i class="fas fa-key mr-2"></i>Change Password
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span>&times;</span>
@@ -258,49 +565,34 @@
       <div class="modal-body">
           <div class="form-group">
               <label for="currentPassword">
-                  <i class="fas fa-lock"></i>Current Password
+                  <i class="fas fa-lock mr-2"></i>Current Password
               </label>
-              <div class="input-group">
-                  <input type="password" class="form-control" id="currentPassword" name="current_password" required>
-                  <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('currentPassword')">
-                          <i class="fas fa-eye" id="currentPasswordIcon"></i>
-                      </button>
-                  </div>
-              </div>
+              <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
+              @error('current_password')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="newPassword">
-                  <i class="fas fa-key"></i>New Password
+                  <i class="fas fa-key mr-2"></i>New Password
               </label>
-              <div class="input-group">
-                  <input type="password" class="form-control" id="newPassword" name="password" required>
-                  <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('newPassword')">
-                          <i class="fas fa-eye" id="newPasswordIcon"></i>
-                      </button>
-                  </div>
-              </div>
+              <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
+              @error('password')
+                  <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
           </div>
           <div class="form-group">
               <label for="confirmPassword">
-                  <i class="fas fa-check-circle"></i>Confirm New Password
+                  <i class="fas fa-check-circle mr-2"></i>Confirm New Password
               </label>
-              <div class="input-group">
-                  <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
-                  <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPassword')">
-                          <i class="fas fa-eye" id="confirmPasswordIcon"></i>
-                      </button>
-                  </div>
-              </div>
+              <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            <i class="fas fa-times mr-2"></i>Cancel
+        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
+            Cancel
         </button>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn-action btn-action-ok">
             <i class="fas fa-save mr-2"></i>Change Password
         </button>
       </div>
@@ -309,388 +601,18 @@
 </div>
 @endsection
 
-@push('styles')
-<style>
-    /* Enhanced Card Styling */
-    .card {
-        border: none;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.95);
-    }
-
-    .card:hover {
-        box-shadow: var(--shadow-lg);
-        transform: translateY(-4px);
-    }
-
-    .card-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        border-bottom: none;
-        padding: 1.75rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .card-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-        transform: translateX(-100%);
-        transition: transform 0.6s ease;
-    }
-
-    .card:hover .card-header::before {
-        transform: translateX(100%);
-    }
-
-    .card-header h6 {
-        color: white;
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        letter-spacing: 0.5px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .card-header h6 i {
-        padding: 0.5rem;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        backdrop-filter: blur(10px);
-    }
-
-    /* Enhanced Button Styling */
-    .btn {
-        border-radius: 10px;
-        font-weight: 600;
-        padding: 0.625rem 1.25rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        font-size: 0.875rem;
-        position: relative;
-        overflow: hidden;
-        letter-spacing: 0.25px;
-    }
-
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s ease;
-    }
-
-    .btn:hover::before {
-        left: 100%;
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn:active {
-        transform: translateY(0);
-    }
-
-    .btn-sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-        border-radius: 8px;
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
-        box-shadow: 0 4px 15px rgba(28, 200, 138, 0.3);
-    }
-
-    .btn-danger {
-        background: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-dark) 100%);
-        box-shadow: 0 4px 15px rgba(231, 74, 59, 0.3);
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
-    }
-
-    .btn-secondary {
-        background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
-        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-    }
-
-    .btn-warning {
-        background: linear-gradient(135deg, var(--warning-color) 0%, var(--warning-dark) 100%);
-        box-shadow: 0 4px 15px rgba(246, 194, 62, 0.3);
-    }
-
-    .btn-info {
-        background: linear-gradient(135deg, var(--info-color) 0%, var(--info-dark) 100%);
-        box-shadow: 0 4px 15px rgba(54, 185, 204, 0.3);
-    }
-
-    /* Enhanced Modal Styling */
-    .modal-content {
-        border: none;
-        border-radius: 16px;
-        box-shadow: var(--shadow-xl);
-        backdrop-filter: blur(20px);
-        background: rgba(255, 255, 255, 0.98);
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        color: white;
-        border-bottom: none;
-        border-radius: 16px 16px 0 0;
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .modal-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    }
-
-    .modal-title {
-        font-weight: 700;
-        font-size: 1.3rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .modal-body {
-        padding: 2.5rem;
-    }
-
-    .modal-footer {
-        border-top: 1px solid var(--border-color);
-        padding: 2rem;
-    }
-
-
-
-    /* Stats Cards Enhancement */
-    .border-left-info {
-        border-left: 5px solid var(--info-color) !important;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .border-left-success {
-        border-left: 5px solid var(--success-color) !important;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .border-left-warning {
-        border-left: 5px solid var(--warning-color) !important;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .border-left-primary {
-        border-left: 5px solid var(--primary-color) !important;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .card-footer {
-        background: rgba(0, 0, 0, 0.02);
-        border-top: 1px solid var(--border-color);
-        transition: all 0.15s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .card-footer::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(24, 55, 93, 0.1), transparent);
-        transition: left 0.5s ease;
-    }
-
-    .card-footer:hover::before {
-        left: 100%;
-    }
-
-    .card-footer:hover {
-        background: rgba(24, 55, 93, 0.05);
-    }
-
-    /* Profile Picture Enhancement */
-    .img-profile {
-        border: 6px solid white;
-        box-shadow: var(--shadow-lg);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-    }
-
-    .img-profile:hover {
-        transform: scale(1.08);
-        box-shadow: var(--shadow-xl);
-    }
-
-    /* Table Enhancement */
-    .table {
-        margin-bottom: 0;
-        font-size: 0.95rem;
-    }
-
-    .table th {
-        font-weight: 700;
-        color: var(--dark-color);
-        border-top: none;
-        padding: 1.25rem 0.75rem;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .table td {
-        padding: 1.25rem 0.75rem;
-        vertical-align: middle;
-        border-top: 2px solid #f8f9fc;
-        font-weight: 500;
-        color: #2d3436;
-    }
-
-    /* Form Enhancement */
-    .form-control {
-        border-radius: 10px;
-        border: 3px solid #e3e6f0;
-        padding: 0.875rem 1.25rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        font-weight: 500;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(24, 55, 93, 0.25);
-        background: white;
-        transform: translateY(-1px);
-    }
-
-    .form-group label {
-        font-weight: 700;
-        color: var(--dark-color);
-        margin-bottom: 0.75rem;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .form-group label i {
-        margin-right: 0.5rem;
-        width: 16px;
-        text-align: center;
-    }
-
-    /* Stagger Animation */
-    .stagger-animation .col-12 {
-        animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .stagger-animation .col-12:nth-child(1) { animation-delay: 0.1s; }
-    .stagger-animation .col-12:nth-child(2) { animation-delay: 0.2s; }
-    .stagger-animation .col-12:nth-child(3) { animation-delay: 0.3s; }
-    .stagger-animation .col-12:nth-child(4) { animation-delay: 0.4s; }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* CSS Variables */
-    :root {
-        --primary-color: #18375d;
-        --primary-dark: #122a47;
-        --primary-light: #224abe;
-        --success-color: #1cc88a;
-        --success-dark: #17a673;
-        --warning-color: #f6c23e;
-        --warning-dark: #d69e2e;
-        --danger-color: #e74a3b;
-        --danger-dark: #c73e1d;
-        --info-color: #36b9cc;
-        --info-dark: #2c9faf;
-        --light-color: #f8f9fc;
-        --dark-color: #5a5c69;
-        --border-color: #e3e6f0;
-        --shadow-sm: 0 0.125rem 0.5rem rgba(58, 59, 69, 0.1);
-        --shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
-        --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-        --shadow-xl: 0 2rem 4rem rgba(0, 0, 0, 0.2);
-        --border-radius: 12px;
-        --border-radius-lg: 16px;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        --transition-fast: all 0.15s ease;
-    }
-</style>
-@endpush
 
 @push('scripts')
 <script>
-    // Toggle password visibility
-    function togglePassword(fieldId) {
-        const field = document.getElementById(fieldId);
-        const icon = document.getElementById(fieldId + 'Icon');
-        
-        if (field.type === 'password') {
-            field.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    }
     
-    function uploadProfilePicture(event) {
+    function changeProfilePicture(event) {
         const file = event.target.files[0];
         if (!file) return;
 
         // Show loading state
-        const button = event.target.previousElementSibling.querySelector('button');
+        const button = event.target.previousElementSibling;
         const originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading...';
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         button.disabled = true;
 
         // Create FormData
@@ -706,8 +628,8 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Update the profile picture
-                document.getElementById('profilePicture').src = data.image_url;
+                // Update the profile picture with cache busting
+                document.getElementById('profilePicture').src = data.image_url + '?t=' + new Date().getTime();
                 showNotification(data.message, 'success');
             } else {
                 showNotification(data.message, 'danger');
@@ -747,24 +669,19 @@
     }
 
     // Handle form submissions
-    document.querySelector('#editProfileModal form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Submit form via AJAX or let it submit normally
-        this.submit();
+    document.querySelector('#editProfileForm').addEventListener('submit', function(e) {
+        // Let the form submit normally
     });
 
-    document.querySelector('#changePasswordModal form').addEventListener('submit', function(e) {
-        e.preventDefault();
+    document.querySelector('#changePasswordForm').addEventListener('submit', function(e) {
         const newPassword = document.getElementById('newPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         
         if (newPassword !== confirmPassword) {
+            e.preventDefault();
             showNotification('Passwords do not match!', 'danger');
             return;
         }
-        
-        // Submit form
-        this.submit();
     });
 </script>
 @endpush
