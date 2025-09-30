@@ -560,7 +560,7 @@
     display: none;
 }
 
-//
+
 #userActivityTable th,
 #userActivityTable td{
     vertical-align: middle;
@@ -613,6 +613,7 @@
 #userActivityTable thead th.sorting_desc::after{
     display: none;
 }
+//
     
     /* Ensure table has enough space for actions column */
     .table th:last-child,
@@ -999,11 +1000,11 @@
                     <input type="text" class="form-control" placeholder="Search users..." id="userActivitySearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh" onclick="refreshUserActivity()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="btn-action btn-action-print" onclick="printUserActivityTable()">
+                    <button class="btn-action btn-action-print" onclick="printSystemLogsTable()">
                         <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
@@ -1087,11 +1088,11 @@
                     <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
                     <button class="btn-action btn-action-print" onclick="printSystemLogsTable()">
                         <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
@@ -1745,16 +1746,18 @@ function initializeDefaultCharts() {
 
 function initializeDataTable() {
     console.log('Initializing DataTables...');
-    
-    $('#auditDataTable').DataTable({
+
+    // Initialize Audit DataTable
+    const auditTable = $('#auditDataTable').DataTable({
         responsive: true,
         ordering: true,
-        paging: false, // Disable pagination
+        paging: false,
         order: [[1, 'desc']], // Sort by timestamp
-        searching: false, // Disable built-in search to remove duplicate
-        info: false, // Hide info text
+        searching: true, // allow custom search
+        info: false,
+        dom: 'lrtip',
         columnDefs: [
-            { width: '80px', targets: 0 }, // Log ID
+            { width: '80px', targets: 0 },   // Log ID
             { width: '150px', targets: 1 }, // Timestamp
             { width: '120px', targets: 2 }, // User
             { width: '150px', targets: 3 }, // Action
@@ -1767,25 +1770,26 @@ function initializeDataTable() {
 
     // Initialize Security Alerts DataTable
     console.log('Initializing Security Alerts DataTable...');
-    const securityTable = $('#securityAlertsTable');
-    if (securityTable.length > 0) {
+    let securityTable = null;
+    if ($('#securityAlertsTable').length > 0) {
         try {
-            securityTable.DataTable({
+            securityTable = $('#securityAlertsTable').DataTable({
                 responsive: true,
                 ordering: true,
                 paging: false,
-                searching: false,
+                searching: true, // allow custom search
                 info: false,
-                order: [[0, 'desc']], // Sort by timestamp by default
+                dom: 'lrtip',
+                order: [[0, 'desc']], // Sort by timestamp
                 columnDefs: [
                     { width: '150px', targets: 0 }, // Timestamp
                     { width: '120px', targets: 1 }, // User
                     { width: '150px', targets: 2 }, // Event
                     { width: '100px', targets: 3 }, // Severity
                     { width: '200px', targets: 4 }, // Details
-                    { width: '150px', targets: 5, orderable: false }  // Actions - not sortable
+                    { width: '150px', targets: 5, orderable: false } // Actions
                 ],
-        language: {
+                language: {
                     emptyTable: '<div class="empty-state"><i class="fas fa-check-circle"></i><h5>No security alerts</h5><p>No security alerts at this time</p></div>'
                 }
             });
@@ -1793,59 +1797,47 @@ function initializeDataTable() {
         } catch (error) {
             console.error('Error initializing Security Alerts DataTable:', error);
         }
-    } else {
-        console.log('Security Alerts table not found');
     }
 
     // Initialize User Activity DataTable
-    console.log('Initializing User Activity DataTable...');
-    const userActivityTable = $('#userActivityTable');
-    if (userActivityTable.length > 0) {
-        try {
-            userActivityTable.DataTable({
-                responsive: true,
-                ordering: true,
-                paging: false,
-                searching: false,
-                info: false,
-                order: [[1, 'desc']], // Sort by last activity by default
-                columnDefs: [
-                    { width: '200px', targets: 0 }, // User
-                    { width: '150px', targets: 1 }, // Last Activity
-                    { width: '120px', targets: 2 }, // Total Actions
-                    { width: '120px', targets: 3 }, // Critical Events
-                    { width: '100px', targets: 4 }  // Status
-                ],
-                language: {
-                    emptyTable: '<div class="empty-state"><i class="fas fa-info-circle"></i><h5>No user activity</h5><p>No user activity data available</p></div>'
-                }
-            });
-            console.log('User Activity DataTable initialized successfully');
-        } catch (error) {
-            console.error('Error initializing User Activity DataTable:', error);
+    const userActivityTable = $('#userActivityTable').DataTable({
+        responsive: true,
+        ordering: true,
+        paging: false,
+        searching: true, // allow custom search
+        info: false,
+        dom: 'lrtip',
+        order: [[1, 'desc']],
+        columnDefs: [
+            { width: '200px', targets: 0 },
+            { width: '150px', targets: 1 },
+            { width: '120px', targets: 2 },
+            { width: '120px', targets: 3 },
+            { width: '100px', targets: 4 }
+        ],
+        language: {
+            emptyTable: '<div class="empty-state"><i class="fas fa-info-circle"></i><h5>No user activity</h5><p>No user activity data available</p></div>'
         }
-    } else {
-        console.log('User Activity table not found');
-    }
-    
-    console.log('DataTables initialization complete');
-
-    // Custom search functionality
-    $('#logSearch').on('keyup', function() {
-        $('#auditDataTable').DataTable().search(this.value).draw();
     });
 
-    // Security alerts search functionality
-    $('#securitySearch').on('keyup', function() {
-        $('#securityAlertsTable').DataTable().search(this.value).draw();
+    // Custom search bindings
+    $('#logSearch').on('keyup', function () {
+        auditTable.search(this.value).draw();
     });
 
-    // User activity search functionality
-    $('#userActivitySearch').on('keyup', function() {
-        $('#userActivityTable').DataTable().search(this.value).draw();
+    $('#securitySearch').on('keyup', function () {
+        if (securityTable) {
+            securityTable.search(this.value).draw();
+        }
     });
 
+    $('#userActivitySearch').on('keyup', function () {
+        userActivityTable.search(this.value).draw();
+    });
+
+    console.log('All DataTables initialized successfully');
 }
+
 
 function openLogDetails(logId) {
     console.log('openLogDetails called with logId:', logId);

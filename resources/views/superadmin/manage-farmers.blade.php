@@ -772,7 +772,7 @@
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>
                                     </button>
-                                                        <button class="btn-action btn-action-delete" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
+                                                        <button class="btn-action btn-action-deletes" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
                         <i class="fas fa-trash"></i>
                         <span>Delete</span>
                     </button>
@@ -1023,9 +1023,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-edit" id="updateFarmerBtn">
-                        <i class="fas fa-save"></i> Update Farmer
-                    </button>
+                    <button type="submit" id="updateFarmerBtn" class="btn-action btn-action-edit">
+                         <i class="fas fa-save"></i> Update Farmer
+                     </button>
                 </div>
             </form>
         </div>
