@@ -2,6 +2,125 @@
 
 @section('title', 'LBDAIRY: Farmers - Farm Analysis')
 
+@push('styles')
+<style>
+/* COMPREHENSIVE STYLING TO MATCH STANDARDIZED FORMAT */
+
+/* Page Header Styling */
+.page-header {
+    background: #18375d;
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.page-header h1 i {
+    color: white !important;
+    margin-right: 10px;
+}
+
+/* Statistics Cards - Match Super Admin Style */
+.card.border-left-primary {
+    border-left: 4px solid #18375d !important;
+}
+
+.card.border-left-success {
+    border-left: 4px solid #18375d !important;
+}
+
+.card.border-left-info {
+    border-left: 4px solid #18375d !important;
+}
+
+.card.border-left-warning {
+    border-left: 4px solid #18375d !important;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.25);
+    transform: translateY(-2px);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Icon styling for stat cards */
+.card-body .col-auto {
+    display: block !important;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+}
+
+.card-body .col-auto i {
+    color: #18375d !important;
+    display: inline-block !important;
+    opacity: 1;
+}
+
+/* Text styling for stat cards */
+.text-xs {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #18375d !important;
+}
+
+.text-primary {
+    color: #18375d !important;
+}
+
+.text-success {
+    color: #18375d !important;
+}
+
+.text-info {
+    color: #18375d !important;
+}
+
+.text-warning {
+    color: #18375d !important;
+}
+
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+/* Card header styling now uses Bootstrap classes bg-primary text-white */
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+@endpush
+
 @section('content')
 <!-- Page Header -->
 <div class="page-header fade-in">
@@ -12,71 +131,63 @@
     <p>Comprehensive analysis of farm performance and productivity metrics</p>
 </div>
 
-<div class="row">
+<div class="row fade-in">
     <!-- Key Performance Indicators -->
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2 fade-in">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Livestock</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-cow fa-2x text-gray-300"></i>
-                    </div>
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                        Total Livestock</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
+                </div>
+                <div class="col-auto" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-cow fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2 fade-in">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Monthly Production</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($monthlyProduction) }} L</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-tint fa-2x text-gray-300"></i>
-                    </div>
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                        Monthly Production</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($monthlyProduction) }} L</div>
+                </div>
+                <div class="col-auto" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-tint fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2 fade-in">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Revenue This Month</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($monthlyRevenue) }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div>
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                        Revenue This Month</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($monthlyRevenue) }}</div>
+                </div>
+                <div class="col-auto" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-dollar-sign fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2 fade-in">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Active Issues</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeIssues }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                    </div>
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                        Active Issues</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeIssues }}</div>
+                </div>
+                <div class="col-auto" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-exclamation-triangle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
@@ -87,8 +198,11 @@
     <!-- Production Chart -->
     <div class="col-xl-8 col-lg-7">
         <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Monthly Production Trend</h6>
+            <div class="card-header bg-primary text-white py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-chart-line"></i>
+                    Monthly Production Trend
+                </h6>
                 <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -115,8 +229,11 @@
     <!-- Livestock Distribution -->
     <div class="col-xl-4 col-lg-5">
         <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Livestock Distribution</h6>
+            <div class="card-header bg-primary text-white py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-chart-pie"></i>
+                    Livestock Distribution
+                </h6>
                 <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -156,8 +273,11 @@
     <!-- Farm Performance Table -->
     <div class="col-12">
         <div class="card shadow mb-4 fade-in">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Farm Performance Summary</h6>
+            <div class="card-header bg-primary text-white py-3">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-table"></i>
+                    Farm Performance Summary
+                </h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

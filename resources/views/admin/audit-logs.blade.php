@@ -212,16 +212,6 @@
             </div>
         </div>
     </div>
-
-        
-        <!-- Pagination -->
-        @if($auditLogs->hasPages())
-        <div class="d-flex justify-content-center mt-3">
-            {{ $auditLogs->links() }}
-        </div>
-        @endif
-    </div>
-</div>
 @endsection
 
 @push('styles')

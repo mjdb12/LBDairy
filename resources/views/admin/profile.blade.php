@@ -236,7 +236,7 @@
 }
 
 .profile-header {
-    background: #f8f9fc;
+    background: #ffffff;
     padding: 1.5rem 1rem;
 }
 
@@ -374,8 +374,8 @@
     }
 
     .btn-action-edit-pass {
-        background-color: #4466ca;
-        border-color: #4466ca;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
 

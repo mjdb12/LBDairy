@@ -147,13 +147,13 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-boxes"></i>
-                                    <h5>No inventory items found</h5>
-                                    <p>Add your first inventory item to start tracking.</p>
-                                </div>
-                            </td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No inventory items found</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>

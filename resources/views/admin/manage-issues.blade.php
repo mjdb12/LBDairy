@@ -177,7 +177,14 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center">No issues found</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No issues found</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>

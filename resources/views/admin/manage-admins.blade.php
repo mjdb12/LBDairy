@@ -187,10 +187,15 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="9" class="text-center text-muted">
-                                <i class="fas fa-info-circle"></i>
-                                No admin data available
-                            </td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No admin data available</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -228,10 +233,10 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">
-                                <i class="fas fa-info-circle"></i>
-                                No recent activity
-                            </td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No recent activity</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>

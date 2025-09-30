@@ -999,11 +999,11 @@
                     <input type="text" class="form-control" placeholder="Search users..." id="userActivitySearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh" onclick="refreshUserActivity()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
                     <button class="btn-action btn-action-print" onclick="printUserActivityTable()">
                         <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshUserActivity()">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
@@ -1027,21 +1027,21 @@
                 <table class="table table-bordered table-hover" id="userActivityTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
                         <tr>
-                            <th>User</th>
-                            <th>Last Activity</th>
-                            <th>Total Actions</th>
-                            <th>Critical Events</th>
-                            <th>Status</th>
+                            <th class="text-center">User</th>
+                            <th class="text-center">Last Activity</th>
+                            <th class="text-center">Total Actions</th>
+                            <th class="text-center">Critical Events</th>
+                            <th class="text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($userActivity ?? [] as $user)
                         <tr>
-                            <td>{{ $user->name ?? 'N/A' }}</td>
-                            <td>{{ $user->last_activity ?? 'N/A' }}</td>
-                            <td>{{ $user->total_actions ?? 0 }}</td>
-                            <td>{{ $user->critical_events ?? 0 }}</td>
-                            <td>
+                            <td class="text-center">{{ $user->name ?? 'N/A' }}</td>
+                            <td class="text-center">{{ $user->last_activity ?? 'N/A' }}</td>
+                            <td class="text-center">{{ $user->total_actions ?? 0 }}</td>
+                            <td class="text-center">{{ $user->critical_events ?? 0 }}</td>
+                            <td class="text-center">
                                 @php
                                     $status = $user->status ?? 'Active';
                                     $statusClass = $status === 'Active' ? 'success' : 
@@ -1087,11 +1087,11 @@
                     <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
                     <button class="btn-action btn-action-print" onclick="printSystemLogsTable()">
                         <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
