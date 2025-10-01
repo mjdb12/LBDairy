@@ -203,19 +203,19 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn-action btn-action-edi" id="taskSubmitBtn">Add Task</button>
+                <button type="submit" class="btn-action btn-action-edit" id="taskSubmitBtn">Add Task</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Delete Task Confirmation Modal -->
-<div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteTaskLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" aria-labelledby="confirmDeleteTaskLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmDeleteTaskLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
                     Confirm Delete
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -226,19 +226,65 @@
                 <p>Are you sure you want to delete this task? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteTaskBtn" class="btn btn-danger">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteTaskBtn" class="btn-action btn-action-deletes">
                     <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @push('styles')
 <style>
+    /* User Details Modal Styling */
+    #confirmDeleteTaskModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #confirmDeleteTaskModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #confirmDeleteTaskModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #confirmDeleteTaskModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    confirmDeleteTaskModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #confirmDeleteTaskModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #confirmDeleteTaskModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
 
+    /* Style all labels inside form Modal */
+    #confirmDeleteTaskModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    } 
     /* Action buttons styling */
     .action-buttons {
         display: flex;
@@ -755,7 +801,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <i class="fas fa-edit"></i>
                         <span>Edit</span>
                     </button>
-                    <button class="btn-action btn-action-delete btn-action-sm delete-task" title="Delete Task">
+                    <button class="btn-action btn-action-deletes btn-action-sm delete-task" title="Delete Task">
                         <i class="fas fa-trash"></i>
                         <span>Delete</span>
                     </button>

@@ -1,11 +1,8 @@
 <!-- Topbar -->
-<nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow" style="background-color: #f4f2e6 !important; border-bottom: 3px solid #18375d !important;">
-
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
-
+ <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" style="background-color: #f4f2e6 !important; border-bottom: 3px solid #18375d !important;">
+<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3 ">
+                        <i class="fa fa-bars"></i>
+                    </button>
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
 
@@ -507,3 +504,4 @@ function testNotificationSystem() {
 }
 </style>
 @endif
+

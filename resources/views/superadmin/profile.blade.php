@@ -196,28 +196,16 @@
     display: inline-block;
 }
 
-/* Camera Button Below Profile Picture */
 .btn-action-ok {
-    background: #18375d;
-    color: #fff;
-    border-radius: 50%; /* perfect circle */
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-    transition: all 0.2s ease-in-out;
-    border: none;
-    margin: 0 auto;
-}
-
-.btn-action-ok:hover {
-    background: #fca700;
-    transform: scale(1.1); /* subtle pop effect */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
 
 
 /* Profile Actions */
@@ -653,10 +641,10 @@
                 <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="btn-action btn-action-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
-                    <i class="fas fa-edit mr-1"></i>Edit Profile
+                    <i class="fas fa-edit mr-2"></i>Edit Profile
                 </button>
                 <button class="btn-action btn-action-edit-pass" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
-                    <i class="fas fa-key mr-1"></i>Change Password
+                    <i class="fas fa-key mr-2"></i>Change Password
                 </button>
             </div>
             </div>
@@ -853,13 +841,11 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
-            Cancel
-        </button>
-        <button type="submit" class="btn-action btn-action-ok">
-            <i class="fas fa-save mr-2"></i>Save Changes
-        </button>
-      </div>
+            <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-action btn-action-ok">
+               <i class="fas fa-save mr-2"></i>Save Changes
+            </button>
+        </div>
     </form>
   </div>
 </div>

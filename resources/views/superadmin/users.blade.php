@@ -979,7 +979,6 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -1159,7 +1158,7 @@ function loadUsers() {
                                 <span>Edit</span>
                             </button>
 
-                            <button class="btn-action btn-action-delete" onclick="confirmDelete('${user.id}')" title="Delete">
+                            <button class="btn-action btn-action-deletes" onclick="confirmDelete('${user.id}')" title="Delete">
                                 <i class="fas fa-trash"></i>
                                 <span>Delete</span>
                             </button>

@@ -2943,12 +2943,12 @@
   
   .btn-link {
     font-weight: 400;
-    color: #18375d;
+    color: #ffffff;
     text-decoration: none;
   }
   
   .btn-link:hover {
-    color: #224abe;
+    color: #ffffff;
     text-decoration: underline;
   }
   
@@ -10110,18 +10110,38 @@
     height: 4.375rem;
   }
   
-  .topbar #sidebarToggleTop {
+  /* Sidebar Toggle Button (Topbar) */
+.sidebar #sidebarToggleTop {
     height: 2.5rem;
     width: 2.5rem;
-  }
-  
-  .topbar #sidebarToggleTop:hover {
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+/* Hover effect */
+.sidebar #sidebarToggleTop:hover {
     background-color: #eaecf4;
-  }
-  
-  .topbar #sidebarToggleTop:active {
+    transform: scale(1.05); /* slight zoom for feedback */
+}
+
+/* Active / pressed effect */
+.sidebar #sidebarToggleTop:active {
     background-color: #dddfeb;
-  }
+    transform: scale(0.95); /* subtle shrink */
+}
+
+/* Icon styling */
+.sidebar #sidebarToggleTop i {
+    font-size: 1.2rem;
+    color: #18375d; /* match your brand color */
+}
+
   
   .topbar .navbar-search {
     width: 25rem;
