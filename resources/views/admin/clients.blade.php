@@ -155,13 +155,12 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-users"></i>
-                                    <h5>No clients found</h5>
-                                    <p>Add your first client to start managing relationships.</p>
-                                </div>
-                            </td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No clients found</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>

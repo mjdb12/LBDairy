@@ -14,70 +14,62 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
+    <div class="row fade-in">
+        <!-- Total Alerts -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Alerts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bell fa-2x text-gray-300"></i>
-                        </div>
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Alerts</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAlerts }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-bell fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Active Alerts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
+        <!-- Active Alerts -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeAlerts }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-clock fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Critical Alerts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-fire fa-2x text-gray-300"></i>
-                        </div>
+        <!-- Critical Alerts -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Critical</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $criticalAlerts }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-fire fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Resolved</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $resolvedAlerts }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                        </div>
+        <!-- Resolved Alerts -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Resolved</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $resolvedAlerts }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-check-circle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -88,21 +80,53 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow fade-in">
-                <div class="card-header">
-                    <h6 class="m-0 font-weight-bold text-white">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
                         <i class="fas fa-list"></i>
                         My Alerts
                     </h6>
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-primary btn-sm" onclick="openCreateAlertModal()">
-                            <i class="fas fa-plus"></i> Create New Alert
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
+                    <div class="search-controls mb-3">
+                        <div class="input-group" style="max-width: 300px;">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search alerts..." id="alertSearch">
+                        </div>
+                        <div class="d-flex flex-column flex-sm-row align-items-center">
+                            <button class="btn-action btn-action-edit" onclick="openCreateAlertModal()">
+                                <i class="fas fa-plus mr-2"></i> Create Alert
+                            </button>
+                            <button class="btn-action btn-action-print" onclick="printTable()">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                            <button class="btn-action btn-action-refresh" onclick="location.reload()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                    <i class="fas fa-tools"></i> Tools
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="exportToCSV()">
+                                        <i class="fas fa-file-csv"></i> Download CSV
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="exportToPNG()">
+                                        <i class="fas fa-image"></i> Download PNG
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="exportToPDF()">
+                                        <i class="fas fa-file-pdf"></i> Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="alertsTable" width="100%" cellspacing="0">
-                            <thead>
+                        <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
+                            <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
                                     <th>Topic</th>
@@ -153,13 +177,13 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">
-                                        <i class="fas fa-bell-slash fa-3x mb-3 text-muted"></i>
-                                        <p>No alerts created yet. Create your first alert to notify administrators about livestock issues!</p>
-                                        <button class="btn btn-primary" onclick="openCreateAlertModal()">
-                                            <i class="fas fa-plus"></i> Create First Alert
-                                        </button>
-                                    </td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">No alerts created yet</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -236,16 +260,84 @@
     </div>
 </div>
 
+<!-- Bottom spacing to match farm analysis tab -->
+<div style="margin-bottom: 3rem;"></div>
+
 @endsection
 
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Initialize DataTable
-    $('#alertsTable').DataTable({
-        responsive: true,
-        pageLength: 25,
-        order: [[4, 'desc']], // Sort by date created
+    // Initialize DataTables with Super Admin configuration
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                title: 'Farmer_Alerts_Report',
+                className: 'd-none'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Farmer_Alerts_Report',
+                orientation: 'landscape',
+                pageSize: 'Letter',
+                className: 'd-none'
+            },
+            {
+                extend: 'print',
+                title: 'Farmer Alerts Report',
+                className: 'd-none'
+            }
+        ],
+        language: {
+            search: "",
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>'
+        },
+        order: [[4, 'desc']] // Sort by date created
+    };
+
+    // Initialize Alerts Table
+    if ($('#alertsTable').length) {
+        const alertsTable = $('#alertsTable');
+        const hasData = alertsTable.find('tbody tr').length > 0;
+        const hasEmptyRow = alertsTable.find('tbody tr td[colspan]').length > 0;
+        
+        if (hasData && !hasEmptyRow) {
+            try {
+                const dt = alertsTable.DataTable({
+                    ...commonConfig,
+                    columnDefs: [
+                        { width: '100px', targets: 0 }, // Livestock ID
+                        { width: '120px', targets: 1 }, // Topic
+                        { width: '200px', targets: 2 }, // Description
+                        { width: '100px', targets: 3 }, // Severity
+                        { width: '140px', targets: 4 }, // Date Created
+                        { width: '120px', targets: 5 }, // Status
+                        { width: '200px', targets: 6, orderable: false } // Actions
+                    ]
+                });
+            } catch (error) {
+                console.error('Error initializing Alerts DataTable:', error);
+            }
+        }
+    }
+
+    // Hide default DataTables search boxes (we use custom ones)
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
+    
+    // Connect custom search box to DataTables
+    $('#alertSearch').on('keyup', function() {
+        if ($.fn.DataTable.isDataTable('#alertsTable')) {
+            $('#alertsTable').DataTable().search(this.value).draw();
+        }
     });
 
     // Handle form submission
@@ -292,7 +384,426 @@ function submitAlertForm() {
 
 @push('styles')
 <style>
+/* COMPREHENSIVE STYLING TO MATCH SUPERADMIN FARMS TABLE */
 
+/* Search and button group alignment - EXACT COPY FROM SUPERADMIN */
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .search-controls {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end; /* Align to bottom for perfect leveling */
+    }
+}
+
+.search-controls .input-group {
+    flex-shrink: 0;
+    align-self: flex-end; /* Ensure input group aligns to bottom */
+}
+
+.search-controls .btn-group {
+    flex-shrink: 0;
+    align-self: flex-end; /* Ensure button group aligns to bottom */
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure buttons have consistent height with input */
+.search-controls .btn-action {
+    height: 38px; /* Match Bootstrap input height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Ensure dropdown button is perfectly aligned */
+.search-controls .dropdown .btn-action {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure all buttons in the group have the same baseline */
+.search-controls .d-flex {
+    align-items: center;
+    gap: 0.75rem; /* Increased gap between buttons */
+}
+
+@media (max-width: 767px) {
+    .search-controls {
+        align-items: stretch;
+    }
+    
+    .search-controls .btn-group {
+        margin-top: 0.5rem;
+        justify-content: center;
+        align-self: center;
+    }
+    
+    .search-controls .input-group {
+        max-width: 100% !important;
+    }
+}
+
+/* Page Header Styling */
+.page-header {
+    background: #18375d;
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.page-header h1 i {
+    color: white !important;
+    margin-right: 10px;
+}
+
+/* Statistics Cards - Match Super Admin Style */
+.card.border-left-primary {
+    border-left: 4px solid #18375d !important;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.25);
+    transform: translateY(-2px);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Icon styling for stat cards */
+.card-body .icon {
+    display: block !important;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+}
+
+.card-body .icon i {
+    color: #18375d !important;
+    display: inline-block !important;
+    opacity: 1;
+}
+
+/* Text styling for stat cards */
+.text-xs {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+/* Card header styling - Match Super Admin */
+.card-header {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.card-header h6 {
+    color: #18375d;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Action buttons styling */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-width: 200px;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    white-space: nowrap;
+}
+
+.btn-action-view {
+    background-color: #387057;
+    border-color: #387057;
+    color: white;
+}
+
+.btn-action-view:hover {
+    background-color: #2d5a47;
+    border-color: #2d5a47;
+    color: white;
+}
+
+.btn-action-approve {
+    background-color: #387057;
+    border-color: #387057;
+    color: white;
+}
+
+.btn-action-approve:hover {
+    background-color: #fca700;
+    border-color: #fca700;
+    color: white;
+}
+
+.btn-action-reject {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.btn-action-reject:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+    color: white;
+}
+
+.btn-action-print {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+.btn-action-print:hover {
+    background-color: #5a6268 !important;
+    border-color: #5a6268 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: #fca700 !important;
+    border-color: #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-refresh:hover {
+    background-color: #e69500 !important;
+    border-color: #e69500 !important;
+    color: white !important;
+}
+
+.btn-action-edit {
+    background-color: #387057;
+    border-color: #387057;
+    color: white;
+}
+
+.btn-action-edit:hover {
+    background-color: #fca700;
+    border-color: #fca700;
+    color: white;
+}
+
+.btn-action-tools {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #e2e6ea !important;
+    border-color: #cbd3da !important;
+    color: #495057 !important;
+}
+
+/* COMPLETE TABLE STYLING TO MATCH SUPERADMIN FARMS - EXACT COPY */
+
+/* Table hover effects */
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,.075);
+}
+
+/* Badge styling */
+.badge {
+    font-size: 0.75em;
+    padding: 0.375em 0.75em;
+}
+
+.btn-group .btn {
+    margin-right: 0.25rem;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+.gap-2 {
+    gap: 0.5rem !important;
+}
+
+/* Align Farm Directory table styling with User Management */
+#alertsTable {
+    width: 100% !important;
+    min-width: 1280px;
+    border-collapse: collapse;
+}
+
+/* Consistent table styling */
+.table {
+    margin-bottom: 0;
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+#alertsTable th,
+#alertsTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Table headers styling */
+#alertsTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#alertsTable thead th.sorting,
+#alertsTable thead th.sorting_asc,
+#alertsTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#alertsTable thead th.sorting::after,
+#alertsTable thead th.sorting_asc::after,
+#alertsTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* DataTables Pagination Styling */
+.dataTables_wrapper .dataTables_paginate {
+    text-align: left !important;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem !important; /* Match farmers directory gap */
+    clear: both;
+    width: 100%;
+    float: left !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .pagination {
+    justify-content: flex-start !important;
+    margin: 0;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    display: inline-block;
+    min-width: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.125rem;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    transition: all 0.15s ease-in-out;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    color: #18375d;
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    color: #fff;
+    background-color: #18375d;
+    border-color: #18375d;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.dataTables_wrapper .dataTables_info {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-size: 0.875rem;
+}
+
+/* Ensure pagination container is properly positioned */
+.dataTables_wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.dataTables_wrapper .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.dataTables_wrapper .row > div {
+    padding: 0;
+}
+
+/* Ensure table has enough space for actions column */
+.table th:last-child,
+.table td:last-child {
+    min-width: 200px;
+    width: auto;
+}
 
 .fade-in {
     animation: fadeIn 0.5s ease-in;

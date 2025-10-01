@@ -146,10 +146,12 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="fas fa-truck fa-3x mb-3 text-muted"></i>
-                                    <p>No suppliers found. Add expenses with supplier information to see suppliers here.</p>
-                                </td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">No suppliers found</td>
+                                <td class="text-center text-muted">N/A</td>
                             </tr>
                             @endforelse
                         </tbody>

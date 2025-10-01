@@ -4,6 +4,93 @@
 
 @section('styles')
 <style>
+/* COMPREHENSIVE STYLING TO MATCH STANDARDIZED FORMAT */
+
+/* Page Header Styling */
+.page-header {
+    background: #18375d;
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.page-header h1 i {
+    color: white !important;
+    margin-right: 10px;
+}
+
+/* Statistics Cards - Match Super Admin Style */
+.card.border-left-primary {
+    border-left: 4px solid #18375d !important;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.25);
+    transform: translateY(-2px);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Icon styling for stat cards */
+.card-body .icon {
+    display: block !important;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+}
+
+.card-body .icon i {
+    color: #18375d !important;
+    display: inline-block !important;
+    opacity: 1;
+}
+
+/* Text styling for stat cards */
+.text-xs {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+/* Card header styling - Match Super Admin */
+.card-header {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.card-header h6 {
+    color: #18375d !important;
+    margin: 0;
+    font-weight: 600;
+}
+
     .avatar-sm {
         width: 2rem;
         height: 2rem;
@@ -105,6 +192,15 @@
         color: #adb5bd;
         z-index: 2;
     }
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 </style>
 @endsection
 
@@ -128,8 +224,8 @@
                     <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-cow fa-2x" style="color: #18375d !important;"></i>
+                <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-cow fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
@@ -143,8 +239,8 @@
                     <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Healthy Animals</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $healthyAnimals }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-heart fa-2x" style="color: #18375d !important;"></i>
+                <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-heart fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
@@ -158,8 +254,8 @@
                     <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Breeding Age</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $breedingAge }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-baby fa-2x" style="color: #18375d !important;"></i>
+                <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-baby fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
@@ -173,8 +269,8 @@
                     <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Under Treatment</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $underTreatment }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-stethoscope fa-2x" style="color: #18375d !important;"></i>
+                <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                    <i class="fas fa-stethoscope fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
@@ -186,7 +282,7 @@
     <div class="col-xl-8 col-lg-7 mb-3">
         <div class="card shadow-sm">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">
+                <h6 class="m-0 font-weight-bold" style="color: #18375d !important;">
                     <i class="fas fa-chart-line"></i>
                     Performance Trends
                 </h6>
@@ -202,7 +298,7 @@
     <div class="col-xl-4 col-lg-5 mb-3">
         <div class="card shadow-sm">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
+                <h6 class="m-0 font-weight-bold" style="color: #18375d !important;">
                     <i class="fas fa-chart-pie"></i>
                     Health Distribution
                 </h6>
@@ -230,7 +326,7 @@
 <!-- Enhanced Livestock Analysis Table -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary">
+        <h6 class="m-0 font-weight-bold" style="color: #18375d !important;">
             <i class="fas fa-list-alt"></i>
             Livestock Analysis Overview
         </h6>

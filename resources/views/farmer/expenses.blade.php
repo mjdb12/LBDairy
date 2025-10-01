@@ -217,13 +217,13 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">
-                                        <i class="fas fa-receipt fa-3x mb-3 text-muted"></i>
-                                        <p>No expenses recorded yet. Start tracking your farm expenses!</p>
-                                        <button class="btn btn-primary" onclick="openAddExpenseModal()">
-                                            <i class="fas fa-plus"></i> Add First Expense
-                                        </button>
-                                    </td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">No expenses recorded yet</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
                                 </tr>
                                 @endforelse
                             </tbody>

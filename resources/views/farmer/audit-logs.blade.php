@@ -280,24 +280,21 @@
                                     <button class="btn btn-primary btn-sm" onclick="showLogDetails('{{ $log->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                </div>
-                            </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-inbox"></i>
-                                    <h5>No activities found</h5>
-                                    <p>You haven't performed any actions that generate logs yet.</p>
-                                </div>
-                            </td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No audit logs available</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            
             <!-- Pagination -->
             @if($auditLogs->hasPages())
             <div class="d-flex justify-content-center mt-3">

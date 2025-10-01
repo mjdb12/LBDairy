@@ -132,10 +132,12 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="fas fa-users fa-3x mb-3 text-muted"></i>
-                                    <p>No clients found. Start making sales to see your clients here.</p>
-                                </td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">No clients found</td>
+                                <td class="text-center text-muted">N/A</td>
                             </tr>
                             @endforelse
                         </tbody>

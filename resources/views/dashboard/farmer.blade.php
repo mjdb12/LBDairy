@@ -50,7 +50,7 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Sales</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalSales, 2) }}</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($totalSales, 2) }}</div>
                 </div>
                 <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
                     <i class="fas fa-dollar-sign fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
@@ -65,7 +65,7 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Expenses</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalExpenses, 2) }}</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($totalExpenses, 2) }}</div>
                 </div>
                 <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
                     <i class="fas fa-receipt fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
@@ -75,48 +75,6 @@
     </div>
 
 </div>
-
-<!-- Alerts Section -->
-@if(isset($livestockAlerts) && $livestockAlerts->count() > 0)
-<div class="row fade-in">
-    <div class="col-12 mb-4">
-        <div class="card shadow">
-            <div class="card-header bg-danger text-white">
-                <h6 class="mb-0">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Livestock Alerts
-                </h6>
-            </div>
-            <div class="card-body">
-                @foreach($livestockAlerts as $alert)
-                <div class="alert alert-{{ $alert->severity === 'critical' ? 'danger' : ($alert->severity === 'high' ? 'warning' : ($alert->severity === 'medium' ? 'info' : 'secondary')) }} alert-dismissible fade show" role="alert">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <h6 class="alert-heading mb-1">
-                                <i class="fas fa-{{ $alert->severity === 'critical' ? 'exclamation-triangle' : ($alert->severity === 'high' ? 'exclamation-circle' : 'info-circle') }}"></i>
-                                {{ $alert->topic }} - {{ $alert->livestock->tag_number }}
-                            </h6>
-                            <p class="mb-1">{{ $alert->description }}</p>
-                            <small class="text-muted">
-                                <i class="fas fa-calendar"></i> {{ $alert->alert_date->format('M d, Y') }}
-                                <span class="ml-3">
-                                    <span class="badge badge-{{ $alert->severity_badge_class }}">{{ ucfirst($alert->severity) }}</span>
-                                </span>
-                            </small>
-                        </div>
-                        <div class="ml-3">
-                            <button type="button" class="btn btn-sm btn-outline-{{ $alert->severity === 'critical' ? 'danger' : ($alert->severity === 'high' ? 'warning' : 'info') }}" onclick="markAlertAsRead({{ $alert->id }})">
-                                <i class="fas fa-check"></i> Mark as Read
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 
 <!-- Task Board Row -->
 <div class="row fade-in">
@@ -268,6 +226,79 @@
 
 @push('styles')
 <style>
+/* Page Header Styling */
+.page-header {
+    background: #18375d;
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.page-header h1 i {
+    color: white !important;
+    margin-right: 10px;
+}
+
+/* Statistics Cards - Match Super Admin Style */
+.card.border-left-primary {
+    border-left: 4px solid #18375d !important;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.25);
+    transform: translateY(-2px);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Icon styling for stat cards */
+.card-body .icon {
+    display: block !important;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+}
+
+.card-body .icon i {
+    color: #18375d !important;
+    display: inline-block !important;
+    opacity: 1;
+}
+
+/* Text styling for stat cards */
+.text-xs {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
 .dashboard-card {
     transition: transform 0.2s ease-in-out;
 }
@@ -286,12 +317,12 @@
 }
 
 .stat-card .icon {
-    opacity: 0.8;
+    opacity: 0.3;
     transition: opacity 0.3s ease;
 }
 
 .stat-card:hover .icon {
-    opacity: 1;
+    opacity: 0.5;
 }
 
 .table-responsive {
@@ -515,6 +546,33 @@ html body #addTaskBtn.btn-primary:focus,
 .badge-secondary {
     background-color: #858796 !important;
     color: #fff !important;
+}
+
+/* Card header styling - Match Super Admin */
+.card-header {
+    background: #18375d !important;
+    color: white !important;
+    border-bottom: none;
+    padding: 1rem 1.25rem;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-header h6 {
+    color: white !important;
+    margin: 0;
+    font-weight: 600;
+}
+
+.card-header.bg-danger {
+    background: #e74a3b !important;
+}
+
+.card-header.bg-warning {
+    background: #f6c23e !important;
+}
+
+.card-header.bg-info {
+    background: #36b9cc !important;
 }
 
 /* Recent Production and Sales Section Styling - Specific to these sections only */

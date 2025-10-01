@@ -180,21 +180,14 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td class="text-center text-muted py-4" colspan="8">
-                                        @if($farms->count() > 0)
-                                            <i class="fas fa-inbox fa-3x mb-3"></i>
-                                            <p>No livestock records found. Add your first livestock to get started.</p>
-                                            <button class="btn btn-primary" onclick="openAddLivestockModal()">
-                                                <i class="fas fa-plus"></i> Add First Livestock
-                                            </button>
-                                        @else
-                                            <i class="fas fa-home fa-3x mb-3"></i>
-                                            <p>No farms found. You need to create a farm first before adding livestock.</p>
-                                            <a href="{{ route('farmer.farms') }}" class="btn btn-primary">
-                                                <i class="fas fa-plus"></i> Create Your First Farm
-                                            </a>
-                                        @endif
-                                    </td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">N/A</td>
+                                    <td class="text-center text-muted">No livestock records found</td>
+                                    <td class="text-center text-muted">N/A</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -1607,7 +1600,86 @@ function exportToPDF() {
 }
 
 function printTable() {
-    window.print();
+    try {
+        // Get current table data without actions column
+        const tableData = livestockTable.data().toArray();
+        
+        if (!tableData || tableData.length === 0) {
+            showNotification('No data available to print', 'warning');
+            return;
+        }
+        
+        // Create print content directly in current page
+        const originalContent = document.body.innerHTML;
+        
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">Farmer Livestock Report</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                    <thead>
+                        <tr>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Livestock ID</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Type</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Breed</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Age</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Weight (kg)</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Health Status</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            printContent += '<tr>';
+            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
+            }
+            printContent += '</tr>';
+        });
+        
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+        
+        // Replace page content with print content
+        document.body.innerHTML = printContent;
+        
+        // Print the page
+        window.print();
+        
+        // Restore original content after print dialog closes
+        setTimeout(() => {
+            document.body.innerHTML = originalContent;
+            // Re-initialize any JavaScript that might be needed
+            location.reload(); // Reload to restore full functionality
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in print function:', error);
+        showNotification('Error generating print. Please try again.', 'danger');
+        
+        // Fallback to simple print
+        try {
+            window.print();
+        } catch (fallbackError) {
+            console.error('Fallback print also failed:', fallbackError);
+            showNotification('Print failed. Please try again.', 'danger');
+        }
+    }
 }
 
 function exportToPNG() {
@@ -2444,6 +2516,23 @@ function showToast(message, type = 'info') {
 .form-control[readonly] {
     background-color: #f8f9fc;
     border-color: #e3e6f0;
+}
+
+/* Fix for dropdown select elements to prevent text cutoff */
+select.form-control {
+    padding-right: 2.5rem !important; /* Extra space for dropdown arrow */
+    overflow: visible;
+    text-overflow: ellipsis;
+    white-space: normal;
+    height: auto;
+    min-height: calc(1.5em + 0.75rem + 4px);
+}
+
+select.form-control option {
+    padding: 0.5rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
 }
 
 /* Modal Enhancement */
