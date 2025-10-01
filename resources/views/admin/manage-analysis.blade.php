@@ -12,26 +12,65 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-container fade-in">
-        <div class="stat-card">
-            <i class="fas fa-tractor stat-icon"></i>
-            <h3>{{ $activeFarmsCount }}</h3>
-            <p>Active Farms</p>
+    <div class="row fade-in">
+        <!-- Active Farms -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Farms</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeFarmsCount }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-tractor fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <i class="fas fa-chart-bar stat-icon"></i>
-            <h3>{{ number_format($avgProductivity, 1) }}L</h3>
-            <p>Avg Daily Production</p>
+
+        <!-- Avg Daily Production -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Avg Daily Production</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($avgProductivity, 1) }}L</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-chart-bar fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <i class="fas fa-trophy stat-icon"></i>
-            <h3>{{ $topProducer ?? 'N/A' }}</h3>
-            <p>Top Producer</p>
+
+        <!-- Top Producer -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Top Producer</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $topProducer ?? 'N/A' }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-trophy fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <i class="fas fa-users stat-icon"></i>
-            <h3>{{ $totalFarmers }}</h3>
-            <p>Total Farmers</p>
+
+        <!-- Total Farmers -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Farmers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalFarmers }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -175,7 +175,7 @@
 }
 
 .profile-header {
-    background: #f8f9fc;
+    background: #ffffff;
     padding: 1.5rem 1rem;
 }
 

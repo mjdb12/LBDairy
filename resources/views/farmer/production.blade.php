@@ -133,7 +133,10 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted">No production data available</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">No production data available</td>
+                                <td class="text-center text-muted">N/A</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -218,10 +221,12 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            <i class="fas fa-chart-line fa-3x mb-3 text-muted"></i>
-                            <p>No production records available.</p>
-                        </td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">No production records available</td>
+                        <td class="text-center text-muted">N/A</td>
                     </tr>
                     @endforelse
                 </tbody>

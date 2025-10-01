@@ -156,7 +156,7 @@ class FarmerController extends Controller
 
         $totalIssues = $issues->count();
         $pendingIssues = $issues->where('status', 'Pending')->count();
-        $urgentIssues = $issues->where('priority', 'High')->where('status', '!=', 'Resolved')->count();
+        $urgentIssues = $issues->where('priority', 'Urgent')->where('status', '!=', 'Resolved')->count();
         $resolvedIssues = $issues->where('status', 'Resolved')->count();
 
         // Ensure we always have valid numbers

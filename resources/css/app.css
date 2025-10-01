@@ -70,6 +70,28 @@
     .form-label {
         @apply block text-sm font-medium text-gray-700 mb-2;
     }
+
+	/* Fix: prevent dropdown option text from being vertically clipped */
+	select.form-control {
+		line-height: 1.5 !important;
+		height: calc(2.5rem + 2px) !important; /* slightly taller than default */
+		min-height: 2.75rem !important;
+		padding-top: .5rem !important;
+		padding-bottom: .5rem !important;
+		appearance: none;
+		-moz-appearance: none;
+		-webkit-appearance: none;
+	}
+
+	select.form-control option {
+		white-space: normal; /* allow multi-word options to render without clipping */
+	}
+
+	/* Ensure consistent line-height on all controls within modals */
+	.modal .form-control:not(textarea),
+	.form-control:not(textarea) {
+		line-height: 1.5 !important;
+	}
 }
 
 /* Custom Utilities */

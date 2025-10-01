@@ -111,13 +111,13 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-university"></i>
-                                    <h5>No farms available</h5>
-                                    <p>There are no farms registered at this time.</p>
-                                </div>
-                            </td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No farms available</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>

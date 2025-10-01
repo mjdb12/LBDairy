@@ -158,13 +158,11 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-inbox"></i>
-                                    <h5>No sales records</h5>
-                                    <p>There are no sales records to display at this time.</p>
-                                </div>
-                            </td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No sales records</td>
+                            <td class="text-center text-muted">N/A</td>
                         </tr>
                         @endforelse
                     </tbody>
