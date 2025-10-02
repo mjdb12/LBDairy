@@ -1000,6 +1000,7 @@
                     <input type="text" class="form-control" placeholder="Search users..." id="userActivitySearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
+                        <button class="btn-action btn-action-refresh" onclick="refreshUserActivity()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
@@ -2035,6 +2036,25 @@ function printChart(chartType) {
 function refreshSecurityAlerts() {
     // Show loading indicator - target the specific security alerts refresh button
     const refreshBtn = document.querySelector('[onclick="refreshSecurityAlerts()"]');
+    if (refreshBtn) {
+        const originalText = refreshBtn.innerHTML;
+        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+        refreshBtn.disabled = true;
+    }
+    
+    // Since the table is server-side rendered (not AJAX), we'll reload the page
+    // Store a flag to show notification after reload
+    sessionStorage.setItem('showRefreshNotification', 'true');
+    
+    // Reload the page after a short delay
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+function refreshUserActivity() {
+    // Show loading indicator - target the specific security alerts refresh button
+    const refreshBtn = document.querySelector('[onclick="refreshUserActivity()"]');
     if (refreshBtn) {
         const originalText = refreshBtn.innerHTML;
         refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';

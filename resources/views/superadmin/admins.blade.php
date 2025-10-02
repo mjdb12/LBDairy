@@ -4,6 +4,106 @@
 
 @push('styles')
 <style>
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+
+    .btn-action-cancel {
+        background-color: #6c757d ;
+        border-color: #6c757d ;
+        color: white ;
+    }
+    
+    .btn-action-refresh-admins, .btn-action-refresh-farmers {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+    
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+
     /* Custom styles for admin management */
     .border-left-primary {
         border-left: 0.25rem solid #18375d !important;
@@ -843,10 +943,10 @@
                 <div id="farmerDetails"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="openContactModal()">
-                    <i class="fas fa-envelope"></i> Contact Admin
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-action-ok" onclick="openContactModal()">
+                    Contact Admin
                 </button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -880,9 +980,9 @@
                     <div id="messageNotification" class="mt-2" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-paper-plane"></i> Send Message
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-ok">
+                        Send Message
                     </button>
                 </div>
             </form>
@@ -1023,7 +1123,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-save" id="saveAdminBtn">
-                        <i class="fas fa-save"></i> Save User
+                        Save User
                     </button>
             </form>
         </div>
@@ -2225,6 +2325,7 @@ function deleteUser(userId) {
         }
     });
 }
+
 function confirmDeleteAdmin(adminId) {
     adminToDelete = adminId;
     $('#confirmDeleteAdminModal').modal('show');
