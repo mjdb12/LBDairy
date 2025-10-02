@@ -77,6 +77,86 @@
         overflow: visible !important;
     }
 
+    /* Apply consistent styling for Farm Analysis table */
+#farmAnalysisTable th,
+#farmAnalysisTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#farmAnalysisTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#farmAnalysisTable thead th.sorting,
+#farmAnalysisTable thead th.sorting_asc,
+#farmAnalysisTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#farmAnalysisTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators */
+#farmAnalysisTable thead th.sorting::after,
+#farmAnalysisTable thead th.sorting_asc::after,
+#farmAnalysisTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* Allow table to scroll horizontally if too wide */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Make table cells wrap instead of forcing inline */
+#farmAnalysisTable td, 
+#farmAnalysisTable th {
+    white-space: normal !important;  
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#farmAnalysisTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 0.25rem;    
+}
+
+#farmAnalysisTable td .btn-action {
+    flex: 1 1 auto; 
+    min-width: 90px; 
+    text-align: center;
+}
+
+
     /* Action buttons styling */
     .action-buttons {
         display: flex;
@@ -213,113 +293,87 @@
         }
     }
 
-    #farmAnalysisTable th,
-    #farmAnalysisTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
+    /* ===== DATATABLE STYLES ===== */
+.dataTables_length {
+    margin-bottom: 1rem;
+}
 
-    /* Table headers styling */
-    #farmAnalysisTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: center;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
+.dataTables_length select {
+    min-width: 80px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    margin: 0 0.5rem;
+}
 
-    /* Fix DataTables sorting button overlap */
-    #farmAnalysisTable thead th.sorting,
-    #farmAnalysisTable thead th.sorting_asc,
-    #farmAnalysisTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
+.dataTables_length label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: var(--dark-color);
+}
 
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #farmAnalysisTable thead th.sorting::after,
-    #farmAnalysisTable thead th.sorting_asc::after,
-    #farmAnalysisTable thead th.sorting_desc::after {
-        display: none;
-    }
+.dataTables_info {
+    padding-top: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
 
-    /* DataTables Pagination Styling */
-    .dataTables_wrapper .dataTables_paginate {
-        text-align: left !important;
-        margin-top: 1rem;
-        margin-bottom: 0.75rem !important; /* Match farmers directory gap */
-        clear: both;
-        width: 100%;
-        float: left !important;
-    }
+.dataTables_paginate {
+    margin-top: 1rem;
+}
 
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        display: inline-block;
-        min-width: 2.5rem;
-        padding: 0.5rem 0.75rem;
-        margin: 0 0.125rem;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        color: #495057;
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-        background-color: #fff;
-        transition: all 0.15s ease-in-out;
-    }
+.dataTables_paginate .paginate_button {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
 
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        color: #18375d;
-        background-color: #e9ecef;
-        border-color: #adb5bd;
-    }
+.dataTables_paginate .paginate_button:hover {
+    background-color: var(--light-color);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
 
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        color: #fff;
-        background-color: #18375d;
-        border-color: #18375d;
-    }
+.dataTables_paginate .paginate_button.current {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
 
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-        color: #6c757d;
-        background-color: #fff;
-        border-color: #dee2e6;
-        cursor: not-allowed;
-        opacity: 0.5;
-    }
+.dataTables_paginate .paginate_button.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    background-color: var(--light-color);
+    border-color: var(--border-color);
+}
 
-    .dataTables_wrapper .dataTables_info {
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-        color: #495057;
-        font-size: 0.875rem;
-    }
+.dataTables_filter {
+    margin-bottom: 1rem;
+}
 
-    /* Ensure pagination container is properly positioned */
-    .dataTables_wrapper {
-        width: 100%;
-        margin: 0 auto;
-    }
+.dataTables_filter input {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    transition: var(--transition-fast);
+}
 
-    .dataTables_wrapper .row {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 0;
-    }
-
-    .dataTables_wrapper .row > div {
-        padding: 0;
-    }
+.dataTables_filter input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    outline: 0;
+}
 </style>
 @endpush
 
@@ -525,7 +579,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover" id="farmAnalysisTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-hover" id="farmAnalysisTable" >
                         <thead>
                             <tr>
                                 <th>Farm ID</th>
@@ -690,7 +744,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-edit">
-                        <i class="fas fa-save"></i> Update Farm
+                        Update Farm
                     </button>
                 </div>
             </form>
@@ -717,7 +771,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn-action btn-action-delete" id="confirmDeleteBtn">
-                    <i class="fas fa-trash"></i> Yes, Delete
+                    Yes, Delete
                 </button>
             </div>
         </div>

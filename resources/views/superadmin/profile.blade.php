@@ -843,7 +843,7 @@
       <div class="modal-footer">
             <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
             <button type="submit" class="btn-action btn-action-ok">
-               <i class="fas fa-save mr-2"></i>Save Changes
+               Save Changes
             </button>
         </div>
     </form>
@@ -897,7 +897,7 @@
             Cancel
         </button>
         <button type="submit" class="btn-action btn-action-ok">
-            <i class="fas fa-save mr-2"></i>Change Password
+            Change Password
         </button>
       </div>
     </form>
