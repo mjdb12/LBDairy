@@ -167,7 +167,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle mr-2"></i>Approve User Registration</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to approve this user registration?</p>
@@ -178,7 +180,7 @@
                 <form id="approveForm" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn-action btn-action-edit">
-                        <i class="fas fa-check me-2"></i>Approve User
+                        Approve User
                     </button>
                 </form>
             </div>
@@ -192,7 +194,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle mr-2"></i>Reject User Registration</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                     <div class="form-group">
@@ -206,7 +210,7 @@
                     @csrf
                     <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
                     <button type="submit" class="btn-action btn-action-deletes">
-                        <i class="fas fa-times me-2"></i>Reject User
+                        Reject User
                     </button>
                 </form>
             </div>

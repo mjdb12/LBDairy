@@ -886,7 +886,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteBtn" class="btn-action btn-action-deletes">
-                    <i class="fas fa-trash"></i> Yes, Delete
+                   Yes, Delete
                 </button>
             </div>
         </div>
@@ -983,7 +983,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-edit">
-                        <i class="fas fa-save"></i> Save Farm
+                        Save Farm
                     </button>
                 </div>
             </form>

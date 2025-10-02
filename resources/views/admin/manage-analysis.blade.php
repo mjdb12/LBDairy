@@ -291,6 +291,9 @@
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
         </div>
     </div>
 </div>
@@ -314,11 +317,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <form id="deleteFarmerForm" method="POST" style="display: inline;">
+                <form id="deleteFarmerForm" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn-action btn-action-deletes">
-                        <i class="fas fa-trash"></i> Delete
+                        Yes, Delete
                     </button>
                 </form>
             </div>

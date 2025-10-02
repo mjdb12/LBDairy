@@ -228,7 +228,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteTaskBtn" class="btn-action btn-action-deletes">
-                    <i class="fas fa-trash"></i> Yes, Delete
+                    Yes, Delete
                 </button>
             </div>
         </div>
@@ -797,11 +797,11 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="mt-2 mt-md-0 d-flex align-items-center">
                 <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
                 <div class="action-buttons">
-                    <button class="btn-action btn-action-edit btn-action-sm edit-task" title="Edit Task">
+                    <button class="btn-action btn-action-edit edit-task" title="Edit Task">
                         <i class="fas fa-edit"></i>
                         <span>Edit</span>
                     </button>
-                    <button class="btn-action btn-action-deletes btn-action-sm delete-task" title="Delete Task">
+                    <button class="btn-action btn-action-deletes delete-task" title="Delete Task">
                         <i class="fas fa-trash"></i>
                         <span>Delete</span>
                     </button>
