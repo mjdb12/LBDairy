@@ -1245,7 +1245,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-view-live"> <i class="fas fa-plus"></i>Add Livestock</button>
+                    <button type="submit" class="btn-action btn-action-view-live">Add Livestock</button>
                 </div>
             </form>
         </div>
@@ -1275,7 +1275,7 @@
                     Close
                 </button>
                 <button type="button" class="btn-action btn-action-ok" onclick="openLivestockEditModal()">
-                    <i class="fas fa-edit"></i> Edit Livestock
+                    Edit Livestock
                 </button>
             </div>
         </div>
@@ -1303,7 +1303,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn-action btn-action-ok" onclick="downloadQRCode()">
-                    <i class="fas fa-download"></i> Download
+                    Download
                 </button>
             </div>
         </div>
@@ -1525,7 +1525,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-ok">
-                        <i class="fas fa-save"></i> Update Livestock
+                        Update Livestock
                     </button>
                 </div>
             </form>
@@ -1552,7 +1552,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn-action btn-action-deletes" id="confirmDeleteBtn">
-                    <i class="fas fa-trash"></i> Yes, Delete
+                    Yes, Delete
                 </button>
             </div>
         </div>
@@ -1561,7 +1561,7 @@
 
 <!-- Issue Alert Modal -->
 <div class="modal fade" id="issueAlertModal" tabindex="-1" role="dialog" aria-labelledby="issueAlertLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -1606,7 +1606,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-ok">
-                        <i class="fas fa-exclamation-triangle"></i> Issue Alert
+                        Issue Alert
                     </button>
                 </div>
             </form>

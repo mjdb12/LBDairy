@@ -14,12 +14,15 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-action btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                <button type="button" class="btn-action btn-action-deletes"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
-                    <button type="submit" class="btn-action btn-action-deletes">
-                        <i class="fas fa-sign-out-alt"></i>Logout
-                    </button>
                 </form>
+
             </div>
         </div>
     </div>

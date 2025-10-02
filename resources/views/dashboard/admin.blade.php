@@ -371,6 +371,55 @@
     color: #fff !important;
 }
 
+/* User Details Modal Styling */
+    #confirmDeleteTaskModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #confirmDeleteTaskModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #confirmDeleteTaskModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #confirmDeleteTaskModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    confirmDeleteTaskModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #confirmDeleteTaskModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #confirmDeleteTaskModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #confirmDeleteTaskModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    } 
+
 </style>
 @endpush
 @section('content')
@@ -593,9 +642,9 @@
                 <p>Are you sure you want to delete this task? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteTaskBtn" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Yes, Delete
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteTaskBtn" class="btn-action btn-action-deletes">
+                     Yes, Delete
                 </button>
             </div>
         </div>
@@ -647,14 +696,12 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="mt-2 mt-md-0 d-flex align-items-center">
                 <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
                 <div class="action-buttons">
-                    <button class="btn-action btn-action-edit btn-action-sm edit-task" title="Edit Task">
+                    <button class="btn-action btn-action-edit edit-task" title="Edit Task">
                     <i class="fas fa-edit"></i>
                     <span>Edit</span>
-                </button>
-                    <button class="btn-action btn-action-delete btn-action-sm delete-task" title="Delete Task">
+                    <button class="btn-action btn-action-deletes delete-task" title="Delete Task">
                     <i class="fas fa-trash"></i>
                     <span>Delete</span>
-                </button>
                 </div>
             </div>
         `;

@@ -1111,7 +1111,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-deletes">
-                        <i class="fas fa-times"></i> Reject Registration
+                        Reject Registration
                     </button>
                 </div>
             </form>
@@ -1170,7 +1170,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-edit">
-                        <i class="fas fa-check"></i> Approve Registration
+                        Approve Registration
                     </button>
                 </div>
             </form>
@@ -2052,24 +2052,24 @@ function printTable(tableId) {
         let columnHeaders = '';
         if (tableId === 'pendingFarmersTable') {
             columnHeaders = `
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farm Name</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Email</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>`;
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farm Name</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Email</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>`;
         } else {
             // Active Farmers Table (no Email column)
             columnHeaders = `
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farm Name</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>`;
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farm Name</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>`;
         }
 
         let printContent = `
