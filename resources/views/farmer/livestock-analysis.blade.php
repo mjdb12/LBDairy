@@ -3,7 +3,11 @@
 @section('title', 'LBDAIRY: Farmers - Livestock Analysis')
 
 @section('styles')
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css?v={{ time() }}&ver=4.0">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css?v={{ time() }}&ver=4.0">
 <style>
+/* Cache buster: {{ time() }} */
 /* COMPREHENSIVE STYLING TO MATCH STANDARDIZED FORMAT */
 
 /* Page Header Styling */
@@ -81,76 +85,398 @@
 /* Card header styling - Match Super Admin */
 .card-header {
     padding: 1rem 1.5rem;
-    background-color: #f8f9fc;
-    border-bottom: 1px solid #e3e6f0;
+    background-color: #18375d !important;
+    border-bottom: none !important;
 }
 
 .card-header h6 {
-    color: #18375d !important;
+    color: white !important;
     margin: 0;
     font-weight: 600;
+}
+
+.card-header h6 i {
+    color: white !important;
 }
 
     .avatar-sm {
         width: 2rem;
         height: 2rem;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
     }
     
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #6c757d;
-    }
-    
-    .empty-state i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
-    
+    /* Table layout styling to match superadmin */
+    /* Ensure the table container and scroll area are correctly styled */
     .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
         border-radius: 8px;
         overflow: hidden;
+        clear: both; /* Ensure it clears properly */
+        margin-top: 0.5rem; /* Add space above the scroll area */
     }
     
-    .table thead th {
-        background-color: #f8f9fc;
-        border-top: none;
-        border-bottom: 2px solid #e3e6f0;
-        font-weight: 600;
-        color: #5a5c69;
-        padding: 1rem 0.75rem;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+    /* Make the DataTables scroll body very prominent to indicate the scrollable area */
+        overflow-x: auto !important;
+        overflow-y: visible !important; /* Allow vertical overflow if needed */
+        clear: both !important;
+        position: relative !important;
+        margin-top: 0.5rem !important;
+        /* Padding */
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        background-color: transparent !important;
+    }
+    /* Style the horizontal scrollbar itself */
+    .dataTables_scrollBody::-webkit-scrollbar {
+        height: 16px !important; /* Make it thick enough to see */
     }
     
-    .table tbody tr {
-        transition: all 0.2s ease;
-        cursor: pointer;
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        background: #f1f1f1 !important;
+        border-radius: 8px !important;
     }
     
-    .table tbody tr:hover {
-        background-color: rgba(78, 115, 223, 0.05);
-        transform: scale(1.001);
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background: #18375d !important; /* Dark blue thumb */
+        border-radius: 8px !important;
     }
     
-    .table tbody td {
-        padding: 1rem 0.75rem;
+    .dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+        background: #0f2a4a !important; /* Darker blue on hover */
+    }
+    
+    
+    .table-responsive::-webkit-scrollbar {
+        height: 12px; /* Make scrollbar visible but not too prominent */
+    }
+    
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #c1c1c1; /* Gray thumb */
+        border-radius: 4px;
+    }
+    
+        background: #a8a8a8; /* Darker gray on hover */
+    }
+    
+    /* Also style DataTables scroll body scrollbar */
+    .dataTables_scrollBody::-webkit-scrollbar {
+        height: 12px;
+    }
+    
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    .dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+    
+    
+    /* Style the scroll body */
+        border-collapse: collapse;
+        margin-bottom: 0;
+        table-layout: fixed !important;
+    }
+    
+    /* Ensure proper column alignment */
+    #livestockTable th,
+    #livestockTable td {
+        box-sizing: border-box !important;
+    }
+    
+    #livestockTable colgroup col:nth-child(1) { width: 100px !important; }
+    #livestockTable colgroup col:nth-child(2) { width: 150px !important; }
+    #livestockTable colgroup col:nth-child(3) { width: 120px !important; }
+    #livestockTable colgroup col:nth-child(4) { width: 120px !important; }
+    #livestockTable colgroup col:nth-child(5) { width: 120px !important; }
+    #livestockTable colgroup col:nth-child(6) { width: 150px !important; }
+    #livestockTable colgroup col:nth-child(7) { width: 140px !important; }
+    #livestockTable colgroup col:nth-child(8) { width: 650px !important; }
+    
+    #livestockTable th:nth-child(1),
+    #livestockTable td:nth-child(1) { width: 100px !important; min-width: 100px !important; max-width: 100px !important; }
+    #livestockTable th:nth-child(2),
+    #livestockTable td:nth-child(2) { width: 150px !important; min-width: 150px !important; max-width: 150px !important; }
+    #livestockTable th:nth-child(3),
+    #livestockTable td:nth-child(3) { width: 120px !important; min-width: 120px !important; max-width: 120px !important; }
+    #livestockTable th:nth-child(4),
+    #livestockTable td:nth-child(4) { width: 120px !important; min-width: 120px !important; max-width: 120px !important; }
+    #livestockTable th:nth-child(5),
+    #livestockTable td:nth-child(5) { width: 120px !important; min-width: 120px !important; max-width: 120px !important; }
+    #livestockTable th:nth-child(6),
+    #livestockTable td:nth-child(6) { width: 150px !important; min-width: 150px !important; max-width: 150px !important; }
+    #livestockTable th:nth-child(7),
+    #livestockTable td:nth-child(7) { width: 140px !important; min-width: 140px !important; max-width: 140px !important; }
+    #livestockTable th:nth-child(8),
+    #livestockTable td:nth-child(8) { width: 650px !important; min-width: 650px !important; max-width: 650px !important; }
+    
+    /* Ensure DataTables scroll body has proper overflow */
+    .dataTables_scrollBody {
+        overflow-x: auto !important;
+        clear: both;
+        margin-top: 1rem; /* Add space below pagination */
+    }
+    
+    /* Fix for DataTables wrapper */
+    .dataTables_wrapper {
+        clear: both;
+        width: 100% !important;
+    }
+    
+    /* Ensure proper stacking order */
+    .dataTables_wrapper::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    
+    /* Force scroll container to be below pagination */
+    .dataTables_scroll {
+        clear: both !important;
+        margin-top: 1rem !important; /* Space below pagination */
+        position: relative !important;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    #livestockTable th,
+    #livestockTable td {
+        vertical-align: middle !important;
+        padding: 0.75rem !important;
+        text-align: center !important;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ultra-specific center alignment for ALL table content */
+    #livestockTable tbody td,
+    #livestockTable thead th {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+    
+    /* Force center alignment for all nested elements */
+    #livestockTable th *,
+    #livestockTable td *,
+    #livestockTable tbody tr td *,
+    #livestockTable thead tr th * {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: block !important;
+    }
+    
+    /* Center align action buttons container */
+    #livestockTable .action-buttons {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+    }
+    
+    /* Center align badges and other elements */
+    #livestockTable .badge {
+        display: block !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+        width: fit-content !important;
+    }
+    
+    /* Center align user ID links */
+    #livestockTable .user-id-link {
+        text-align: center !important;
+        display: block !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Center align avatar and content in name column */
+    #livestockTable .d-flex {
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+    }
+    
+    /* Force center alignment on specific content types */
+    #livestockTable td span,
+    #livestockTable td div,
+    #livestockTable td a {
+        text-align: center !important;
+        margin: 0 auto !important;
+        display: block !important;
+    }
+    
+    /* Override any left alignment */
+    #livestockTable * {
+        text-align: center !important;
+    }
+    
+    /* ULTRA-AGGRESSIVE fix for name column alignment */
+    #livestockTable tbody tr td:nth-child(2),
+    #livestockTable tbody tr td:nth-child(2) *,
+    #livestockTable tbody tr td:nth-child(2) span,
+    #livestockTable tbody tr td:nth-child(2) div,
+    #livestockTable tbody tr td:nth-child(2) a,
+    #livestockTable tbody tr td:nth-child(2) p {
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        float: none !important;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    /* Force center alignment on name column content with highest specificity */
+    table#livestockTable tbody tr td:nth-child(2),
+    table#livestockTable tbody tr td:nth-child(2) * {
+        text-align: center !important;
+        margin: 0 auto !important;
+        justify-content: center !important;
+        align-items: center !important;
+        float: none !important;
+    }
+    
+    /* Override any DataTables or Bootstrap alignment */
+    .dataTables_wrapper #livestockTable tbody tr td:nth-child(2),
+    .dataTables_wrapper #livestockTable tbody tr td:nth-child(2) * {
+        text-align: center !important;
+    }
+    
+    /* Table headers styling - Black Bold without background */
+    #livestockTable thead th {
+        border-top: none !important;
+        font-weight: bold !important;
+        color: #000000 !important;
+        background-color: transparent !important;
+        padding: 1rem 0.75rem !important;
+        font-size: 0.85rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        border-color: #e3e6f0 !important;
+    }
+    
+    /* Table body cells - matching Inventory Table */
+    #livestockTable tbody td {
+        vertical-align: middle !important;
+        border-color: #e3e6f0 !important;
+        padding: 1rem 0.75rem !important;
+        text-align: center !important;
+    }
+    
+    /* Table row hover effects - matching Inventory Table */
+    #livestockTable tbody tr {
+        transition: all 0.2s ease !important;
+    }
+    
+    #livestockTable tbody tr:hover {
+        background-color: rgba(78, 115, 223, 0.05) !important;
+        transform: scale(1.001) !important;
+    }
+    
+    /* Main table styling - matching Inventory Table */
+    #livestockTable {
+        margin-bottom: 0 !important;
+        background-color: white !important;
+    }
+    
+    /* Ensure table has proper white background and borders */
+    #livestockTable,
+    #livestockTable thead,
+    #livestockTable tbody,
+    #livestockTable tr,
+    #livestockTable th,
+    #livestockTable td {
+        background-color: white !important;
+        border-color: #e3e6f0 !important;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #livestockTable thead th.sorting,
+    #livestockTable thead th.sorting_asc,
+    #livestockTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #livestockTable thead th.sorting::after,
+    #livestockTable thead th.sorting_asc::after,
+    #livestockTable thead th.sorting_desc::after {
+        display: none;
+    }
+    
+    /* Ensure table has enough space for actions column */
+    #livestockTable th:last-child,
+    #livestockTable td:last-child {
+        min-width: 220px;
+        width: 220px;
+        text-align: center;
         vertical-align: middle;
-        border-top: 1px solid #f0f0f0;
     }
     
-    .badge {
-        font-size: 0.75rem;
-        font-weight: 500;
-        padding: 0.5rem 0.75rem;
-        border-radius: 12px;
+    /* Badge styling - matching Inventory Table */
+    #livestockTable .badge {
+        border-radius: 20px !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        padding: 0.4rem 0.8rem !important;
+        text-align: center !important;
+        margin: 0 auto !important;
+        display: inline-block !important;
+        width: fit-content !important;
+    }
+    
+    #livestockTable .badge-primary {
+        background: linear-gradient(135deg, #4e73df, #3c5aa6) !important;
+        color: white !important;
+    }
+    
+    #livestockTable .badge-success {
+        background: linear-gradient(135deg, #1cc88a, #17a673) !important;
+        color: white !important;
+    }
+    
+    #livestockTable .badge-warning {
+        background: linear-gradient(135deg, #f6c23e, #f4b619) !important;
+        color: white !important;
+    }
+    
+    #livestockTable .badge-info {
+        background: linear-gradient(135deg, #36b9cc, #2a96a5) !important;
+        color: white !important;
+    }
+    
+    #livestockTable .badge-danger {
+        background: linear-gradient(135deg, #e74a3b, #d52a1a) !important;
+        color: white !important;
+    }
+    
+    #livestockTable .badge-secondary {
+        background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+        color: white !important;
     }
     
     .btn-group .btn {
@@ -161,36 +487,434 @@
         margin-right: 0;
     }
     
-    .search-container {
-        position: relative;
-        min-width: 250px;
+    /* Search and button group alignment - matching Super Admin */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
     
-    .search-container input {
-        border-radius: 25px;
-        border: 2px solid transparent;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 0.6rem 1rem 0.6rem 2.5rem;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
     }
     
-    .search-container input:focus {
-        border-color: #4e73df;
-        background: white;
-        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
     }
     
-    .search-container::before {
-        content: '\f002';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #adb5bd;
-        z-index: 2;
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: baseline;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+    
+    /* Robust action buttons styling to match active admins table */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    }
+
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #545b62 !important;
+        color: white !important;
+    }
+    
+    
+    .btn-action-refresh {
+        background-color: #fca700 !important;
+        border-color: #fca700 !important;
+        color: white !important;
+    }
+    
+    .btn-action-refresh:hover {
+        background-color: #e69500 !important;
+        border-color: #e69500 !important;
+        color: white !important;
+    }
+    
+    .btn-action-tools {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+    
+    .btn-action-tools:hover {
+        background-color: #e2e6ea;
+        border-color: #cbd3da;
+        color: #495057;
+    }
+    
+    .btn-action-ok {
+        background-color: #fca700 !important;
+        border-color: #fca700 !important;
+        color: white !important;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #e69500 !important;
+        border-color: #e69500 !important;
+        color: white !important;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    /* Livestock ID link styling - EXACT MATCH from manage livestock with ENHANCED hover */
+    table#livestockTable tbody tr td a.livestock-id-link,
+    .table-responsive table#livestockTable tbody tr td a.livestock-id-link,
+    .dataTables_wrapper table#livestockTable tbody tr td a.livestock-id-link,
+    body .table-responsive table#livestockTable tbody tr td a.livestock-id-link {
+        color: #18375d !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 0.25rem !important;
+        background-color: rgba(24, 55, 93, 0.1) !important;
+        border: 1px solid rgba(24, 55, 93, 0.2) !important;
+        display: inline-block !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+    }
+    
+    table#livestockTable tbody tr td a.livestock-id-link:hover,
+    .table-responsive table#livestockTable tbody tr td a.livestock-id-link:hover,
+    .dataTables_wrapper table#livestockTable tbody tr td a.livestock-id-link:hover,
+    body .table-responsive table#livestockTable tbody tr td a.livestock-id-link:hover {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+        text-decoration: none !important;
+    }
+    
+    table#livestockTable tbody tr td a.livestock-id-link:active,
+    .table-responsive table#livestockTable tbody tr td a.livestock-id-link:active,
+    .dataTables_wrapper table#livestockTable tbody tr td a.livestock-id-link:active,
+    body .table-responsive table#livestockTable tbody tr td a.livestock-id-link:active {
+        color: #fff !important;
+        background-color: #122a4e !important;
+        border-color: #122a4e !important;
+    }
+    
+    /* Custom styles for our specific DataTables info and pagination containers */
+    .dataTables_customInfo,
+    .dataTables_customPagination {
+        text-align: left !important;
+        padding-top: 0.75rem !important;
+        clear: both !important; /* Ensure they are below the table */
+        width: 100% !important; /* Take full width */
+    }
+    
+    /* Add a top border to visually separate the controls from the table */
+    .dataTables_customInfo {
+        border-top: 2px solid #18375d !important; /* More prominent border */
+        margin-top: 1rem !important;
+        padding-top: 0.75rem !important;
+        background-color: #f8f9fa !important; /* Light background for visibility */
+    }
+    
+    .dataTables_customPagination {
+        padding-bottom: 1rem !important; /* Add some space below pagination */
+    }
+    
+    /* Style the actual info and pagination elements inside our custom containers */
+    .dataTables_customInfo div.dataTables_info,
+    .dataTables_customPagination div.dataTables_paginate {
+        text-align: left !important;
+        display: block !important;
+    }
+    
+    /* Ensure the entire DataTables wrapper is clear */
+    .dataTables_wrapper {
+        clear: both !important;
+        width: 100% !important;
+    }
+    
+    /* Ensure table layout is fixed for better control */
+    #livestockTable {
+        table-layout: fixed !important;
+    }
+    
+    .dataTables_wrapper .dataTables_length {
+        float: left !important;
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_wrapper .dataTables_filter {
+        float: left !important;
+        margin-bottom: 1rem;
+        margin-left: 1rem;
+    }
+    
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5rem;
+        border: 1px solid #d1d3e2;
+        border-radius: 0.35rem;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    .dataTables_wrapper .dataTables_length select {
+        border: 1px solid #d1d3e2;
+        border-radius: 0.35rem;
+        padding: 0.25rem 0.5rem;
+        margin: 0 0.5rem;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        padding-top: 0.75rem !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate {
+        padding-top: 0.75rem !important;
+    }
+    
+    .dataTables_wrapper::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    
+    .dataTables_wrapper {
+        clear: both;
+    }
+    
+    .dataTables_wrapper .dataTables_scroll {
+        clear: both;
+    }
+    
+    /* Simple table responsive styling like inventory table */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 1rem; /* Space below pagination */
+    }
+    
+    /* Ensure table has minimum width for horizontal scrolling */
+    #livestockTable {
+        min-width: 1750px;
+        width: 1750px; /* Extra wide for Actions column */
+    }
+    
+    /* Style the horizontal scrollbar - Clean version */
+    .table-responsive::-webkit-scrollbar {
+        height: 12px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 6px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 6px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+    
+    /* Style the horizontal scrollbar itself */
+    .dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar {
+        height: 12px; /* Make scrollbar visible */
+    }
+    
+    .dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 6px;
+    }
+    
+    .dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background: #18375d; /* Dark blue thumb */
+        border-radius: 6px;
+    }
+    
+    .dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+        background: #0f2a4a; /* Darker blue on hover */
+    }
+    
+    /* DataTables Pagination Styling - FIXED (matching Super Admin) */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        color: #18375d !important; /* Darker blue color for numbers */
+        border: 1px solid #18375d !important;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        transition: all 0.15s ease-in-out;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-size: 0.875rem;
+        text-align: left !important;
+        float: left !important;
+        clear: both;
+    }
+    
+    .dataTables_wrapper .dataTables_length {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+    
+    /* Force DataTables wrapper to have proper layout */
+    .dataTables_wrapper .row {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .dataTables_wrapper .row > div {
+        padding: 0 !important;
+        width: 100% !important;
+        float: left !important;
+        clear: both !important;
+    }
+    
+    /* Ensure pagination container stays left */
+    .dataTables_wrapper .dataTables_paginate,
+    .dataTables_wrapper .dataTables_info {
+        text-align: left !important;
+        float: left !important;
+        clear: both !important;
+        display: block !important;
+        width: auto !important;
+        margin-right: 1rem !important;
+    }
+    
+    /* Override any Bootstrap or other framework styles that might interfere */
+    .dataTables_wrapper .col-sm-12.col-md-7,
+    .dataTables_wrapper .col-sm-12.col-md-5 {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    /* Additional override to ensure left positioning */
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
+        text-align: left !important;
+        float: left !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button {
+        color: #18375d !important;
+        border-color: #18375d !important;
+    }
+    
+    .dataTables_wrapper .dataTables_scroll {
+        margin-top: 0.5rem;
     }
 
 .fade-in {
@@ -201,6 +925,123 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* FORCE CENTER ALIGNMENT - ONLY FOR LIVESTOCK TABLE */
+#livestockTable td,
+#livestockTable th {
+    text-align: center !important;
+}
+
+.dataTables_wrapper #livestockTable td,
+.dataTables_wrapper #livestockTable th {
+    text-align: center !important;
+}
+
+/* Override Bootstrap and DataTables for livestock table only */
+.table-responsive #livestockTable td,
+.table-responsive #livestockTable th {
+    text-align: center !important;
+}
+
+/* ULTRA-AGGRESSIVE CENTER ALIGNMENT FOR ALL CONTENT */
+#livestockTable * {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Force center alignment on all nested elements with maximum specificity */
+table#livestockTable tbody tr td *,
+table#livestockTable thead tr th *,
+.table-responsive table#livestockTable tbody tr td *,
+.table-responsive table#livestockTable thead tr th *,
+.dataTables_wrapper table#livestockTable tbody tr td *,
+.dataTables_wrapper table#livestockTable thead tr th * {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Special handling for flex containers */
+#livestockTable .d-flex,
+#livestockTable .d-flex * {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+}
+
+/* Force center alignment on badges and spans */
+#livestockTable .badge,
+#livestockTable span,
+#livestockTable div,
+#livestockTable a {
+    text-align: center !important;
+    margin: 0 auto !important;
+    display: block !important;
+    width: fit-content !important;
+}
+
+/* Override any Bootstrap flex utilities */
+#livestockTable .d-flex.align-items-center {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Force center alignment on avatar containers */
+#livestockTable .avatar-sm {
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+/* Center align action buttons with flex */
+#livestockTable .action-buttons {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+}
+
+#livestockTable .action-buttons * {
+    text-align: center !important;
+    margin: 0 !important;
+}
+
+/* Override any text-left or text-start classes */
+#livestockTable .text-left,
+#livestockTable .text-start {
+    text-align: center !important;
+}
+
+/* Force center alignment with highest CSS specificity */
+body .table-responsive #livestockTable td,
+body .table-responsive #livestockTable th,
+body .dataTables_wrapper .table-responsive #livestockTable td,
+body .dataTables_wrapper .table-responsive #livestockTable th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* Force all child elements to center */
+body .table-responsive #livestockTable td > *,
+body .table-responsive #livestockTable th > *,
+body .dataTables_wrapper .table-responsive #livestockTable td > *,
+body .dataTables_wrapper .table-responsive #livestockTable th > * {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    width: fit-content !important;
+}
+
 </style>
 @endsection
 
@@ -281,8 +1122,8 @@
 <div class="row mb-4">
     <div class="col-xl-8 col-lg-7 mb-3">
         <div class="card shadow-sm">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold" style="color: #18375d !important;">
+            <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold">
                     <i class="fas fa-chart-line"></i>
                     Performance Trends
                 </h6>
@@ -297,8 +1138,8 @@
 
     <div class="col-xl-4 col-lg-5 mb-3">
         <div class="card shadow-sm">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold" style="color: #18375d !important;">
+            <div class="card-header bg-primary text-white py-3">
+                <h6 class="m-0 font-weight-bold">
                     <i class="fas fa-chart-pie"></i>
                     Health Distribution
                 </h6>
@@ -325,55 +1166,65 @@
 
 <!-- Enhanced Livestock Analysis Table -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold" style="color: #18375d !important;">
+    <div class="card-header bg-primary text-white py-3">
+        <h6 class="m-0 font-weight-bold">
             <i class="fas fa-list-alt"></i>
             Livestock Analysis Overview
         </h6>
-        <div class="d-flex align-items-center">
-            <div class="mr-3 search-container">
-                <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Search livestock...">
-            </div>
-            <div class="btn-group mr-2">
-                <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    <i class="fas fa-download"></i> Export
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" onclick="exportTableCSV()">
-                        <i class="fas fa-file-csv"></i> CSV
-                    </a>
-                    <a class="dropdown-item" href="#" onclick="exportTablePDF()">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                    <a class="dropdown-item" href="#" onclick="exportTablePNG()">
-                        <i class="fas fa-image"></i> PNG
-                    </a>
-                </div>
-            </div>
-            <button class="btn btn-secondary btn-sm" onclick="printTable()">
-                <i class="fas fa-print"></i>
-            </button>
-        </div>
     </div>
     <div class="card-body">
+        <div class="search-controls mb-3 d-flex flex-column flex-md-row justify-content-between align-items-md-end">
+            <div class="input-group mb-2 mb-md-0" style="max-width: 300px;">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
+            </div>
+            <div class="d-flex flex-row align-items-center" style="gap: 20px;">
+                <button class="btn-action btn-action-print" onclick="printLivestockTable()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <div class="dropdown">
+                    <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <i class="fas fa-tools"></i> Tools
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#" onclick="exportCSV('livestockTable')">
+                            <i class="fas fa-file-csv"></i> Download CSV
+                        </a>
+                        <a class="dropdown-item" href="#" onclick="exportPDF('livestockTable')">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </a>
+                        <a class="dropdown-item" href="#" onclick="exportPNG('livestockTable')">
+                            <i class="fas fa-image"></i> Download PNG
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
-            <table class="table table-bordered" id="livestockTable" width="100%" cellspacing="0">
-                <thead>
+            <table class="table table-bordered" id="livestockTable" cellspacing="0" style="width: 1750px; min-width: 1750px; margin-bottom: 0; background-color: white;">
+                <thead class="thead-light">
                     <tr>
-                        <th><i class="fas fa-tag mr-1"></i>Livestock ID</th>
-                        <th><i class="fas fa-paw mr-1"></i>Name</th>
-                        <th><i class="fas fa-dna mr-1"></i>Breed</th>
-                        <th><i class="fas fa-calendar mr-1"></i>Age (months)</th>
-                        <th><i class="fas fa-heartbeat mr-1"></i>Health Score</th>
-                        <th><i class="fas fa-tint mr-1"></i>Avg. Production (L/day)</th>
-                        <th><i class="fas fa-venus-mars mr-1"></i>Breeding Status</th>
-                        <th><i class="fas fa-chart-bar mr-1"></i>Actions</th>
+                        <th>Livestock ID</th>
+                        <th>Name</th>
+                        <th>Breed</th>
+                        <th>Age (months)</th>
+                        <th>Health Score</th>
+                        <th>Avg. Production (L/day)</th>
+                        <th>Breeding Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($livestockData ?? [] as $animal)
                     <tr class="livestock-row" data-status="{{ $animal['health_status'] ?? 'healthy' }}" data-type="{{ $animal['breed'] ?? 'unknown' }}">
-                        <td><strong>{{ $animal['livestock_id'] ?? 'LS' . str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</strong></td>
+                        <td><a href="#" class="livestock-id-link" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')">{{ $animal['livestock_id'] ?? 'LS' . str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</a></td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center mr-2">
@@ -400,12 +1251,12 @@
                             <span class="badge badge-{{ $statusClass }}">{{ $breedingStatus }}</span>
                         </td>
                         <td>
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-info btn-sm" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')">
-                                    <i class="fas fa-chart-line mr-1"></i>Analysis
+                            <div class="action-buttons d-flex justify-content-center gap-2 flex-nowrap" style="min-width: 220px;">
+                                <button class="btn-action btn-action-ok flex-shrink-0" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
+                                    <i class="fas fa-chart-line"></i> <span class="d-none d-sm-inline">Analysis</span>
                                 </button>
-                                <button class="btn btn-warning btn-sm" onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')">
-                                    <i class="fas fa-history mr-1"></i>History
+                                <button class="btn-action btn-action-edit flex-shrink-0" onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')" title="History">
+                                    <i class="fas fa-history"></i> <span class="d-none d-sm-inline">History</span>
                                 </button>
                             </div>
                         </td>
@@ -488,21 +1339,55 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- DataTables Core -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js?v={{ time() }}&ver=3.0"></script>
+
+<!-- Required libraries for PDF/Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v={{ time() }}&ver=3.0"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js?v={{ time() }}&ver=3.0"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize DataTable with improved configuration
+    console.log('Livestock Analysis - Simple horizontal scrollbar implementation');
+    
+    // Initialize DataTable with simple configuration like inventory table
     const table = $('#livestockTable').DataTable({
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
         pageLength: 10,
-        order: [[0, 'asc']],
-        responsive: true,
-        scrollX: true,
-        scrollCollapse: true,
-        autoWidth: false,
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                title: 'Livestock_Analysis_Report',
+                className: 'd-none'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Livestock_Analysis_Report',
+                orientation: 'landscape',
+                pageSize: 'Letter',
+                className: 'd-none'
+            },
+            {
+                extend: 'print',
+                title: 'Livestock Analysis Report',
+                className: 'd-none'
+            }
+        ],
         language: {
-            search: "Search livestock:",
-            lengthMenu: "Show _MENU_ livestock per page",
-            info: "Showing _START_ to _END_ of _TOTAL_ livestock",
+            search: "",
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>',
             paginate: {
                 first: "First",
                 last: "Last",
@@ -510,99 +1395,154 @@ document.addEventListener('DOMContentLoaded', function() {
                 previous: "Previous"
             }
         },
-        columnDefs: [
-            {
-                targets: [7], // Actions column
-                orderable: false
-            }
-        ]
+        drawCallback: function(settings) {
+            setTimeout(forcePaginationLeft, 10);
+            setTimeout(forceCenterAlignment, 10);
+        },
+        initComplete: function(settings, json) {
+            setTimeout(forcePaginationLeft, 100);
+            setTimeout(forceCenterAlignment, 100);
+        }
     });
 
-    // Search functionality
-    $('#searchInput').on('keyup', function() {
+    // The custom DOM in commonConfig should handle layout correctly.
+    // Hide any default elements that might interfere.
+    $('.dataTables_filter').hide(); // This should already be hidden by dom: 't...'
+    $('.dt-buttons').hide(); // This should already be hidden by className: 'd-none'
+
+    // Custom search functionality
+    $('#livestockSearch').on('keyup', function() {
         table.search(this.value).draw();
     });
 
-    // Initialize Charts
-    initializeCharts();
+    // Hide default DataTables search bar
+    $('.dataTables_filter').hide();
+    
+    // Multiple attempts to ensure pagination stays left and content is centered
+    setTimeout(forcePaginationLeft, 200);
+    setTimeout(forcePaginationLeft, 500);
+    setTimeout(forcePaginationLeft, 1000);
+    
+    // Multiple attempts to ensure center alignment
+    setTimeout(forceCenterAlignment, 200);
+    setTimeout(forceCenterAlignment, 500);
+    setTimeout(forceCenterAlignment, 1000);
+    setTimeout(forceCenterAlignment, 1500);
+    
+    // Custom search functionality
+    $('#livestockSearch').on('keyup', function() {
+        table.search(this.value).draw();
+    });
+    
+    // Monitor for any DOM changes that might affect pagination and alignment
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' && 
+                mutation.target.className && 
+                mutation.target.className.includes('dataTables')) {
+                setTimeout(forcePaginationLeft, 50);
+                setTimeout(forceCenterAlignment, 50);
+            }
+        });
+    });
+    
+    // Observe the DataTables wrapper
+    const wrapper = document.querySelector('.dataTables_wrapper');
+    if (wrapper) {
+        observer.observe(wrapper, {
+            childList: true,
+            subtree: true
+        });
+    }
+    
+    console.log('DataTables initialized with custom layout. Info and Pagination should be below the table.');
+
+    // Initialize Charts with a small delay to ensure DOM is fully loaded
+    setTimeout(function() {
+        initializeCharts();
+    }, 100);
 });
 
 function initializeCharts() {
-    // Livestock Performance Chart
-    const performanceCtx = document.getElementById('livestockPerformanceChart');
-    if (performanceCtx) {
-        const performanceChart = new Chart(performanceCtx, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode(array_keys($performanceMetrics['production'] ?? [])) !!},
-                datasets: [{
-                    label: 'Average Milk Production (L/day)',
-                    data: {!! json_encode(array_values($performanceMetrics['production'] ?? [])) !!},
-                    borderColor: '#4e73df',
-                    backgroundColor: 'rgba(78, 115, 223, 0.05)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }, {
-                    label: 'Health Score (%)',
-                    data: {!! json_encode(array_values($performanceMetrics['health_score'] ?? [])) !!},
-                    borderColor: '#1cc88a',
-                    backgroundColor: 'rgba(28, 200, 138, 0.05)',
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true
-                    }
+    try {
+        // Livestock Performance Chart
+        const performanceCtx = document.getElementById('livestockPerformanceChart');
+        if (performanceCtx) {
+            const performanceChart = new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode(array_keys($performanceMetrics['production'] ?? [])) !!},
+                    datasets: [{
+                        label: 'Average Milk Production (L/day)',
+                        data: {!! json_encode(array_values($performanceMetrics['production'] ?? [])) !!},
+                        borderColor: '#4e73df',
+                        backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Health Score (%)',
+                        data: {!! json_encode(array_values($performanceMetrics['health_score'] ?? [])) !!},
+                        borderColor: '#1cc88a',
+                        backgroundColor: 'rgba(28, 200, 138, 0.05)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    // Health Status Chart
-    const healthCtx = document.getElementById('healthStatusChart');
-    if (healthCtx) {
-        const healthChart = new Chart(healthCtx, {
-            type: 'doughnut',
-            data: {
-                labels: {!! json_encode(array_keys($healthDistribution)) !!},
-                datasets: [{
-                    data: {!! json_encode(array_values($healthDistribution)) !!},
-                    backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b', '#36b9cc'],
-                    hoverBackgroundColor: ['#17a673', '#f4b619', '#e02424', '#2c9faf'],
-                    hoverBorderColor: 'rgba(234, 236, 244, 1)',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+        // Health Status Chart
+        const healthCtx = document.getElementById('healthStatusChart');
+        if (healthCtx) {
+            const healthChart = new Chart(healthCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode(array_keys($healthDistribution)) !!},
+                    datasets: [{
+                        data: {!! json_encode(array_values($healthDistribution)) !!},
+                        backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b', '#36b9cc'],
+                        hoverBackgroundColor: ['#17a673', '#f4b619', '#e02424', '#2c9faf'],
+                        hoverBorderColor: 'rgba(234, 236, 244, 1)',
+                    }]
                 },
-                cutout: '70%'
-            }
-        });
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error initializing charts:', error);
     }
 }
 
@@ -671,6 +1611,192 @@ function exportLivestockAnalysis() {
     showToast('Export functionality will be implemented soon', 'info');
 }
 
+// Function to force pagination positioning to the left - ENHANCED VERSION (from Super Admin)
+function forcePaginationLeft() {
+    console.log('Forcing pagination to left - enhanced version...');
+    
+    // Force wrapper layout
+    $('.dataTables_wrapper .row').css({
+        'display': 'block',
+        'width': '100%',
+        'margin': '0',
+        'padding': '0'
+    });
+    
+    $('.dataTables_wrapper .row > div').css({
+        'width': '100%',
+        'float': 'left',
+        'clear': 'both',
+        'padding': '0',
+        'margin': '0'
+    });
+    
+    // Force pagination and info to left
+    $('.dataTables_wrapper .dataTables_paginate').css({
+        'text-align': 'left',
+        'float': 'left',
+        'clear': 'both',
+        'display': 'block',
+        'width': 'auto',
+        'margin-right': '1rem',
+        'margin-top': '1rem',
+        'margin-bottom': '0.5rem' // Add bottom margin to create space
+    });
+    
+    $('.dataTables_wrapper .dataTables_info').css({
+        'text-align': 'left',
+        'float': 'left',
+        'clear': 'both',
+        'display': 'block',
+        'width': 'auto',
+        'margin-right': '1rem',
+        'margin-top': '1rem',
+        'margin-bottom': '0.5rem' // Add bottom margin to create space
+    });
+    
+    // Apply darker blue color to pagination buttons
+    $('.dataTables_wrapper .dataTables_paginate .paginate_button').css({
+        'color': '#18375d',
+        'border-color': '#18375d'
+    });
+    
+    $('.dataTables_wrapper .dataTables_paginate .paginate_button.current').css({
+        'color': '#fff',
+        'background-color': '#18375d',
+        'border-color': '#18375d'
+    });
+    
+    console.log('Enhanced pagination positioning applied');
+}
+
+// Force center alignment for all table content
+function forceCenterAlignment() {
+    console.log('Forcing center alignment for all table content...');
+    
+    // Force center alignment on all table cells
+    $('#livestockTable td, #livestockTable th').each(function() {
+        $(this).css({
+            'text-align': 'center',
+            'vertical-align': 'middle'
+        });
+    });
+    
+    // Force center alignment on all nested elements
+    $('#livestockTable td *, #livestockTable th *').each(function() {
+        $(this).css({
+            'text-align': 'center',
+            'margin-left': 'auto',
+            'margin-right': 'auto'
+        });
+    });
+    
+    // Special handling for flex containers
+    $('#livestockTable .d-flex').each(function() {
+        $(this).css({
+            'justify-content': 'center',
+            'align-items': 'center',
+            'text-align': 'center',
+            'margin': '0 auto',
+            'width': '100%'
+        });
+    });
+    
+    // Force center alignment on badges and spans
+    $('#livestockTable .badge, #livestockTable span, #livestockTable div:not(.action-buttons), #livestockTable a').each(function() {
+        if (!$(this).hasClass('btn-action') && !$(this).hasClass('action-buttons')) {
+            $(this).css({
+                'text-align': 'center',
+                'margin': '0 auto',
+                'display': 'block',
+                'width': 'fit-content'
+            });
+        }
+    });
+    
+    // Center align action buttons container
+    $('#livestockTable .action-buttons').each(function() {
+        $(this).css({
+            'display': 'flex',
+            'justify-content': 'center',
+            'align-items': 'center',
+            'text-align': 'center',
+            'width': '100%',
+            'gap': '0.5rem'
+        });
+    });
+    
+    // Force center alignment on avatar containers
+    $('#livestockTable .avatar-sm').each(function() {
+        $(this).css({
+            'margin': '0 auto',
+            'display': 'block'
+        });
+    });
+    
+    // FORCE livestock ID link styling - EXACT MATCH from manage livestock
+    $('#livestockTable .livestock-id-link').each(function() {
+        $(this).css({
+            'color': '#18375d',
+            'text-decoration': 'none',
+            'font-weight': '600',
+            'cursor': 'pointer',
+            'transition': 'all 0.2s ease',
+            'padding': '0.25rem 0.5rem',
+            'border-radius': '0.25rem',
+            'background-color': 'rgba(24, 55, 93, 0.1)',
+            'border': '1px solid rgba(24, 55, 93, 0.2)',
+            'display': 'inline-block',
+            'margin': '0 auto',
+            'text-align': 'center'
+        });
+        
+        // Add hover effects
+        $(this).on('mouseenter', function() {
+            $(this).css({
+                'color': '#fff',
+                'background-color': '#18375d',
+                'border-color': '#18375d'
+            });
+        });
+        
+        $(this).on('mouseleave', function() {
+            $(this).css({
+                'color': '#18375d',
+                'background-color': 'rgba(24, 55, 93, 0.1)',
+                'border-color': 'rgba(24, 55, 93, 0.2)'
+            });
+        });
+    });
+    
+    // FORCE Analysis button styling to yellow
+    $('#livestockTable .btn-action-ok').each(function() {
+        $(this).css({
+            'background-color': '#fca700',
+            'border-color': '#fca700',
+            'color': 'white'
+        });
+        
+        // Add hover effects for analysis button
+        $(this).on('mouseenter', function() {
+            $(this).css({
+                'background-color': '#e69500',
+                'border-color': '#e69500',
+                'color': 'white'
+            });
+        });
+        
+        $(this).on('mouseleave', function() {
+            $(this).css({
+                'background-color': '#fca700',
+                'border-color': '#fca700',
+                'color': 'white'
+            });
+        });
+    });
+    
+    console.log('Center alignment, livestock ID styling, and analysis button styling forced on all table elements');
+}
+
 function printLivestockHistory() {
     const printContent = $('#livestockHistoryContent').html();
     const printWindow = window.open('', '_blank');
@@ -692,53 +1818,331 @@ function printLivestockHistory() {
     printWindow.print();
 }
 
-// Table export functions
-function exportTableCSV() {
-    const table = document.getElementById('livestockTable');
-    let csv = '';
-    
-    // Get headers
-    const headers = table.querySelectorAll('thead th');
-    headers.forEach((header, index) => {
-        csv += '"' + header.textContent.trim() + '"';
-        if (index < headers.length - 1) csv += ',';
-    });
-    csv += '\n';
-    
-    // Get data rows
-    const rows = table.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        cells.forEach((cell, index) => {
-            csv += '"' + cell.textContent.trim() + '"';
-            if (index < cells.length - 1) csv += ',';
+// Export functions matching superadmin pattern
+function exportCSV(tableId) {
+    if (tableId === 'livestockTable') {
+        try {
+            // Get current table data without actions column
+            const table = $('#livestockTable').DataTable();
+            const tableData = table.data().toArray();
+            
+            if (!tableData || tableData.length === 0) {
+                showToast('No data available to export', 'warning');
+                return;
+            }
+            
+            // Create CSV content manually
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Add headers (excluding Actions column)
+            const headers = ['Livestock ID', 'Name', 'Breed', 'Age (months)', 'Health Score', 'Avg. Production (L/day)', 'Breeding Status'];
+            csvContent += headers.join(',') + '\n';
+            
+            // Add data rows (excluding Actions column)
+            tableData.forEach(row => {
+                const csvRow = [];
+                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                    let cellText = '';
+                    if (row[i]) {
+                        // Remove HTML tags and get clean text
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = row[i];
+                        cellText = tempDiv.textContent || tempDiv.innerText || '';
+                        // Clean up the text and escape quotes
+                        cellText = cellText.replace(/\s+/g, ' ').trim().replace(/"/g, '""');
+                    }
+                    csvRow.push('"' + cellText + '"');
+                }
+                csvContent += csvRow.join(',') + '\n';
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Livestock_Analysis_Report.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('CSV export completed successfully', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting CSV:', error);
+            showToast('Error exporting CSV. Please try again.', 'danger');
+        }
+    }
+}
+
+function exportPDF(tableId) {
+    if (tableId === 'livestockTable') {
+        try {
+            // Get current table data without actions column
+            const table = $('#livestockTable').DataTable();
+            const tableData = table.data().toArray();
+            
+            if (!tableData || tableData.length === 0) {
+                showToast('No data available to export', 'warning');
+                return;
+            }
+            
+            // Check if jsPDF is available
+            if (typeof window.jsPDF === 'undefined') {
+                console.warn('jsPDF not available, falling back to DataTables PDF export');
+                const table = $('#livestockTable').DataTable();
+                table.button('.buttons-pdf').trigger();
+                return;
+            }
+            
+            const { jsPDF } = window.jsPDF;
+            const doc = new jsPDF('landscape');
+            
+            // Add title
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('Livestock Analysis Report', 148, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 148, 30, { align: 'center' });
+            
+            // Prepare table data
+            const headers = ['Livestock ID', 'Name', 'Breed', 'Age (months)', 'Health Score', 'Avg. Production (L/day)', 'Breeding Status'];
+            const pdfData = [];
+            
+            tableData.forEach(row => {
+                const pdfRow = [];
+                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                    let cellText = '';
+                    if (row[i]) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = row[i];
+                        cellText = tempDiv.textContent || tempDiv.innerText || '';
+                        cellText = cellText.replace(/\s+/g, ' ').trim();
+                    }
+                    pdfRow.push(cellText);
+                }
+                pdfData.push(pdfRow);
+            });
+            
+            // Add table
+            doc.autoTable({
+                head: [headers],
+                body: pdfData,
+                startY: 40,
+                styles: { fontSize: 8, cellPadding: 2 },
+                headStyles: { fillColor: [24, 55, 93], textColor: 255 },
+                columnStyles: {
+                    0: { cellWidth: 25 }, // Livestock ID
+                    1: { cellWidth: 35 }, // Name
+                    2: { cellWidth: 25 }, // Breed  
+                    3: { cellWidth: 25 }, // Age
+                    4: { cellWidth: 25 }, // Health Score
+                    5: { cellWidth: 35 }, // Avg. Production
+                    6: { cellWidth: 30 }  // Breeding Status
+                }
+            });
+            
+            // Save the PDF
+            doc.save(`Livestock_Analysis_Report.pdf`);
+            showToast('PDF export completed successfully', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting PDF:', error);
+            showToast('Error exporting PDF. Please try again.', 'danger');
+            
+            // Fallback to DataTables PDF export
+            try {
+                const table = $('#livestockTable').DataTable();
+                table.button('.buttons-pdf').trigger();
+            } catch (fallbackError) {
+                console.error('Fallback PDF export also failed:', fallbackError);
+            }
+        }
+    }
+}
+
+function exportPNG(tableId) {
+    if (tableId === 'livestockTable') {
+        try {
+            // Create a temporary table without actions column for PNG export
+            const table = $('#livestockTable').DataTable();
+            const tableData = table.data().toArray();
+            
+            if (!tableData || tableData.length === 0) {
+                showToast('No data available to export', 'warning');
+                return;
+            }
+            
+            // Create temporary container
+            const tempContainer = document.createElement('div');
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            tempContainer.style.top = '-9999px';
+            tempContainer.style.background = 'white';
+            tempContainer.style.padding = '20px';
+            
+            // Create content for PNG
+            let pngContent = `
+                <div style="font-family: Arial, sans-serif;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h1 style="color: #18375d; margin-bottom: 5px;">Livestock Analysis Report</h1>
+                        <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    <table style="border-collapse: collapse; width: 100%; border: 2px solid #000;">
+                        <thead>
+                            <tr style="background-color: #f2f2f2;">
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Livestock ID</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Name</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Breed</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Age (months)</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Health Score</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Avg. Production (L/day)</th>
+                                <th style="border: 1px solid #000; padding: 8px; text-align: left;">Breeding Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+            
+            // Add data rows (excluding Actions column)
+            tableData.forEach(row => {
+                pngContent += '<tr>';
+                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                    let cellText = '';
+                    if (row[i]) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = row[i];
+                        cellText = tempDiv.textContent || tempDiv.innerText || '';
+                        cellText = cellText.replace(/\s+/g, ' ').trim();
+                    }
+                    pngContent += `<td style="border: 1px solid #000; padding: 8px;">${cellText}</td>`;
+                }
+                pngContent += '</tr>';
+            });
+            
+            pngContent += `
+                        </tbody>
+                    </table>
+                </div>`;
+            
+            tempContainer.innerHTML = pngContent;
+            document.body.appendChild(tempContainer);
+            
+            // Use html2canvas to capture the content
+            html2canvas(tempContainer, {
+                backgroundColor: 'white',
+                scale: 2,
+                useCORS: true
+            }).then(canvas => {
+                // Create download link
+                const link = document.createElement('a');
+                link.download = `Livestock_Analysis_Report.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                // Clean up
+                document.body.removeChild(tempContainer);
+                showToast('PNG export completed successfully', 'success');
+            }).catch(error => {
+                console.error('Error generating PNG:', error);
+                document.body.removeChild(tempContainer);
+                showToast('Error exporting PNG. Please try again.', 'danger');
+            });
+            
+        } catch (error) {
+            console.error('Error exporting PNG:', error);
+            showToast('Error exporting PNG. Please try again.', 'danger');
+        }
+    }
+}
+
+function printLivestockTable() {
+    try {
+        // Get current table data without actions column
+        const table = $('#livestockTable').DataTable();
+        const tableData = table.data().toArray();
+        
+        if (!tableData || tableData.length === 0) {
+            showToast('No data available to print', 'warning');
+            return;
+        }
+        
+        // Create print content directly in current page
+        const originalContent = document.body.innerHTML;
+        
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">Livestock Analysis Report</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                    <thead>
+                        <tr>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Livestock ID</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Breed</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Age (months)</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Health Score</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Avg. Production (L/day)</th>
+                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Breeding Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+        // Add data rows (excluding Actions column)
+        tableData.forEach(row => {
+            printContent += '<tr>';
+            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
+                let cellText = '';
+                if (row[i]) {
+                    // Remove HTML tags and get clean text
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = tempDiv.textContent || tempDiv.innerText || '';
+                    // Clean up the text
+                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                }
+                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
+            }
+            printContent += '</tr>';
         });
-        csv += '\n';
-    });
-    
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'livestock_analysis.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+        
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+        
+        // Replace page content with print content
+        document.body.innerHTML = printContent;
+        
+        // Print the page
+        window.print();
+        
+        // Restore original content after print dialog closes
+        setTimeout(() => {
+            document.body.innerHTML = originalContent;
+            // Re-initialize any JavaScript that might be needed
+            location.reload(); // Reload to restore full functionality
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error in print function:', error);
+        showToast('Error generating print. Please try again.', 'danger');
+        
+        // Fallback to DataTables print
+        try {
+            const table = $('#livestockTable').DataTable();
+            table.button('.buttons-print').trigger();
+        } catch (fallbackError) {
+            console.error('Fallback print also failed:', fallbackError);
+            showToast('Print failed. Please try again.', 'danger');
+        }
+    }
 }
 
-function exportTablePDF() {
-    // Simple PDF export implementation
-    showToast('PDF export functionality will be implemented soon', 'info');
-}
-
-function exportTablePNG() {
-    // PNG export implementation
-    showToast('PNG export functionality will be implemented soon', 'info');
-}
-
-function printTable() {
-    window.print();
+function refreshLivestockData() {
+    // Refresh the livestock data
+    location.reload();
 }
 
 function showToast(message, type = 'info') {
