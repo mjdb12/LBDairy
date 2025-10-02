@@ -8,11 +8,6 @@
             User Registration Details
         </h1>
     </div>
-    <div>
-        <a href="{{ route('admin.approvals') }}" class="btn-action btn-secondary btn-sm">
-            <i class="fas fa-arrow-left"></i> Back
-        </a>
-    </div>
 </div>
 
   <!-- User Information Card -->
@@ -26,116 +21,120 @@
         </h6>
       </div>
       <div class="card-body" id="userinfoCardBody">
+            <div class="d-flex justify-content-end">
+                <a href="{{ route('admin.approvals') }}" class="btn-action btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+            <br>
+            <!-- Section: Basic Info -->
+            <h6><i class="fas fa-user me-2"></i> Basic Information</h6>
+            <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+                <label>Full Name</label>
+                <p class="form-control-plaintext">{{ $user->first_name }} {{ $user->last_name }}</p>
+            </div>
+            <div class="col-md-6 mb-3 form-group">
+                <label>Username</label>
+                <p class="form-control-plaintext">{{ $user->username }}</p>
+            </div>
+            </div>
 
-        <!-- Section: Basic Info -->
-        <h6><i class="fas fa-user me-2"></i> Basic Information</h6>
-        <div class="row">
-          <div class="col-md-6 mb-3 form-group">
-            <label>Full Name</label>
-            <p class="form-control-plaintext">{{ $user->first_name }} {{ $user->last_name }}</p>
-          </div>
-          <div class="col-md-6 mb-3 form-group">
-            <label>Username</label>
-            <p class="form-control-plaintext">{{ $user->username }}</p>
-          </div>
-        </div>
+            <!-- Section: Contact -->
+            <h6><i class="fas fa-envelope me-2"></i> Contact Information</h6>
+            <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+                <label>Email Address</label>
+                <p class="form-control-plaintext">{{ $user->email }}</p>
+            </div>
+            <div class="col-md-6 mb-3 form-group">
+                <label>Contact Number</label>
+                <p class="form-control-plaintext">{{ $user->phone ?? 'Not provided' }}</p>
+            </div>
+            </div>
 
-        <!-- Section: Contact -->
-        <h6><i class="fas fa-envelope me-2"></i> Contact Information</h6>
-        <div class="row">
-          <div class="col-md-6 mb-3 form-group">
-            <label>Email Address</label>
-            <p class="form-control-plaintext">{{ $user->email }}</p>
-          </div>
-          <div class="col-md-6 mb-3 form-group">
-            <label>Contact Number</label>
-            <p class="form-control-plaintext">{{ $user->phone ?? 'Not provided' }}</p>
-          </div>
-        </div>
+            <!-- Section: Role -->
+            <h6><i class="fas fa-id-badge me-2"></i> Role Details</h6>
+            <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+                <label>Role</label>
+                <p class="form-control-plaintext">
+                <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
+                    <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>
+                    {{ ucfirst($user->role) }}
+                </span>
+                </p>
+            </div>
+            <div class="col-md-6 mb-3 form-group">
+                <label>Barangay</label>
+                <p class="form-control-plaintext">{{ $user->barangay }}</p>
+            </div>
+            </div>
 
-        <!-- Section: Role -->
-        <h6><i class="fas fa-id-badge me-2"></i> Role Details</h6>
-        <div class="row">
-          <div class="col-md-6 mb-3 form-group">
-            <label>Role</label>
-            <p class="form-control-plaintext">
-              <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
-                <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>
-                {{ ucfirst($user->role) }}
-              </span>
-            </p>
-          </div>
-          <div class="col-md-6 mb-3 form-group">
-            <label>Barangay</label>
-            <p class="form-control-plaintext">{{ $user->barangay }}</p>
-          </div>
-        </div>
+            @if($user->role === 'admin')
+            <h6><i class="fas fa-user-shield me-2"></i> Admin Details</h6>
+            <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+                <label>Admin Code</label>
+                <p class="form-control-plaintext">{{ $user->admin_code }}</p>
+            </div>
+            <div class="col-md-6 mb-3 form-group">
+                <label>Position</label>
+                <p class="form-control-plaintext">{{ $user->position }}</p>
+            </div>
+            </div>
+            @endif
 
-        @if($user->role === 'admin')
-        <h6><i class="fas fa-user-shield me-2"></i> Admin Details</h6>
-        <div class="row">
-          <div class="col-md-6 mb-3 form-group">
-            <label>Admin Code</label>
-            <p class="form-control-plaintext">{{ $user->admin_code }}</p>
-          </div>
-          <div class="col-md-6 mb-3 form-group">
-            <label>Position</label>
-            <p class="form-control-plaintext">{{ $user->position }}</p>
-          </div>
-        </div>
-        @endif
+            @if($user->role === 'farmer')
+            <h6><i class="fas fa-seedling me-2"></i> Farmer Details</h6>
+            <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+                <label>Farmer Code</label>
+                <p class="form-control-plaintext">{{ $user->farmer_code }}</p>
+            </div>
+            <div class="col-md-6 mb-3 form-group">
+                <label>Farm Name</label>
+                <p class="form-control-plaintext">{{ $user->farm_name }}</p>
+            </div>
+            </div>
+            <div class="row">
+            <div class="col-12 mb-3 form-group">
+                <label>Farm Address</label>
+                <p class="form-control-plaintext">{{ $user->farm_address }}</p>
+            </div>
+            </div>
+            @endif
 
-        @if($user->role === 'farmer')
-        <h6><i class="fas fa-seedling me-2"></i> Farmer Details</h6>
-        <div class="row">
-          <div class="col-md-6 mb-3 form-group">
-            <label>Farmer Code</label>
-            <p class="form-control-plaintext">{{ $user->farmer_code }}</p>
-          </div>
-          <div class="col-md-6 mb-3 form-group">
-            <label>Farm Name</label>
-            <p class="form-control-plaintext">{{ $user->farm_name }}</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 mb-3 form-group">
-            <label>Farm Address</label>
-            <p class="form-control-plaintext">{{ $user->farm_address }}</p>
-          </div>
-        </div>
-        @endif
+            <!-- Section: Registration -->
+            <h6><i class="fas fa-calendar-alt me-2"></i> Registration</h6>
+            <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+                <label>Registration Date</label>
+                <p class="form-control-plaintext">{{ $user->created_at->format('F d, Y \a\t g:i A') }}</p>
+            </div>
+            <div class="col-md-6 mb-3 form-group">
+                <label>Status</label>
+                <p class="form-control-plaintext">
+                <span class="badge bg-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
+                    <i class="fas fa-{{ $user->status === 'pending' ? 'clock' : ($user->status === 'approved' ? 'check' : 'times') }} me-1"></i>
+                    {{ ucfirst($user->status) }}
+                </span>
+                </p>
+            </div>
+            </div>
 
-        <!-- Section: Registration -->
-        <h6><i class="fas fa-calendar-alt me-2"></i> Registration</h6>
-        <div class="row">
-          <div class="col-md-6 mb-3 form-group">
-            <label>Registration Date</label>
-            <p class="form-control-plaintext">{{ $user->created_at->format('F d, Y \a\t g:i A') }}</p>
-          </div>
-          <div class="col-md-6 mb-3 form-group">
-            <label>Status</label>
-            <p class="form-control-plaintext">
-              <span class="badge bg-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
-                <i class="fas fa-{{ $user->status === 'pending' ? 'clock' : ($user->status === 'approved' ? 'check' : 'times') }} me-1"></i>
-                {{ ucfirst($user->status) }}
-              </span>
-            </p>
-          </div>
-        </div>
-
-        @if($user->terms_accepted)
-        <h6><i class="fas fa-file-contract me-2"></i> Terms</h6>
-        <div class="row">
-          <div class="col-12 mb-3 form-group">
-            <label>Terms Accepted</label>
-            <p class="form-control-plaintext text-success">
-              <i class="fas fa-check-circle me-2"></i>
-              User has accepted the terms and conditions
-            </p>
-          </div>
-        </div>
-        @endif
-
+            @if($user->terms_accepted)
+            <h6><i class="fas fa-file-contract me-2"></i> Terms</h6>
+            <div class="row">
+            <div class="col-12 mb-3 form-group">
+                <label>Terms Accepted</label>
+                <p class="form-control-plaintext text-success">
+                <i class="fas fa-check-circle me-2"></i>
+                User has accepted the terms and conditions
+                </p>
+            </div>
+            </div>
+            @endif
       </div>
     </div>
   </div>
@@ -155,11 +154,11 @@
                     @if($user->status === 'pending')
                         <div class="d-grid gap-2">
                             <button type="button" class="btn-action btn-success btn-lg" onclick="approveUser({{ $user->id }})">
-                                <i class="fas fa-check me-2"></i>
+                                <i class="fas fa-check mr-2"></i>
                                 Approve Registration
                             </button>
                             <button type="button" class="btn-action btn-danger btn-lg" onclick="rejectUser({{ $user->id }})">
-                                <i class="fas fa-times me-2"></i>
+                                <i class="fas fa-times mr-2"></i>
                                 Reject Registration
                             </button>
                         </div>
@@ -223,7 +222,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle mr-2"></i>Approve User Registration</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to approve <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>'s registration?</p>
@@ -234,7 +235,7 @@
                 <form method="POST" action="{{ route('admin.approvals.approve', $user->id) }}" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn-action btn-action-edit">
-                        <i class="fas fa-check me-2"></i>Approve User
+                        Approve User
                     </button>
                 </form>
             </div>
@@ -248,7 +249,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle mr-2"></i>Reject User Registration</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to reject <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>'s registration?</p>
@@ -263,7 +266,7 @@
                     @csrf
                     <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
                     <button type="submit" class="btn-action btn-action-deletes">
-                        <i class="fas fa-times me-2"></i>Reject User
+                        Reject User
                     </button>
                 </form>
             </div>

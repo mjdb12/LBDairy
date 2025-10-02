@@ -271,7 +271,7 @@
                         Cancel
                     </button>
                     <button type="submit" class="btn-action btn-action-report-issue">
-                        <i class="fas fa-paper-plane"></i> Report Issue
+                        Report Issue
                     </button>
                 </div>
             </form>
@@ -1320,36 +1320,37 @@
 
     
     $(document).ready(function() {
-        console.log('Document ready, loading farmers...');
-        loadFarmers();
-        
-        // Search functionality for farmers
-        $('#farmerSearch').on('keyup', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            $('#farmersTable tbody tr').each(function() {
-                const text = $(this).text().toLowerCase();
-                $(this).toggle(text.indexOf(searchTerm) > -1);
-            });
-        });
-        
-        // Search functionality for issues
-        $('#issueSearch').on('keyup', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            $('#issuesTable tbody tr').each(function() {
-                const text = $(this).text().toLowerCase();
-                $(this).toggle(text.indexOf(searchTerm) > -1);
-            });
-        });
+    console.log('Document ready, loading farmers...');
+    loadFarmers();
     
-        // Search functionality
-        $('#activeSearch').on('keyup', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            $('#livestockTable tbody tr').each(function() {
-                const text = $(this).text().toLowerCase();
-                $(this).toggle(text.indexOf(searchTerm) > -1);
-            });
+    // Farmer search
+    $('#farmerSearch').on('keyup', function() {
+        const searchTerm = $(this).val().toLowerCase();
+        $('#farmersTable tr').each(function() {
+            const text = $(this).text().toLowerCase();
+            $(this).toggle(text.indexOf(searchTerm) > -1);
         });
     });
+
+    // Issues search
+    $('#issueSearch').on('keyup', function() {
+        const searchTerm = $(this).val().toLowerCase();
+        $('#issuesTable tr').each(function() {
+            const text = $(this).text().toLowerCase();
+            $(this).toggle(text.indexOf(searchTerm) > -1);
+        });
+    });
+
+    // Livestock search
+    $('#activeSearch').on('keyup', function() {
+        const searchTerm = $(this).val().toLowerCase();
+        $('#livestockTable tr').each(function() {
+            const text = $(this).text().toLowerCase();
+            $(this).toggle(text.indexOf(searchTerm) > -1);
+        });
+    });
+});
+
 // Refresh Farmer Table
 function refreshfarmersTable() {
     const refreshBtn = document.querySelector('.btn-action-refresh-farmers');

@@ -578,6 +578,26 @@
     #usersTable thead th.sorting_desc::after {
         display: none;
     }
+
+    /* Make table cells wrap instead of forcing them all inline */
+#inspectionsTableBody td, 
+#inspectionsTableBody th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#inspectionsTableBody td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#inspectionsTableBody td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
     
 
     /* Ensure consistent table styling */
@@ -645,7 +665,7 @@
         border-color: #122a4e;
     }
     
-    /* Action buttons styling to match active admins table */
+   /* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -660,9 +680,9 @@
         gap: 0.25rem;
         padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
-        font-weight: 500;
+        border-radius: 0.25rem;
+        text-decoration: none;
         border: 1px solid transparent;
-        border-radius: 0.375rem;
         cursor: pointer;
         transition: all 0.15s ease-in-out;
         white-space: nowrap;
@@ -675,8 +695,8 @@
     }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #f6c23e;
+        border-color: #f6c23e;
         color: white;
     }
     
@@ -903,6 +923,108 @@
 
     /* Style all labels inside form Modal */
     #scheduleInspectionModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    /* User Details Modal Styling */
+    #editInspectionModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #editInspectionModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #editInspectionModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #editInspectionModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #editInspectionModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #editInspectionModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #editInspectionModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+
+    /* Style all labels inside form Modal */
+    #editInspectionModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    /* User Details Modal Styling */
+    #inspectionDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #inspectionDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #inspectionDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #inspectionDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #inspectionDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #inspectionDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #inspectionDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+
+    /* Style all labels inside form Modal */
+    #inspectionDetailsModal .form-group label {
         font-weight: 600;           /* make labels bold */
         color: #18375d;             /* Bootstrap primary blue */
         display: inline-block;      /* keep spacing consistent */
@@ -1255,7 +1377,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-ok">
-                        <i class="fas fa-calendar-check"></i> Schedule Inspection
+                        Schedule Inspection
                     </button>
                 </div>
             </form>
@@ -1280,7 +1402,7 @@
                 <!-- Content will be loaded here -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -1303,7 +1425,7 @@
                 <!-- Content will be loaded here -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -1376,9 +1498,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-edit">
+                        
                         Update Inspection
                     </button>
                 </div>
@@ -1405,8 +1527,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-reject" id="confirmCancelInspectionBtn">
-                    <i class="fas fa-times"></i> Yes, Cancel Inspection
+                <button type="button" class="btn-action btn-action-deletes" id="confirmCancelInspectionBtn">
+                    Yes, Cancel Inspection
                 </button>
             </div>
         </div>
@@ -1572,8 +1694,8 @@ function loadInspections() {
                         `<span class="badge badge-${inspection.priority === 'urgent' ? 'danger' : (inspection.priority === 'high' ? 'warning' : (inspection.priority === 'medium' ? 'info' : 'success'))}">${inspection.priority}</span>`,
                         `<span class="badge badge-${inspection.status === 'scheduled' ? 'primary' : (inspection.status === 'completed' ? 'success' : (inspection.status === 'cancelled' ? 'danger' : 'warning'))}">${inspection.status}</span>`,
                         inspection.scheduled_by?.name || 'Admin',
-                        `<div class="action-buttons">
-                            <button class="btn-action btn-action-view" onclick="viewInspectionDetails('${inspection.id}')" title="View Details">
+                        `<div class="btn-group">
+                            <button class="btn-action btn-action-ok" onclick="viewInspectionDetails('${inspection.id}')" title="View Details">
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </button>
@@ -1581,7 +1703,7 @@ function loadInspections() {
                                 <i class="fas fa-edit"></i>
                                 <span>Edit</span>
                             </button>
-                            <button class="btn-action btn-action-reject" onclick="cancelInspection('${inspection.id}')" title="Cancel">
+                            <button class="btn-action btn-action-deletes" onclick="cancelInspection('${inspection.id}')" title="Cancel">
                                 <i class="fas fa-times"></i>
                                 <span>Cancel</span>
                             </button>
@@ -1627,13 +1749,13 @@ function loadFarmersTable() {
                         farmer.barangay || 'N/A',
                         `<span class="badge badge-success">Active</span>`,
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-add" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
-                                <i class="fas fa-calendar-check"></i>
-                                <span>Schedule</span>
-                            </button>
                             <button class="btn-action btn-action-ok" onclick="viewFarmerDetails('${farmer.id}')" title="View Details">
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
+                            </button>
+                            <button class="btn-action btn-action-add" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Schedule</span>
                             </button>
                         </div>`
                     ];
@@ -1691,7 +1813,7 @@ function scheduleInspectionForFarmer(farmerId, farmerName, farmName) {
     $('#scheduleInspectionModal').modal('show');
     
     // Show a notification that farmer is selected
-    showNotification(`Selected farmer: ${farmerName} (${farmName})`, 'info');
+    showNotification(`Selected farmer: ${farmerName}`, 'info');
 }
 
 function openScheduleModal() {
@@ -1920,27 +2042,36 @@ function viewInspectionDetails(inspectionId) {
                 const inspection = response.data;
                 $('#inspectionDetailsContent').html(`
                     <div class="row">
-                        <div class="col-md-6">
-                            <h6 class="text-primary">Inspection Information</h6>
-                            <table class="table table-borderless">
-                                <tr><td><strong>Date:</strong></td><td>${inspection.inspection_date}</td></tr>
-                                <tr><td><strong>Time:</strong></td><td>${inspection.inspection_time}</td></tr>
-                                <tr><td><strong>Status:</strong></td><td><span class="badge badge-${inspection.status === 'scheduled' ? 'primary' : (inspection.status === 'completed' ? 'success' : (inspection.status === 'cancelled' ? 'danger' : 'warning'))}">${inspection.status}</span></td></tr>
-                                <tr><td><strong>Priority:</strong></td><td><span class="badge badge-${inspection.priority === 'urgent' ? 'danger' : (inspection.priority === 'high' ? 'warning' : (inspection.priority === 'medium' ? 'info' : 'success'))}">${inspection.priority}</span></td></tr>
-                                <tr><td><strong>Scheduled By:</strong></td><td>${inspection.scheduled_by?.name || 'Admin'}</td></tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 class="text-primary">Farmer Information</h6>
-                            <table class="table table-borderless">
-                                <tr><td><strong>Name:</strong></td><td>${inspection.farmer?.first_name || ''} ${inspection.farmer?.last_name || ''}</td></tr>
-                                <tr><td><strong>Email:</strong></td><td>${inspection.farmer?.email || 'N/A'}</td></tr>
-                                <tr><td><strong>Contact:</strong></td><td>${inspection.farmer?.phone || 'N/A'}</td></tr>
-                                <tr><td><strong>Farm Name:</strong></td><td>${inspection.farmer?.farm_name || 'N/A'}</td></tr>
-                                <tr><td><strong>Barangay:</strong></td><td>${inspection.farmer?.barangay || 'N/A'}</td></tr>
-                            </table>
-                        </div>
-                    </div>
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Inspection Information</h6>
+        <p><strong>Date:</strong> ${inspection.inspection_date || 'N/A'}</p>
+        <p><strong>Time:</strong> ${inspection.inspection_time || 'N/A'}</p>
+        <p><strong>Status:</strong> 
+            <span class="badge badge-${inspection.status === 'scheduled' ? 'primary' : 
+                                       (inspection.status === 'completed' ? 'success' : 
+                                       (inspection.status === 'cancelled' ? 'danger' : 'warning'))}">
+                ${inspection.status}
+            </span>
+        </p>
+        <p><strong>Priority:</strong> 
+            <span class="badge badge-${inspection.priority === 'urgent' ? 'danger' : 
+                                         (inspection.priority === 'high' ? 'warning' : 
+                                         (inspection.priority === 'medium' ? 'info' : 'success'))}">
+                ${inspection.priority}
+            </span>
+        </p>
+        <p><strong>Scheduled By:</strong> ${inspection.scheduled_by?.name || 'Admin'}</p>
+    </div>
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farmer Information</h6>
+        <p><strong>Name:</strong> ${inspection.farmer?.first_name || ''} ${inspection.farmer?.last_name || ''}</p>
+        <p><strong>Email:</strong> ${inspection.farmer?.email || 'N/A'}</p>
+        <p><strong>Contact:</strong> ${inspection.farmer?.phone || 'N/A'}</p>
+        <p><strong>Farm Name:</strong> ${inspection.farmer?.farm_name || 'N/A'}</p>
+        <p><strong>Barangay:</strong> ${inspection.farmer?.barangay || 'N/A'}</p>
+    </div>
+</div>
+
                     ${inspection.notes ? `
                     <div class="row mt-3">
                         <div class="col-12">

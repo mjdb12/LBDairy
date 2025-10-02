@@ -151,12 +151,12 @@
         color: white;
     }
 
-    .btn-action-ok {
+    .btn-action-oks {
         background-color: #18375d;
         border-color: #18375d;
         color: white;
     }
-    .btn-action-ok:hover {
+    .btn-action-oks:hover {
         background-color: #fca700;
         border-color: #fca700;
         color: white;
@@ -586,7 +586,7 @@
                     <i class="fas fa-edit mr-1"></i>Edit Profile
                 </button>
                 <button class="btn-action btn-action-edit-pass" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
-                    <i class="fas fa-key mr-1"></i>Change Password
+                    <i class="fas fa-key mr-2"></i>Change Password
                 </button>
             </div>
             </div>
@@ -767,9 +767,9 @@
         <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
             Cancel
         </button>
-        <button type="submit" class="btn-action btn-action-ok">
-            <i class="fas fa-save mr-2"></i>Save Changes
-        </button>
+        <button type="submit" class="btn-action btn-action-oks">
+                    Save Changes
+                </button>
       </div>
     </form>
   </div>
@@ -821,9 +821,9 @@
         <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
             Cancel
         </button>
-        <button type="submit" class="btn-action btn-action-ok">
-            <i class="fas fa-save mr-2"></i>Change Password
-        </button>
+        <button type="submit" class="btn-action btn-action-oks">
+                    Change Password
+                </button>
       </div>
     </form>
   </div>
