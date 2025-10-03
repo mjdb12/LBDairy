@@ -969,6 +969,7 @@
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" id="farmerNameHidden">
+                    <input type="hidden" id="adminIdHidden">
                     <div class="form-group">
                         <label for="messageSubject">Subject</label>
                         <input type="text" class="form-control" id="messageSubject" required>
@@ -1635,6 +1636,7 @@ function showAdminDetails(adminId) {
 
                 document.getElementById('farmerDetails').innerHTML = details;
                 document.getElementById('farmerNameHidden').value = displayName;
+                document.getElementById('adminIdHidden').value = admin.id;
                 $('#detailsModal').modal('show');
             } else {
                 showNotification('Error loading admin details', 'danger');
@@ -1722,6 +1724,7 @@ function openContactModal() {
 function sendMessage(event) {
     event.preventDefault();
     const name = document.getElementById('farmerNameHidden').value;
+    const adminId = document.getElementById('adminIdHidden').value;
     const subject = document.getElementById('messageSubject').value;
     const message = document.getElementById('messageBody').value;
 
@@ -1733,7 +1736,7 @@ function sendMessage(event) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         data: {
-            name: name,
+            admin_id: adminId,
             subject: subject,
             message: message
         },

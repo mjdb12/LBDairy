@@ -636,7 +636,11 @@
                     <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
                 </div>
 
-                <h3 class="mt-3 mb-1 font-weight-bold">{{ auth()->user()->name }}</h3>
+                @php
+                    $headerUser = \App\Models\User::find(auth()->id());
+                    $headerName = !empty($headerUser->name) ? $headerUser->name : 'Super Admin';
+                @endphp
+                <h3 class="mt-3 mb-1 font-weight-bold">{{ $headerName }}</h3>
                 <p class="text-muted mb-2">{{ auth()->user()->email }}</p>
                 <!-- Action Buttons -->
             <div class="action-buttons">
@@ -668,12 +672,7 @@
                 <div class="table-responsive">
                     <table class="table table-borderless mb-0 profile-info-table">
                         <tbody>
-                            <tr>
-                                <th scope="row">
-                                    <i class="fas fa-user" style="color: #18375d;"></i>Full Name
-                                </th>
-                                <td>{{ auth()->user()->name ?? 'Not provided' }}</td>
-                            </tr>
+                            <!-- Full name row removed as requested -->
                             <tr>
                                 <th scope="row">
                                     <i class="fas fa-envelope" style="color: #18375d;"></i>Email
@@ -751,15 +750,7 @@
         </button>
       </div>
       <div class="modal-body">
-          <div class="form-group">
-              <label for="editFullName">
-                  <i class="fas fa-user mr-2"></i>Full Name
-              </label>
-              <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" required placeholder="Enter your full name">
-              @error('name')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
+          <!-- Full name field removed as requested -->
           <div class="form-group">
               <label for="editEmail">
                   <i class="fas fa-envelope mr-2"></i>Email
@@ -855,6 +846,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form class="modal-content" method="POST" action="{{ route('superadmin.profile.password') }}" id="changePasswordForm">
       @csrf
+      @method('PUT')
       <div class="modal-header">
         <h5 class="modal-title" id="changePasswordLabel">
             <i class="fas fa-key mr-2"></i>Change Password
@@ -907,6 +899,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function changeProfilePicture(event) {
         const file = event.target.files[0];
@@ -990,57 +983,87 @@
         }, 5000);
     }
 
-    // Form validation
-    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
-        const name = document.getElementById('editFullName').value.trim();
-        const email = document.getElementById('editEmail').value.trim();
-        const barangay = document.getElementById('editBarangay').value;
+    // Handle profile form submission with AJAX
+    document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        if (!name) {
-            e.preventDefault();
-            showNotification('Full name is required!', 'danger');
-            return;
-        }
-        
-        if (!email) {
-            e.preventDefault();
-            showNotification('Email is required!', 'danger');
-            return;
-        }
-        
-        if (!barangay) {
-            e.preventDefault();
-            showNotification('Please select a barangay!', 'danger');
-            return;
-        }
+        const form = this;
+        const formData = new FormData(form);
+        const url = form.getAttribute('action');
         
         // Show loading state
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
         submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
         
-        // Re-enable after a delay in case of validation errors
-        setTimeout(() => {
-            submitBtn.innerHTML = originalText;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to update profile');
+            }
+            
+            if (data.success && data.user) {
+                // Update the form fields with the new values
+                if (form.elements['email']) form.elements['email'].value = data.user.email || '';
+                if (form.elements['phone']) form.elements['phone'].value = data.user.phone || '';
+                if (form.elements['barangay']) form.elements['barangay'].value = data.user.barangay || '';
+                if (form.elements['position']) form.elements['position'].value = data.user.position || '';
+                
+                // Close the modal
+                $('#editProfileModal').modal('hide');
+                
+                // Force a small delay to ensure the modal is fully hidden
+                setTimeout(() => {
+                    // Force a reload of the page to ensure all data is in sync
+                    window.location.reload();
+                }, 500);
+            } else {
+                throw new Error(data.message || 'Failed to update profile');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: error.message || 'An error occurred while updating your profile.'
+            });
+        } finally {
+            // Reset button state
             submitBtn.disabled = false;
-        }, 3000);
+            submitBtn.innerHTML = originalBtnText;
+        }
     });
-
+    
     document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+        console.log('Password form submitted');
+        
         const currentPassword = document.getElementById('currentPassword').value;
         const newPassword = document.getElementById('newPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         
-        if (!currentPassword) {
-            e.preventDefault();
-            showNotification('Current password is required!', 'danger');
-            return;
-        }
+        console.log('Password form data:', {
+            has_current: !!currentPassword,
+            has_new: !!newPassword,
+            has_confirm: !!confirmPassword,
+            new_length: newPassword.length,
+            passwords_match: newPassword === confirmPassword
+        });
         
-        if (!newPassword) {
+        if (!currentPassword || !newPassword || !confirmPassword) {
             e.preventDefault();
-            showNotification('New password is required!', 'danger');
+            showNotification('Please fill in all password fields!', 'danger');
             return;
         }
         
@@ -1069,6 +1092,51 @@
         }, 3000);
     });
 
+    // Handle edit profile form submission
+    const profileForm = document.getElementById('editProfileForm');
+    console.log('Profile form element found:', !!profileForm);
+    
+    if (profileForm) {
+        profileForm.addEventListener('submit', function(e) {
+            const formData = new FormData(this);
+            const formDataObj = {};
+            for (let [key, value] of formData.entries()) {
+                formDataObj[key] = value;
+            }
+            
+            // Check if name field has value
+            const nameValue = formData.get('name');
+            console.log('Name field value:', nameValue);
+            console.log('Name field length:', nameValue ? nameValue.length : 0);
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+        submitBtn.disabled = true;
+        
+        // Re-enable after a delay in case of validation errors
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 3000);
+        });
+        
+        // Also add click listener to submit button for debugging
+        const submitButton = profileForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+            console.log('Submit button found, adding click listener');
+            submitButton.addEventListener('click', function(e) {
+                console.log('=== SUBMIT BUTTON CLICKED ===');
+                console.log('Button type:', this.type);
+                console.log('Form valid:', profileForm.checkValidity());
+            });
+        } else {
+            console.error('Submit button not found in form');
+        }
+    } else {
+        console.error('Profile form not found! Check if editProfileForm ID exists.');
+    }
+
     // Auto-hide alerts after 5 seconds
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert');
@@ -1081,5 +1149,13 @@
             }
         });
     }, 5000);
+    
+    // Check for success message and refresh profile data
+    @if(session('success'))
+        setTimeout(function() {
+            // Refresh the page to show updated profile data
+            window.location.reload();
+        }, 1500);
+    @endif
 </script>
 @endpush

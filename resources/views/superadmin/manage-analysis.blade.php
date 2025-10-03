@@ -98,6 +98,64 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
+}
+
+/* Farm Details Modal Styling */
+#farmDetailsModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+#farmDetailsModal .modal-header {
+    background: #18375d !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#farmDetailsModal .modal-title {
+    color: white !important;
+    font-weight: 600;
+}
+
+#farmDetailsModal .modal-body {
+    padding: 2rem;
+    background: white;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Timeline styling */
+.timeline {
+    position: relative;
+    padding-left: 0;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-item i {
+    margin-right: 0.75rem;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+/* Border left styling for cards */
+.border-left-primary {
+    border-left: 0.25rem solid #18375d !important;
+}
+
+.border-left-success {
+    border-left: 0.25rem solid #28a745 !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid #ffc107 !important;
+}
     text-align: center;
     vertical-align: middle;
     position: relative;
@@ -606,7 +664,7 @@
                                     $efficiency = min($efficiency, 100); // Cap at 100%
                                 @endphp
                             <tr>
-                                <td><a href="#" class="farm-id-link" onclick="showFarmDetails('{{ $farm->id }}')">{{ $farm->id }}</a></td>
+                                <td><a href="#" class="farm-id-link" onclick="showFarmDetails({{ $farm->id }}); return false;">{{ $farm->id }}</a></td>
                                 <td>{{ $farm->name }}</td>
                                 <td>{{ $farm->owner->name ?? 'Unknown' }}</td>
                                 <td>{{ $farm->location ?? 'Not specified' }}</td>
@@ -649,7 +707,7 @@
 
 <!-- Farm Details Modal -->
 <div class="modal fade" id="farmDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="farmDetailsModalLabel">
@@ -2302,10 +2360,44 @@ function showNotification(message, type) {
             // You can add summary display elements here if needed
             console.log('Production Summary:', summary);
         }
+    });
 
+// Define showFarmDetails function globally so it can be called from onclick
 function showFarmDetails(farmId) {
+    console.log('showFarmDetails called with farmId:', farmId);
+    
+    // Check if jQuery and modal exist
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+        alert('jQuery is not loaded. Please refresh the page.');
+        return;
+    }
+    
+    if ($('#farmDetailsModal').length === 0) {
+        console.error('farmDetailsModal not found in DOM');
+        alert('Modal not found. Please refresh the page.');
+        return;
+    }
+    
+    console.log('Modal found, showing modal...');
+    
+    // Update modal title and show loading state
+    $('#farmDetailsModalLabel').html('<i class="fas fa-tractor"></i> Farm Analysis - Loading...');
+    $('#farmDetailsContent').html(`
+        <div class="text-center py-4">
+            <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+            <p class="mt-3">Loading comprehensive farm analysis...</p>
+        </div>
+    `);
+    
     // Show the modal
-    $('#farmDetailsModal').modal('show');
+    try {
+        $('#farmDetailsModal').modal('show');
+        console.log('Modal show command executed');
+    } catch (error) {
+        console.error('Error showing modal:', error);
+        alert('Error showing modal: ' + error.message);
+    }
     
     // Load farm details via AJAX
     $.ajax({
@@ -2314,33 +2406,221 @@ function showFarmDetails(farmId) {
         success: function(response) {
             if (response.success) {
                 const farm = response.data;
+                
+                // Calculate metrics (same logic as in Blade template)
                 const livestockCount = response.livestock_count || 0;
                 const monthlyProduction = response.monthly_production || 0;
-                const efficiency = response.efficiency || 0;
+                const expectedProduction = livestockCount * 25; // 25L per livestock per month
+                const efficiency = expectedProduction > 0 ? Math.min(Math.round((monthlyProduction / expectedProduction) * 100), 100) : 0;
+                const dailyAverage = Math.round(monthlyProduction / 30 * 10) / 10;
+                const productionPerLivestock = livestockCount > 0 ? Math.round(monthlyProduction / livestockCount * 10) / 10 : 0;
+                
+                // Determine performance level
+                let performanceLevel = 'Poor';
+                let performanceColor = 'danger';
+                let performanceIcon = 'fa-arrow-down';
+                
+                if (efficiency >= 80) {
+                    performanceLevel = 'Excellent';
+                    performanceColor = 'success';
+                    performanceIcon = 'fa-arrow-up';
+                } else if (efficiency >= 60) {
+                    performanceLevel = 'Good';
+                    performanceColor = 'warning';
+                    performanceIcon = 'fa-arrow-right';
+                }
+                
+                // Update modal title
+                $('#farmDetailsModalLabel').html(`<i class="fas fa-tractor"></i> Farm Analysis - ${farm.name}`);
                 
                 const details = `
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farm Information</h6>
-                            <p><strong>Farm ID:</strong> ${farm.id}</p>
-                            <p><strong>Farm Name:</strong> ${farm.name}</p>
-                            <p><strong>Owner:</strong> ${farm.owner ? farm.owner.name : 'Unknown'}</p>
-                            <p><strong>Location:</strong> ${farm.location || 'Not specified'}</p>
-                            <p><strong>Status:</strong> <span class="badge badge-${farm.status === 'active' ? 'success' : 'warning'} badge-pill">${farm.status}</span></p>
+                            <div class="card border-left-primary h-100">
+                                <div class="card-body">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        <i class="fas fa-info-circle mr-2"></i>Farm Information
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-6"><strong>Farm ID:</strong></div>
+                                        <div class="col-6">${farm.id}</div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6"><strong>Farm Name:</strong></div>
+                                        <div class="col-6">${farm.name}</div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6"><strong>Owner:</strong></div>
+                                        <div class="col-6">${farm.owner ? farm.owner.name : 'Unknown'}</div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6"><strong>Location:</strong></div>
+                                        <div class="col-6">${farm.location || 'Not specified'}</div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6"><strong>Status:</strong></div>
+                                        <div class="col-6">
+                                            <span class="badge badge-${farm.status === 'active' ? 'success' : 'warning'} badge-pill">
+                                                <i class="fas fa-${farm.status === 'active' ? 'check-circle' : 'clock'} mr-1"></i>
+                                                ${farm.status.charAt(0).toUpperCase() + farm.status.slice(1)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Production Statistics</h6>
-                            <p><strong>Livestock Count:</strong> ${livestockCount}</p>
-                            <p><strong>Monthly Production:</strong> ${monthlyProduction} L</p>
-                            <p><strong>Efficiency:</strong> ${efficiency}%</p>
-                            <p><strong>Created:</strong> ${new Date(farm.created_at).toLocaleDateString()}</p>
-                            <p><strong>Last Updated:</strong> ${new Date(farm.updated_at).toLocaleDateString()}</p>
+                            <div class="card border-left-success h-100">
+                                <div class="card-body">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        <i class="fas fa-chart-line mr-2"></i>Production Metrics
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-7"><strong>Livestock Count:</strong></div>
+                                        <div class="col-5">
+                                            <span class="badge badge-info badge-pill">${livestockCount}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-7"><strong>Monthly Production:</strong></div>
+                                        <div class="col-5">
+                                            <span class="badge badge-primary badge-pill">${monthlyProduction} L</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-7"><strong>Daily Average:</strong></div>
+                                        <div class="col-5">
+                                            <span class="badge badge-secondary badge-pill">${dailyAverage} L</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-7"><strong>Per Livestock:</strong></div>
+                                        <div class="col-5">
+                                            <span class="badge badge-info badge-pill">${productionPerLivestock} L</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    
                     <div class="row mt-4">
                         <div class="col-12">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Information</h6>
-                            <p><strong>Description:</strong> ${farm.description || 'No description available'}</p>
+                            <div class="card border-left-warning">
+                                <div class="card-body">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        <i class="fas fa-analytics mr-2"></i>Performance Analysis
+                                    </h6>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <div class="text-center">
+                                                <div class="progress mb-2" style="height: 15px;">
+                                                    <div class="progress-bar bg-${performanceColor}" 
+                                                         style="width: ${efficiency}%"
+                                                         role="progressbar" 
+                                                         aria-valuenow="${efficiency}" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                                <h4 class="text-${performanceColor}">
+                                                    <i class="fas ${performanceIcon} mr-2"></i>${efficiency}%
+                                                </h4>
+                                                <p class="text-muted mb-0">Efficiency Rate</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <p class="mb-2">
+                                                        <strong>Performance Level:</strong>
+                                                        <span class="badge badge-${performanceColor} ml-2">${performanceLevel}</span>
+                                                    </p>
+                                                    <p class="mb-2">
+                                                        <strong>Expected Production:</strong> ${expectedProduction} L/month
+                                                    </p>
+                                                </div>
+                                                <div class="col-6">
+                                                    <p class="mb-2">
+                                                        <strong>Actual Production:</strong> ${monthlyProduction} L/month
+                                                    </p>
+                                                    <p class="mb-2">
+                                                        <strong>Production Gap:</strong> 
+                                                        <span class="text-${monthlyProduction >= expectedProduction ? 'success' : 'danger'}">
+                                                            ${monthlyProduction - expectedProduction} L
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        <i class="fas fa-lightbulb mr-2"></i>Recommendations
+                                    </h6>
+                                    ${efficiency < 60 ? `
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                            <strong>Low Efficiency Detected</strong><br>
+                                            Consider reviewing livestock health and feeding schedules.
+                                        </div>
+                                    ` : efficiency >= 80 ? `
+                                        <div class="alert alert-success">
+                                            <i class="fas fa-trophy mr-2"></i>
+                                            <strong>Excellent Performance!</strong><br>
+                                            This farm is operating at optimal efficiency.
+                                        </div>
+                                    ` : `
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle mr-2"></i>
+                                            <strong>Good Performance</strong><br>
+                                            Minor improvements could boost efficiency further.
+                                        </div>
+                                    `}
+                                    <ul class="list-unstyled mb-0">
+                                        ${livestockCount === 0 ? '<li><i class="fas fa-plus text-primary mr-2"></i>Add livestock to start production</li>' : ''}
+                                        ${efficiency < 80 ? '<li><i class="fas fa-chart-line text-warning mr-2"></i>Monitor daily production trends</li>' : ''}
+                                        <li><i class="fas fa-calendar text-info mr-2"></i>Schedule regular health checkups</li>
+                                        <li><i class="fas fa-leaf text-success mr-2"></i>Optimize feeding schedules</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        <i class="fas fa-clock mr-2"></i>Timeline
+                                    </h6>
+                                    <div class="timeline">
+                                        <div class="timeline-item">
+                                            <i class="fas fa-plus-circle text-success"></i>
+                                            <span class="text-muted">Created: ${new Date(farm.created_at).toLocaleDateString()}</span>
+                                        </div>
+                                        <div class="timeline-item mt-2">
+                                            <i class="fas fa-edit text-info"></i>
+                                            <span class="text-muted">Last Updated: ${new Date(farm.updated_at).toLocaleDateString()}</span>
+                                        </div>
+                                        ${farm.description ? `
+                                            <div class="timeline-item mt-3">
+                                                <i class="fas fa-info-circle text-primary"></i>
+                                                <div class="mt-1">
+                                                    <strong>Description:</strong><br>
+                                                    <span class="text-muted">${farm.description}</span>
+                                                </div>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2349,8 +2629,9 @@ function showFarmDetails(farmId) {
             } else {
                 $('#farmDetailsContent').html(`
                     <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Failed to load farm details: ${response.message || 'Unknown error'}
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <strong>Error Loading Farm Details</strong><br>
+                        ${response.message || 'Unknown error occurred while loading farm analysis.'}
                     </div>
                 `);
             }
@@ -2358,38 +2639,57 @@ function showFarmDetails(farmId) {
         error: function(xhr, status, error) {
             $('#farmDetailsContent').html(`
                 <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Error loading farm details. Please try again.
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <strong>Connection Error</strong><br>
+                    Unable to load farm analysis. Please check your connection and try again.
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-danger" onclick="showFarmDetails('${farmId}')">
+                            <i class="fas fa-redo mr-1"></i>Retry
+                        </button>
+                    </div>
                 </div>
             `);
         }
     });
 }
 
-        // Add fade-in animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+// Test function to verify modal works
+function testModal() {
+    console.log('Testing modal...');
+    if (typeof $ !== 'undefined' && $('#farmDetailsModal').length > 0) {
+        $('#farmDetailsModal').modal('show');
+        console.log('Modal test successful');
+    } else {
+        console.error('Modal test failed - jQuery or modal not found');
+    }
+}
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+// Add fade-in animation when document is ready
+$(document).ready(function() {
+    // Add fade-in animation
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
         });
+    }, observerOptions);
 
-        // Load top KPI stats with real data
-        fetch("{{ url('superadmin/analysis/summary') }}")
+    document.querySelectorAll('.fade-in').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+
+    // Load top KPI stats with real data
+    fetch("{{ url('superadmin/analysis/summary') }}")
             .then(r => r.json())
             .then(payload => {
                 if (!payload?.success) {

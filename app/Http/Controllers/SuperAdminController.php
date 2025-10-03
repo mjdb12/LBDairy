@@ -22,41 +22,118 @@ class SuperAdminController extends Controller
      */
     public function updateProfile(Request $request)
     {
+        // Log that we reached the controller
+        \Log::info('=== PROFILE UPDATE CONTROLLER REACHED ===');
+        
         /** @var \App\Models\User $user */
         $user = Auth::user();
         
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'phone' => 'nullable|string|max:20',
-            'barangay' => 'required|string|max:255',
-            'position' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:500',
+        // Debug: Log the incoming request
+        \Log::info('Profile update request received', [
+            'user_id' => $user->id,
+            'request_data' => $request->all(),
+            'current_name' => $user->name,
+            'request_method' => $request->method(),
+            'request_url' => $request->url(),
+            'is_ajax' => $request->ajax(),
+            'wants_json' => $request->wantsJson()
         ]);
-
+        
         try {
-            $user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'barangay' => $request->barangay,
-                'position' => $request->position,
-                'address' => $request->address,
+            $request->validate([
+                'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+                'phone' => 'nullable|string|max:20',
+                'barangay' => 'required|string|max:255',
+                'position' => 'nullable|string|max:255',
+                'address' => 'nullable|string|max:500',
             ]);
+
+            $updateData = [
+                'email' => trim($request->email),
+                'phone' => $request->phone ? trim($request->phone) : null,
+                'barangay' => trim($request->barangay),
+                'position' => $request->position ? trim($request->position) : null,
+                'address' => $request->address ? trim($request->address) : null,
+            ];
+            
+            \Log::info('About to update user with data', $updateData);
+            
+            // Log before update
+            \Log::info('Updating user with data:', [
+                'user_id' => $user->id,
+                'update_data' => $updateData,
+                'current_name' => $user->name
+            ]);
+            
+            // Update the user using direct DB query to bypass any model events
+            $updated = \DB::table('users')
+                ->where('id', $user->id)
+                ->update($updateData);
+                
+            // Get fresh data directly from database
+            $updatedUser = \App\Models\User::find($user->id);
+            
+            \Log::info('User update result:', [
+                'rows_affected' => $updated,
+                'new_name' => $updatedUser->name,
+                'direct_db_check' => \DB::table('users')->where('id', $user->id)->value('name')
+            ]);
+            
+            // Update the user model with fresh data
+            $user = $updatedUser;
 
             // Log the profile update
             AuditLog::create([
                 'user_id' => $user->id,
                 'action' => 'profile_updated',
-                'description' => 'Super admin profile updated',
+                'description' => 'Super admin profile updated - Name: ' . $user->name,
                 'severity' => 'info',
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
             ]);
 
+            // Return JSON response for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                $response = [
+                    'success' => true,
+                    'message' => 'Profile updated successfully!',
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name ?? 'Not provided',
+                        'email' => $user->email,
+                        'phone' => $user->phone,
+                        'barangay' => $user->barangay,
+                        'position' => $user->position
+                    ]
+                ];
+                
+                \Log::info('Sending JSON response:', $response);
+                return response()->json($response);
+            }
+
             return redirect()->back()->with('success', 'Profile updated successfully!');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Profile update validation failed', [
+                'errors' => $e->errors(),
+                'request_data' => $request->all()
+            ]);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+            \Log::error('Profile update failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->with('error', 'Failed to update profile: ' . $e->getMessage());
         }
     }
 
@@ -65,18 +142,27 @@ class SuperAdminController extends Controller
      */
     public function changePassword(Request $request)
     {
-        $request->validate([
-            'current_password' => 'required|current_password',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
         /** @var \App\Models\User $user */
         $user = Auth::user();
         
+        \Log::info('Password change request received', [
+            'user_id' => $user->id,
+            'has_current_password' => !empty($request->current_password),
+            'has_new_password' => !empty($request->password),
+            'has_password_confirmation' => !empty($request->password_confirmation)
+        ]);
+        
         try {
+            $request->validate([
+                'current_password' => 'required|current_password',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+
             $user->update([
                 'password' => Hash::make($request->password),
             ]);
+
+            \Log::info('Password changed successfully', ['user_id' => $user->id]);
 
             // Log the password change
             AuditLog::create([
@@ -89,8 +175,18 @@ class SuperAdminController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Password changed successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Password change validation failed', [
+                'errors' => $e->errors(),
+                'user_id' => $user->id
+            ]);
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to change password. Please try again.');
+            \Log::error('Password change failed', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id
+            ]);
+            return redirect()->back()->with('error', 'Failed to change password: ' . $e->getMessage());
         }
     }
 
@@ -824,13 +920,50 @@ class SuperAdminController extends Controller
         try {
             $request->validate([
                 'admin_id' => 'required|exists:users,id',
+                'subject' => 'required|string|max:255',
                 'message' => 'required|string|max:1000',
             ]);
 
-            // This would typically send an email or notification
-            // For now, just return success
+            // Get the admin being contacted
+            $admin = User::findOrFail($request->admin_id);
+            
+            // Log the contact attempt
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'admin_contacted',
+                'description' => "SuperAdmin contacted admin: {$admin->name} - Subject: {$request->subject}",
+                'severity' => 'info',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            // Create a notification for the admin
+            \App\Models\Notification::create([
+                'type' => 'message',
+                'title' => 'Message from SuperAdmin',
+                'message' => "{$request->subject} - {$request->message}",
+                'icon' => 'fas fa-envelope',
+                'action_url' => '#', // Will open modal instead of navigation
+                'severity' => 'info',
+                'is_read' => false,
+                'recipient_id' => $request->admin_id,
+                'metadata' => [
+                    'sender_id' => Auth::id(),
+                    'sender_name' => Auth::user()->name,
+                    'subject' => $request->subject,
+                    'message_type' => 'contact_admin'
+                ]
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Message sent to admin successfully']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
+            Log::error('Contact admin failed: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Failed to send message'], 500);
         }
     }

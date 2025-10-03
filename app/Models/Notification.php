@@ -20,7 +20,8 @@ class Notification extends Model
         'is_read',
         'read_at',
         'read_by',
-        'metadata'
+        'metadata',
+        'recipient_id'
     ];
 
     protected $casts = [
@@ -35,6 +36,14 @@ class Notification extends Model
     public function readBy()
     {
         return $this->belongsTo(User::class, 'read_by');
+    }
+
+    /**
+     * Get the recipient of this notification
+     */
+    public function recipient()
+    {
+        return $this->belongsTo(User::class, 'recipient_id');
     }
 
     /**

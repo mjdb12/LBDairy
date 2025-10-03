@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class NotificationController extends Controller
 {
     /**
-     * Get notifications for super admin
+     * Get notifications for super admin and admin
      */
     public function getNotifications()
     {
@@ -29,7 +29,7 @@ class NotificationController extends Controller
                 'timestamp' => now()->toISOString()
             ]);
             
-            if (!$user || $user->role !== 'superadmin') {
+            if (!$user || !in_array($user->role, ['superadmin', 'admin'])) {
                 Log::warning('Unauthorized notifications access attempt', [
                     'user_id' => $user ? $user->id : null,
                     'user_role' => $user ? $user->role : null
@@ -47,8 +47,12 @@ class NotificationController extends Controller
                 ]);
             }
 
-            // Get unread notifications from database
+            // Get unread notifications from database (user-specific or global)
             $notifications = Notification::unread()
+                ->where(function($query) use ($user) {
+                    $query->where('recipient_id', $user->id)
+                          ->orWhereNull('recipient_id'); // Global notifications
+                })
                 ->recent()
                 ->orderBy('created_at', 'desc')
                 ->limit(10) // Limit to prevent performance issues
@@ -393,7 +397,7 @@ class NotificationController extends Controller
             ]);
 
             $user = Auth::user();
-            if (!$user || $user->role !== 'superadmin') {
+            if (!$user || !in_array($user->role, ['superadmin', 'admin'])) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -428,12 +432,17 @@ class NotificationController extends Controller
     {
         try {
             $user = Auth::user();
-            if (!$user || $user->role !== 'superadmin') {
+            if (!$user || !in_array($user->role, ['superadmin', 'admin'])) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // Mark all unread notifications as read
-            Notification::unread()->update([
+            // Mark all unread notifications as read (user-specific or global)
+            Notification::unread()
+                ->where(function($query) use ($user) {
+                    $query->where('recipient_id', $user->id)
+                          ->orWhereNull('recipient_id');
+                })
+                ->update([
                 'is_read' => true,
                 'read_at' => now(),
                 'read_by' => $user->id

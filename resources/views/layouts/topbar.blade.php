@@ -75,7 +75,7 @@
 </nav>
 <!-- End of Topbar -->
 
-@if(Auth::user() && Auth::user()->role === 'superadmin')
+@if(Auth::user() && in_array(Auth::user()->role, ['superadmin', 'admin']))
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Load notifications on page load
@@ -140,8 +140,9 @@ function loadNotifications() {
     });
 
     // Race between fetch and timeout
+    const notificationUrl = '{{ Auth::user()->role === "superadmin" ? "/superadmin/notifications" : "/admin/notifications" }}';
     Promise.race([
-        fetch('/superadmin/notifications', {
+        fetch(notificationUrl, {
             method: 'GET',
             credentials: 'same-origin',
             headers: {
@@ -242,8 +243,14 @@ function updateNotificationsList(notifications) {
         const typeClass = getNotificationTypeClass(notification.type);
         const iconClass = notification.icon;
         
+        // Check if this is a message notification
+        const isMessage = notification.action_url === '#' || (notification.title && notification.title.includes('Message from'));
+        const clickHandler = isMessage 
+            ? `onclick="showMessageModal('${notification.id}', '${escapeHtml(notification.title)}', '${escapeHtml(notification.message)}'); markNotificationAsRead('${notification.id}'); return false;"` 
+            : `onclick="markNotificationAsRead('${notification.id}')" href="${notification.action_url}"`;
+        
         html += `
-            <a class="dropdown-item d-flex align-items-center notification-item" href="${notification.action_url}" onclick="markNotificationAsRead('${notification.id}')">
+            <a class="dropdown-item d-flex align-items-center notification-item" ${clickHandler}>
                 <div class="mr-3">
                     <div class="icon-circle ${typeClass}">
                         <i class="${iconClass} text-white"></i>
@@ -255,7 +262,7 @@ function updateNotificationsList(notifications) {
                     <div class="small text-gray-600">${notification.message}</div>
                 </div>
                 <div class="ml-2">
-                    <i class="fas fa-chevron-right text-gray-400 fa-xs"></i>
+                    <i class="fas fa-${isMessage ? 'envelope' : 'chevron-right'} text-gray-400 fa-xs"></i>
                 </div>
             </a>
         `;
@@ -272,6 +279,72 @@ function updateNotificationsList(notifications) {
         item.addEventListener('mouseleave', function() {
             this.style.backgroundColor = '';
         });
+    });
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function showMessageModal(notificationId, title, message) {
+    // Parse the message to separate subject and content
+    const parts = message.split(' - ');
+    const subject = parts[0] || 'No Subject';
+    const content = parts.slice(1).join(' - ') || 'No message content';
+    
+    // Create modal HTML
+    const modalHtml = `
+        <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background: #18375d !important; color: white !important;">
+                        <h5 class="modal-title" style="color: white !important;">
+                            <i class="fas fa-envelope mr-2"></i>${title}
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="padding: 2rem;">
+                        <div class="mb-3">
+                            <h6 style="color: #18375d; font-weight: 600; border-bottom: 2px solid #e3e6f0; padding-bottom: 0.5rem;">Subject</h6>
+                            <p style="margin-bottom: 1.5rem; color: #333; font-weight: 500;">${subject}</p>
+                        </div>
+                        <div>
+                            <h6 style="color: #18375d; font-weight: 600; border-bottom: 2px solid #e3e6f0; padding-bottom: 0.5rem;">Message</h6>
+                            <p style="margin-bottom: 0; color: #333; line-height: 1.6;">${content}</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('messageModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    $('#messageModal').modal('show');
+    
+    // Clean up modal when hidden
+    $('#messageModal').on('hidden.bs.modal', function () {
+        this.remove();
     });
 }
 
@@ -299,7 +372,8 @@ function markNotificationAsRead(notificationId) {
         notificationItem.style.pointerEvents = 'none';
     }
     
-    fetch('/superadmin/notifications/mark-read', {
+    const markReadUrl = '{{ Auth::user()->role === "superadmin" ? "/superadmin/notifications/mark-read" : "/admin/notifications/mark-read" }}';
+    fetch(markReadUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -352,7 +426,8 @@ function markAllAsRead() {
     markAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Marking...';
     markAllBtn.style.pointerEvents = 'none';
     
-    fetch('/superadmin/notifications/mark-all-read', {
+    const markAllReadUrl = '{{ Auth::user()->role === "superadmin" ? "/superadmin/notifications/mark-all-read" : "/admin/notifications/mark-all-read" }}';
+    fetch(markAllReadUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
