@@ -1024,7 +1024,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" id="updateFarmerBtn" class="btn-action btn-action-edit">
-                         Update Farmer
+                        Update Farmer
                      </button>
                 </div>
             </form>

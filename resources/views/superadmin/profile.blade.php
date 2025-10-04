@@ -754,7 +754,7 @@
           <div class="form-group">
               <label for="editEmail">
                   <i class="fas fa-envelope mr-2"></i>Email
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required placeholder="Enter your email address">
               @error('email')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -763,7 +763,7 @@
           <div class="form-group">
               <label for="editPhone">
                   <i class="fas fa-phone mr-2"></i>Contact Number
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone ?? '') }}" placeholder="Enter your contact number">
               @error('phone')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -772,7 +772,7 @@
           <div class="form-group">
               <label for="editBarangay">
                   <i class="fas fa-map-marker-alt mr-2"></i>Barangay
-              </label>
+              <span class="text-danger">*</span></label>
               <select class="form-control @error('barangay') is-invalid @enderror" id="editBarangay" name="barangay" required>
                   <option value="">Select Barangay</option>
                   <option value="Abang" {{ old('barangay', auth()->user()->barangay) == 'Abang' ? 'selected' : '' }}>Abang</option>
@@ -815,7 +815,7 @@
           <div class="form-group">
               <label for="editPosition">
                   <i class="fas fa-user-shield mr-2"></i>Position
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('position') is-invalid @enderror" id="editPosition" name="position" value="{{ old('position', auth()->user()->position ?? 'Super Admin') }}" placeholder="Enter your position">
               @error('position')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -824,7 +824,7 @@
           <div class="form-group">
               <label for="editAddress">
                   <i class="fas fa-map-marker-alt mr-2"></i>Address
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address ?? '') }}" placeholder="Enter your address">
               @error('address')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -859,7 +859,7 @@
           <div class="form-group">
               <label for="currentPassword">
                   <i class="fas fa-lock mr-2"></i>Current Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
               @error('current_password')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -868,7 +868,7 @@
           <div class="form-group">
               <label for="newPassword">
                   <i class="fas fa-key mr-2"></i>New Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
               @error('password')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -877,7 +877,7 @@
           <div class="form-group">
               <label for="confirmPassword">
                   <i class="fas fa-check-circle mr-2"></i>Confirm New Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="confirmPassword" name="password_confirmation" required>
               @error('password_confirmation')
                   <div class="invalid-feedback">{{ $message }}</div>
