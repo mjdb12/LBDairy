@@ -4,6 +4,39 @@
 
 @push('styles')
 <style>
+    /* Ensure modal is displayed correctly */
+    .modal {
+        z-index: 9999 !important;
+        display: none !important;
+    }
+    .modal.show {
+        display: block !important;
+        opacity: 1 !important;
+    }
+    .modal-backdrop {
+        z-index: 1040 !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+    .modal-dialog {
+        z-index: 10000 !important;
+        margin: 1.75rem auto;
+    }
+    .modal-content {
+        position: relative;
+        z-index: 10001 !important;
+    }
+    /* Make sure the modal is visible */
+    .modal.show .modal-dialog {
+        transform: none !important;
+    }
+    /* Ensure modal is not transparent */
+    .modal.fade .modal-dialog {
+        transition: transform 0.3s ease-out;
+        transform: translate(0, -25%);
+    }
+    .modal.show .modal-dialog {
+        transform: translate(0, 0);
+    }
      /* User Details Modal Styling */
     #confirmDeleteModal .modal-content {
         border: none;
@@ -978,6 +1011,139 @@
     </div>
 </div>
 
+<!-- Edit Admin Modal -->
+<div class="modal fade superadmin-modal" id="editAdminModal" tabindex="-1" role="dialog" aria-labelledby="editAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAdminModalLabel">
+                    <i class="fas fa-edit mr-2"></i>
+                    Edit Admin
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editAdminForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editAdminId" name="user_id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminFirstName">First Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editAdminFirstName" name="first_name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminLastName">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editAdminLastName" name="last_name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminEmail">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="editAdminEmail" name="email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminUsername">Username <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editAdminUsername" name="username" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminPhone">Contact Number</label>
+                                <input type="text" class="form-control" id="editAdminPhone" name="phone">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminBarangay">Barangay <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editAdminBarangay" name="barangay" required>
+                                    <option value="">Select Barangay</option>
+                                    <option value="Abang">Abang</option>
+                                    <option value="Aliliw">Aliliw</option>
+                                    <option value="Atulinao">Atulinao</option>
+                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                                    <option value="Igang">Igang</option>
+                                    <option value="Kabatete">Kabatete</option>
+                                    <option value="Kakawit">Kakawit</option>
+                                    <option value="Kalangay">Kalangay</option>
+                                    <option value="Kalyaat">Kalyaat</option>
+                                    <option value="Kilib">Kilib</option>
+                                    <option value="Kulapi">Kulapi</option>
+                                    <option value="Mahabang Parang">Mahabang Parang</option>
+                                    <option value="Malupak">Malupak</option>
+                                    <option value="Manasa">Manasa</option>
+                                    <option value="May-It">May-It</option>
+                                    <option value="Nagsinamo">Nagsinamo</option>
+                                    <option value="Nalunao">Nalunao</option>
+                                    <option value="Palola">Palola</option>
+                                    <option value="Piis">Piis</option>
+                                    <option value="Samil">Samil</option>
+                                    <option value="Tiawe">Tiawe</option>
+                                    <option value="Tinamnan">Tinamnan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminRole">Role <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editAdminRole" name="role" required>
+                                    <option value="admin">Admin</option>
+                                    <option value="superadmin">Super Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminStatus">Status <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editAdminStatus" name="status" required>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAdminPassword">New Password (leave blank to keep current)</label>
+                                <input type="password" class="form-control" id="editAdminPassword" name="password">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="editAdminFormNotification" class="mt-2" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="updateAdminBtn" class="btn-action btn-action-edit">
+                        Update Admin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -1068,6 +1234,17 @@ $(document).ready(function () {
         loadUsers();
         updateStats();
     }, 30000); // 30 seconds
+
+    // Ensure modals are at the end of <body> to avoid stacking/z-index issues
+    $('#editAdminModal, #userModal, #userDetailsModal, #confirmDeleteModal').appendTo('body');
+
+    // Debug: confirm modals exist
+    console.log('[Users] Modals present:', {
+        editAdminModal: $('#editAdminModal').length,
+        userModal: $('#userModal').length,
+        userDetailsModal: $('#userDetailsModal').length,
+        confirmDeleteModal: $('#confirmDeleteModal').length
+    });
 });
 
 function initializeDataTables() {
@@ -1153,7 +1330,7 @@ function loadUsers() {
                         new Date(user.created_at).toLocaleDateString(),
                         getLastLoginDisplay(user),
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-edit" onclick="editUser('${user.id}')" title="Edit">
+                            <button type="button" class="btn-action btn-action-edit" data-toggle="modal" data-target="#editAdminModal" data-user-id="${user.id}" onclick="editUser('${user.id}')" title="Edit">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit</span>
                             </button>
@@ -1260,32 +1437,173 @@ function showAddUserModal() {
     $('#password').prop('required', true);
     $('#passwordConfirmation').prop('required', true);
     $('#userStatus').val('pending'); // Set default status for new users
-    $('#userModal').modal('show');
+    
+    // Ensure any previous backdrops are cleared
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+
+    // Show the modal using Bootstrap 4 API
+    $('#userModal').modal({
+        backdrop: 'static',
+        keyboard: true,
+        show: true
+    });
 }
 
 function editUser(userId) {
-    // Load user data via AJAX
+    console.log('[Users] editUser clicked with id:', userId);
+    // Clear any previous notifications
+    $('#editAdminFormNotification').hide().empty();
+    
+    // Show the modal using Bootstrap 4 syntax
+    $('#editAdminModal').modal({
+        backdrop: 'static',
+        keyboard: false,
+        show: true
+    });
+    
+    // Show loading state
+    const submitBtn = $('#updateAdminBtn');
+    submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Loading...');
+    
+    // Fetch user data
     $.ajax({
         url: `{{ route("superadmin.users.show", ":id") }}`.replace(':id', userId),
         method: 'GET',
         success: function(response) {
             if (response.success) {
                 const user = response.data;
-                populateUserForm(user);
-                $('#userModalLabel').html('<i class="fas fa-edit"></i> Edit User');
-                $('#passwordFields').hide();
-                $('#password').prop('required', false);
-                $('#passwordConfirmation').prop('required', false);
-                $('#userModal').modal('show');
+                
+                // Populate form fields
+                $('#editAdminId').val(user.id);
+                $('#editAdminFirstName').val(user.first_name || '');
+                $('#editAdminLastName').val(user.last_name || '');
+                $('#editAdminEmail').val(user.email || '');
+                $('#editAdminUsername').val(user.username || '');
+                $('#editAdminPhone').val(user.phone || '');
+                $('#editAdminBarangay').val(user.barangay || '');
+                $('#editAdminRole').val(user.role || 'admin');
+                $('#editAdminStatus').val(user.status || 'active');
             } else {
+                $('#editAdminModal').modal('hide');
                 showNotification('Error loading user data', 'danger');
             }
         },
         error: function(xhr) {
-            showNotification('Error loading user data', 'danger');
+            $('#editAdminModal').modal('hide');
+            let errorMessage = 'Error loading user data. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            showNotification(errorMessage, 'danger');
+        },
+        complete: function() {
+            submitBtn.prop('disabled', false).html('Update Admin');
         }
     });
 }
+
+// Handle edit admin form submission
+$(document).on('submit', '#editAdminForm', function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const submitBtn = $('#updateAdminBtn');
+    const notification = $('#editAdminFormNotification');
+    
+    // Disable submit button
+    submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Updating...');
+    
+    // Clear previous notifications
+    notification.hide().empty();
+    
+    // Get form data
+    const formData = new FormData(form);
+    const userId = formData.get('user_id');
+    
+    // Convert FormData to JSON
+    const jsonData = {};
+    formData.forEach((value, key) => {
+        // Don't include empty password fields
+        if (key === 'password' && !value) return;
+        jsonData[key] = value;
+    });
+    
+    // Submit via AJAX
+    $.ajax({
+        url: `/superadmin/users/${userId}`,
+        method: 'PUT',
+        data: jsonData,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                // Close modal using Bootstrap 4 syntax
+                $('#editAdminModal').modal('hide');
+                
+                // Show success message
+                showNotification('Admin updated successfully', 'success');
+                
+                // Refresh the users table
+                loadUsers();
+                
+                // Update stats if needed
+                if (typeof updateStats === 'function') {
+                    updateStats();
+                }
+            } else {
+                // Show error message
+                let errorMessage = response.message || 'Error updating admin. Please try again.';
+                if (response.errors) {
+                    errorMessage = Object.values(response.errors).flat().join('<br>');
+                }
+                
+                notification.html(`
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ${errorMessage}
+                    </div>
+                `).show();
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = 'Error updating admin. Please try again.';
+            
+            if (xhr.responseJSON) {
+                if (xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.responseJSON.errors) {
+                    errorMessage = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                }
+            }
+            
+            notification.html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    ${errorMessage}
+                </div>
+            `).show();
+        },
+        complete: function() {
+            // Re-enable submit button
+            submitBtn.prop('disabled', false).html('Update Admin');
+            
+            // Scroll to notification if there's an error
+            if (notification.is(':visible')) {
+                $('html, body').animate({
+                    scrollTop: notification.offset().top - 100
+                }, 500);
+            }
+        }
+    });
+});
+
+// Expose functions globally for inline onclick handlers
+window.editUser = editUser;
+window.showAddUserModal = showAddUserModal;
+window.showUserDetails = showUserDetails;
+window.toggleUserStatus = toggleUserStatus;
 
 function populateUserForm(user) {
     $('#userId').val(user.id);
@@ -1794,5 +2112,18 @@ function showNotification(message, type) {
         notification.alert('close');
     }, 5000);
 }
+
+// Handle modal hide events for Bootstrap 4
+$('#editAdminModal').on('hidden.bs.modal', function () {
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+});
+
+// Force modal cleanup on page load
+$(document).ready(function() {
+    // Clean up any leftover modal states
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+});
 </script>
 @endpush

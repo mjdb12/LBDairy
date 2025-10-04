@@ -3,7 +3,13 @@
 @section('title', 'LBDAIRY: SuperAdmin - Manage Admins')
 
 @push('styles')
-<style>#detailsModal .modal-content {
+<style>
+    /* Ensure modals display above backdrop on this page */
+    .modal { z-index: 1060 !important; }
+    .modal .modal-dialog { z-index: 1061 !important; }
+    .modal-backdrop { z-index: 1050 !important; opacity: 0.5 !important; }
+
+    #detailsModal .modal-content {
         border: none;
         border-radius: 12px;
         box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
@@ -1386,6 +1392,48 @@ $(document).ready(function () {
     $('#activeSearch').on('keyup', function() {
         activeAdminsTable.search(this.value).draw();
     });
+
+    // Ensure modals are appended to body to prevent stacking/z-index issues
+    $('#editAdminModal, #addAdminModal, #detailsModal, #contactModal, #confirmDeleteAdminModal, #confirmDeleteModal, #confirmRejectModal').appendTo('body');
+
+    // Diagnostics
+    console.log('[Admins] Modals present:', {
+        editAdmin: $('#editAdminModal').length,
+        addAdmin: $('#addAdminModal').length,
+        details: $('#detailsModal').length,
+        contact: $('#contactModal').length,
+        confirmDeleteAdmin: $('#confirmDeleteAdminModal').length,
+        confirmDelete: $('#confirmDeleteModal').length,
+        confirmReject: $('#confirmRejectModal').length
+    });
+
+    // Delegated handler to ensure Edit button works after DataTables redraws (avoid inline onclick)
+    $(document).on('click', '.btn-action-edit[data-admin-id]', function(e) {
+        e.preventDefault();
+        const adminId = $(this).data('admin-id');
+        if (adminId) {
+            editAdmin(adminId);
+        }
+    });
+});
+
+// Ensure single backdrop and correct layering for Edit Admin modal
+$(document).on('show.bs.modal', '#editAdminModal', function () {
+    const $backs = $('.modal-backdrop');
+    if ($backs.length > 1) {
+        $backs.not(':last').remove();
+    }
+});
+
+$(document).on('shown.bs.modal', '#editAdminModal', function () {
+    $('.modal-backdrop').last().css('z-index', 1050);
+    $(this).css('z-index', 1060);
+    $(this).find('.modal-dialog').css('z-index', 1061);
+});
+
+$('#editAdminModal').on('hidden.bs.modal', function () {
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
 });
 
 // Add event listener for confirm delete admin button
@@ -1565,7 +1613,7 @@ function loadActiveAdmins() {
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
                         admin.last_login_at ? new Date(admin.last_login_at).toLocaleDateString() : 'Never',
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-edit" onclick="editAdmin('${admin.id}')" title="Edit">
+                            <button type="button" class="btn-action btn-action-edit" data-admin-id="${admin.id}" title="Edit">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit</span>
                             </button>
@@ -2319,6 +2367,27 @@ function saveNewAdmin(event) {
 
 // Edit and Delete Admin Functions
 function editAdmin(adminId) {
+    console.log('[Admins] editAdmin clicked:', adminId);
+
+    // Clear any previous notifications
+    const $notification = $('#editAdminFormNotification');
+    $notification.hide().empty();
+
+    // Prepare modal and button
+    const $modal = $('#editAdminModal');
+    const $submitBtn = $('#updateAdminBtn');
+
+    // Clean up any stale backdrops/body classes that could cover the modal
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+
+    // Ensure modal is attached to body to avoid stacking/z-index issues
+    $modal.appendTo('body');
+
+    // Show modal immediately with static backdrop and disable keyboard close
+    $submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Loading...');
+    $modal.modal({ backdrop: 'static', keyboard: false, show: true });
+
     // Load admin data via AJAX
     $.ajax({
         url: `{{ route("superadmin.admins.show", ":id") }}`.replace(':id', adminId),
@@ -2327,14 +2396,18 @@ function editAdmin(adminId) {
             if (response.success) {
                 const admin = response.data;
                 populateEditAdminForm(admin);
-                $('#editAdminModal').modal('show');
             } else {
+                $modal.modal('hide');
                 showNotification('Error loading admin data', 'danger');
             }
         },
         error: function(xhr) {
             console.error('Error loading admin data:', xhr);
+            $modal.modal('hide');
             showNotification('Error loading admin data', 'danger');
+        },
+        complete: function() {
+            $submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Update Admin');
         }
     });
 }
