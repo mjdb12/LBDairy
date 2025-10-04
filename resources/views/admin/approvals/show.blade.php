@@ -152,15 +152,17 @@
                 </div>
                 <div class="card-body">
                     @if($user->status === 'pending')
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn-action btn-success btn-lg" onclick="approveUser({{ $user->id }})">
-                                <i class="fas fa-check mr-2"></i>
-                                Approve Registration
-                            </button>
-                            <button type="button" class="btn-action btn-danger btn-lg" onclick="rejectUser({{ $user->id }})">
-                                <i class="fas fa-times mr-2"></i>
-                                Reject Registration
-                            </button>
+                        <div class="row g-2">
+                            <div class="col-12 col-md-6">
+                                <button type="button" class="btn-action btn-success btn-lg" onclick="approveUser({{ $user->id }})">
+                                    <i class="fas fa-check mr-2"></i> Approve Registration
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <button type="button" class="btn-action btn-danger  btn-lg" onclick="rejectUser({{ $user->id }})">
+                                    <i class="fas fa-times mr-2"></i> Reject Registration
+                                </button>
+                            </div>
                         </div>
                     @elseif($user->status === 'approved')
                         <div class="alert alert-success">

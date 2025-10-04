@@ -2385,7 +2385,7 @@ function showFarmDetails(farmId) {
     $('#farmDetailsModalLabel').html('<i class="fas fa-tractor"></i> Farm Analysis - Loading...');
     $('#farmDetailsContent').html(`
         <div class="text-center py-4">
-            <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+            <i class="fas fa-spinner fa-spin fa-2x "></i>
             <p class="mt-3">Loading comprehensive farm analysis...</p>
         </div>
     `);
@@ -2436,7 +2436,7 @@ function showFarmDetails(farmId) {
                 const details = `
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="card border-left-primary h-100">
+                            <div class="card border-left h-100">
                                 <div class="card-body">
                                     <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
                                         <i class="fas fa-info-circle mr-2"></i>Farm Information
@@ -2470,7 +2470,7 @@ function showFarmDetails(farmId) {
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card border-left-success h-100">
+                            <div class="card border-left h-100">
                                 <div class="card-body">
                                     <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
                                         <i class="fas fa-chart-line mr-2"></i>Production Metrics
@@ -2506,10 +2506,10 @@ function showFarmDetails(farmId) {
                     
                     <div class="row mt-4">
                         <div class="col-12">
-                            <div class="card border-left-warning">
+                            <div class="card border-left">
                                 <div class="card-body">
                                     <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                        <i class="fas fa-analytics mr-2"></i>Performance Analysis
+                                        <i class="fas fa-chart-area mr-2"></i> Performance Analysis
                                     </h6>
                                     <div class="row align-items-center">
                                         <div class="col-md-4">
@@ -2568,25 +2568,22 @@ function showFarmDetails(farmId) {
                                     </h6>
                                     ${efficiency < 60 ? `
                                         <div class="alert alert-warning">
-                                            <i class="fas fa-exclamation-triangle mr-2"></i>
                                             <strong>Low Efficiency Detected</strong><br>
                                             Consider reviewing livestock health and feeding schedules.
                                         </div>
                                     ` : efficiency >= 80 ? `
                                         <div class="alert alert-success">
-                                            <i class="fas fa-trophy mr-2"></i>
                                             <strong>Excellent Performance!</strong><br>
                                             This farm is operating at optimal efficiency.
                                         </div>
                                     ` : `
                                         <div class="alert alert-info">
-                                            <i class="fas fa-info-circle mr-2"></i>
                                             <strong>Good Performance</strong><br>
                                             Minor improvements could boost efficiency further.
                                         </div>
                                     `}
                                     <ul class="list-unstyled mb-0">
-                                        ${livestockCount === 0 ? '<li><i class="fas fa-plus text-primary mr-2"></i>Add livestock to start production</li>' : ''}
+                                        ${livestockCount === 0 ? '<li><i class="fas fa-plus  mr-2"></i>Add livestock to start production</li>' : ''}
                                         ${efficiency < 80 ? '<li><i class="fas fa-chart-line text-warning mr-2"></i>Monitor daily production trends</li>' : ''}
                                         <li><i class="fas fa-calendar text-info mr-2"></i>Schedule regular health checkups</li>
                                         <li><i class="fas fa-leaf text-success mr-2"></i>Optimize feeding schedules</li>
