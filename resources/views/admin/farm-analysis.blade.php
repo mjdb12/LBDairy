@@ -274,100 +274,101 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeCharts() {
-    // Production Trend Chart
+    // Production Trend Chart (last 30 days)
     const productionCtx = document.getElementById('productionChart').getContext('2d');
-    new Chart(productionCtx, {
-        type: 'line',
-        data: {
-            labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
-            datasets: [{
-                label: 'Daily Production (L)',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                borderColor: '#4e73df',
-                backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true
+    fetch('/admin/analysis/production-trend')
+        .then(r => r.json())
+        .then(payload => {
+            new Chart(productionCtx, {
+                type: 'line',
+                data: {
+                    labels: payload.labels || [],
+                    datasets: [{
+                        label: 'Daily Production (L)',
+                        data: payload.data || [],
+                        borderColor: '#4e73df',
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
                 }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+            });
+        })
+        .catch(() => {/* silent fail to avoid UI change */});
 
     // Region Distribution Chart
     const regionCtx = document.getElementById('regionChart').getContext('2d');
-    new Chart(regionCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['North', 'South', 'East', 'West'],
-            datasets: [{
-                data: [30, 25, 25, 20],
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
+    fetch('/admin/analysis/region-distribution')
+        .then(r => r.json())
+        .then(payload => {
+            new Chart(regionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: payload.labels || [],
+                    datasets: [{
+                        data: payload.data || [],
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#fd7e14', '#6f42c1']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        })
+        .catch(() => {/* silent fail */});
 
-    // Regional Performance Chart
+    // Regional Performance Chart (avg per day over period)
     const regionalCtx = document.getElementById('regionalChart').getContext('2d');
-    new Chart(regionalCtx, {
-        type: 'bar',
-        data: {
-            labels: ['North', 'South', 'East', 'West'],
-            datasets: [{
-                label: 'Average Production (L)',
-                data: [75, 68, 82, 71],
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
+    fetch('/admin/analysis/regional-performance')
+        .then(r => r.json())
+        .then(payload => {
+            new Chart(regionalCtx, {
+                type: 'bar',
+                data: {
+                    labels: payload.labels || [],
+                    datasets: [{
+                        label: 'Average Production (L)',
+                        data: payload.data || [],
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#fd7e14', '#6f42c1']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
                 }
-            }
-        }
-    });
+            });
+        })
+        .catch(() => {/* silent fail */});
 
-    // Growth Trends Chart
+    // Growth Trends Chart (monthly totals last 6 months)
     const growthCtx = document.getElementById('growthChart').getContext('2d');
-    new Chart(growthCtx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Production Growth (%)',
-                data: [0, 5, 12, 18, 25, 32],
-                borderColor: '#1cc88a',
-                backgroundColor: 'rgba(28, 200, 138, 0.1)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
+    fetch('/admin/analysis/growth-trends')
+        .then(r => r.json())
+        .then(payload => {
+            new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: payload.labels || [],
+                    datasets: [{
+                        label: 'Production Growth (L)',
+                        data: payload.data || [],
+                        borderColor: '#1cc88a',
+                        backgroundColor: 'rgba(28, 200, 138, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
                 }
-            }
-        }
-    });
+            });
+        })
+        .catch(() => {/* silent fail */});
 }
 
 function initializeDataTable() {

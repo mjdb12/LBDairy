@@ -132,7 +132,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile/password', [AdminController::class, 'changePassword'])->name('profile.password');
         Route::post('/profile/picture', [AdminController::class, 'uploadProfilePicture'])->name('profile.picture');
         Route::get('/profile/picture/current', [AdminController::class, 'getCurrentProfilePicture'])->name('profile.picture.current');
-        Route::get('/farms', function () { return view('admin.farms'); })->name('farms');
+        Route::get('/farms', [AdminController::class, 'farms'])->name('farms');
         // Farmer management routes
         Route::get('/manage-farmers', [App\Http\Controllers\AdminController::class, 'manageFarmers'])->name('manage-farmers');
         Route::get('/farmers', [App\Http\Controllers\AdminController::class, 'farmers'])->name('farmers');
@@ -230,19 +230,25 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/admins/{id}/status', [App\Http\Controllers\AdminController::class, 'updateAdminStatus'])->name('admins.update-status');
         Route::post('/admins/{id}/reset-password', [App\Http\Controllers\AdminController::class, 'resetAdminPassword'])->name('admins.reset-password');
         Route::delete('/admins/{id}', [App\Http\Controllers\AdminController::class, 'deleteAdmin'])->name('admins.delete');
+        // Endpoints used by view JS expectations
+        Route::get('/admins/{id}/details', [App\Http\Controllers\AdminController::class, 'adminDetails']);
+        Route::get('/admins/{id}/edit', [App\Http\Controllers\AdminController::class, 'editAdmin']);
+        Route::post('/admins/{id}/toggle-status', [App\Http\Controllers\AdminController::class, 'toggleAdminStatus']);
+        Route::post('/admins/bulk-approve', [App\Http\Controllers\AdminController::class, 'bulkApproveAdmins']);
+        Route::post('/admins/store', [App\Http\Controllers\AdminController::class, 'storeAdmin']);
+        Route::get('/admins/export', [App\Http\Controllers\AdminController::class, 'exportAdmins']);
         
         // Client management routes
         Route::get('/clients', [App\Http\Controllers\AdminController::class, 'manageClients'])->name('clients');
         
-        // Inventory management routes
-        Route::get('/inventory', [App\Http\Controllers\AdminController::class, 'manageInventory'])->name('inventory');
+        // Inventory routes disabled (feature not in current plan)
         
-        // Expense management routes
-        Route::get('/expenses', [App\Http\Controllers\AdminController::class, 'manageExpenses'])->name('expenses');
+        // Expense routes disabled (feature not in current plan)
         
         // Farm management routes
         Route::get('/manage-farms', [App\Http\Controllers\FarmController::class, 'index'])->name('farms.index');
         Route::get('/farms/{id}', [App\Http\Controllers\FarmController::class, 'show'])->name('farms.show');
+        Route::get('/farms/{id}/details', [App\Http\Controllers\FarmController::class, 'details'])->name('farms.details');
         Route::post('/farms/{id}/status', [App\Http\Controllers\FarmController::class, 'updateStatus'])->name('farms.update-status');
         Route::delete('/farms/{id}', [App\Http\Controllers\FarmController::class, 'destroy'])->name('farms.destroy');
         Route::post('/farms/import', [App\Http\Controllers\FarmController::class, 'import'])->name('farms.import');
@@ -285,23 +291,22 @@ Route::middleware(['auth'])->group(function () {
         
 
         
-        Route::get('/production', [App\Http\Controllers\AdminController::class, 'production'])->name('production');
-        Route::get('/sales', [App\Http\Controllers\AdminController::class, 'sales'])->name('sales');
-        Route::post('/sales', [App\Http\Controllers\AdminController::class, 'storeSale'])->name('sales.store');
-        Route::delete('/sales/{id}', [App\Http\Controllers\AdminController::class, 'deleteSale'])->name('sales.destroy');
-        Route::post('/sales/import', [App\Http\Controllers\AdminController::class, 'importSales'])->name('sales.import');
-        Route::get('/expenses', [App\Http\Controllers\AdminController::class, 'manageExpenses'])->name('expenses');
-        Route::get('/issues', function () { return view('admin.issues'); })->name('issues');
-        Route::get('/analysis', [App\Http\Controllers\AdminController::class, 'analysis'])->name('analysis');
+        // Production routes disabled (feature not in current plan)
+        // Sales routes disabled (feature not in current plan)
+        // Expenses page route disabled (feature not in current plan)
         
         // Livestock trends API for dashboard chart
         Route::get('/livestock-trends', [App\Http\Controllers\AdminController::class, 'getLivestockTrends'])->name('livestock-trends');
+        // Analysis chart data endpoints (admin)
+        Route::get('/analysis/production-trend', [App\Http\Controllers\AdminController::class, 'getProductionTrendData'])->name('analysis.production-trend');
+        Route::get('/analysis/region-distribution', [App\Http\Controllers\AdminController::class, 'getRegionDistributionData'])->name('analysis.region-distribution');
+        Route::get('/analysis/regional-performance', [App\Http\Controllers\AdminController::class, 'getRegionalPerformanceData'])->name('analysis.regional-performance');
+        Route::get('/analysis/growth-trends', [App\Http\Controllers\AdminController::class, 'getGrowthTrendsData'])->name('analysis.growth-trends');
+        // Livestock analysis chart data
+        Route::get('/livestock-productivity-trends', [App\Http\Controllers\AdminController::class, 'getLivestockProductivityTrends'])->name('livestock.productivity-trends');
+        Route::get('/livestock/{id}/analysis-data', [App\Http\Controllers\AdminController::class, 'getLivestockAnalysisData'])->name('livestock.analysis-data');
         
         // Additional admin routes for missing functionality
-        Route::get('/clients', function () { return view('admin.clients'); })->name('clients');
-        Route::get('/inventory', function () { return view('admin.inventory'); })->name('inventory');
-        Route::get('/farm-analysis', function () { return view('admin.farm-analysis'); })->name('farm-analysis');
-        Route::get('/livestock-analysis', function () { return view('admin.livestock-analysis'); })->name('livestock-analysis');
         Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit-logs');
         Route::get('/audit-logs/{id}/details', [AdminController::class, 'getAuditLogDetails'])->name('audit-logs.details');
         Route::get('/audit-logs/export', [AdminController::class, 'exportAuditLogs'])->name('audit-logs.export');

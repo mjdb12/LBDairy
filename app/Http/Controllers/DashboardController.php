@@ -126,7 +126,7 @@ class DashboardController extends Controller
             $totalProduction = ProductionRecord::sum('milk_quantity') ?? 0;
             $totalSales = Sale::sum('total_amount') ?? 0;
             $totalExpenses = Expense::sum('amount') ?? 0;
-            $openIssues = Issue::where('status', 'open')->count();
+            $openIssues = Issue::whereIn('status', ['Pending', 'In Progress'])->count();
             
             $recentIssues = Issue::with(['farm', 'reportedBy'])->latest()->take(5)->get();
             $recentProduction = ProductionRecord::with(['farm', 'livestock'])->latest()->take(5)->get();
@@ -168,7 +168,7 @@ class DashboardController extends Controller
             $totalProduction = ProductionRecord::sum('milk_quantity') ?? 0;
             $totalSales = Sale::sum('total_amount') ?? 0;
             $totalExpenses = Expense::sum('amount') ?? 0;
-            $openIssues = Issue::where('status', 'open')->count();
+            $openIssues = Issue::whereIn('status', ['Pending', 'In Progress'])->count();
 
             // Accurate superadmin dashboard KPIs
             $totalAdmins = User::where('role', 'admin')->count();

@@ -48,9 +48,14 @@ class FarmController extends Controller
             // Get farm statistics
             $stats = $this->getFarmStats($farm->id);
             
+            // Ensure UI compatibility: include 'user' alias and 'farm_id'
+            $farmArray = $farm->toArray();
+            $farmArray['user'] = $farm->owner ? $farm->owner->toArray() : null;
+            $farmArray['farm_id'] = 'FS' . str_pad($farm->id, 3, '0', STR_PAD_LEFT);
+
             return response()->json([
                 'success' => true,
-                'farm' => $farm,
+                'farm' => $farmArray,
                 'stats' => $stats
             ]);
         } catch (\Exception $e) {
@@ -58,6 +63,29 @@ class FarmController extends Controller
                 'success' => false,
                 'message' => 'Failed to load farm details'
             ], 500);
+        }
+    }
+
+    /**
+     * Render farm details HTML snippet for modal (used by farm-analysis view)
+     */
+    public function details($id)
+    {
+        try {
+            $farm = Farm::with(['owner'])->findOrFail($id);
+            $farmId = 'F' . str_pad($farm->id, 3, '0', STR_PAD_LEFT);
+            $owner = $farm->owner;
+
+            // Build lightweight HTML fragment matching modal expectations
+            $html = view('partials.farm-details', [
+                'farm' => $farm,
+                'farmId' => $farmId,
+                'owner' => $owner,
+            ])->render();
+
+            return response($html);
+        } catch (\Exception $e) {
+            return response('<div class="text-danger">Failed to load farm details.</div>', 500);
         }
     }
 
@@ -104,13 +132,22 @@ class FarmController extends Controller
             
             // Check if farm has associated data
             if ($farm->livestock()->count() > 0 || $farm->productionRecords()->count() > 0) {
+                if (request()->ajax() || request()->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Cannot delete farm with associated livestock or production records'], 400);
+                }
                 return redirect()->back()->with('error', 'Cannot delete farm with associated livestock or production records');
             }
             
             $farm->delete();
             
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => true]);
+            }
             return redirect()->route('admin.farms.index')->with('success', 'Farm deleted successfully');
         } catch (\Exception $e) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Failed to delete farm'], 500);
+            }
             return redirect()->back()->with('error', 'Failed to delete farm');
         }
     }
@@ -156,9 +193,9 @@ class FarmController extends Controller
                     ]);
                 }
 
-                // Create farm
+                // Create farm (owner_id column as per schema)
                 Farm::create([
-                    'user_id' => $user->id,
+                    'owner_id' => $user->id,
                     'name' => $farmData['owner_name'] . "'s Farm",
                     'location' => $farmData['location'],
                     'phone' => $farmData['phone'] ?? null,

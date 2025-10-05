@@ -531,7 +531,7 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <div class="text-xs font-weight-bold  text-uppercase mb-1" style="color: #18375d !important;">Pending Issues</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::where('status', 'open')->count() }}</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Issue::whereIn('status', ['Pending','In Progress'])->count() }}</div>
                 </div>
                 <div class="icon" style="color: #18375d !important;">
                     <i class="fas fa-exclamation-triangle fa-2x"></i>

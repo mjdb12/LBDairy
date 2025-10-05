@@ -14,6 +14,7 @@ use App\Models\Sale;
 use App\Models\Expense;
 use App\Models\AuditLog;
 use App\Models\LivestockAlert;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -40,6 +41,250 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
+
+    /**
+     * Farm Analysis: Production Trend (last 30 days)
+     */
+    public function getProductionTrendData(Request $request)
+    {
+        $days = (int) $request->get('days', 30);
+        if ($days < 7 || $days > 90) { $days = 30; }
+
+        $start = now()->startOfDay()->subDays($days - 1);
+        $records = ProductionRecord::selectRaw("DATE(COALESCE(production_date, created_at)) as d, SUM(milk_quantity) as qty")
+            ->where(function($q) use ($start) {
+                $q->whereDate('production_date', '>=', $start)
+                  ->orWhereDate('created_at', '>=', $start);
+            })
+            ->groupBy('d')
+            ->orderBy('d')
+            ->get();
+
+        $labels = [];
+        $data = [];
+        $cursor = $start->copy();
+        for ($i = 0; $i < $days; $i++) {
+            $labels[] = $cursor->format('M d');
+            $val = optional($records->firstWhere('d', $cursor->format('Y-m-d')))->qty ?? 0;
+            $data[] = (float) $val;
+            $cursor->addDay();
+        }
+
+        return response()->json(['labels' => $labels, 'data' => $data]);
+    }
+
+    /**
+     * Farm Analysis: Region Distribution (by Farm location)
+     */
+    public function getRegionDistributionData()
+    {
+        $rows = Farm::selectRaw('COALESCE(location, "Unknown") as region, COUNT(*) as cnt')
+            ->groupBy('region')
+            ->orderByDesc('cnt')
+            ->limit(6)
+            ->get();
+
+        return response()->json([
+            'labels' => $rows->pluck('region'),
+            'data' => $rows->pluck('cnt')->map(fn($v) => (int) $v),
+        ]);
+    }
+
+    /**
+     * Farm Analysis: Regional Performance (avg daily production by region, last 30 days)
+     */
+    public function getRegionalPerformanceData(Request $request)
+    {
+        $days = (int) $request->get('days', 30);
+        if ($days < 7 || $days > 90) { $days = 30; }
+        $start = now()->startOfDay()->subDays($days - 1);
+
+        $rows = ProductionRecord::selectRaw('COALESCE(farms.location, "Unknown") as region, SUM(production_records.milk_quantity) as total')
+            ->leftJoin('farms', 'production_records.farm_id', '=', 'farms.id')
+            ->where(function($q) use ($start) {
+                $q->whereDate('production_records.production_date', '>=', $start)
+                  ->orWhereDate('production_records.created_at', '>=', $start);
+            })
+            ->groupBy('region')
+            ->orderByDesc('total')
+            ->limit(6)
+            ->get();
+
+        // Average per day over the period
+        $labels = $rows->pluck('region');
+        $data = $rows->pluck('total')->map(fn($t) => round(($t ?? 0) / max($days,1), 1));
+        return response()->json(['labels' => $labels, 'data' => $data]);
+    }
+
+    /**
+     * Farm Analysis: Growth Trends (monthly totals last 6 months)
+     */
+    public function getGrowthTrendsData(Request $request)
+    {
+        $months = (int) $request->get('months', 6);
+        if ($months < 3 || $months > 12) { $months = 6; }
+        $start = now()->startOfMonth()->subMonths($months - 1);
+
+        $rows = ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, SUM(milk_quantity) as total")
+            ->where(function($q) use ($start) {
+                $q->whereDate('production_date', '>=', $start)
+                  ->orWhereDate('created_at', '>=', $start);
+            })
+            ->groupBy('ym')
+            ->orderBy('ym')
+            ->get();
+
+        $labels = [];
+        $data = [];
+        $cursor = $start->copy();
+        for ($i = 0; $i < $months; $i++) {
+            $labels[] = $cursor->format('M');
+            $ym = $cursor->format('Y-m');
+            $val = optional($rows->firstWhere('ym', $ym))->total ?? 0;
+            $data[] = round((float) $val, 1);
+            $cursor->addMonth();
+        }
+        return response()->json(['labels' => $labels, 'data' => $data]);
+    }
+
+    /**
+     * Livestock Analysis: Average Productivity Trend (last 6 months)
+     */
+    public function getLivestockProductivityTrends(Request $request)
+    {
+        $months = (int) $request->get('months', 6);
+        if ($months < 3 || $months > 12) { $months = 6; }
+        $start = now()->startOfMonth()->subMonths($months - 1);
+
+        $rows = ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, AVG(milk_quality_score) as avg_quality")
+            ->where(function($q) use ($start) {
+                $q->whereDate('production_date', '>=', $start)
+                  ->orWhereDate('created_at', '>=', $start);
+            })
+            ->groupBy('ym')
+            ->orderBy('ym')
+            ->get();
+
+        $labels = [];
+        $data = [];
+        $cursor = $start->copy();
+        for ($i = 0; $i < $months; $i++) {
+            $labels[] = $cursor->format('M');
+            $ym = $cursor->format('Y-m');
+            $val = optional($rows->firstWhere('ym', $ym))->avg_quality ?? 0;
+            $data[] = round((float) $val, 1);
+            $cursor->addMonth();
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data,
+            'label' => 'Average Productivity',
+        ]);
+    }
+
+    /**
+     * Livestock Analysis: per-livestock analysis dataset by type
+     */
+    public function getLivestockAnalysisData($id, Request $request)
+    {
+        $type = $request->get('type', 'growth');
+        $months = 6;
+        $start = now()->startOfMonth()->subMonths($months - 1);
+
+        $labels = [];
+        $data = [];
+        $cursor = $start->copy();
+
+        if ($type === 'health') {
+            $rows = ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, AVG(milk_quality_score) as avgq")
+                ->where('livestock_id', $id)
+                ->where(function($q) use ($start) {
+                    $q->whereDate('production_date', '>=', $start)
+                      ->orWhereDate('created_at', '>=', $start);
+                })
+                ->groupBy('ym')
+                ->orderBy('ym')
+                ->get();
+            for ($i = 0; $i < $months; $i++) {
+                $labels[] = $cursor->format('M');
+                $ym = $cursor->format('Y-m');
+                $val = optional($rows->firstWhere('ym', $ym))->avgq ?? 0;
+                $data[] = round((float) $val, 1);
+                $cursor->addMonth();
+            }
+            return response()->json(['labels' => $labels, 'data' => $data, 'label' => 'Health Score']);
+        }
+
+        if ($type === 'milk') {
+            $rows = ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, SUM(milk_quantity) as total")
+                ->where('livestock_id', $id)
+                ->where(function($q) use ($start) {
+                    $q->whereDate('production_date', '>=', $start)
+                      ->orWhereDate('created_at', '>=', $start);
+                })
+                ->groupBy('ym')
+                ->orderBy('ym')
+                ->get();
+            for ($i = 0; $i < $months; $i++) {
+                $labels[] = $cursor->format('M');
+                $ym = $cursor->format('Y-m');
+                $val = optional($rows->firstWhere('ym', $ym))->total ?? 0;
+                $data[] = round((float) $val, 1);
+                $cursor->addMonth();
+            }
+            return response()->json(['labels' => $labels, 'data' => $data, 'label' => 'Milk Production (L)']);
+        }
+
+        if ($type === 'breeding') {
+            // Use monthly count of production records as a proxy activity metric
+            $rows = ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, COUNT(*) as cnt")
+                ->where('livestock_id', $id)
+                ->where(function($q) use ($start) {
+                    $q->whereDate('production_date', '>=', $start)
+                      ->orWhereDate('created_at', '>=', $start);
+                })
+                ->groupBy('ym')
+                ->orderBy('ym')
+                ->get();
+            for ($i = 0; $i < $months; $i++) {
+                $labels[] = $cursor->format('M');
+                $ym = $cursor->format('Y-m');
+                $val = optional($rows->firstWhere('ym', $ym))->cnt ?? 0;
+                $data[] = (int) $val;
+                $cursor->addMonth();
+            }
+            return response()->json(['labels' => $labels, 'data' => $data, 'label' => 'Breeding Success']);
+        }
+
+        // Default: growth = month-over-month change in milk (L)
+        $rows = ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, SUM(milk_quantity) as total")
+            ->where('livestock_id', $id)
+            ->where(function($q) use ($start) {
+                $q->whereDate('production_date', '>=', $start)
+                  ->orWhereDate('created_at', '>=', $start);
+            })
+            ->groupBy('ym')
+            ->orderBy('ym')
+            ->get();
+
+        $monthly = [];
+        $cursor = $start->copy();
+        for ($i = 0; $i < $months; $i++) {
+            $labels[] = $cursor->format('M');
+            $ym = $cursor->format('Y-m');
+            $val = optional($rows->firstWhere('ym', $ym))->total ?? 0;
+            $monthly[] = (float) $val;
+            $cursor->addMonth();
+        }
+        $data = [];
+        for ($i = 0; $i < count($monthly); $i++) {
+            $prev = $i === 0 ? 0 : $monthly[$i-1];
+            $growth = $prev > 0 ? (($monthly[$i] - $prev) / $prev) * 100 : 0;
+            $data[] = round($growth, 1);
+        }
+        return response()->json(['labels' => array_slice($labels, 0, $months), 'data' => $data, 'label' => 'Growth Rate (%)']);
     }
 
     /**
@@ -73,6 +318,17 @@ class AdminController extends Controller
             ->get()
             ->map(function ($farm) {
                 $farm->performance_score = $this->calculateFarmPerformance($farm);
+                // Map fields expected by the view without changing UI
+                $farm->farm_id = 'F' . str_pad($farm->id, 3, '0', STR_PAD_LEFT);
+                $farm->owner_name = $farm->owner->name ?? 'N/A';
+                $farm->livestock_count = $farm->livestock->count();
+                $today = now()->toDateString();
+                $farm->daily_production = $farm->productionRecords
+                    ->filter(function($r) use ($today) {
+                        $date = $r->production_date ? $r->production_date->toDateString() : ($r->created_at ? $r->created_at->toDateString() : null);
+                        return $date === $today;
+                    })
+                    ->sum('milk_quantity');
                 return $farm;
             });
 
@@ -144,7 +400,7 @@ class AdminController extends Controller
         
         // Get all admin users
         $admins = User::where('role', 'admin')
-            ->with(['farm'])
+            ->with(['farms'])
             ->get();
 
         return view('admin.manage-admins', [
@@ -192,36 +448,14 @@ class AdminController extends Controller
      */
     public function manageInventory()
     {
-        // Get inventory statistics
-        $stats = $this->getInventoryStats();
-        
-        // For now, create sample inventory data since we don't have an Inventory model yet
-        $inventory = collect([
-            (object) [
-                'id' => 'INV001',
-                'date' => '2024-06-01',
-                'category' => 'Feed',
-                'name' => 'Corn Feed Bag',
-                'quantity' => '150 bags',
-                'farm_id' => 'FARM01'
-            ],
-            (object) [
-                'id' => 'INV002',
-                'date' => '2024-06-03',
-                'category' => 'Medicine',
-                'name' => 'Antibiotic Vial',
-                'quantity' => '75 units',
-                'farm_id' => 'FARM01'
-            ],
-            (object) [
-                'id' => 'INV003',
-                'date' => '2024-06-05',
-                'category' => 'Equipment',
-                'name' => 'Milking Machine',
-                'quantity' => '3 units',
-                'farm_id' => 'FARM02'
-            ]
-        ]);
+        // Load real inventory data
+        $inventory = Inventory::orderByDesc('date')->get()->map(function ($item) {
+            // Map attributes to align with view expectations without changing UI
+            $item->quantity = $item->quantity_text; // alias
+            // Preserve UI: show business code in the first column used as ID
+            $item->id = $item->code;
+            return $item;
+        });
 
         // Calculate category-specific counts
         $feedStock = $inventory->where('category', 'Feed')->count();
@@ -250,22 +484,40 @@ class AdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Calculate additional metrics for the dashboard
+        // Calculate additional metrics for the dashboard (map model fields to UI fields)
         $totalExpenses = $expenses->sum('amount') ?? 0;
-        $feedExpenses = $expenses->where('category', 'Feed')->sum('amount') ?? 0;
-        $veterinaryExpenses = $expenses->where('category', 'Veterinary')->sum('amount') ?? 0;
-        $maintenanceExpenses = $expenses->where('category', 'Maintenance')->sum('amount') ?? 0;
+        $feedExpenses = $expenses->where('expense_type', 'Feed')->sum('amount') ?? 0;
+        $veterinaryExpenses = $expenses->where('expense_type', 'Veterinary')->sum('amount') ?? 0;
+        $maintenanceExpenses = $expenses->where('expense_type', 'Maintenance')->sum('amount') ?? 0;
         
-        // Calculate percentage changes (simplified - in real app this would compare with previous month)
-        $expenseChange = 12; // Sample data
-        $feedChange = -3;
-        $veterinaryChange = 8;
-        $maintenanceChange = 15;
+        // Calculate real month-over-month percentage changes
+        $currentMonthStart = now()->startOfMonth();
+        $prevMonthStart = (clone $currentMonthStart)->subMonth();
+        $prevMonthEnd = (clone $currentMonthStart)->subDay();
+
+        $currTotal = Expense::whereBetween('expense_date', [$currentMonthStart, now()])->sum('amount') ?? 0;
+        $prevTotal = Expense::whereBetween('expense_date', [$prevMonthStart, $prevMonthEnd])->sum('amount') ?? 0;
+        $expenseChange = $prevTotal > 0 ? round((($currTotal - $prevTotal) / $prevTotal) * 100) : 0;
+
+        $currFeed = Expense::where('expense_type', 'Feed')->whereBetween('expense_date', [$currentMonthStart, now()])->sum('amount') ?? 0;
+        $prevFeed = Expense::where('expense_type', 'Feed')->whereBetween('expense_date', [$prevMonthStart, $prevMonthEnd])->sum('amount') ?? 0;
+        $feedChange = $prevFeed > 0 ? round((($currFeed - $prevFeed) / $prevFeed) * 100) : 0;
+
+        $currVet = Expense::where('expense_type', 'Veterinary')->whereBetween('expense_date', [$currentMonthStart, now()])->sum('amount') ?? 0;
+        $prevVet = Expense::where('expense_type', 'Veterinary')->whereBetween('expense_date', [$prevMonthStart, $prevMonthEnd])->sum('amount') ?? 0;
+        $veterinaryChange = $prevVet > 0 ? round((($currVet - $prevVet) / $prevVet) * 100) : 0;
+
+        $currMaint = Expense::where('expense_type', 'Maintenance')->whereBetween('expense_date', [$currentMonthStart, now()])->sum('amount') ?? 0;
+        $prevMaint = Expense::where('expense_type', 'Maintenance')->whereBetween('expense_date', [$prevMonthStart, $prevMonthEnd])->sum('amount') ?? 0;
+        $maintenanceChange = $prevMaint > 0 ? round((($currMaint - $prevMaint) / $prevMaint) * 100) : 0;
 
         // Enhance expenses with display properties
         $expenses = $expenses->map(function($expense) {
-            $expense->icon = $this->getExpenseIcon($expense->category);
-            $expense->color = $this->getExpenseColor($expense->category);
+            // Map fields for UI without changing templates
+            $expense->date = $expense->expense_date ? $expense->expense_date->format('Y-m-d') : ($expense->created_at ? $expense->created_at->format('Y-m-d') : null);
+            $expense->name = $expense->description; // UI expects name
+            $expense->icon = $this->getExpenseIcon($expense->expense_type);
+            $expense->color = $this->getExpenseColor($expense->expense_type);
             $expense->paid_amount = $expense->amount; // Assuming all expenses are paid for now
             return $expense;
         });
@@ -281,6 +533,140 @@ class AdminController extends Controller
             'maintenanceChange' => $maintenanceChange,
             'expenses' => $expenses
         ]);
+    }
+
+    /**
+     * Inventory CRUD endpoints for admin
+     */
+    public function storeInventory(Request $request)
+    {
+        try {
+            $request->validate([
+                'inventoryId' => 'required|string|max:50',
+                'inventoryDate' => 'required|date',
+                'inventoryCategory' => 'required|string|max:50',
+                'inventoryName' => 'required|string|max:255',
+                'inventoryQuantity' => 'required|string|max:255',
+                'inventoryFarmId' => 'required|string|max:50',
+            ]);
+
+            $item = Inventory::create([
+                'code' => $request->inventoryId,
+                'date' => $request->inventoryDate,
+                'category' => $request->inventoryCategory,
+                'name' => $request->inventoryName,
+                'quantity_text' => $request->inventoryQuantity,
+                'farm_id' => $request->inventoryFarmId,
+            ]);
+
+            return response()->json(['success' => true, 'item' => $item]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to save inventory item'], 500);
+        }
+    }
+
+    public function showInventory($id)
+    {
+        try {
+            $item = is_numeric($id)
+                ? Inventory::findOrFail($id)
+                : Inventory::where('code', $id)->firstOrFail();
+            return response()->json(['success' => true, 'item' => $item]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Inventory item not found'], 404);
+        }
+    }
+
+    public function updateInventory(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'inventoryDate' => 'required|date',
+                'inventoryCategory' => 'required|string|max:50',
+                'inventoryName' => 'required|string|max:255',
+                'inventoryQuantity' => 'required|string|max:255',
+                'inventoryFarmId' => 'required|string|max:50',
+            ]);
+
+            $item = is_numeric($id)
+                ? Inventory::findOrFail($id)
+                : Inventory::where('code', $id)->firstOrFail();
+            $item->update([
+                'date' => $request->inventoryDate,
+                'category' => $request->inventoryCategory,
+                'name' => $request->inventoryName,
+                'quantity_text' => $request->inventoryQuantity,
+                'farm_id' => $request->inventoryFarmId,
+            ]);
+
+            return response()->json(['success' => true, 'item' => $item]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update inventory item'], 500);
+        }
+    }
+
+    public function deleteInventory($id)
+    {
+        try {
+            $item = is_numeric($id)
+                ? Inventory::findOrFail($id)
+                : Inventory::where('code', $id)->firstOrFail();
+            $item->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete inventory item'], 500);
+        }
+    }
+
+    /**
+     * Expense CRUD (admin)
+     */
+    public function storeExpense(Request $request)
+    {
+        try {
+            $request->validate([
+                'expenseDate' => 'required|date',
+                'expenseName' => 'required|string|max:255',
+                'expenseCategory' => 'required|string|max:50',
+                'expenseAmount' => 'required|numeric|min:0',
+                'expenseDescription' => 'nullable|string',
+            ]);
+
+            // Choose a farm to associate; fall back to first farm if current user has none
+            $farmId = auth()->user()->farms->first()->id ?? (\App\Models\Farm::first()->id ?? null);
+
+            $expense = Expense::create([
+                'farm_id' => $farmId,
+                'expense_type' => $request->expenseCategory,
+                'description' => $request->expenseName,
+                'amount' => $request->expenseAmount,
+                'expense_date' => $request->expenseDate,
+                'notes' => $request->expenseDescription,
+                'recorded_by' => auth()->id(),
+            ]);
+
+            // Align fields for UI consumption
+            $expense->date = $expense->expense_date ? $expense->expense_date->format('Y-m-d') : null;
+            $expense->name = $expense->description;
+            $expense->icon = $this->getExpenseIcon($expense->expense_type);
+            $expense->color = $this->getExpenseColor($expense->expense_type);
+            $expense->paid_amount = $expense->amount;
+
+            return response()->json(['success' => true, 'expense' => $expense]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to save expense'], 500);
+        }
+    }
+
+    public function deleteExpense($id)
+    {
+        try {
+            $expense = Expense::findOrFail($id);
+            $expense->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete expense'], 500);
+        }
     }
 
     /**
@@ -336,6 +722,49 @@ class AdminController extends Controller
             'productionHistory' => $productionHistory,
             'farms' => $farms
         ]);
+    }
+
+    /**
+     * Store a new production record (Admin)
+     */
+    public function storeProduction(Request $request)
+    {
+        try {
+            $request->validate([
+                'productType' => 'required|string|max:100',
+                'quantity' => 'required|numeric|min:0',
+                'unit' => 'required|string|max:50',
+                'farmId' => 'required|integer|exists:farms,id',
+                'notes' => 'nullable|string|max:500',
+            ]);
+
+            $record = ProductionRecord::create([
+                'farm_id' => (int) $request->farmId,
+                'production_date' => now(),
+                'milk_quantity' => (float) $request->quantity,
+                'notes' => $request->notes,
+                'recorded_by' => auth()->id(),
+            ]);
+
+            return response()->json(['success' => true, 'record' => $record]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to add production record'], 500);
+        }
+    }
+
+    /**
+     * Delete a production record (Admin)
+     */
+    public function deleteProduction($id)
+    {
+        try {
+            $record = ProductionRecord::findOrFail($id);
+            $record->delete();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete production record'], 500);
+        }
     }
 
     /**
@@ -550,12 +979,21 @@ class AdminController extends Controller
      */
     private function getInventoryStats()
     {
-        // Placeholder statistics - would need Inventory model
+        // Basic stats from Inventory model
+        $total = Inventory::count();
+        $feed = Inventory::where('category', 'Feed')->count();
+        $medicine = Inventory::where('category', 'Medicine')->count();
+        $equipment = Inventory::where('category', 'Equipment')->count();
+
         return [
-            'total_items' => 0,
-            'low_stock_items' => 0,
-            'total_value' => 0,
-            'categories' => []
+            'total_items' => $total,
+            'low_stock_items' => 0, // no numeric stock tracking yet
+            'total_value' => 0,     // requires pricing to compute
+            'categories' => [
+                'Feed' => $feed,
+                'Medicine' => $medicine,
+                'Equipment' => $equipment,
+            ],
         ];
     }
 
@@ -802,7 +1240,8 @@ class AdminController extends Controller
             $newPassword = 'password123'; // Default password
             $admin->update(['password' => Hash::make($newPassword)]);
             
-            return response()->json(['success' => true, 'password' => $newPassword]);
+            // Return both keys for backward compatibility with existing UI code
+            return response()->json(['success' => true, 'password' => $newPassword, 'newPassword' => $newPassword]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to reset password'], 500);
         }
@@ -821,6 +1260,149 @@ class AdminController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to delete admin'], 500);
         }
+    }
+
+    /**
+     * Return admin details HTML used by Manage Admins modal.
+     */
+    public function adminDetails($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            // Minimal HTML snippet (no separate view required)
+            $roleBadge = '<span class="badge badge-primary">' . e(ucfirst($admin->role)) . '</span>';
+            $statusBadge = '<span class="badge ' . ($admin->status === 'active' ? 'badge-success' : 'badge-secondary') . '">' . e(ucfirst($admin->status ?? 'inactive')) . '</span>';
+            $html = '<div class="container-fluid">'
+                . '<div class="row"><div class="col-md-6">'
+                . '<h6 class="text-primary">Personal Information</h6>'
+                . '<p><strong>Name:</strong> ' . e($admin->name ?? 'N/A') . '</p>'
+                . '<p><strong>Email:</strong> ' . e($admin->email ?? 'N/A') . '</p>'
+                . '<p><strong>Phone:</strong> ' . e($admin->phone ?? 'N/A') . '</p>'
+                . '</div><div class="col-md-6">'
+                . '<h6 class="text-primary">Account</h6>'
+                . '<p><strong>Role:</strong> ' . $roleBadge . '</p>'
+                . '<p><strong>Status:</strong> ' . $statusBadge . '</p>'
+                . '<p><strong>Created:</strong> ' . e(optional($admin->created_at)->format('Y-m-d H:i') ?? 'N/A') . '</p>'
+                . '<p><strong>Last Login:</strong> ' . e(optional($admin->last_login_at)->format('Y-m-d H:i') ?? 'Never') . '</p>'
+                . '</div></div></div>';
+            return response($html);
+        } catch (\Exception $e) {
+            return response('<div class="text-danger">Failed to load admin details.</div>', 404);
+        }
+    }
+
+    /**
+     * Return admin JSON data for editing.
+     */
+    public function editAdmin($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            return response()->json(['success' => true, 'admin' => $admin]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Admin not found'], 404);
+        }
+    }
+
+    /**
+     * Toggle admin status between active and inactive.
+     */
+    public function toggleAdminStatus($id)
+    {
+        try {
+            $admin = User::where('role', 'admin')->findOrFail($id);
+            $newStatus = $admin->status === 'active' ? 'inactive' : 'active';
+            $admin->update(['status' => $newStatus]);
+            return response()->json(['success' => true, 'status' => $newStatus]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to toggle status'], 500);
+        }
+    }
+
+    /**
+     * Bulk-approve admins from pending/inactive to active.
+     */
+    public function bulkApproveAdmins(Request $request)
+    {
+        $ids = (array) ($request->admin_ids ?? []);
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No admin IDs provided'], 422);
+        }
+        try {
+            User::where('role', 'admin')->whereIn('id', $ids)->update(['status' => 'active']);
+            return response()->json(['success' => true, 'updated' => count($ids)]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Bulk approve failed'], 500);
+        }
+    }
+
+    /**
+     * Create a new admin from the Manage Admins modal form.
+     */
+    public function storeAdmin(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20',
+            'role' => 'required|string|in:admin,super_admin',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        try {
+            // Derive a username from email if not supplied
+            $baseUsername = strstr($request->email, '@', true) ?: str_replace(' ', '.', strtolower($request->name));
+            $username = $baseUsername;
+            $suffix = 1;
+            while (User::where('username', $username)->exists()) {
+                $username = $baseUsername . $suffix++;
+            }
+
+            $admin = User::create([
+                'name' => $request->name,
+                'username' => $username,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+                'status' => 'active',
+            ]);
+
+            return response()->json(['success' => true, 'admin' => $admin]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to create admin'], 500);
+        }
+    }
+
+    /**
+     * Export admins as CSV (simple server-side export for the view button).
+     */
+    public function exportAdmins()
+    {
+        $admins = User::where('role', 'admin')->orderBy('created_at', 'desc')->get();
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename=Admin_ManageAdminsReport.csv',
+        ];
+
+        $callback = function() use ($admins) {
+            $output = fopen('php://output', 'w');
+            fputcsv($output, ['Admin ID', 'Name', 'Email', 'Role', 'Status', 'Last Login', 'Created At']);
+            foreach ($admins as $a) {
+                fputcsv($output, [
+                    'A' . str_pad($a->id, 3, '0', STR_PAD_LEFT),
+                    $a->name,
+                    $a->email,
+                    $a->role,
+                    $a->status,
+                    optional($a->last_login_at)->format('Y-m-d H:i') ?? 'Never',
+                    optional($a->created_at)->format('Y-m-d H:i') ?? '',
+                ]);
+            }
+            fclose($output);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**
