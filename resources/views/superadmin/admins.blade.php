@@ -4,6 +4,56 @@
 
 @push('styles')
 <style>
+    /* User Details Modal Styling */
+    #editAdminModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #editAdminModal .modal-header { 
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #editAdminModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #editAdminModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #editAdminModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #editAdminModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #editAdminModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #editAdminModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
     /* Ensure modals display above backdrop on this page */
     .modal { z-index: 1060 !important; }
     .modal .modal-dialog { z-index: 1061 !important; }
@@ -1190,7 +1240,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editAdminModalLabel">
-                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit mr-2"></i>
                     Edit Admin
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1203,13 +1253,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editFirstName">First Name *</label>
+                                <label for="editFirstName">First Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editFirstName" name="first_name" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editLastName">Last Name *</label>
+                                <label for="editLastName">Last Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editLastName" name="last_name" required>
                             </div>
                         </div>
@@ -1217,13 +1267,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editEmail">Email *</label>
+                                <label for="editEmail">Email <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="editEmail" name="email" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editUsername">Username *</label>
+                                <label for="editUsername">Username <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editUsername" name="username" required>
                             </div>
                         </div>
@@ -1237,7 +1287,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editBarangay">Barangay *</label>
+                                <label for="editBarangay">Barangay <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editBarangay" name="barangay" required>
                                     <option value="">Select Barangay</option>
                                     <option value="Alupay">Alupay</option>
@@ -1278,7 +1328,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editRole">Role *</label>
+                                <label for="editRole">Role <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editRole" name="role" required>
                                     <option value="">Select Role</option>
                                     <option value="admin">Admin</option>
@@ -1303,9 +1353,9 @@
                     <div id="editAdminFormNotification" class="mt-2" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="updateAdminBtn">
-                        <i class="fas fa-save"></i> Update Admin
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-edit" id="updateAdminBtn">
+                        Update Admin
                     </button>
                 </div>
             </form>
