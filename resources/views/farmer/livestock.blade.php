@@ -3,7 +3,6 @@
 @section('title', 'Livestock Management')
 
 @section('content')
-<div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -99,8 +98,8 @@
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
                             @if($farms->count() > 0)
-                                <button class="btn-action btn-action-add" onclick="openAddLivestockModal()">
-                                    <i class="fas fa-plus"></i> Add Livestock
+                                <button class="btn-action btn-action-edit" onclick="openAddLivestockModal()">
+                                    <i class="fas fa-plus mr-2"></i> Add Livestock
                                 </button>
                             @else
                                 <button class="btn-action btn-action-add" disabled title="Create a farm first">
@@ -110,7 +109,7 @@
                             <button class="btn-action btn-action-print" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
-                            <button class="btn-action btn-action-refresh" onclick="location.reload()">
+                            <button class="btn-action btn-action-refresh" onclick="refreshLivestockTable('livestockTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
@@ -197,7 +196,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Add/Edit Livestock Modal -->
 <div class="modal fade" id="livestockModal" tabindex="-1" role="dialog" aria-labelledby="livestockModalLabel" aria-hidden="true">
@@ -549,6 +547,37 @@ $(document).ready(function() {
     });
     
 
+});
+
+
+// Refresh Admins Table
+function refreshLivestockTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for admins
+    sessionStorage.setItem('showRefreshNotificationLivestock', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationLivestock') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationLivestock');
+        setTimeout(() => {
+            showNotification('Data refreshed successfully!', 'success');
+        }, 500);
+    }
+    if (sessionStorage.getItem('showRefreshNotificationIssues') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationIssues');
+        setTimeout(() => {
+            showNotification('Issues table refreshed successfully!', 'success');
+        }, 500);
+    }
 });
 
 function openAddLivestockModal() {
@@ -1896,7 +1925,63 @@ function showToast(message, type = 'info') {
 
 @push('styles')
 <style>
-
+/* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
 /* Search and button group alignment - Match SuperAdmin */
 .search-controls {
     display: flex;

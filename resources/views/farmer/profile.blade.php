@@ -4,7 +4,7 @@
 
 @push('styles')
 <style>
-    /* User Details Modal Styling */
+     /* User Details Modal Styling */
     #editProfileModal .modal-content {
         border: none;
         border-radius: 12px;
@@ -76,193 +76,318 @@
         padding: 2rem;
         background: white;
     }
-
-    /* Profile Card Styling */
-    .profile-card {
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
-        overflow: hidden;
-        background: white;
+    
+    #changePasswordModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #changePasswordModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #changePasswordModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
     }
 
-    .profile-header {
-        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
-        color: white;
-        position: relative;
-        overflow: hidden;
+    /* Style all labels inside form Modal */
+    #changePasswordModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
     }
 
-    .profile-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    }
-
-    .profile-picture-container {
-        position: relative;
-        z-index: 1;
-    }
-
-    .img-profile {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border: 4px solid white;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
-    }
-
-    .img-profile:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
-    }
-
+    /* Apply consistent buttons */
+/* Action buttons styling */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
         flex-wrap: wrap;
         justify-content: center;
-        margin-top: 1rem;
+        min-width: 200px;
     }
-
+    
     .btn-action {
-        border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        font-weight: 600;
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
         text-decoration: none;
+        border: 1px solid transparent;
         cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
     }
-
+    
     .btn-action-edit-profile {
-        background: linear-gradient(135deg, #1cc88a 0%, #17a673 100%);
+        background-color: #387057;
+        border-color: #387057;
         color: white;
-        box-shadow: 0 4px 15px rgba(28, 200, 138, 0.3);
     }
-
-    .btn-action-edit-profile:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(28, 200, 138, 0.4);
+    
+        .btn-action-edit-profile:hover {
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
 
     .btn-action-edit-pass {
-        background: linear-gradient(135deg, #f6c23e 0%, #d69e2e 100%);
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
-        box-shadow: 0 4px 15px rgba(246, 194, 62, 0.3);
+    }
+    
+        .btn-action-edit-pass:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-oks {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    .btn-action-oks:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    /* Custom styles for admin profile */
+    
+    /* Profile Picture Enhancement */
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .img-profile {
+        border: 6px solid white;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .img-profile:hover {
+        transform: scale(1.08);
+        box-shadow: 0 1.5rem 4rem rgba(24, 55, 93, 0.25);
+    }
+
+    /* Profile Card Thick Blue Border */
+    .profile-card-bordered {
+        background: #18375d;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 4px 32px rgba(24, 55, 93, 0.10);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    /* Card Headers */
+    .card-header {
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+        color: white;
+        border-bottom: none;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h6 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* -------------------------
+   Profile Card (Left Column)
+-------------------------- */
+.profile-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e3e6f0;
+}
+
+.profile-header {
+    background: #ffffff;
+    padding: 1.5rem 1rem;
+}
+
+.img-profile {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border: 4px solid #18375d;
+    transition: transform 0.2s ease;
+}
+
+.img-profile:hover {
+    transform: scale(1.05);
+}
+
+/* Profile Picture Container */
+.profile-picture-container {
+    display: inline-block;
+}
+
+/* Camera Button Below Profile Picture */
+.btn-action-ok {
+    background: #18375d;
+    color: #fff;
+    border-radius: 50%; /* perfect circle */
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: all 0.2s ease-in-out;
+    border: none;
+    margin: 0 auto;
+}
+
+.btn-action-ok:hover {
+    background: #fca700;
+    transform: scale(1.1); /* subtle pop effect */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+
+/* Profile Actions */
+.profile-actions .btn {
+    margin: 0 0.25rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.profile-actions .btn-outline-primary:hover {
+    background: #18375d;
+    color: #fff;
+}
+
+.profile-actions .btn-outline-secondary:hover {
+    background: #18375d;
+    color: #fff;
+}
+
+/* -------------------------
+   Profile Info Table (Right Column)
+-------------------------- */
+.profile-info-table {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.profile-info-table th {
+    color: #18375d;
+    font-weight: 600;
+    width: 200px;
+    font-size: 0.9rem;
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #e3e6f0;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.profile-info-table th i {
+    margin-right: 0.5rem;
+    width: 18px;
+    text-align: center;
+}
+
+.profile-info-table td {
+    color: #5a5c69;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #e3e6f0;
+    vertical-align: middle;
+}
+
+.profile-info-table tbody tr:hover {
+    background-color: #f8f9fc;
+    transition: background-color 0.2s ease;
+}
+
+.profile-info-table tbody tr:last-child td,
+.profile-info-table tbody tr:last-child th {
+    border-bottom: none;
+}
+
+/* Empty cell fallback */
+.profile-info-table td:empty::after {
+    content: "Not provided";
+    color: #858796;
+    font-style: italic;
+}
+
+/* -------------------------
+   Custom Action Buttons (Details Header)
+-------------------------- */
+    .btn-action {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.5rem;
+        transition: 0.2s;
+    }
+
+    .btn-action-edit-profile {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit-profile:hover {
+    background-color: #fca700;
+    border-color: #fca700;
+    color: white;
+    }
+
+    .btn-action-edit-pass {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
     }
 
     .btn-action-edit-pass:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(246, 194, 62, 0.4);
-        color: white;
+    background-color: #fca700;
+    border-color: #fca700;
+    color: white;
     }
 
-    .btn-action-ok {
-        background: linear-gradient(135deg, #36b9cc 0%, #2c9faf 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(54, 185, 204, 0.3);
-    }
-
-    .btn-action-ok:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(54, 185, 204, 0.4);
-        color: white;
-    }
-
-    .btn-secondary {
-        background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-    }
-
-    .btn-secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
-        color: white;
-    }
-
-    .profile-info-table th {
-        font-weight: 600;
-        color: #18375d;
-        border-top: none;
-        padding: 1rem 0;
-        width: 200px;
-        vertical-align: top;
-    }
-
-    .profile-info-table td {
-        padding: 1rem 0;
-        border-top: 1px solid #f8f9fc;
-        color: #2d3436;
-        font-weight: 500;
-    }
-
-    .profile-info-table th i {
-        width: 20px;
-        margin-right: 0.5rem;
-        text-align: center;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .action-buttons {
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-        
-        .card-header {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-        }
-        
-        .profile-info-table th {
-            width: 150px;
-            font-size: 0.85rem;
-        }
-        
-        .profile-info-table td {
-            font-size: 0.9rem;
-        }
-        
-        .profile-info-table th i {
-            width: 14px;
-            margin-right: 0.4rem;
-        }
-        
-        .profile-card-bordered {
-            margin-bottom: 1.5rem;
-        }
-    }
-    
-    @media (max-width: 576px) {
-        .profile-info-table th {
-            width: 120px;
-            font-size: 0.8rem;
-            padding: 0.75rem 0;
-        }
-        
-        .profile-info-table td {
-            font-size: 0.85rem;
-            padding: 0.75rem 0;
-        }
-        
-        .profile-info-table th i {
-            width: 12px;
-            margin-right: 0.3rem;
-        }
-    }
+.btn-action:hover {
+    opacity: 0.85;
+}
 </style>
 @endpush
 
@@ -311,66 +436,68 @@
     </h1>
     <p>Manage your personal information and farm details</p>
 </div>
-
-<!-- Stats Cards -->
-<div class="row fade-in stagger-animation">
-    <!-- Total Livestock -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #36b9cc !important;">Total Livestock</div>
+<!-- Statistics Grid -->
+    <div class="row fade-in">
+        <!-- Total Livestock -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Livestock</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ auth()->user()->livestock->count() }}</div>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-cow fa-2x" style="color: #36b9cc !important;"></i>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Milk Production (Monthly) -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #1cc88a !important;">Milk Production</div>
+
+        <!-- Healthy Livestock -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Milk Production</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\ProductionRecord::where('farm_id', auth()->user()->farms->first()->id ?? 0)->whereMonth('production_date', now()->month)->sum('milk_quantity') }} <span class="text-xs">L/month</span></div>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-glass-whiskey fa-2x" style="color: #1cc88a !important;"></i>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-heart fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Sales This Month -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #f6c23e !important;">Sales This Month</div>
+
+        <!-- Needs Attention -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Sales This Month</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format(\App\Models\Sale::where('farm_id', auth()->user()->farms->first()->id ?? 0)->whereMonth('sale_date', now()->month)->sum('total_amount'), 0) }}</div>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-coins fa-2x" style="color: #f6c23e !important;"></i>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-exclamation-triangle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Age of Account -->
-    <div class="col-12 col-sm-6 col-md-3 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Account Age</div>
+
+        <!-- Production Ready -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Account Age</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \Carbon\Carbon::parse(auth()->user()->created_at)->diffForHumans() }}</div>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-user-clock fa-2x" style="color: #18375d !important;"></i>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-tint fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- Profile Section -->
 <div class="row fade-in">
@@ -402,16 +529,13 @@
                     <i class="fas fa-edit mr-1"></i>Edit Profile
                 </button>
                 <button class="btn-action btn-action-edit-pass" data-toggle="modal" data-target="#changePasswordModal" title="Change Password">
-                    <i class="fas fa-key mr-1"></i>Change Password
+                    <i class="fas fa-key mr-2"></i>Change Password
                 </button>
             </div>
             </div>
-            
-
-            
         </div>
     </div>
-    
+
     <!-- Profile Details -->
     <div class="col-12 col-md-7 col-lg-8 mb-4">
         <div class="card shadow h-100">
@@ -494,7 +618,7 @@
           <div class="form-group">
               <label for="editFullName">
                   <i class="fas fa-user mr-2"></i>Full Name
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" required placeholder="Enter your full name">
               @error('name')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -503,7 +627,7 @@
           <div class="form-group">
               <label for="editEmail">
                   <i class="fas fa-envelope mr-2"></i>Email
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required placeholder="Enter your email address">
               @error('email')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -512,7 +636,7 @@
           <div class="form-group">
               <label for="editPhone">
                   <i class="fas fa-phone mr-2"></i>Contact Number
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone ?? '') }}" placeholder="Enter your contact number">
               @error('phone')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -521,7 +645,7 @@
           <div class="form-group">
               <label for="editFarmName">
                   <i class="fas fa-seedling mr-2"></i>Farm Name
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('farm_name') is-invalid @enderror" id="editFarmName" name="farm_name" value="{{ old('farm_name', auth()->user()->farms->first()->name ?? '') }}" placeholder="Enter your farm name">
               @error('farm_name')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -530,7 +654,7 @@
           <div class="form-group">
               <label for="editAddress">
                   <i class="fas fa-map-marker-alt mr-2"></i>Address
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address ?? '') }}" placeholder="Enter your address">
               @error('address')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -541,8 +665,8 @@
         <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
             Cancel
         </button>
-        <button type="submit" class="btn-action btn-action-ok">
-            <i class="fas fa-save mr-2"></i>Save Changes
+        <button type="submit" class="btn-action btn-action-oks">
+            Save Changes
         </button>
       </div>
     </form>
@@ -566,7 +690,7 @@
           <div class="form-group">
               <label for="currentPassword">
                   <i class="fas fa-lock mr-2"></i>Current Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
               @error('current_password')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -575,7 +699,7 @@
           <div class="form-group">
               <label for="newPassword">
                   <i class="fas fa-key mr-2"></i>New Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
               @error('password')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -584,7 +708,7 @@
           <div class="form-group">
               <label for="confirmPassword">
                   <i class="fas fa-check-circle mr-2"></i>Confirm New Password
-              </label>
+              <span class="text-danger">*</span></label>
               <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
           </div>
       </div>
@@ -592,8 +716,8 @@
         <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
             Cancel
         </button>
-        <button type="submit" class="btn-action btn-action-ok">
-            <i class="fas fa-save mr-2"></i>Change Password
+        <button type="submit" class="btn-action btn-action-oks">
+            Change Password
         </button>
       </div>
     </form>

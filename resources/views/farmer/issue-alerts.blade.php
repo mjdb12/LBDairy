@@ -3,7 +3,6 @@
 @section('title', 'Issue Alerts')
 
 @section('content')
-<div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -98,12 +97,12 @@
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
                             <button class="btn-action btn-action-edit" onclick="openCreateAlertModal()">
-                                <i class="fas fa-plus mr-2"></i> Create Alert
+                                <i class="fas fa-plus"></i>Add Alert
                             </button>
                             <button class="btn-action btn-action-print" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
-                            <button class="btn-action btn-action-refresh" onclick="location.reload()">
+                            <button class="btn-action btn-action-refresh" onclick="refreshAlertsTable('alertsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
@@ -250,15 +249,14 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Create Alert
+                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-action btn-action-ok">
+                        Create Alert
                     </button>
                 </div>
             </form>
         </div>
     </div>
-</div>
 
 <!-- Bottom spacing to match farm analysis tab -->
 <div style="margin-bottom: 3rem;"></div>
@@ -379,13 +377,163 @@ function submitAlertForm() {
         }
     });
 }
+
+// Refresh Pending Farmers Table
+function refreshAlertsTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for farmers
+    sessionStorage.setItem('showRefreshNotificationAlerts', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationAlerts') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAlerts');
+        setTimeout(() => {
+            showNotification('Data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
 </script>
 @endpush
 
 @push('styles')
 <style>
-/* COMPREHENSIVE STYLING TO MATCH SUPERADMIN FARMS TABLE */
+    /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
+    .farmer-modal select.form-control,
+    .modal.farmer-modal select.form-control,
+    .farmer-modal .modal-body select.form-control {
+        min-width: 250px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.75rem 2rem 0.75rem 0.75rem !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Ensure columns don't constrain dropdowns */
+    .farmer-modal .col-md-6 {
+        min-width: 280px !important;
+        overflow: visible !important;
+    }
 
+    #createAlertModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #createAlertModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #createAlertModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #createAlertModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #createAlertModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #createAlertModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #createAlertModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #createAlertModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+    
+/* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
 /* Search and button group alignment - EXACT COPY FROM SUPERADMIN */
 .search-controls {
     display: flex;
