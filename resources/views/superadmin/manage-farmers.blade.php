@@ -53,32 +53,31 @@
         display: inline-block;      /* keep spacing consistent */
         margin-bottom: 0.5rem;      /* add spacing below */
     }
-    /* Farmer Details Modal Styling (ensure header doesn't cover content) */
+
+    
     #farmerDetailsModal .modal-content {
         border: none;
         border-radius: 12px;
         box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-        overflow: hidden;
     }
-
+    
     #farmerDetailsModal .modal-header {
         background: #18375d !important;
         color: white !important;
         border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
     }
-
+    
     #farmerDetailsModal .modal-title {
         color: white !important;
         font-weight: 600;
     }
-
+    
     #farmerDetailsModal .modal-body {
         padding: 2rem;
-        background: #ffffff;
-        position: relative;
-        z-index: 1;
+        background: white;
     }
-
+    
     #farmerDetailsModal .modal-body h6 {
         color: #18375d !important;
         font-weight: 600 !important;
@@ -86,20 +85,23 @@
         padding-bottom: 0.5rem;
         margin-bottom: 1rem !important;
     }
-
-    /* Prevent dark blue bars behind headings in farmer details */
-    #farmerDetailsModal .text-primary {
-        background-color: transparent !important;
-        color: #18375d !important;
-    }
-
+    
     #farmerDetailsModal .modal-body p {
         margin-bottom: 0.75rem;
         color: #333 !important;
     }
+    
+    #farmerDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
 
-    #farmerDetailsModal .modal-footer {
-        background: #ffffff;
+    /* Style all labels inside form Modal */
+    #farmerDetailsModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
     }
     /* Custom styles for farmer management */
     .border-left-primary {
