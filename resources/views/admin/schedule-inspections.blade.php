@@ -5,6 +5,80 @@
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css" rel="stylesheet">
 <style>
+    /* User Details Modal Styling */
+    #farmerDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #farmerDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #farmerDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #farmerDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #farmerDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #farmerDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #farmerDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    
+    #farmerDetailsModal .modal-body hr {
+        border-color: #e3e6f0;
+        margin: 1.5rem 0;
+    }
+    
+    #farmerDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    #farmerDetailsModal .modal-body ul {
+        margin-top: 0.5rem;
+        padding-left: 1.5rem;
+    }
+    
+    #farmerDetailsModal .modal-body li {
+        margin-bottom: 0.25rem;
+        color: #5a5c69;
+    }
+    
+    #farmerDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333;
+    }
+    
+    #farmerDetailsModal .modal-body span {
+        color: #18375d;
+        font-weight: 500;
+    }
     /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
     .admin-modal select.form-control,
     .modal.admin-modal select.form-control,
@@ -1854,44 +1928,68 @@ function viewFarmerDetails(farmerId) {
                             
                             // Create calendar HTML with inspections
                             const calendarHtml = `
-                                <div class="container-fluid p-0">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="card shadow-sm mb-3">
-                                                <div class="card-header bg-primary text-white">
-                                                    <h6 class="mb-0"><i class="fas fa-user"></i> Farmer Information</h6>
-                                                </div>
+                                        <!-- 🧑 Farmer Information -->
+                                        <div class="col-md-4 mb-4">
+                                            <div class="card shadow-sm">
                                                 <div class="card-body">
-                                                    <table class="table table-borderless table-sm mb-0">
-                                                        <tr><td><strong>Name:</strong></td><td>${farmer.first_name || ''} ${farmer.last_name || ''}</td></tr>
-                                                        <tr><td><strong>Email:</strong></td><td>${farmer.email || 'N/A'}</td></tr>
-                                                        <tr><td><strong>Phone:</strong></td><td>${farmer.phone || 'N/A'}</td></tr>
-                                                        <tr><td><strong>Farm:</strong></td><td>${farmer.farm_name || 'N/A'}</td></tr>
-                                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${farmer.status === 'active' ? 'success' : 'warning'}">${farmer.status}</span></td></tr>
-                                                    </table>
+                                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                                        <i class="fas fa-user mr-2"></i>Farmer Information
+                                                    </h6>
+                                                    <div class="info-group">
+                                                        <div class="row mb-2">
+                                                            <div class="col-5"><strong>Name:</strong></div>
+                                                            <div class="col-7 text-muted">${farmer.first_name || ''} ${farmer.last_name || ''}</div>
+                                                        </div>
+                                                        <div class="row mb-2">
+                                                            <div class="col-5"><strong>Email:</strong></div>
+                                                            <div class="col-7 text-muted">${farmer.email || 'N/A'}</div>
+                                                        </div>
+                                                        <div class="row mb-2">
+                                                            <div class="col-5"><strong>Phone:</strong></div>
+                                                            <div class="col-7 text-muted">${farmer.phone || 'N/A'}</div>
+                                                        </div>
+                                                        <div class="row mb-2">
+                                                            <div class="col-5"><strong>Farm:</strong></div>
+                                                            <div class="col-7 text-muted">${farmer.farm_name || 'N/A'}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-5"><strong>Status:</strong></div>
+                                                            <div class="col-7">
+                                                                <span class="badge badge-${farmer.status === 'active' ? 'success' : 'warning'} badge-pill">
+                                                                    <i class="fas fa-${farmer.status === 'active' ? 'check-circle' : 'clock'} mr-1"></i>
+                                                                    ${farmer.status ? farmer.status.charAt(0).toUpperCase() + farmer.status.slice(1) : 'N/A'}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-8">
-                                            <div class="card shadow-sm mb-3">
-                                                <div class="card-header bg-success text-white">
-                                                    <h6 class="mb-0"><i class="fas fa-calendar"></i> Scheduled Inspections Calendar</h6>
-                                                </div>
+
+                                        <!-- 🗓️ Scheduled Inspections Calendar -->
+                                        <div class="col-md-8 mb-4">
+                                            <div class="card shadow-sm  h-100">
                                                 <div class="card-body">
-                                                    <div id="farmerCalendar" style="height: 400px;"></div>
+                                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                                        <i class="fas fa-calendar-alt mr-2"></i>Scheduled Inspections Calendar
+                                                    </h6>
+                                                    <div id="farmerCalendar" class="border rounded" style="height: 400px;"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+
+                                    <!-- 📋 Upcoming Inspections -->
+                                    <div class="row mt-2">
                                         <div class="col-12">
-                                            <div class="card shadow-sm">
-                                                <div class="card-header bg-info text-white">
-                                                    <h6 class="mb-0"><i class="fas fa-list"></i> Upcoming Inspections</h6>
-                                                </div>
+                                            <div class="card shadow-sm ">
                                                 <div class="card-body">
+                                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                                        <i class="fas fa-list mr-2"></i>Upcoming Inspections
+                                                    </h6>
                                                     <div class="table-responsive">
-                                                        <table class="table table-sm table-striped table-hover">
+                                                        <table class="table table-bordered table-hover" id="farmersTable" width="100%" cellspacing="0">
                                                             <thead class="thead-light">
                                                                 <tr>
                                                                     <th>Date</th>
@@ -1908,9 +2006,16 @@ function viewFarmerDetails(farmerId) {
                                                                         <td>${inspection.inspection_time ? new Date('1970-01-01T' + inspection.inspection_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'}</td>
                                                                         <td><span class="badge badge-${getPriorityBadgeClass(inspection.priority)}">${inspection.priority}</span></td>
                                                                         <td><span class="badge badge-${getStatusBadgeClass(inspection.status)}">${inspection.status}</span></td>
-                                                                        <td>${inspection.notes ? inspection.notes.substring(0, 50) + (inspection.notes.length > 50 ? '...' : '') : 'N/A'}</td>
+                                                                        <td class="text-muted">${inspection.notes ? inspection.notes.substring(0, 60) + (inspection.notes.length > 60 ? '...' : '') : 'N/A'}</td>
                                                                     </tr>
-                                                                `).join('') : '<tr><td colspan="5" class="text-center text-muted">No scheduled inspections</td></tr>'}
+                                                                `).join('') : `
+                                                                    <tr>
+                                                                        <td colspan="5" class="text-center text-muted py-3">
+                                                                            <i class="fas fa-clipboard-list fa-lg mb-2 d-block"></i>
+                                                                            No scheduled inspections found
+                                                                        </td>
+                                                                    </tr>
+                                                                `}
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -1918,7 +2023,7 @@ function viewFarmerDetails(farmerId) {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+
                             `;
                             
                             $('#farmerDetailsContent').html(calendarHtml);

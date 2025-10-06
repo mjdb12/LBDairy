@@ -119,7 +119,7 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-bordered table-hover"s id="farmersTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="farmersTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Farmer ID</th>
@@ -1283,7 +1283,7 @@ $(document).ready(function () {
 
     // 🔍 Custom search input
     $('#customSearch').on('keyup', function() {
-        dataTable.search(this.value).draw();
+        farmersTable.search(this.value).draw();
     });
 
     // Hide default DataTables elements
