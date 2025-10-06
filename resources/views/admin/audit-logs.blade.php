@@ -2,7 +2,7 @@
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header fade-in">
+<div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
     <h1>
         <i class="fas fa-clipboard-list"></i>
         Audit Logs
@@ -72,52 +72,7 @@
         </div>
     </div>
 </div>
-
-<!-- Audit Logs Table Card -->
- <div class="card shadow mb-4 fade-in">
-        <div class="card-header bg-primary text-white">
-            <h6 class="mb-0">
-                <i class="fas fa-clipboard-list"></i>
-            System Activity Logs
-            </h6>
-        </div>
-        <div class="card-body">
-            <div class="search-controls mb-3">
-                <div class="input-group" style="max-width: 300px;">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="fas fa-search"></i>
-                        </span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Search logs..." id="auditSearch">
-                </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshAuditData()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                            <i class="fas fa-tools"></i> Tools
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" onclick="exportCSV()">
-                                <i class="fas fa-file-csv"></i> Download CSV
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPNG()">
-                                <i class="fas fa-image"></i> Download PNG
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPDF()">
-                                <i class="fas fa-file-pdf"></i> Download PDF
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filter Controls -->
+<!-- Filter Controls -->
             <div class="filter-controls">
                 <div class="filter-row">
                     <!-- Role Filter -->
@@ -157,6 +112,49 @@
                         <button class="btn-action btn-action-clear" onclick="clearFilters()">
                             <i class="fas fa-times"></i> Clear
                         </button>
+                    </div>
+                </div>
+            </div>
+<!-- Audit Logs Table Card -->
+ <div class="card shadow mb-4 fade-in">
+        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+            <h6 class="mb-0">
+                <i class="fas fa-clipboard-list"></i>
+            System Activity Logs
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search logs..." id="auditSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-print" onclick="printTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshAuditData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -216,6 +214,98 @@
 
 @push('styles')
 <style>
+    /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
     :root {
         --primary-color: #18375d;
         --primary-dark: #122a47;

@@ -3,7 +3,7 @@
 @section('title', 'Issue Management')
 
 @section('content')
-    <div class="page-header">
+    <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
             <i class="fas fa-exclamation-triangle"></i>
             Issue Management
@@ -14,7 +14,7 @@
     <!-- Farmer Selection Section -->
     
     <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
-        <div class="card-header bg-primary text-white">
+        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 Select Farmer
@@ -59,10 +59,9 @@
 
     <!-- Livestock Selection Section (Initially Hidden) -->
     <div class="card shadow mb-4" id="livestockCard" style="display: none;">
-        <div class="card-header bg-primary text-white">
+        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
-                <i class="fas fa-cow"></i>
-                        Select Livestock for: <span id="selectedFarmerName" class="text-primary font-weight-bold"></span>
+                <i class="fas fa-user-tie"></i>Select Livestock for: <span id="selectedFarmerName" class="font-weight-bold"></span>
             </h6>
         </div>
         <div class="card-body">
@@ -104,7 +103,7 @@
 
     <!-- All Issues Section -->
     <div class="card shadow mb-4">
-        <div class="card-header bg-primary text-white">
+        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 All Issues
@@ -410,6 +409,98 @@
 
 @push('styles')
 <style>
+    /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
        /* Make table cells wrap instead of forcing them all inline */
 #issuesTable td, 
 #issuesTable th {
