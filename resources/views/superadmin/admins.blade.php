@@ -54,6 +54,57 @@
         margin-bottom: 0.5rem;      /* add spacing below */
     }
 
+    /** */
+    /* User Details Modal Styling */
+    #contactModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #contactModal .modal-header { 
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #contactModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #contactModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #contactModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #contactModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #contactModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #contactModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
     /* Ensure modals display above backdrop on this page */
     .modal { z-index: 1060 !important; }
     .modal .modal-dialog { z-index: 1061 !important; }
@@ -1122,7 +1173,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to perform this action? This cannot be undone.</p>
+                <p>Are you sure you want to perform this action? This action <strong>cannot be undone</strong>.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -1134,26 +1185,26 @@
     </div>
 </div>
 
-<!-- Reject Admin Confirmation Modal -->
-<div class="modal fade" id="confirmRejectModal" tabindex="-1" role="dialog" aria-labelledby="confirmRejectLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmRejectLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Confirm Rejection
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Delete Task Confirmation Modal -->
+<div class="modal fade" id="confirmRejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to reject this admin registration? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmRejectBtn" class="btn btn-danger">
-                    <i class="fas fa-times"></i> Reject
+            <!-- Title -->
+            <h5>Confirm Rejection</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to reject this admin registration? This action <strong>cannot be undone</strong>.
+            </p>
+
+            <!-- Buttons -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmRejectBtn" class="btn-modern btn-delete">
+                    Yes, Reject
                 </button>
             </div>
         </div>
@@ -1192,7 +1243,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="contactModalLabel">
-                    <i class="fas fa-paper-plane"></i>
+                    <i class="fas fa-paper-plane mr-2"></i>
                     Send Message to Admin
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1205,11 +1256,11 @@
                     <input type="hidden" id="farmerNameHidden">
                     <input type="hidden" id="adminIdHidden">
                     <div class="form-group">
-                        <label for="messageSubject">Subject</label>
+                        <label for="messageSubject">Subject <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="messageSubject" required>
                     </div>
                     <div class="form-group">
-                        <label for="messageBody">Message</label>
+                        <label for="messageBody">Message <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="messageBody" rows="4" required></textarea>
                     </div>
                     <div id="messageNotification" class="mt-2" style="display: none;"></div>
@@ -1278,7 +1329,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adminBarangay">Barangay<span class="text-danger">*</span></label>
+                                <label for="barangay">Barangay</label>
                                 <select class="form-control" id="adminBarangay" name="barangay">
                                     <option value="">Select Barangay</option>
                                     <option value="Abang">Abang</option>
@@ -1418,22 +1469,23 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="editBarangay">Barangay <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editBarangay" name="barangay" required>
+                                <label for="barangay">Barangay</label>
+                                <select class="form-control" id="editBarangay" name="barangay">
                                     <option value="">Select Barangay</option>
-                                    <option value="Alupay">Alupay</option>
-                                    <option value="Ayaas">Ayaas</option>
-                                    <option value="Bagong Pook">Bagong Pook</option>
-                                    <option value="Bukal">Bukal</option>
-                                    <option value="Calumpang">Calumpang</option>
-                                    <option value="Candelaria">Candelaria</option>
-                                    <option value="Castañas">Castañas</option>
-                                    <option value="Ibabang Dupay">Ibabang Dupay</option>
-                                    <option value="Ibabang Ilog">Ibabang Ilog</option>
-                                    <option value="Ibabang San Isidro">Ibabang San Isidro</option>
-                                    <option value="Ilayang Dupay">Ilayang Dupay</option>
-                                    <option value="Ilayang Ilog">Ilayang Ilog</option>
-                                    <option value="Ilayang San Isidro">Ilayang San Isidro</option>
+                                    <option value="Abang">Abang</option>
+                                    <option value="Aliliw">Aliliw</option>
+                                    <option value="Atulinao">Atulinao</option>
+                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
                                     <option value="Igang">Igang</option>
                                     <option value="Kabatete">Kabatete</option>
                                     <option value="Kakawit">Kakawit</option>
@@ -1754,7 +1806,7 @@ function loadPendingAdmins() {
                                 <i class="fas fa-check"></i>
                                 <span>Approve</span>
                             </button>
-                            <button class="btn-action btn-action-delete" onclick="rejectAdmin('${admin.id}')" title="Reject">
+                            <button class="btn-action btn-action-deletes" onclick="rejectAdmin('${admin.id}')" title="Reject">
                                 <i class="fas fa-times"></i>
                                 <span>Reject</span>
                             </button>
@@ -2588,7 +2640,7 @@ function editAdmin(adminId) {
             showNotification('Error loading admin data', 'danger');
         },
         complete: function() {
-            $submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Update Admin');
+            $submitBtn.prop('disabled', false).html('Update Admin');
         }
     });
 }
