@@ -237,11 +237,11 @@
 
 <!-- Farmer Details Modal -->
 <div class="modal fade" id="farmerDetailsModal" tabindex="-1" aria-labelledby="farmerDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="farmerDetailsModalLabel">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-user mr-2"></i>
                     Farmer Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -249,48 +249,139 @@
                 </button>
             </div>
             <div class="modal-body">
+                <!-- Personal & Farm Info -->
                 <div class="row">
+                    <!-- Personal Info -->
                     <div class="col-md-6">
-                        <h6><strong>Personal Information</strong></h6>
-                        <p><strong>Name:</strong> <span id="modalFarmerName">-</span></p>
-                        <p><strong>Email:</strong> <span id="modalFarmerEmail">-</span></p>
-                        <p><strong>Phone:</strong> <span id="modalFarmerPhone">-</span></p>
-                        <p><strong>Location:</strong> <span id="modalFarmerLocation">-</span></p>
-                        <p><strong>Farmer Code:</strong> <span id="modalFarmerCode">-</span></p>
-                        <p><strong>Last Login:</strong> <span id="modalLastLogin">-</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6><strong>Farm Information</strong></h6>
-                        <p><strong>Farm Name:</strong> <span id="modalFarmName">-</span></p>
-                        <p><strong>Farm Address:</strong> <span id="modalFarmAddress">-</span></p>
-                        <p><strong>Total Farms:</strong> <span id="modalTotalFarms">-</span></p>
-                        <p><strong>Active Farms:</strong> <span id="modalActiveFarms">-</span></p>
-                        <p><strong>Status:</strong> <span id="modalFarmerStatus">-</span></p>
-                        <p><strong>Member Since:</strong> <span id="modalMemberSince">-</span></p>
-                    </div>
-                </div>
-                
-                <hr>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><strong>Livestock Statistics</strong></h6>
-                        <p><strong>Total Livestock:</strong> <span id="modalTotalLivestock">-</span></p>
-                        <p><strong>Active Livestock:</strong> <span id="modalActiveLivestock">-</span></p>
-                        <p><strong>Inactive Livestock:</strong> <span id="modalInactiveLivestock">-</span></p>
-                        <div id="modalLivestockByType">
-                            <strong>Livestock by Type:</strong>
-                            <ul id="livestockTypeList"></ul>
+                        <div class="card border-left h-100">
+                            <div class="card-body">
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                    <i class="fas fa-user-circle mr-2"></i>Personal Information
+                                </h6>
+                                <div class="row">
+                                    <div class="col-6"><strong>Name:</strong></div>
+                                    <div class="col-6"><span id="modalFarmerName">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Email:</strong></div>
+                                    <div class="col-6"><span id="modalFarmerEmail">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Phone:</strong></div>
+                                    <div class="col-6"><span id="modalFarmerPhone">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Location:</strong></div>
+                                    <div class="col-6"><span id="modalFarmerLocation">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Farmer Code:</strong></div>
+                                    <div class="col-6"><span id="modalFarmerCode">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Last Login:</strong></div>
+                                    <div class="col-6"><span id="modalLastLogin">-</span></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Farm Info -->
                     <div class="col-md-6">
-                        <h6><strong>Production Statistics</strong></h6>
-                        <p><strong>Total Production:</strong> <span id="modalTotalProduction">-</span></p>
-                        <p><strong>Average Daily Production:</strong> <span id="modalAvgDailyProduction">-</span></p>
-                        <p><strong>Recent Production (30 days):</strong> <span id="modalRecentProduction">-</span></p>
+                        <div class="card border-left h-100">
+                            <div class="card-body">
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                    <i class="fas fa-tractor mr-2"></i>Farm Information
+                                </h6>
+                                <div class="row">
+                                    <div class="col-6"><strong>Farm Name:</strong></div>
+                                    <div class="col-6"><span id="modalFarmName">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Farm Address:</strong></div>
+                                    <div class="col-6"><span id="modalFarmAddress">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Total Farms:</strong></div>
+                                    <div class="col-6"><span id="modalTotalFarms">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Active Farms:</strong></div>
+                                    <div class="col-6"><span id="modalActiveFarms">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Status:</strong></div>
+                                    <div class="col-6">
+                                        <span id="modalFarmerStatus" class="badge badge-pill badge-warning">-</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Member Since:</strong></div>
+                                    <div class="col-6"><span id="modalMemberSince">-</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <hr class="my-4">
+
+                <!-- Livestock & Production -->
+                <div class="row">
+                    <!-- Livestock Stats -->
+                    <div class="col-md-6">
+                        <div class="card border-left h-100">
+                            <div class="card-body">
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                    <i class="fas fa-paw mr-2"></i>Livestock Statistics
+                                </h6>
+                                <div class="row">
+                                    <div class="col-6"><strong>Total Livestock:</strong></div>
+                                    <div class="col-6"><span id="modalTotalLivestock">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Active Livestock:</strong></div>
+                                    <div class="col-6"><span id="modalActiveLivestock">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6"><strong>Inactive Livestock:</strong></div>
+                                    <div class="col-6"><span id="modalInactiveLivestock">-</span></div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <strong>Livestock by Type:</strong>
+                                    <ul id="livestockTypeList" class="mt-2 list-unstyled text-muted small"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Production Stats -->
+                    <div class="col-md-6">
+                        <div class="card border-left h-100">
+                            <div class="card-body">
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                    <i class="fas fa-chart-line mr-2"></i>Production Statistics
+                                </h6>
+                                <div class="row">
+                                    <div class="col-7"><strong>Total Production:</strong></div>
+                                    <div class="col-5"><span id="modalTotalProduction">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-7"><strong>Average Daily Production:</strong></div>
+                                    <div class="col-5"><span id="modalAvgDailyProduction">-</span></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-7"><strong>Recent Production (30 days):</strong></div>
+                                    <div class="col-5"><span id="modalRecentProduction">-</span></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
@@ -1361,47 +1452,136 @@ function viewFarmerDetails(farmerId) {
             
             // Restore the original modal body structure
             modal.find('.modal-body').html(`
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><strong>Personal Information</strong></h6>
-                        <p><strong>Name:</strong> <span id="modalFarmerName">-</span></p>
-                        <p><strong>Email:</strong> <span id="modalFarmerEmail">-</span></p>
-                        <p><strong>Phone:</strong> <span id="modalFarmerPhone">-</span></p>
-                        <p><strong>Location:</strong> <span id="modalFarmerLocation">-</span></p>
-                        <p><strong>Farmer Code:</strong> <span id="modalFarmerCode">-</span></p>
-                        <p><strong>Last Login:</strong> <span id="modalLastLogin">-</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6><strong>Farm Information</strong></h6>
-                        <p><strong>Farm Name:</strong> <span id="modalFarmName">-</span></p>
-                        <p><strong>Farm Address:</strong> <span id="modalFarmAddress">-</span></p>
-                        <p><strong>Total Farms:</strong> <span id="modalTotalFarms">-</span></p>
-                        <p><strong>Active Farms:</strong> <span id="modalActiveFarms">-</span></p>
-                        <p><strong>Status:</strong> <span id="modalFarmerStatus">-</span></p>
-                        <p><strong>Member Since:</strong> <span id="modalMemberSince">-</span></p>
-                    </div>
-                </div>
-                
-                <hr>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><strong>Livestock Statistics</strong></h6>
-                        <p><strong>Total Livestock:</strong> <span id="modalTotalLivestock">-</span></p>
-                        <p><strong>Active Livestock:</strong> <span id="modalActiveLivestock">-</span></p>
-                        <p><strong>Inactive Livestock:</strong> <span id="modalInactiveLivestock">-</span></p>
-                        <div id="modalLivestockByType">
-                            <strong>Livestock by Type:</strong>
-                            <ul id="livestockTypeList"></ul>
+
+            <!-- Personal & Farm Info -->
+            <div class="row">
+                <!-- Personal Info -->
+                <div class="col-md-6">
+                    <div class="card border-left h-100">
+                        <div class="card-body">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                <i class="fas fa-user-circle mr-2"></i>Personal Information
+                            </h6>
+                            <div class="row">
+                                <div class="col-6"><strong>Name:</strong></div>
+                                <div class="col-6"><span id="modalFarmerName">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Email:</strong></div>
+                                <div class="col-6"><span id="modalFarmerEmail">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Phone:</strong></div>
+                                <div class="col-6"><span id="modalFarmerPhone">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Location:</strong></div>
+                                <div class="col-6"><span id="modalFarmerLocation">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Farmer Code:</strong></div>
+                                <div class="col-6"><span id="modalFarmerCode">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Last Login:</strong></div>
+                                <div class="col-6"><span id="modalLastLogin">-</span></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <h6><strong>Production Statistics</strong></h6>
-                        <p><strong>Total Production:</strong> <span id="modalTotalProduction">-</span></p>
-                        <p><strong>Average Daily Production:</strong> <span id="modalAvgDailyProduction">-</span></p>
-                        <p><strong>Recent Production (30 days):</strong> <span id="modalRecentProduction">-</span></p>
+                </div>
+                
+                <!-- Farm Info -->
+                <div class="col-md-6">
+                    <div class="card border-left h-100">
+                        <div class="card-body">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                <i class="fas fa-tractor mr-2"></i>Farm Information
+                            </h6>
+                            <div class="row">
+                                <div class="col-6"><strong>Farm Name:</strong></div>
+                                <div class="col-6"><span id="modalFarmName">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Farm Address:</strong></div>
+                                <div class="col-6"><span id="modalFarmAddress">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Total Farms:</strong></div>
+                                <div class="col-6"><span id="modalTotalFarms">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Active Farms:</strong></div>
+                                <div class="col-6"><span id="modalActiveFarms">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Status:</strong></div>
+                                <div class="col-6">
+                                    <span id="modalFarmerStatus" class="badge badge-pill badge-warning">-</span>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Member Since:</strong></div>
+                                <div class="col-6"><span id="modalMemberSince">-</span></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Livestock & Production -->
+            <div class="row">
+                <!-- Livestock Stats -->
+                <div class="col-md-6">
+                    <div class="card border-left h-100">
+                        <div class="card-body">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                <i class="fas fa-paw mr-2"></i>Livestock Statistics
+                            </h6>
+                            <div class="row">
+                                <div class="col-6"><strong>Total Livestock:</strong></div>
+                                <div class="col-6"><span id="modalTotalLivestock">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Active Livestock:</strong></div>
+                                <div class="col-6"><span id="modalActiveLivestock">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6"><strong>Inactive Livestock:</strong></div>
+                                <div class="col-6"><span id="modalInactiveLivestock">-</span></div>
+                            </div>
+
+                            <div class="mt-3">
+                                <strong>Livestock by Type:</strong>
+                                <ul id="livestockTypeList" class="mt-2 list-unstyled text-muted small"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Production Stats -->
+                <div class="col-md-6">
+                    <div class="card border-left h-100">
+                        <div class="card-body">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                <i class="fas fa-chart-line mr-2"></i>Production Statistics
+                            </h6>
+                            <div class="row">
+                                <div class="col-7"><strong>Total Production:</strong></div>
+                                <div class="col-5"><span id="modalTotalProduction">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-7"><strong>Average Daily Production:</strong></div>
+                                <div class="col-5"><span id="modalAvgDailyProduction">-</span></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-7"><strong>Recent Production (30 days):</strong></div>
+                                <div class="col-5"><span id="modalRecentProduction">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             `);
             
             // Helper function to safely set text content

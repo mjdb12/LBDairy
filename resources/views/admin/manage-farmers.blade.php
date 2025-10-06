@@ -1005,6 +1005,7 @@
                             <th>Farm Name</th>
                             <th>Barangay</th>
                             <th>Contact</th>
+                            <th>Email</th>
                             <th>Username</th>
                             <th>Registration Date</th>
                             <th>Actions</th>

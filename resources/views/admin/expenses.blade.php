@@ -399,26 +399,52 @@ function confirmDelete(button) {
     $('#confirmDeleteModal').modal('show');
     
     $('#confirmDeleteBtn').off('click').on('click', function() {
-        // In real app, this would be an AJAX call to delete the expense
-        row.fadeOut(400, function() {
-            row.remove();
-            $('#confirmDeleteModal').modal('hide');
+        $.ajax({
+            url: `/admin/expenses/${expenseId}`,
+            type: 'DELETE',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function(resp) {
+                if (resp && resp.success) {
+                    $('#confirmDeleteModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Failed to delete expense.');
+                }
+            },
+            error: function() {
+                alert('Failed to delete expense.');
+            }
         });
     });
 }
 
 function saveExpense() {
     const formData = new FormData($('#addExpenseForm')[0]);
-    
-    // In real app, this would be an AJAX call to save the expense
-    console.log('Saving expense:', Object.fromEntries(formData));
-    
-    // Show success message
-    alert('Expense saved successfully!');
-    $('#addExpenseModal').modal('hide');
-    
-    // Refresh the table (in real app, this would reload from server)
-    location.reload();
+    const payload = Object.fromEntries(formData);
+    $.ajax({
+        url: '/admin/expenses',
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        data: {
+            expenseDate: payload.expenseDate,
+            expenseName: payload.expenseName,
+            expenseCategory: payload.expenseCategory,
+            expenseAmount: payload.expenseAmount,
+            expenseDescription: payload.expenseDescription
+        },
+        success: function(resp) {
+            if (resp && resp.success) {
+                alert('Expense saved successfully!');
+                $('#addExpenseModal').modal('hide');
+                setTimeout(() => location.reload(), 500);
+            } else {
+                alert('Failed to save expense.');
+            }
+        },
+        error: function() {
+            alert('Failed to save expense.');
+        }
+    });
 }
 
 // Export functions

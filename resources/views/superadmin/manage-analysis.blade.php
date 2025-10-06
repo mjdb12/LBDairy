@@ -100,31 +100,80 @@
     padding: 1rem 0.75rem;
 }
 
-/* Farm Details Modal Styling */
-#farmDetailsModal .modal-content {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-}
-
-#farmDetailsModal .modal-header {
-    background: #18375d !important;
-    color: white !important;
-    border-bottom: none !important;
-    border-radius: 12px 12px 0 0 !important;
-}
-
-#farmDetailsModal .modal-title {
-    color: white !important;
-    font-weight: 600;
-}
-
-#farmDetailsModal .modal-body {
-    padding: 2rem;
-    background: white;
-    max-height: 70vh;
-    overflow-y: auto;
-}
+ /* User Details Modal Styling */
+    #farmDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #farmDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #farmDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #farmDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #farmDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #farmDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #farmDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    
+    #farmDetailsModal .modal-body hr {
+        border-color: #e3e6f0;
+        margin: 1.5rem 0;
+    }
+    
+    #farmDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    #farmDetailsModal .modal-body ul {
+        margin-top: 0.5rem;
+        padding-left: 1.5rem;
+    }
+    
+    #farmDetailsModal .modal-body li {
+        margin-bottom: 0.25rem;
+        color: #5a5c69;
+    }
+    
+    #farmDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333;
+    }
+    
+    #farmDetailsModal .modal-body span {
+        color: #18375d;
+        font-weight: 500;
+    }
 
 /* Timeline styling */
 .timeline {
@@ -711,7 +760,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="farmDetailsModalLabel">
-                    <i class="fas fa-tractor"></i>
+                    <i class="fas fa-tractor mr-2"></i>
                     Farm Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -725,7 +774,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -1933,7 +1982,7 @@ function showNotification(message, type) {
     }
 
     .badge-success {
-        background: linear-gradient(135deg, var(--success-color) 0%, #17a673 100%);
+        background: linear-gradient(135deg, var(--success-color) 0%, #23c98fff 100%);
     }
 
     .badge-warning {
@@ -2431,7 +2480,7 @@ function showFarmDetails(farmId) {
                 }
                 
                 // Update modal title
-                $('#farmDetailsModalLabel').html(`<i class="fas fa-tractor"></i> Farm Analysis - ${farm.name}`);
+                $('#farmDetailsModalLabel').html(`<i class="fas fa-tractor mr-2"></i> Farm Analysis - (${farm.name})`);
                 
                 const details = `
                     <div class="row">

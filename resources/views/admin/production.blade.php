@@ -668,22 +668,24 @@ function addProductionRecord(event) {
     const farmId = document.getElementById('farmSelect').value;
     const notes = document.getElementById('notes').value;
     
-    // Here you would typically send the data via AJAX
-    // For now, just show a success message
-    showNotification('Production record added successfully!', 'success');
-    $('#addProductModal').modal('hide');
-    
-    // Clear the form
-    document.getElementById('productType').value = '';
-    document.getElementById('quantity').value = '';
-    document.getElementById('unit').value = '';
-    document.getElementById('farmSelect').value = '';
-    document.getElementById('notes').value = '';
-    
-    // Reload the page to show the new record
-    setTimeout(() => {
-        location.reload();
-    }, 1000);
+    $.ajax({
+        url: '/admin/production',
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        data: { productType, quantity, unit, farmId, notes },
+        success: function(resp) {
+            if (resp && resp.success) {
+                showNotification('Production record added successfully!', 'success');
+                $('#addProductModal').modal('hide');
+                setTimeout(() => location.reload(), 500);
+            } else {
+                showNotification('Failed to add production record', 'error');
+            }
+        },
+        error: function() {
+            showNotification('Failed to add production record', 'error');
+        }
+    });
 }
 
 function confirmDelete(recordId) {

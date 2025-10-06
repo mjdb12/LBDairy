@@ -377,16 +377,22 @@ function editInventoryItem(itemId) {
     currentEditId = itemId;
     $('#inventoryModalLabel').html('<i class="fas fa-edit"></i> Edit Inventory Item');
     
-    // In real app, this would load the item data via AJAX
-    // For now, we'll populate with sample data
-    $('#inventoryId').val(itemId);
-    $('#inventoryDate').val('2024-06-15');
-    $('#inventoryCategory').val('Feed');
-    $('#inventoryName').val('Sample Item');
-    $('#inventoryQuantity').val('100');
-    $('#inventoryFarmId').val('FARM01');
-    
-    $('#inventoryModal').modal('show');
+    $.get(`/admin/inventory/${itemId}`, function(response) {
+        if (response && response.success && response.item) {
+            const item = response.item;
+            $('#inventoryId').val(item.code || itemId);
+            $('#inventoryDate').val(item.date || '');
+            $('#inventoryCategory').val(item.category || '');
+            $('#inventoryName').val(item.name || '');
+            $('#inventoryQuantity').val(item.quantity_text || item.quantity || '');
+            $('#inventoryFarmId').val(item.farm_id || '');
+            $('#inventoryModal').modal('show');
+        } else {
+            showNotification('Failed to load inventory item', 'error');
+        }
+    }).fail(function() {
+        showNotification('Failed to load inventory item', 'error');
+    });
 }
 
 function confirmDelete(button) {
@@ -397,26 +403,57 @@ function confirmDelete(button) {
     $('#confirmDeleteModal').modal('show');
     
     $('#confirmDeleteBtn').off('click').on('click', function() {
-        // In real app, this would be an AJAX call to delete the item
-        row.fadeOut(400, function() {
-            row.remove();
-            $('#confirmDeleteModal').modal('hide');
+        $.ajax({
+            url: `/admin/inventory/${itemId}`,
+            type: 'DELETE',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function(resp) {
+                if (resp && resp.success) {
+                    $('#confirmDeleteModal').modal('hide');
+                    location.reload();
+                } else {
+                    showNotification('Failed to delete inventory item', 'error');
+                }
+            },
+            error: function() {
+                showNotification('Failed to delete inventory item', 'error');
+            }
         });
     });
 }
 
 function saveInventoryItem() {
     const formData = new FormData($('#inventoryForm')[0]);
-    
-    // In real app, this would be an AJAX call to save the item
-    console.log('Saving inventory item:', Object.fromEntries(formData));
-    
-    // Show success message
-    alert('Inventory item saved successfully!');
-    $('#inventoryModal').modal('hide');
-    
-    // Refresh the table (in real app, this would reload from server)
-    location.reload();
+    const payload = Object.fromEntries(formData);
+    const isEdit = !!currentEditId;
+    const url = isEdit ? `/admin/inventory/${currentEditId}` : '/admin/inventory';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    $.ajax({
+        url: url,
+        type: method,
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        data: {
+            inventoryId: payload.inventoryId,
+            inventoryDate: payload.inventoryDate,
+            inventoryCategory: payload.inventoryCategory,
+            inventoryName: payload.inventoryName,
+            inventoryQuantity: payload.inventoryQuantity,
+            inventoryFarmId: payload.inventoryFarmId
+        },
+        success: function(resp) {
+            if (resp && resp.success) {
+                showNotification('Inventory item saved successfully!', 'success');
+                $('#inventoryModal').modal('hide');
+                setTimeout(() => location.reload(), 500);
+            } else {
+                showNotification('Failed to save inventory item', 'error');
+            }
+        },
+        error: function() {
+            showNotification('Failed to save inventory item', 'error');
+        }
+    });
 }
 
 function loadInventoryHistory() {

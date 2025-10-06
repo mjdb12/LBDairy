@@ -877,8 +877,7 @@
         right: 0;
     }
     
-    **************
-    /* User Details Modal Styling */
+    /* Inspection scheduling modal styling */
     #scheduleInspectionModal .modal-content {
         border: none;
         border-radius: 12px;
@@ -1020,6 +1019,13 @@
     #inspectionDetailsModal .modal-body strong {
         color: #5a5c69 !important;
         font-weight: 600;
+    }
+
+    /* Ensure Notes/Findings headings are visible and not covered */
+    #inspectionDetailsModal .modal-body h6.text-primary {
+        background: transparent !important;
+        position: relative;
+        z-index: 1;
     }
 
 

@@ -334,48 +334,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeMainChart() {
     const ctx = document.getElementById('mainChart').getContext('2d');
-    
-    mainChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Average Productivity',
-                data: [65, 72, 68, 75, 80, 78],
-                backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                borderColor: '#4e73df',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointRadius: 5,
-                pointHoverRadius: 7
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: {
-                        color: 'rgba(0,0,0,0.1)'
-                    }
+    fetch('/admin/livestock-productivity-trends')
+        .then(r => r.json())
+        .then(payload => {
+            mainChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: payload.labels || [],
+                    datasets: [{
+                        label: payload.label || 'Average Productivity',
+                        data: payload.data || [],
+                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                        borderColor: '#4e73df',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
                 },
-                x: {
-                    grid: {
-                        color: 'rgba(0,0,0,0.1)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { grid: { color: 'rgba(0,0,0,0.1)' } }
                     }
                 }
-            }
-        }
-    });
+            });
+        })
+        .catch(() => {/* silent fail to avoid UI change */});
 }
 
 function setupEventListeners() {
@@ -397,38 +388,23 @@ function switchAnalysis(type) {
 }
 
 function loadLivestockAnalysis(livestockId, type) {
-    // Simulate loading data - in real app, this would be an AJAX call
-    const analysisData = getAnalysisData(type);
-    updateAnalysisChart(analysisData);
-    updateAnalysisText(type);
+    fetch(`/admin/livestock/${livestockId}/analysis-data?type=${encodeURIComponent(type)}`)
+        .then(r => r.json())
+        .then(payload => {
+            const analysisData = {
+                labels: payload.labels || [],
+                data: payload.data || [],
+                label: payload.label || 'Analysis'
+            };
+            updateAnalysisChart(analysisData);
+            updateAnalysisText(type);
+        })
+        .catch(() => {
+            // fallback: keep existing chart if fetch fails
+        });
 }
 
-function getAnalysisData(type) {
-    const data = {
-        growth: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            data: [45, 52, 58, 65, 72, 78],
-            label: 'Growth Rate'
-        },
-        health: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            data: [85, 88, 92, 89, 94, 91],
-            label: 'Health Score'
-        },
-        breeding: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            data: [60, 65, 70, 75, 80, 85],
-            label: 'Breeding Success'
-        },
-        milk: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            data: [20, 22, 25, 28, 30, 32],
-            label: 'Milk Production (L)'
-        }
-    };
-    
-    return data[type] || data.growth;
-}
+// Removed hardcoded getAnalysisData; now data is fetched via AJAX
 
 function updateAnalysisChart(data) {
     if (analysisChartInstance) {
