@@ -1141,7 +1141,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="editAdminModalLabel">
                     <i class="fas fa-edit mr-2"></i>
-                    Edit Admin
+                    Edit User
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -1231,6 +1231,7 @@
                             <div class="form-group">
                                 <label for="editAdminRole">Role <span class="text-danger">*</span></label>
                                 <select class="form-control" id="editAdminRole" name="role" required>
+                                    <option value="farmer">Farmer</option>
                                     <option value="admin">Admin</option>
                                     <option value="superadmin">Super Admin</option>
                                 </select>
@@ -1259,7 +1260,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" id="updateAdminBtn" class="btn-action btn-action-edit">
-                        Update Admin
+                        Update User
                     </button>
                 </div>
             </form>
@@ -1622,7 +1623,7 @@ function editUser(userId) {
             showNotification(errorMessage, 'danger');
         },
         complete: function() {
-            submitBtn.prop('disabled', false).html('Update Admin');
+            submitBtn.prop('disabled', false).html('Update User');
         }
     });
 }
@@ -1667,7 +1668,7 @@ $(document).on('submit', '#editAdminForm', function(e) {
                 $('#editAdminModal').modal('hide');
                 
                 // Show success message
-                showNotification('Admin updated successfully', 'success');
+                showNotification('User updated successfully', 'success');
                 
                 // Refresh the users table
                 loadUsers();
@@ -1711,7 +1712,7 @@ $(document).on('submit', '#editAdminForm', function(e) {
         },
         complete: function() {
             // Re-enable submit button
-            submitBtn.prop('disabled', false).html('Update Admin');
+            submitBtn.prop('disabled', false).html('Update User');
             
             // Scroll to notification if there's an error
             if (notification.is(':visible')) {

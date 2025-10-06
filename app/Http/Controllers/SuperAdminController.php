@@ -722,9 +722,17 @@ class SuperAdminController extends Controller
                 'phone' => 'nullable|string|max:20',
                 'barangay' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
-                'status' => 'required|in:pending,approved,rejected',
+                // Accept UI variants and normalize below
+                'status' => 'required|in:pending,approved,rejected,active,inactive,suspended',
                 'password' => 'nullable|string|min:8|confirmed',
             ]);
+
+            // Normalize status to system domain values
+            $incomingStatus = $request->status;
+            $normalizedStatus = in_array($incomingStatus, ['active', 'inactive'])
+                ? ($incomingStatus === 'active' ? 'approved' : 'rejected')
+                : $incomingStatus; // pending/approved/rejected/suspended
+            $isActive = ($normalizedStatus === 'approved');
 
             $updateData = [
                 'name' => $request->first_name . ' ' . $request->last_name,
@@ -735,8 +743,8 @@ class SuperAdminController extends Controller
                 'role' => $request->role,
                 'phone' => $request->phone,
                 'barangay' => $request->barangay,
-                'status' => $request->status,
-                'is_active' => $request->status === 'approved',
+                'status' => $normalizedStatus,
+                'is_active' => $isActive,
                 'address' => $request->address,
             ];
 
@@ -1150,7 +1158,8 @@ class SuperAdminController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'barangay' => 'nullable|string|max:255',
+                // Required to satisfy non-nullable `location` column
+                'barangay' => 'required|string|max:255',
                 'status' => 'required|in:active,inactive',
                 'owner_name' => 'nullable|string|max:255',
                 'owner_email' => 'nullable|email',
@@ -1159,7 +1168,7 @@ class SuperAdminController extends Controller
 
             $farm = \App\Models\Farm::findOrFail($id);
             $farm->name = $validated['name'];
-            $farm->location = $validated['barangay'] ?? null;
+            $farm->location = $validated['barangay'];
             $farm->status = $validated['status'];
             $farm->description = $request->input('description');
             $farm->save();
@@ -1190,18 +1199,33 @@ class SuperAdminController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'barangay' => 'nullable|string|max:255',
+                // Required to satisfy non-nullable `location` column
+                'barangay' => 'required|string|max:255',
                 'status' => 'required|in:active,inactive',
                 'owner_name' => 'nullable|string|max:255',
                 'owner_email' => 'nullable|email',
                 'owner_phone' => 'nullable|string|max:50',
             ]);
 
+            // Determine owner_id to satisfy non-nullable foreign key
+            $ownerId = null;
+            if ($request->filled('owner_email')) {
+                $existing = User::where('email', $request->input('owner_email'))->first();
+                if ($existing) {
+                    $ownerId = $existing->id;
+                }
+            }
+            // Fallback to current authenticated user if no owner provided/found
+            if (!$ownerId) {
+                $ownerId = Auth::id();
+            }
+
             $farm = new \App\Models\Farm();
             $farm->name = $validated['name'];
-            $farm->location = $validated['barangay'] ?? null;
+            $farm->location = $validated['barangay'];
             $farm->status = $validated['status'];
             $farm->description = $request->input('description');
+            $farm->owner_id = $ownerId;
             $farm->save();
 
             // Optionally handle owner info if model supports relations
@@ -1770,7 +1794,8 @@ class SuperAdminController extends Controller
 
             // Calculate statistics
             $totalFarmers = User::where('role', 'farmer')->count();
-            $activeFarmers = User::where('role', 'farmer')->where('status', 'active')->count();
+            // Align with system-wide statuses (approved/pending/rejected)
+            $activeFarmers = User::where('role', 'farmer')->where('status', 'approved')->count();
             $pendingFarmers = User::where('role', 'farmer')->where('status', 'pending')->count();
             $totalFarms = Farm::count();
 

@@ -2638,7 +2638,7 @@ function confirmDeleteAdmin(adminId) {
 function deleteAdmin(adminId) {
     $.ajax({
         url: `{{ route("superadmin.admins.destroy", ":id") }}`.replace(':id', adminId),
-        method: 'PUT',
+        method: 'DELETE',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },

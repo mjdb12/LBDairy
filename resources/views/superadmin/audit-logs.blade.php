@@ -2003,8 +2003,56 @@ function viewLogDetails(logId) {
 }
 
 function investigateLog(logId) {
-    // Open investigation view
-    window.open(`{{ route("superadmin.audit-logs.details", ":id") }}`.replace(':id', logId), '_blank');
+    // Prefer in-page modal instead of navigating to a new page
+    // First try to use existing row data
+    try {
+        openLogDetails(logId);
+        return;
+    } catch (e) {
+        // continue to AJAX fallback
+    }
+
+    // Fallback: fetch details via AJAX and show in modal
+    $.get(`{{ route("superadmin.audit-logs.details", ":id") }}`.replace(':id', logId))
+        .done(function(resp) {
+            if (resp && resp.success && resp.auditLog) {
+                const log = resp.auditLog;
+                const badgeClass = (function(sev){
+                    if (!sev) return 'secondary';
+                    const s = String(sev).toLowerCase();
+                    if (s === 'critical' || s === 'error') return 'danger';
+                    if (s === 'warning') return 'warning';
+                    if (s === 'info') return 'info';
+                    return 'secondary';
+                })(log.severity);
+
+                const html = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Log Information</h6>
+                            <p><strong>Log ID:</strong> ${log.id}</p>
+                            <p><strong>Timestamp:</strong> ${log.created_at ?? ''}</p>
+                            <p><strong>User:</strong> ${(log.user && (log.user.name || (log.user.first_name + ' ' + log.user.last_name))) || 'N/A'}</p>
+                            <p><strong>Action:</strong> ${log.action ?? 'N/A'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
+                            <p><strong>Severity:</strong> <span class="badge badge-${badgeClass}">${log.severity ?? 'N/A'}</span></p>
+                            <p><strong>IP Address:</strong> ${log.ip_address ?? 'N/A'}</p>
+                            <p><strong>Details:</strong> ${log.description ?? 'No additional details available'}</p>
+                        </div>
+                    </div>
+                `;
+                $('#logDetailsContent').html(html);
+                $('#logDetailsModal').data('log-id', logId);
+                $('#logDetailsModal').modal('show');
+            } else {
+                alert('Unable to load log details for investigation.');
+            }
+        })
+        .fail(function() {
+            alert('Request failed while loading log details.');
+        });
 }
 
 function investigateFromModal() {
@@ -2028,8 +2076,50 @@ function flagLog(logId) {
 }
 
 function investigateAlert(alertId) {
-    // Open investigation view for security alert
-    window.open(`/superadmin/security-alerts/${alertId}/investigate`, '_blank');
+    // Show security alert details in the same modal using the row data
+    try {
+        const btn = document.querySelector(`button[onclick="investigateAlert('${alertId}')"]`);
+        const row = btn ? btn.closest('tr') : null;
+        if (row) {
+            const cells = row.querySelectorAll('td');
+            // Assume columns: Timestamp, User, Event, Severity, Details, Actions
+            const timestamp = cells[0]?.textContent?.trim() || '';
+            const user = cells[1]?.textContent?.trim() || '';
+            const event = cells[2]?.textContent?.trim() || '';
+            const severityText = cells[3]?.textContent?.trim() || '';
+            const details = cells[4]?.textContent?.trim() || '';
+
+            const badgeClass = (function(sev){
+                const s = String(sev).toLowerCase();
+                if (s === 'critical' || s === 'error') return 'danger';
+                if (s === 'warning') return 'warning';
+                if (s === 'info') return 'info';
+                return 'secondary';
+            })(severityText);
+
+            const html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Security Alert</h6>
+                        <p><strong>Timestamp:</strong> ${timestamp}</p>
+                        <p><strong>User:</strong> ${user}</p>
+                        <p><strong>Event:</strong> ${event}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Details</h6>
+                        <p><strong>Severity:</strong> <span class="badge badge-${badgeClass}">${severityText || 'N/A'}</span></p>
+                        <p><strong>Details:</strong> ${details || 'No additional details available'}</p>
+                    </div>
+                </div>
+            `;
+            $('#logDetailsContent').html(html);
+            $('#logDetailsModal').removeData('log-id');
+            $('#logDetailsModal').modal('show');
+            return;
+        }
+    } catch(e) { /* ignore and fallback */ }
+
+    alert('Unable to open security alert details.');
 }
 
 function exportLogs() {

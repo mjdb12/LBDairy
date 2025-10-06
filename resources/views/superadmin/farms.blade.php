@@ -949,9 +949,6 @@
                     <input type="text" class="form-control" placeholder="Search farms..." id="farmSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="showAddFarmModal()">
-                        <i class="fas fa-university mr-2"></i> Add Farm
-                    </button>
                     <button class="btn-action btn-action-print" onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
@@ -1055,7 +1052,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="farmModalLabel">
                     <i class="fas fa-university mr-2"></i>
-                    Add New Farm
+                    Edit Farm
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -1074,8 +1071,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="farmBarangay">Barangay</label>
-                                <input type="text" class="form-control" id="farmBarangay" name="barangay" placeholder="Enter barangay">
+                                <label for="farmBarangay">Barangay <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="farmBarangay" name="barangay" placeholder="Enter barangay" required>
                             </div>
                         </div>
                     </div>
@@ -1596,22 +1593,30 @@ function refreshData() {
     }, 1000);
 }
 
-function showAddFarmModal() {
-    resetFarmForm();
-    $('#farmModalLabel').html('<i class="fas fa-university"></i> Add New Farm');
-    $('#farmModal').modal('show');
-}
-
-function resetFarmForm() {
-    $('#farmForm')[0].reset();
-    $('#farmId').val('');
-    $('#farmFormNotification').hide();
-}
-
 function saveFarm(event) {
     event.preventDefault();
 
     const farmId = $('#farmId').val();
+    // Creation disabled: require an existing farmId to proceed
+    if (!farmId) {
+        const container = document.getElementById('farmFormNotification');
+        if (container) {
+            container.innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle"></i>
+                    Creating new farms via Manage Farms has been disabled. Please register the user first.
+                </div>
+            `;
+            container.style.display = 'block';
+        } else {
+            if (typeof showNotification === 'function') {
+                showNotification('Creating new farms via Manage Farms has been disabled.', 'warning');
+            } else {
+                alert('Creating new farms via Manage Farms has been disabled.');
+            }
+        }
+        return false;
+    }
     const url = farmId ? `{{ route("superadmin.farms.update", ":id") }}`.replace(':id', farmId) : '{{ route("superadmin.farms.store") }}';
     const formData = {
         _token: $('meta[name="csrf-token"]').attr('content'),
@@ -1622,6 +1627,10 @@ function saveFarm(event) {
         owner_phone: $('#ownerPhone').val(),
         status: $('#farmStatus').val()
     };
+
+    // Clear previous notifications
+    const notif = document.getElementById('farmFormNotification');
+    if (notif) { notif.style.display = 'none'; notif.innerHTML = ''; }
 
     $.ajax({
         url: url,
@@ -1637,18 +1646,30 @@ function saveFarm(event) {
             showNotification(farmId ? 'Farm updated successfully' : 'Farm created successfully', 'success');
         },
         error: function(xhr) {
-            const errors = xhr.responseJSON?.errors || {};
-            let errorMessage = 'Please fix the following errors:';
-            Object.keys(errors).forEach(field => {
-                errorMessage += `\n• ${field}: ${errors[field][0]}`;
-            });
-            document.getElementById('farmFormNotification').innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle"></i>
-                    ${errorMessage}
-                </div>
-            `;
-            document.getElementById('farmFormNotification').style.display = 'block';
+            let message = 'Error saving farm. Please try again.';
+            if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                const errors = xhr.responseJSON.errors;
+                // Build detailed validation list
+                let list = '';
+                Object.keys(errors).forEach(field => {
+                    const first = Array.isArray(errors[field]) ? errors[field][0] : errors[field];
+                    list += `\n• ${field}: ${first}`;
+                });
+                message = 'Please fix the following errors:' + list;
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            }
+
+            const container = document.getElementById('farmFormNotification');
+            if (container) {
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ${message.replace(/\n/g, '<br>')}
+                    </div>
+                `;
+                container.style.display = 'block';
+            }
         }
     });
 }
