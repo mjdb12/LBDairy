@@ -3,7 +3,6 @@
 @section('title', 'Issue Management')
 
 @section('content')
-<div class="container-fluid">
     <!-- Page Header -->
     <div class="page-header fade-in">
         <h1>
@@ -133,7 +132,7 @@
                             <button class="btn-action btn-action-print" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
-                            <button class="btn-action btn-action-refresh" onclick="location.reload()">
+                            <button class="btn-action btn-action-refresh" onclick="refreshIssuesTable('issuesTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
@@ -256,7 +255,7 @@
                             <button class="btn-action btn-action-print" onclick="printAlertsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
-                            <button class="btn-action btn-action-refresh" onclick="location.reload()">
+                            <button class="btn-action btn-action-refresh-alerts" onclick="refreshAlertsTable('alertsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
@@ -375,7 +374,7 @@
                             <button class="btn-action btn-action-print" onclick="printInspectionsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
-                            <button class="btn-action btn-action-refresh" onclick="location.reload()">
+                            <button class="btn-action btn-action-refresh-inspection" onclick="refreshInspectionTable('inspectionsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
@@ -434,14 +433,12 @@
                                     <td>{{ Str::limit($inspection->notes, 50) }}</td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-action btn-action-view" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                                <span>View</span>
+                                            <button class="btn-action btn-action-oks" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
+                                                <i class="fas fa-eye"></i>View
                                             </button>
                                             @if($inspection->status === 'scheduled')
-                                            <button class="btn-action btn-action-approve" onclick="markInspectionComplete('{{ $inspection->id }}')" title="Mark Complete">
-                                                <i class="fas fa-check"></i>
-                                                <span>Complete</span>
+                                            <button class="btn-action btn-action-edit" onclick="markInspectionComplete('{{ $inspection->id }}')" title="Mark Complete">
+                                                <i class="fas fa-check"></i>Complete
                                             </button>
                                             @endif
                                         </div>
@@ -465,10 +462,7 @@
             </div>
         </div>
     </div>
-</div>
-
-
-
+s
 <!-- Issue Details Modal -->
 <div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
@@ -486,7 +480,7 @@
                 <!-- Content will be loaded dynamically -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -494,11 +488,11 @@
 
 <!-- Inspection Details Modal -->
 <div class="modal fade" id="inspectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="inspectionDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+   <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 900px;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="inspectionDetailsLabel">
-                    <i class="fas fa-calendar-check"></i>
+                    <i class="fas fa-calendar-check mr-2"></i>
                     Inspection Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -509,7 +503,7 @@
                 <!-- Content will be loaded dynamically -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -679,6 +673,74 @@ $(document).ready(function() {
             $('#inspectionsTable').DataTable().search(this.value).draw();
         }
     });
+});
+
+
+// Refresh Admins Table
+function refreshIssuesTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for admins
+    sessionStorage.setItem('showRefreshNotificationIssues', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+function refreshAlertsTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh-alerts');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for admins
+    sessionStorage.setItem('showRefreshNotificationAlerts', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+function refreshInspectionTable() {
+    const refreshBtn = document.querySelector('.btn-action-refresh-inspection');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for admins
+    sessionStorage.setItem('showRefreshNotificationInspection', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationIssues') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationIssues');
+        setTimeout(() => {
+            showNotification('Data refreshed successfully!');
+        }, 500);
+    }
+
+    if (sessionStorage.getItem('showRefreshNotificationAlerts') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAlerts');
+        setTimeout(() => {
+            showNotification('Data refreshed successfully!', 'success');
+        }, 500);
+    }
+
+    if (sessionStorage.getItem('showRefreshNotificationInspection') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationInspection');
+        setTimeout(() => {
+            showNotification('Data refreshed successfully!', 'success');
+        }, 500);
+    }
 });
 
 function viewIssueDetails(issueId) {
@@ -993,35 +1055,69 @@ function viewInspectionDetails(inspectionId) {
                 const inspection = response.inspection;
                 $('#inspectionDetailsContent').html(`
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0"><i class="fas fa-calendar"></i> Inspection Information</h6>
-                                </div>
+                        <!-- Inspection Information -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card border-left shadow-sm h-100">
                                 <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>Date:</strong></td><td>${inspection.inspection_date}</td></tr>
-                                        <tr><td><strong>Time:</strong></td><td>${inspection.inspection_time}</td></tr>
-                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${getInspectionStatusColor(inspection.status)}">${inspection.status}</span></td></tr>
-                                        <tr><td><strong>Priority:</strong></td><td><span class="badge badge-${getInspectionPriorityColor(inspection.priority)}">${inspection.priority}</span></td></tr>
-                                        <tr><td><strong>Scheduled By:</strong></td><td>${inspection.scheduled_by ? inspection.scheduled_by.name : 'Admin'}</td></tr>
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        <i class="fas fa-calendar-check mr-2"></i>Inspection Information
+                                    </h6>
+                                    <table class="table table-borderless mb-0">
+                                        <tr>
+                                            <td><strong>Date:</strong></td>
+                                            <td>${inspection.inspection_date}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Time:</strong></td>
+                                            <td>${inspection.inspection_time}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Status:</strong></td>
+                                            <td>
+                                                <span class="badge badge-${getInspectionStatusColor(inspection.status)} badge-pill">
+                                                    <i class="fas fa-${inspection.status === 'Completed' ? 'check-circle' : 'clock'} mr-1"></i>
+                                                    ${inspection.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Priority:</strong></td>
+                                            <td>
+                                                <span class="badge badge-${getInspectionPriorityColor(inspection.priority)} badge-pill">
+                                                    ${inspection.priority}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Scheduled By:</strong></td>
+                                            <td>${inspection.scheduled_by ? inspection.scheduled_by.name : 'Admin'}</td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-warning text-white">
-                                    <h6 class="mb-0"><i class="fas fa-file-alt"></i> Notes & Findings</h6>
-                                </div>
+
+                        <!-- Notes & Findings -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card border-left shadow-sm h-100">
                                 <div class="card-body">
-                                    <h6>Notes:</h6>
-                                    <p>${inspection.notes || 'No notes provided'}</p>
-                                    ${inspection.findings ? `<h6>Findings:</h6><p>${inspection.findings}</p>` : ''}
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        <i class="fas fa-file-alt mr-2"></i>Notes & Findings
+                                    </h6>
+                                    <div class="mb-3">
+                                        <strong>Notes:</strong>
+                                        <p class="mb-0">${inspection.notes || 'No notes provided.'}</p>
+                                    </div>
+                                    ${inspection.findings ? `
+                                    <div>
+                                        <strong>Findings:</strong>
+                                        <p class="mb-0">${inspection.findings}</p>
+                                    </div>` : ''}
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 `);
                 $('#inspectionDetailsModal').modal('show');
             }
@@ -1251,6 +1347,64 @@ function markAlertAsRead(alertId) {
 
 @push('styles')
 <style>
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
 /* COMPREHENSIVE STYLING TO MATCH SUPERADMIN FARMS TABLE */
 
 /* Search and button group alignment - EXACT COPY FROM SUPERADMIN */
@@ -1676,6 +1830,28 @@ function markAlertAsRead(alertId) {
 }
 
 .btn-action-refresh:hover {
+    background-color: #e69500 !important;
+    border-color: #e69500 !important;
+    color: white !important;
+}
+.btn-action-refresh-alerts {
+    background-color: #fca700 !important;
+    border-color: #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-alerts:hover {
+    background-color: #e69500 !important;
+    border-color: #e69500 !important;
+    color: white !important;
+}
+.btn-action-refresh-inspection {
+    background-color: #fca700 !important;
+    border-color: #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-inspection:hover {
     background-color: #e69500 !important;
     border-color: #e69500 !important;
     color: white !important;

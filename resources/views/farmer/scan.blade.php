@@ -69,7 +69,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fas fa-keyboard"></i>
+                    <i class="fas fa-keyboard mr-2"></i>
                     Manual Livestock ID Input
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -84,9 +84,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-dark-green" onclick="processManualInput()">
-                    <i class="fas fa-search"></i> Look Up Livestock
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-edit" onclick="processManualInput()">
+                    Search
                 </button>
             </div>
         </div>
@@ -263,11 +263,11 @@
 
 <!-- How to Use Modal -->
 <div class="modal fade" id="howToUseModal" tabindex="-1" role="dialog" aria-labelledby="howToUseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="howToUseModalLabel">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle mr-2"></i>
                     How to Use QR Scanner
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -275,40 +275,60 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-camera" style="color: #18375d;"></i> Camera Scan</h6>
-                        <p class="text-muted">Point your camera at a QR code to scan automatically.</p>
+                <div class="row text-center">
+                    <div class="col-md-6 mb-4">
+                        <div class="p-3 border rounded shadow-sm h-100">
+                            <h6 class="fw-bold mb-2" style="color: #18375d;">
+                                <i class="fas fa-camera mr-2"></i>Camera Scan
+                            </h6>
+                            <p class="text-muted mb-0">Point your camera at a QR code to scan automatically.</p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-upload" style="color: #18375d;"></i> Upload Image</h6>
-                        <p class="text-muted">Upload a QR code image file (JPG, PNG, GIF, BMP, WebP).</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-keyboard" style="color: #18375d;"></i> Manual Input</h6>
-                        <p class="text-muted">Click the keyboard button (⌨️) to enter livestock ID manually.</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-eye" style="color: #18375d;"></i> View Details</h6>
-                        <p class="text-muted">Successfully scanned codes will display livestock information.</p>
+                    <div class="col-md-6 mb-4">
+                        <div class="p-3 border rounded shadow-sm h-100">
+                            <h6 class="fw-bold mb-2" style="color: #18375d;">
+                                <i class="fas fa-upload mr-2"></i>Upload Image
+                            </h6>
+                            <p class="text-muted mb-0">Upload a QR code image file (JPG, PNG, GIF, BMP, WebP).</p>
+                        </div>
                     </div>
                 </div>
-                <hr>
-                <div class="alert alert-info">
-                    <h6><i class="fas fa-lightbulb"></i> Tips for Better Scanning</h6>
-                    <ul class="mb-0">
+
+                <div class="row text-center">
+                    <div class="col-md-6 mb-4">
+                        <div class="p-3 border rounded shadow-sm h-100">
+                            <h6 class="fw-bold mb-2" style="color: #18375d;">
+                                <i class="fas fa-keyboard mr-2"></i>Manual Input
+                            </h6>
+                            <p class="text-muted mb-0">Click the keyboard icon (⌨️) to enter livestock ID manually.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="p-3 border rounded shadow-sm h-100">
+                            <h6 class="fw-bold mb-2" style="color: #18375d;">
+                                <i class="fas fa-eye mr-2"></i>View Details
+                            </h6>
+                            <p class="text-muted mb-0">Successfully scanned codes will display livestock information.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info shadow-sm mb-0">
+                    <h6 class="fw-bold" style="color: #18375d;">
+                        <i class="fas fa-lightbulb mr-2"></i>Tips for Better Scanning
+                    </h6>
+                    <ul class="mb-0 text-muted" style="font-size: 0.95rem;">
                         <li>Ensure QR codes are clear and well-lit</li>
-                        <li>Hold the camera steady and at proper distance</li>
-                        <li>If QR scanning fails, use manual input</li>
+                        <li>Hold the camera steady and at a proper distance</li>
+                        <li>If scanning fails, use manual input instead</li>
                         <li>Supported formats: JPG, PNG, GIF, BMP, WebP (max 5MB)</li>
                     </ul>
                 </div>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-got-it" data-dismiss="modal">
-                    <i class="fas fa-check"></i> Got it!
+                <button type="button" class="btn-action btn-action-edit" data-dismiss="modal">
+                    Got it!
                 </button>
             </div>
         </div>
@@ -318,6 +338,161 @@
 
 @push('styles')
 <style>
+     /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    #howToUseModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #howToUseModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #howToUseModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #howToUseModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #howToUseModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #howToUseModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #howToUseModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #howToUseModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+    /*manual*/
+    #manualInputModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #manualInputModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #manualInputModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #manualInputModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #manualInputModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #manualInputModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #manualInputModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
+    /* Style all labels inside form Modal */
+    #manualInputModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
 
 /* Custom Dark Green Button */
 .btn-dark-green {
@@ -472,8 +647,8 @@
 }
 
 .scanner-btn:hover {
-    background: #2d5a47;
-    border-color: #2d5a47;
+    background: #fca700;
+    border-color: #fca700;
     transform: scale(1.1);
     color: white;
     box-shadow: 0 4px 12px rgba(45, 90, 71, 0.4);
