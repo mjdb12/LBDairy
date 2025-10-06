@@ -1,34 +1,96 @@
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-sign-out-alt mr-2"></i>Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+<!-- Modern Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+        <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-active">
+                <i class="fas fa-info-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Select "Logout" below if you are ready to end your current session.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-action btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-deletes"
+            <!-- Title -->
+            <h5>Ready to Leave?</h5>
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to <strong>logout</strong> and end your current session? Select <strong>“Logout”</strong> below if you are ready to proceed.
+            </p>
+            <!-- Buttons -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-modern btn-confirm"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                Logout
                 </button>
-
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                    @csrf
-                </form>
-
             </div>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
         </div>
     </div>
 </div>
 
+
 <style>
+.smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #e6ebf4ff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.btn-modern {
+  border-radius: 8px;       /* slightly smaller rounded corners */
+  padding: 8px 19px;        /* smaller padding */
+  font-size: 0.9rem;        /* smaller font size */
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+
+.btn-cancel {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #111827;
+}
+
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-confirm {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.btn-confirm:hover {
+  background: #fca700;
+}
+
     /* User Details Modal Styling */
     #logoutModal .modal-content {
         border: none;

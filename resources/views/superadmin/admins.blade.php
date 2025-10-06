@@ -592,7 +592,7 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #pendingAdminsTable th,
+     #pendingAdminsTable th,
     #pendingAdminsTable td,
     #activeAdminsTable th,
     #activeAdminsTable td {
@@ -654,7 +654,6 @@
     #activeAdminsTable thead th.sorting_desc::after {
         display: none;
     }
-    
     #addAdminModal .modal-content {
         border: none;
         border-radius: 12px;
@@ -795,12 +794,144 @@
     .dataTables_wrapper .row > div {
         padding: 0;
     }
+        /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+.smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #ffffffff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.btn-delete:hover {
+  background: #fca700;
+}
 </style>
 @endpush
 
 @section('content')
     <!-- Page Header -->
-    <div class="page-header fade-in">
+    <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
             <i class="fas fa-users-cog"></i>
             Admin Management
@@ -869,7 +1000,7 @@
 
     <!-- Pending Admins Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header bg-warning text-white">
+       <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-clock"></i>
                 Pending Admin Registrations
@@ -910,7 +1041,7 @@
 
     <!-- Active Admins Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-header bg-success text-white">
+        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-user-check"></i>
                 Active Admins
@@ -1362,26 +1493,26 @@
         </div>
     </div>
 </div>
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="confirmDeleteAdminModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAdminLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteAdminLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Delete Task Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteAdminModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this admin? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteAdminBtn" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Yes, Delete
+            <!-- Title -->
+            <h5>Confirm Delete</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to delete this admin? This action <strong>cannot be undone</strong>.
+            </p>
+
+            <!-- Buttons -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteAdminBtn" class="btn-modern btn-delete">
+                    Yes, Delete
                 </button>
             </div>
         </div>

@@ -4,6 +4,139 @@
 
 @push('styles')
 <style>
+        /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+/* Base Card Style */
+.rowcard {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+.rowcard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.rowcard-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+/* Title (h6) */
+.rowcard-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.rowcard-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
      /* User Details Modal Styling */
     #deleteConfirmModal .modal-content {
         border: none;
@@ -204,64 +337,74 @@
 
 .border-left-warning {
     border-left: 0.25rem solid #ffc107 !important;
-}
     text-align: center;
     vertical-align: middle;
     position: relative;
     white-space: nowrap;
 }
 
-/* Fix DataTables sorting button overlap */
-#farmAnalysisTable thead th.sorting,
-#farmAnalysisTable thead th.sorting_asc,
-#farmAnalysisTable thead th.sorting_desc {
-    padding-right: 2rem !important;
-}
-
-/* Ensure proper spacing for sort indicators */
-#farmAnalysisTable thead th::after {
-    content: '';
-    position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-}
-
-/* Remove default DataTables sort indicators */
-#farmAnalysisTable thead th.sorting::after,
-#farmAnalysisTable thead th.sorting_asc::after,
-#farmAnalysisTable thead th.sorting_desc::after {
-    display: none;
-}
-
-/* Allow table to scroll horizontally if too wide */
-.table-responsive {
-    overflow-x: auto;
-}
-
-/* Make table cells wrap instead of forcing inline */
-#farmAnalysisTable td, 
-#farmAnalysisTable th {
-    white-space: normal !important;  
-    vertical-align: middle;
-}
-
-/* Make sure action buttons don’t overflow */
-#farmAnalysisTable td .btn-group {
-    display: flex;
-    flex-wrap: wrap; 
-    gap: 0.25rem;    
-}
-
-#farmAnalysisTable td .btn-action {
-    flex: 1 1 auto; 
-    min-width: 90px; 
-    text-align: center;
-}
+ #farmAnalysisTable th,
+    #farmAnalysisTable td,
+    #activeAdminsTable th,
+    #activeAdminsTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #farmAnalysisTable thead th,
+    #activeAdminsTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #farmAnalysisTable thead th.sorting,
+    #farmAnalysisTable thead th.sorting_asc,
+    #farmAnalysisTable thead th.sorting_desc,
+    #activeAdminsTable thead th.sorting,
+    #activeAdminsTable thead th.sorting_asc,
+    #activeAdminsTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #farmAnalysisTable thead th::after,
+    #activeAdminsTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #farmAnalysisTable thead th.sorting::after,
+    #farmAnalysisTable thead th.sorting_asc::after,
+    #farmAnalysisTable thead th.sorting_desc::after,
+    #activeAdminsTable thead th.sorting::after,
+    #activeAdminsTable thead th.sorting_asc::after,
+    #activeAdminsTable thead th.sorting_desc::after {
+        display: none;
+    }
 
 
     /* Action buttons styling */
@@ -481,12 +624,52 @@
     box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
     outline: 0;
 }
+.smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #ffffffff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.btn-delete:hover {
+  background: #fca700;
+}
 </style>
 @endpush
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header fade-in">
+<div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
     <h1>
         <i class="fas fa-database"></i>
         Productivity Analysis
@@ -561,7 +744,7 @@
     <!-- Farm Performance Chart -->
     <div class="col-12 mb-4">
         <div class="card shadow">
-            <div class="card-header">
+            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
                 <h6>
                     <i class="fas fa-chart-bar"></i>
                     Farm Performance Overview
@@ -587,9 +770,9 @@
     <!-- Livestock Analysis -->
     <div class="col-12 col-lg-6 mb-4">
         <div class="card shadow">
-            <div class="card-header">
+            <div class="rowcard-body">
                 <h6>
-                    <i class="fas fa-cow"></i>
+                    <i class="fas fa-chart-line"></i>
                     Livestock Distribution
                 </h6>
             </div>
@@ -602,7 +785,7 @@
     <!-- Top Performing Farms -->
     <div class="col-12 col-lg-6 mb-4">
         <div class="card shadow">
-            <div class="card-header">
+            <div class="rowcard-body">
                 <h6>
                     <i class="fas fa-trophy"></i>
                     Top Performing Farms
@@ -626,7 +809,7 @@
 <div class="row fade-in">
     <div class="col-12 mb-4">
         <div class="card shadow">
-            <div class="card-header">
+            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
                 <h6>
                     <i class="fas fa-chart-line"></i>
                     Production Trends
@@ -644,7 +827,7 @@
     <!-- Farm Analysis Table -->
     <div class="col-12 mb-4">
         <div class="card shadow mb-4 fade-in">
-            <div class="card-header bg-primary text-white">
+            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-table"></i>
                     Farm Analysis Data
@@ -859,25 +1042,25 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Delete Task Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this farm? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-delete" id="confirmDeleteBtn">
+            <!-- Title -->
+            <h5>Confirm Delete</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to delete this farm? This action <strong>cannot be undone</strong>.
+            </p>
+
+            <!-- Buttons -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
                     Yes, Delete
                 </button>
             </div>
