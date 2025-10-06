@@ -4,6 +4,45 @@
 
 @push('styles')
 <style>
+      /* Make table cells wrap instead of forcing them all inline */
+#activeFarmersTable td, 
+#activeFarmersTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#activeFarmersTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#activeFarmersTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
+#pendingFarmersTable td, 
+#pendingFarmersTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#pendingFarmersTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#pendingFarmersTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
     /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
     .admin-modal select.form-control,
     .modal.admin-modal select.form-control,
@@ -1079,7 +1118,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn-action btn-action-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-action btn-action-ok">
-                        <i class="fas fa-paper-plane"></i> Send Message
+                        Send Message
                     </button>
                 </div>
             </form>
@@ -1580,15 +1619,15 @@ function loadActiveFarmers() {
                         farmer.username || 'N/A',
                         farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
                         `<div class="action-buttons">
-                            <button class="btn-action btn-action-view" onclick="showFarmerDetails(${farmer.id})" title="View Details">
+                            <button class="btn-action btn-action-ok" onclick="showFarmerDetails(${farmer.id})" title="View Details">
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </button>
-                            <button class="btn-action btn-action-view" onclick="openContactModal()" title="Contact">
+                            <button class="btn-action btn-action-edit" onclick="openContactModal()" title="Contact">
                                 <i class="fas fa-envelope"></i>
                                 <span>Contact</span>
                             </button>
-                            <button class="btn-action btn-action-toggle" onclick="deactivateFarmer('${farmer.id}')" title="Deactivate">
+                            <button class="btn-action btn-action-deletes" onclick="deactivateFarmer('${farmer.id}')" title="Deactivate">
                                 <i class="fas fa-user-slash"></i>
                                 <span>Deactivate</span>
                             </button>
