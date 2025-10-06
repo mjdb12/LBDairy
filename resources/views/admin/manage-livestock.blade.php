@@ -1017,6 +1017,47 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+.smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #ffffffff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.btn-delete:hover {
+  background: #fca700;
+}
+
 </style>
 @endpush
 
@@ -1624,31 +1665,36 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmationLabel">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this livestock? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-deletes" id="confirmDeleteBtn">
-                    Yes, Delete
-                </button>
-            </div>
-        </div>
+<!-- Modern Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content smart-modal text-center p-4">
+
+      <!-- Icon -->
+      <div class="icon-wrapper mx-auto mb-4 text-danger">
+        <i class="fas fa-exclamation-triangle fa-2x"></i>
+      </div>
+
+      <!-- Title -->
+      <h5>Confirm Delete</h5>
+
+      <!-- Description -->
+      <p class="text-muted mb-4 px-3">
+        Are you sure you want to delete this livestock? This action <strong>cannot be undone</strong>.
+      </p>
+
+      <!-- Buttons -->
+      <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn">
+          Yes, Delete
+        </button>
+      </div>
+
     </div>
+  </div>
 </div>
+
 
 <!-- Issue Alert Modal -->
 <div class="modal fade" id="issueAlertModal" tabindex="-1" role="dialog" aria-labelledby="issueAlertLabel" aria-hidden="true">

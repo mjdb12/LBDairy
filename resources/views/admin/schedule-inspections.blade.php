@@ -5,6 +5,46 @@
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css" rel="stylesheet">
 <style>
+    .smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #ffffffff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.btn-delete:hover {
+  background: #fca700;
+}
     /* User Details Modal Styling */
     #farmerDetailsModal .modal-content {
         border: none;
@@ -1680,31 +1720,40 @@
     </div>
 </div>
 
-<!-- Cancel Inspection Confirmation Modal -->
-<div class="modal fade" id="cancelInspectionModal" tabindex="-1" role="dialog" aria-labelledby="cancelInspectionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cancelInspectionModalLabel">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    Confirm Cancel
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to cancel this inspection? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-deletes" id="confirmCancelInspectionBtn">
-                    Yes, Cancel Inspection
-                </button>
-            </div>
-        </div>
+<!-- Smart Cancel Inspection Modal -->
+<div class="modal fade" id="cancelInspectionModal" tabindex="-1" aria-labelledby="cancelInspectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content smart-modal text-center p-4">
+
+      <!-- Icon -->
+      <div class="icon-wrapper mx-auto mb-3 text-danger">
+        <i class="fas fa-exclamation-triangle fa-2x"></i>
+      </div>
+
+      <!-- Title -->
+      <h5 id="cancelInspectionModalLabel" class="fw-bold mb-2">
+        Confirm Cancellation
+      </h5>
+
+      <!-- Message -->
+      <p class="text-muted mb-3">
+        Are you sure you want to cancel this inspection?<br>
+        This action <strong>cannot be undone</strong>.
+      </p>
+
+      <!-- Footer -->
+      <div class="modal-footer d-flex justify-content-center gap-2 flex-wrap">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn-modern btn-delete" id="confirmCancelInspectionBtn">
+          Yes, Cancel Inspection
+        </button>
+      </div>
     </div>
+  </div>
 </div>
+
 @endsection
 
 @push('scripts')
