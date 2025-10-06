@@ -947,6 +947,165 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+.smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #ffffffff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-approve {
+  background: #387057;
+  color: #fff;
+  border: none;
+}
+.btn-approve:hover {
+  background: #fca700;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+.btn-delete:hover {
+  background: #fca700;
+}
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+  border: none;
+}
+.btn-ok:hover {
+  background: #fca700;
+}
+
+/* Contact Farmer Modal Alignment */
+#contactModal .smart-modal {
+    text-align: center; /* Keep header text centered */
+}
+
+#contactModal form {
+    text-align: left; /* Align form content to the left */
+}
+
+/* Make sure labels, inputs, and textareas are properly aligned */
+#contactModal .form-group {
+    width: 100%;
+    max-width: 700px; /* Optional: limits width for large screens */
+    margin: 0 auto; /* Centers the form container */
+}
+
+/* Label styling */
+#contactModal label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs and Textareas */
+#contactModal .form-control {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    box-shadow: none;
+}
+
+/* Keep modal buttons centered */
+#contactModal .modal-footer {
+    text-align: center;
+}
+
+/* Optional: Add smooth focus effect */
+#contactModal .form-control:focus {
+    border-color: #198754; /* Bootstrap green */
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+
+
+/* Contact Farmer Modal Alignment */
+#rejectionModal .smart-modal {
+    text-align: center; /* Keep header text centered */
+}
+
+#rejectionModal form {
+    text-align: left; /* Align form content to the left */
+}
+
+/* Make sure labels, inputs, and textareas are properly aligned */
+#rejectionModal .form-group {
+    width: 100%;
+    max-width: 700px; /* Optional: limits width for large screens */
+    margin: 0 auto; /* Centers the form container */
+}
+
+/* Label styling */
+#rejectionModal label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs and Textareas */
+#rejectionModal .form-control {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    box-shadow: none;
+}
+
+/* Keep modal buttons centered */
+#rejectionModal .modal-footer {
+    text-align: center;
+}
+
+/* Optional: Add smooth focus effect */
+#rejectionModal .form-control:focus {
+    border-color: #198754; /* Bootstrap green */
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+/* Ensure internal content aligns properly */
+.smart-modal .details-content {
+    text-align: left;
+}
+/* Custom modal width */
+.custom-width {
+  max-width: 1000px !important; /* adjust as needed */
+  width: 90%; /* keeps it responsive */
+}
+
+/* Optional: make sure it scales well on smaller screens */
+@media (max-width: 992px) {
+  .custom-width {
+    max-width: 95% !important;
+    width: 95%;
+  }
+}
+
 </style>
 @endpush
 
@@ -1152,63 +1311,90 @@
 
 </div>
 
-<!-- Details Modal -->
-<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailsModalLabel">
-                    <i class="fas fa-user mr-2"></i>
-                    Farmer Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="farmerDetails"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn-action btn-action-ok" onclick="openContactModal()">
-                    <i class="fas fa-envelope"></i> Contact Farmer
-                </button>
-                
-            </div>
-        </div>
-    </div>
+<!-- Details Modal --> 
+ <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true"> 
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document"> 
+        <div class="modal-content"> 
+            <div class="modal-header"> 
+                <h5 class="modal-title" id="detailsModalLabel"> 
+                    <i class="fas fa-user mr-2"></i> Farmer Details 
+                </h5> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> 
+                    <span aria-hidden="true">&times;</span> 
+                </button> 
+            </div> 
+            <div class="modal-body"> 
+                <div id="farmerDetails">
+
+                </div> 
+            </div> 
+            <div class="modal-footer"> 
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button> 
+                <button type="button" class="btn-action btn-action-ok" onclick="openContactModal()"> 
+                    <i class="fas fa-envelope"></i> Contact Farmer 
+                </button> 
+            </div> 
+        </div> 
+    </div> 
 </div>
 
-<!-- Contact Farmer Modal -->
-<div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="contactModalLabel">
-                    <i class="fas fa-paper-plane mr-2"></i>
-                    Send Message to Farmer
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
+<!-- Modern Contact Farmer Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 ">
+                <i class="fas fa-paper-plane fa-2x"></i>
             </div>
+
+            <!-- Title -->
+            <h5>Send Message to Farmer</h5>
+
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Please fill out the form below to send a message to the farmer. Ensure your message is clear and concise.
+            </p>
+
+            <!-- Form -->
             <form onsubmit="sendMessage(event)">
                 @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="farmerNameHidden">
-                    <div class="form-group">
-                        <label for="messageSubject">Subject <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="messageSubject" required placeholder="Enter a clear subject (e.g., Farm Visit Schedule, Account Update)">
-                    </div>
-                    <div class="form-group">
-                        <label for="messageBody">Message <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="messageBody" rows="4" required placeholder="Write your message to the farmer here... (e.g., details about schedule, updates, or reminders)"></textarea>
-                    </div>
-                    <div id="messageNotification" class="mt-2" style="display: none;"></div>
+                <input type="hidden" id="farmerNameHidden">
+
+                <!-- Subject Field -->
+                <div class="form-group px-3 text-start">
+                    <label for="messageSubject" class="fw-semibold text-start">
+                        Subject <span class="text-danger">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-control mt-1" 
+                        id="messageSubject" 
+                        required 
+                        placeholder="Enter a subject here...">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-action-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-ok">
+
+                <!-- Message Field -->
+                <div class="form-group px-3 text-start mt-3">
+                    <label for="messageBody" class="fw-semibold text-start">
+                        Message <span class="text-danger">*</span>
+                    </label>
+                    <textarea 
+                        class="form-control mt-1" 
+                        id="messageBody" 
+                        rows="5" 
+                        required 
+                        placeholder="Write your message here..." 
+                        style="resize: none;"></textarea>
+                </div>
+
+                <!-- Notification -->
+                <div id="messageNotification" class="mt-3 text-center" style="display: none;"></div>
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">
                         Send Message
                     </button>
                 </div>
@@ -1217,31 +1403,39 @@
     </div>
 </div>
 
-<!-- Rejection Reason Modal -->
-<div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rejectionModalLabel">
-                    <i class="fas fa-times-circle mr-2"></i>
-                    Reject Farmer Registration
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Rejection Reason Modal -->
+<div class="modal fade" id="rejectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
+            <!-- Title -->
+            <h5>Reject Farmer Registration</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Please provide a reason for rejecting this farmer’s registration.
+            </p>
+
+            <!-- Form -->
             <form onsubmit="submitRejection(event)">
                 @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="farmerIdHidden">
-                    <div class="form-group">
-                        <label for="rejectionReason">Reason for Rejection <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="rejectionReason" rows="4" required placeholder="Please provide a reason for rejecting this farmer registration..."></textarea>
-                    </div>
+                <input type="hidden" id="farmerIdHidden">
+
+                <!-- Reason Field -->
+                <div class="form-group px-3 text-start">
+                    <label for="rejectionReason" class="fw-semibold  text-start">
+                        Reason for Rejection <span class="text-danger">*</span>
+                    </label>
+                    <textarea class="form-control mt-1" id="rejectionReason" rows="4" required placeholder="Enter reason for rejection..."></textarea>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-deletes">
+
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-delete">
                         Reject Registration
                     </button>
                 </div>
@@ -1249,59 +1443,32 @@
         </div>
     </div>
 </div>
-<!-- Reject User Modal -->
-<div class="modal fade" id="rejectionModal" tabindex="-1" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+
+<!-- Modern Approve Farmer Modal -->
+<div class="modal fade" id="deactivateModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rejectionModalLabel">Reject Farmer Registration</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-check-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to reject this user registration?</p>
-                <div class="mb-3">
-                    <label for="rejectionReason" class="form-label">Rejection Reason <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="rejectionReason" name="rejection_reason" rows="3" required placeholder="Please provide a reason for rejection..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-                <form id="rejectForm" method="POST" style="display: inline;">
-                    @csrf
-                    <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
-                    <button type="submit" class="btn-action btn-action-deletes">
-                        <i class="fas fa-times me-2"></i>Reject Farmer
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+            <!-- Title -->
+            <h5>Deactivate Farmer </h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to <strong>deactivate</strong> this farmer?
+            </p>
 
-
-<!-- Approve Farmer Modal -->
-<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approveModalLabel">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    Approve Farmer Registration
-                </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            <!-- Form -->
             <form onsubmit="submitApproval(event)">
                 @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="farmerIdHiddenApprove">
-                    <p>Are you sure you want to <strong>approve</strong> this farmer’s registration?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-edit">
-                        Approve Registration
+                <input type="hidden" id="farmerIdHiddenApprove">
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-delete">
+                        Deactivate
                     </button>
                 </div>
             </form>
@@ -1309,6 +1476,37 @@
     </div>
 </div>
 
+<!-- Modern Approve Farmer Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-success">
+                <i class="fas fa-check-circle fa-2x"></i>
+            </div>
+            <!-- Title -->
+            <h5>Approve Farmer Registration</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to <strong>approve</strong> this farmer’s registration?
+            </p>
+
+            <!-- Form -->
+            <form onsubmit="submitApproval(event)">
+                @csrf
+                <input type="hidden" id="farmerIdHiddenApprove">
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-approve">
+                        Approve
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Schedule Inspection Modal -->
 <div class="modal fade" id="scheduleInspectionModal" tabindex="-1" role="dialog" aria-labelledby="scheduleInspectionModalLabel" aria-hidden="true">
@@ -1884,7 +2082,17 @@ function submitRejection(event) {
 }
 
 function deactivateFarmer(farmerId) {
-    if (!confirm('Are you sure you want to deactivate this farmer?')) return;
+    // Store the farmer ID temporarily
+    $('#deactivateModal').data('farmer-id', farmerId);
+    // Show the confirmation modal
+    $('#deactivateModal').modal('show');
+}
+
+// When the admin confirms deactivation
+$('#confirmRejectBtn').off('click').on('click', function () {
+    const farmerId = $('#rejectionModal').data('farmer-id');
+
+    if (!farmerId) return;
 
     $.ajax({
         url: `{{ route("admin.farmers.deactivate", ":id") }}`.replace(':id', farmerId),
@@ -1892,7 +2100,9 @@ function deactivateFarmer(farmerId) {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        success: function(response) {
+        success: function (response) {
+            $('#rejectionModal').modal('hide');
+
             if (response.success) {
                 loadActiveFarmers();
                 updateStats();
@@ -1901,11 +2111,13 @@ function deactivateFarmer(farmerId) {
                 showNotification(response.message || 'Error deactivating farmer', 'danger');
             }
         },
-        error: function(xhr) {
+        error: function () {
+            $('#rejectionModal').modal('hide');
             showNotification('Error deactivating farmer', 'danger');
         }
     });
-}
+});
+
 
 
 

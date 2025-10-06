@@ -161,62 +161,94 @@
         </div>
     </div>
 
-<!-- Approve User Modal -->
+<!-- Smart Approve User Modal -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle mr-2"></i>Approve User Registration</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to approve this user registration?</p>
-                <p class="text-muted">The user will be able to access the system immediately after approval.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-                <form id="approveForm" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="btn-action btn-action-edit">
-                        Approve User
-                    </button>
-                </form>
-            </div>
-        </div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content smart-modal text-center p-4">
+
+      <!-- Icon -->
+      <div class="icon-wrapper mx-auto mb-3 text-success">
+        <i class="fas fa-check-circle fa-2x"></i>
+      </div>
+
+      <!-- Title -->
+      <h5 id="approveModalLabel" class="fw-bold mb-2">
+        Approve User Registration
+      </h5>
+
+      <!-- Message -->
+      <p class="text-muted mb-1">
+        Are you sure you want to approve this user registration?
+      The user will gain full access to the system immediately after approval.
+      </p>
+
+      <!-- Footer -->
+      <div class="modal-footer d-flex justify-content-center gap-2 flex-wrap">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+          Close
+        </button>
+        <form id="approveForm" method="POST" style="display: inline;">
+          @csrf
+          <button type="submit" class="btn-modern btn-approve">
+            Approve User
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- Reject User Modal -->
+
+<!-- Modern Reject User Modal -->
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle mr-2"></i>Reject User Registration</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                    <div class="form-group">
-                        <label for="rejectionReason">Reason for Rejection <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="rejectionReason" rows="4" required placeholder="Please provide a reason for rejecting this farmer registration..."></textarea>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-                <form id="rejectForm" method="POST" style="display: inline;">
-                    @csrf
-                    <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
-                    <button type="submit" class="btn-action btn-action-deletes">
-                        Reject User
-                    </button>
-                </form>
-            </div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content smart-modal text-center p-4">
+
+      <!-- Icon -->
+      <div class="icon-wrapper mx-auto mb-4 text-danger">
+        <i class="fas fa-times-circle fa-2x"></i>
+      </div>
+
+      <!-- Title -->
+      <h5 id="rejectModalLabel" class="fw-bold mb-2">Reject User Registration</h5>
+
+      <!-- Description -->
+      <p class="text-muted mb-4 px-4">
+        Please provide a reason for rejecting this user’s registration. This ensures proper record keeping and transparency.
+      </p>
+
+      <!-- Form -->
+      <form id="rejectForm" method="POST" onsubmit="submitUserRejection(event)">
+        @csrf
+
+        <!-- Reason Field -->
+        <div class="form-group px-3 text-start">
+          <label for="rejectionReason" class="fw-semibold ">
+            Reason for Rejection <span class="text-danger">*</span>
+          </label>
+          <textarea
+            class="form-control mt-2"
+            id="rejectionReason"
+            name="rejection_reason"
+            rows="4"
+            required
+            placeholder="Enter reason for rejection..."></textarea>
         </div>
+
+        <!-- Buttons -->
+        <div class="modal-footer d-flex justify-content-center gap-2 flex-wrap mt-4 border-0">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+            Cancel
+          </button>
+          <button type="submit" class="btn-modern btn-delete">
+            Reject User
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
+
 
 @endsection
 
@@ -402,6 +434,104 @@ function refreshPendingData() {
 @endpush
 @push('styles')
 <style>
+    /* Optional: Add smooth focus effect */
+#rejectModal .form-control:focus {
+    border-color: #198754; /* Bootstrap green */
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+
+
+/* Contact Farmer Modal Alignment */
+#rejectModal .smart-modal {
+    text-align: center; /* Keep header text centered */
+}
+
+#rejectModal form {
+    text-align: left; /* Align form content to the left */
+}
+
+/* Make sure labels, inputs, and textareas are properly aligned */
+#rejectModal .form-group {
+    width: 100%;
+    max-width: 700px; /* Optional: limits width for large screens */
+    margin: 0 auto; /* Centers the form container */
+}
+
+/* Label styling */
+#rejectModal label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs and Textareas */
+#rejectModal .form-control {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    box-shadow: none;
+}
+
+/* Keep modal buttons centered */
+#rejectModal .modal-footer {
+    text-align: center;
+}
+
+/* Optional: Add smooth focus effect */
+#rejectModal .form-control:focus {
+    border-color: #198754; /* Bootstrap green */
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+    .smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #ffffffff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.btn-delete:hover {
+  background: #fca700;
+}
+.btn-approve {
+  background: #387057;
+  color: #fff;
+  border: none;
+}
+
+.btn-approve:hover {
+  background: #fca700;
+}
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
