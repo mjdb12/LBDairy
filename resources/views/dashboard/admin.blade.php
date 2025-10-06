@@ -420,19 +420,129 @@
         margin-bottom: 0.5rem;      /* add spacing below */
     } 
 
+/* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+/* List Group Styling */
+.list-group {
+    border: none;
+}
+
+.list-group-item {
+    border: none;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: #f8f9fc;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #e9edf5;
+}
+
 </style>
 @endpush
 @section('content')
-<!-- Page Header -->
-<div class="page-header fade-in">
+    <!-- Page Header -->
+<div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
     <h1>
-        <i class="fas fa-tachometer-alt"></i>
-        Admin Dashboard
+        <i class="fas fa-tachometer-alt me-2"></i> Admin Dashboard
     </h1>
-    <p>Welcome back! Here's what's happening with your dairy management system today.</p>
+    <p >
+        Welcome back! Here’s an overview of your dairy management system’s performance today.
+    </p>
 </div>
-
-<!-- Statistics Grid -->
+    <!-- Statistics Grid -->
 <div class="row fade-in">
     <!-- Active Farms -->
     <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
@@ -495,17 +605,19 @@
     </div>
 </div>
 
+
+
 <!-- Task Board Row -->
 <div class="row fade-in">
     <!-- Task Board -->
     <div class="col-12 mb-4">
         <div class="card shadow">
-            <div class="card-header d-flex align-items-center justify-content-between">
+            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-tasks"></i>
                     Task Board
                 </h6>
-                <button class="btn-action btn-action-edit" id="addTaskBtn">
+                <button class="btn-action btn-action-edits" id="addTaskBtn">
                     <i class="fas fa-plus mr-2"></i> New Task
                 </button>
             </div>
@@ -521,7 +633,7 @@
     <!-- Livestock Trends Chart -->
     <div class="col-12 mb-4">
         <div class="card shadow">
-            <div class="card-header bg-success text-white">
+            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2  text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-chart-line"></i>
                     Livestock Population Trends
@@ -540,7 +652,7 @@
 <div class="row fade-in">
     <div class="col-12">
         <div class="card shadow">
-            <div class="card-header">
+            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2  text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-history"></i>
                     Recent System Activity
