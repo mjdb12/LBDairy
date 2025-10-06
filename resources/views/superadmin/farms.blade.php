@@ -1071,8 +1071,42 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="farmBarangay">Barangay <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="farmBarangay" name="barangay" placeholder="Enter barangay" required>
+                                <label for="barangay">Barangay</label>
+                                <select class="form-control" id="farmBarangay" name="barangay">
+                                    <option value="">Select Barangay</option>
+                                    <option value="Abang">Abang</option>
+                                    <option value="Aliliw">Aliliw</option>
+                                    <option value="Atulinao">Atulinao</option>
+                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                                    <option value="Igang">Igang</option>
+                                    <option value="Kabatete">Kabatete</option>
+                                    <option value="Kakawit">Kakawit</option>
+                                    <option value="Kalangay">Kalangay</option>
+                                    <option value="Kalyaat">Kalyaat</option>
+                                    <option value="Kilib">Kilib</option>
+                                    <option value="Kulapi">Kulapi</option>
+                                    <option value="Mahabang Parang">Mahabang Parang</option>
+                                    <option value="Malupak">Malupak</option>
+                                    <option value="Manasa">Manasa</option>
+                                    <option value="May-It">May-It</option>
+                                    <option value="Nagsinamo">Nagsinamo</option>
+                                    <option value="Nalunao">Nalunao</option>
+                                    <option value="Palola">Palola</option>
+                                    <option value="Piis">Piis</option>
+                                    <option value="Samil">Samil</option>
+                                    <option value="Tiawe">Tiawe</option>
+                                    <option value="Tinamnan">Tinamnan</option>
+                                </select>
                             </div>
                         </div>
                     </div>

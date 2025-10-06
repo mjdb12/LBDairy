@@ -279,6 +279,7 @@
 .btn-delete:hover {
   background: #fca700;
 }
+
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
