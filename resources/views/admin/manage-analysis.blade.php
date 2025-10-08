@@ -241,7 +241,7 @@
             <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle">
-                    <i class="fas fa-user fa-lg"></i>
+                    <i class="fas fa-user fa-2x "></i>
                 </div>
                 <h5 class="fw-bold mb-1">Farmer Details</h5>
                 <p class="text-muted mb-0 small">Below are the complete details of the selected farmer.</p>
@@ -270,7 +270,7 @@
 
       <!-- Icon -->
       <div class="icon-wrapper mx-auto mb-3 text-danger">
-        <i class="fas fa-exclamation-triangle fa-2x"></i>
+        <i class="fas fa-times-circle fa-2x"></i>
       </div>
 
       <!-- Title -->
@@ -358,7 +358,7 @@
     width: 60px;
     height: 60px;
     background-color: #e8f0fe;
-    color: #1a73e8;
+    color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;

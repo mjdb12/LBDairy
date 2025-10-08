@@ -957,16 +957,15 @@
   transition: all 0.3s ease;
 }
 
-.smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+.smart-modal .icon-circle {
+  width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .smart-modal h5 {
@@ -1121,7 +1120,7 @@
     width: 55px;
     height: 55px;
     background-color: #e8f0fe;
-    color: #1a73e8;
+    color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1404,7 +1403,7 @@
         <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle">
-                    <i class="fas fa-user fa-lg"></i>
+                    <i class="fas fa-user fa-2x "></i>
                 </div>
                 <h5 class="fw-bold mb-1">Farmer Details </h5>
                 <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
@@ -1436,17 +1435,13 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
-            <div class="icon-wrapper mx-auto mb-4 ">
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
                 <i class="fas fa-paper-plane fa-2x"></i>
             </div>
-
-            <!-- Title -->
-            <h5>Send Message to Farmer</h5>
-
-            <!-- Description -->
-            <p class="text-muted mb-4 px-3">
-                Please fill out the form below to send a message to the farmer. Ensure your message is clear and concise.
-            </p>
+                <h5 class="fw-bold mb-1">Send Message to Farmer </h5>
+                <p class="text-muted mb-0 small">Please fill out the form below to send a message to the farmer. Ensure your message is clear and concise.</p>
+            </div>
 
             <!-- Form -->
             <form onsubmit="sendMessage(event)">

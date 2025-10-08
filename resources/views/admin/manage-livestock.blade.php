@@ -1027,7 +1027,7 @@
   transition: all 0.3s ease;
 }
 
-.smart-modal .icon-wrapper {
+.smart-modal .icon-circle {
   background-color: #ffffffff;
   color: #18375d;
   border-radius: 50%;
@@ -1077,18 +1077,16 @@
 }
 
 /* Header Icon */
-.smart-form .icon-wrapper {
-  background: #eef3f8;
-  color: #18375d;
-  border-radius: 50%;
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin: 0 auto 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1396,7 +1394,7 @@
     width: 60px;
     height: 60px;
     background-color: #e8f0fe;
-    color: #1a73e8;
+    color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1666,7 +1664,7 @@
       <!-- Header -->
       <div class="d-flex flex-column align-items-center mb-4">
         <div class="icon-circle mb-3">
-          <i class="fas fa-list fa-lg"></i>
+          <i class="fas fa-list fa-2x"></i>
         </div>
         <h5 class="fw-bold mb-1">Add New Livestock</h5>
         <p class="text-muted mb-0 small">
@@ -1852,7 +1850,7 @@
         <!-- Footer -->
         <div class="modal-footer justify-content-center mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-modern btn-approves">
+          <button type="submit" class="btn-modern btn-ok">
             Add Livestock
           </button>
         </div>
@@ -1870,7 +1868,7 @@
         <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle">
-                    <i class="fas fa-user fa-lg"></i>
+                    <i class="fas fa-user fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Livestock Details </h5>
                 <p class="text-muted mb-0 small">Below are the complete details of the selected livestock.</p>
@@ -1904,8 +1902,8 @@
 
         <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-circle">
-                    <i class="fas fa-qrcode mr-2"></i>
+                <div class="icon-circle ">
+                    <i class="fas fa-qrcode fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">QR Code </h5>
                 <p class="text-muted mb-0 small">Below are the generated qr code of the selected livestock.</p>
@@ -1939,7 +1937,7 @@
             <!-- Header -->
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle mb-3">
-                    <i class="fas fa-edit fa-lg"></i>
+                    <i class="fas fa-edit fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Edit Livestock</h5>
                 <p class="text-muted mb-0 small">
@@ -2129,7 +2127,7 @@
                 <!-- Footer -->
                 <div class="modal-footer justify-content-center mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-approves">Update Livestock</button>
+                    <button type="submit" class="btn-modern btn-ok">Update Livestock</button>
                 </div>
 
             </form>
@@ -2145,8 +2143,8 @@
 
       <!-- Icon -->
       <div class="icon-wrapper mx-auto mb-4 text-danger">
-        <i class="fas fa-exclamation-triangle fa-2x"></i>
-      </div>
+                <i class="fas fa-times-circle fa-2x"></i>
+            </div>
 
       <!-- Title -->
       <h5>Confirm Delete</h5>
@@ -2174,8 +2172,8 @@
 
             <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-circle mb-3">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                <div class="icon-circle ">
+                    <i class="fas fas fa-exclamation-triangle fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1" id="issueModalTitle">Issue Alert</h5>
                 <p class="text-muted mb-0 small">

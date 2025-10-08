@@ -540,15 +540,15 @@
 }
 
 .smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 .smart-modal h5 {
@@ -591,17 +591,15 @@ SMART FORM - Enhanced Version
 
 /* Header Icon */
 .smart-form .icon-wrapper {
-  background: #eef3f8;
-  color: #18375d;
-  border-radius: 50%;
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin: 0 auto 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1014,8 +1012,8 @@ SMART FORM - Enhanced Version
 
             <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-circle mb-3">
-                    <i class="fas fa-tasks fa-lg"></i>
+                <div class="icon-wrapper">
+                    <i class="fas fa-tasks fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1" id="taskModalTitle">New Task</h5>
                 <p class="text-muted mb-0 small">
@@ -1064,7 +1062,7 @@ SMART FORM - Enhanced Version
                 <!-- Footer Buttons -->
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-approves" id="taskSubmitBtn">Add Task</button>
+                    <button type="submit" class="btn-modern btn-ok" id="taskSubmitBtn">Add Task</button>
                 </div>
             </form>
         </div>
@@ -1078,7 +1076,7 @@ SMART FORM - Enhanced Version
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Delete</h5>

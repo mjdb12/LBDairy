@@ -53,7 +53,7 @@
                 </div>
                 <div class="col-md-6">
                     <h6><i class="fas fa-file-contract me-2"></i> Terms</h6>
-                    <p class="text-left"><i class="fas fa-check-circle me-2"></i>Terms Accepted: User has accepted the terms and conditions</p>
+                    <p class="text-left">Terms Accepted: User has accepted the terms and conditions</p>
                 </div>
             </div>
         </div>
@@ -150,10 +150,12 @@
             <!-- Title -->
             <h5>Approve User Registration</h5>
             <!-- Description -->
-            <p class="text-muted mb-4 px-3">
-                <p>Are you sure you want to approve <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>'s registration?</p>
-                <p class="text-muted">The user will be able to access the system immediately after approval.</p>
-            </p>
+            <div class="text-muted mb-4 px-3">
+                <p> Are you sure you want to <strong>approve</strong> this user’s registration?
+                    The user will gain full access to the system immediately after approval. 
+                </p>
+            </div>
+
 
             <!-- Form -->
             <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
@@ -179,9 +181,12 @@
             <!-- Title -->
             <h5>Reject User Registration</h5>
             <!-- Description -->
-            <p class="text-muted mb-4 px-3">
-                <p>Are you sure you want to reject <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>'s registration?</p>
-            </p>
+            <div class="text-muted mb-4 px-3">
+                <p>Are you sure you want to <strong>reject</strong> this user’s registration?
+                The user will <strong>not</strong> be able to access the system after rejection.</p>
+            </div>
+
+
 
             <!-- Form -->
             <form onsubmit="submitRejection(event)">

@@ -434,6 +434,37 @@ function refreshPendingData() {
 @endpush
 @push('styles')
 <style>
+
+    /* Badge Base */
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.75em;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.5rem;
+    color: #fff; /* default text color */
+}
+
+/* Farmer Role */
+.badge-success {
+    background-color: #387057; /* green */
+}
+
+/* Admin or other Role */
+.badge-info {
+    background-color: #18375d;
+; /* blue */
+}
+
+/* Optional: small icon inside badge */
+.badge i {
+    margin-right: 0.25rem;
+}
+
     /* Optional: Add smooth focus effect */
 #rejectModal .form-control:focus {
     border-color: #198754; /* Bootstrap green */
@@ -732,7 +763,7 @@ function refreshPendingData() {
     }
 
     .badge-success {
-        background-color: #39a400;
+        background-color: #387057;
         color: #fff;
     }
 
@@ -747,7 +778,7 @@ function refreshPendingData() {
     }
 
     .badge-info {
-        background-color: #17a2b8;
+        background-color: #18375d;
         color: #fff;
     }
     
