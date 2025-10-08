@@ -664,6 +664,223 @@
 .btn-delete:hover {
   background: #fca700;
 }
+
+/* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  background: #eef3f8;
+  color: #18375d;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#farmEditModal form {
+  text-align: left;
+}
+
+#farmEditModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#farmEditModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#farmEditModal .form-control,
+#farmEditModal select.form-control,
+#farmEditModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#farmEditModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#farmEditModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#farmEditModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #farmEditModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
 </style>
 @endpush
 
@@ -963,111 +1180,107 @@
     </div>
 </div>
 
-<!-- Farm Edit Modal -->
-<div class="modal fade" id="farmEditModal" tabindex="-1" role="dialog" aria-labelledby="farmEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content superadmin-modal">
-            <div class="modal-header">
-                <h5 class="modal-title" id="farmEditModalLabel">
-                    <i class="fas fa-edit mr-2"></i>
-                    Edit Farm
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Farm Edit Modal -->
+<div class="modal fade admin-modal" id="farmEditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content smart-form text-center p-4">
+            
+            
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-university fa-lg"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Edit Farm</h5>
+                <p class="text-muted mb-0 small">
+                    Update the farm information below and click <strong>“Update Farm”</strong> to save your changes.
+                </p>
             </div>
+
+            <!-- Form -->
             <form id="farmEditForm" onsubmit="saveFarm(event)">
                 @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="editFarmId" name="id">
-                    <div id="farmEditNotification"></div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editFarmName">Farm Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editFarmName" name="name" required>
-                            </div>
+                <input type="hidden" id="editFarmId" name="id">
+
+                <div class="form-wrapper text-start mx-auto">
+                    <div class="row g-3">
+
+                        <div class="col-md-6 ">
+                            <label for="editFarmName" class="fw-semibold">Farm Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control mt-1" id="editFarmName" name="name" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="barangay">Barangay</label>
-                                <select class="form-control" id="editFarmBarangay" name="barangay">
-                                    <option value="">Select Barangay</option>
-                                    <option value="Abang">Abang</option>
-                                    <option value="Aliliw">Aliliw</option>
-                                    <option value="Atulinao">Atulinao</option>
-                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
-                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
-                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
-                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
-                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
-                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
-                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
-                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
-                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
-                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
-                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
-                                    <option value="Igang">Igang</option>
-                                    <option value="Kabatete">Kabatete</option>
-                                    <option value="Kakawit">Kakawit</option>
-                                    <option value="Kalangay">Kalangay</option>
-                                    <option value="Kalyaat">Kalyaat</option>
-                                    <option value="Kilib">Kilib</option>
-                                    <option value="Kulapi">Kulapi</option>
-                                    <option value="Mahabang Parang">Mahabang Parang</option>
-                                    <option value="Malupak">Malupak</option>
-                                    <option value="Manasa">Manasa</option>
-                                    <option value="May-It">May-It</option>
-                                    <option value="Nagsinamo">Nagsinamo</option>
-                                    <option value="Nalunao">Nalunao</option>
-                                    <option value="Palola">Palola</option>
-                                    <option value="Piis">Piis</option>
-                                    <option value="Samil">Samil</option>
-                                    <option value="Tiawe">Tiawe</option>
-                                    <option value="Tinamnan">Tinamnan</option>
-                                </select>
-                            </div>
+                        <div class="col-md-6 ">
+                            <label for="editFarmBarangay" class="fw-semibold">Barangay</label>
+                            <select class="form-control mt-1" id="editFarmBarangay" name="barangay">
+                                <option value="">Select Barangay</option>
+                                <option value="Abang">Abang</option>
+                                <option value="Aliliw">Aliliw</option>
+                                <option value="Atulinao">Atulinao</option>
+                                <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                                <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                                <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                                <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                                <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                                <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                                <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                                <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                                <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                                <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                                <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                                <option value="Igang">Igang</option>
+                                <option value="Kabatete">Kabatete</option>
+                                <option value="Kakawit">Kakawit</option>
+                                <option value="Kalangay">Kalangay</option>
+                                <option value="Kalyaat">Kalyaat</option>
+                                <option value="Kilib">Kilib</option>
+                                <option value="Kulapi">Kulapi</option>
+                                <option value="Mahabang Parang">Mahabang Parang</option>
+                                <option value="Malupak">Malupak</option>
+                                <option value="Manasa">Manasa</option>
+                                <option value="May-It">May-It</option>
+                                <option value="Nagsinamo">Nagsinamo</option>
+                                <option value="Nalunao">Nalunao</option>
+                                <option value="Palola">Palola</option>
+                                <option value="Piis">Piis</option>
+                                <option value="Samil">Samil</option>
+                                <option value="Tiawe">Tiawe</option>
+                                <option value="Tinamnan">Tinamnan</option>
+                            </select>
                         </div>
+
+                        <div class="col-md-6 ">
+                            <label for="editOwnerName" class="fw-semibold">Owner Name</label>
+                            <input type="text" class="form-control mt-1" id="editOwnerName" name="owner_name">
+                        </div>
+                        <div class="col-md-6 m">
+                            <label for="editOwnerEmail" class="fw-semibold">Owner Email</label>
+                            <input type="email" class="form-control mt-1" id="editOwnerEmail" name="owner_email">
+                        </div>
+
+                        <div class="col-md-6 ">
+                            <label for="editOwnerPhone" class="fw-semibold">Owner Phone</label>
+                            <input type="text" class="form-control mt-1" id="editOwnerPhone" name="owner_phone">
+                        </div>
+                        <div class="col-md-6 ">
+                            <label for="editFarmStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="editFarmStatus" name="status" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+
+                    <!-- Description -->
+                    <div class="form-group ">
+                        <label for="editFarmDescription" class="fw-semibold">Description</label>
+                        <textarea class="form-control mt-1" id="editFarmDescription" name="description" rows="3" style="resize: none;"></textarea>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editOwnerName">Owner Name</label>
-                                <input type="text" class="form-control" id="editOwnerName" name="owner_name">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editOwnerEmail">Owner Email</label>
-                                <input type="email" class="form-control" id="editOwnerEmail" name="owner_email">
-                            </div>
-                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editOwnerPhone">Owner Phone</label>
-                                <input type="text" class="form-control" id="editOwnerPhone" name="owner_phone">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editFarmStatus">Status <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editFarmStatus" name="status" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="editFarmDescription">Description</label>
-                        <textarea class="form-control" id="editFarmDescription" name="description" rows="3"></textarea>
-                    </div>
+                    <div id="farmEditNotification" class="mt-3 text-center" style="display: none;"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-edit">
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-approves">
                         Update Farm
                     </button>
                 </div>
@@ -1075,6 +1288,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Modern Delete Task Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
