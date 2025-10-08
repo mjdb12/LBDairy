@@ -1143,8 +1143,7 @@ SMART FORM - Enhanced Version
         @csrf
         @method('PUT')
         <div class="form-wrapper text-start mx-auto">
-            <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <label for="currentPassword">
                     Current Password
                     <span class="text-danger">*</span>
@@ -1162,7 +1161,7 @@ SMART FORM - Enhanced Version
                     @enderror
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <label for="newPassword">
                     New Password
                     <span class="text-danger">*</span>
@@ -1179,7 +1178,7 @@ SMART FORM - Enhanced Version
                     @enderror
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <label for="confirmPassword">
                     Confirm New Password
                     <span class="text-danger">*</span>
@@ -1196,7 +1195,6 @@ SMART FORM - Enhanced Version
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-            </div>
         </div>
 
         <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">

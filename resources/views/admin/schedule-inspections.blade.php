@@ -1325,6 +1325,606 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 1.5rem;
+        max-height: 80vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
+
+/* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  background: #eef3f8;
+  color: #18375d;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#editInspectionModal form {
+  text-align: left;
+}
+
+#editInspectionModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editInspectionModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editInspectionModal .form-control,
+#editInspectionModal select.form-control,
+#editInspectionModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editInspectionModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editInspectionModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editInspectionModal form {
+  text-align: left;
+}
+
+#editInspectionModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editInspectionModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#scheduleInspectionModal form {
+  text-align: left;
+}
+
+#scheduleInspectionModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#scheduleInspectionModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#scheduleInspectionModal .form-control,
+#scheduleInspectionModal select.form-control,
+#scheduleInspectionModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#scheduleInspectionModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#scheduleInspectionModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#addLivestockModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addLivestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #issueAlertModal .form-control {
+    font-size: 14px;
+  }
+
+  /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 1.5rem;
+        max-height: 80vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
 </style>
 @endpush
 
@@ -1524,200 +2124,223 @@
     </div>
 
 <!-- Schedule Inspection Modal -->
-<div class="modal fade" id="scheduleInspectionModal" tabindex="-1" role="dialog" aria-labelledby="scheduleInspectionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="scheduleInspectionModalLabel">
-                    <i class="fas fa-calendar-check mr-2"></i>
-                    Schedule Farm Inspection
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form onsubmit="submitInspectionSchedule(event)">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="inspectionFarmer" name="farmer_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="inspectionFarmerName">Farmer Name</label>
-                                <input type="text" class="form-control" id="inspectionFarmerName" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="inspectionFarmName">Farm Name</label>
-                                <input type="text" class="form-control" id="inspectionFarmName" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="inspectionDate">Inspection Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="inspectionDate" required min="{{ date('Y-m-d') }}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="inspectionTime">Inspection Time <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control" id="inspectionTime" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="inspectionPriority">Priority Level <span class="text-danger">*</span></label>
-                                <select class="form-control" id="inspectionPriority" required>
-                                    <option value="">Select Priority</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="urgent">Urgent</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="inspectionNotes">Inspection Notes <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="inspectionNotes" rows="3" placeholder="Enter any specific notes or instructions for the inspection..."></textarea>
-                    </div>
+<div class="modal fade admin-modal" id="scheduleInspectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-calendar-check fa-lg"></i>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-ok">
-                        Schedule Inspection
-                    </button>
+                <h5 class="fw-bold mb-1" id="scheduleInspectionModalTitle">Schedule Farm Inspection</h5>
+                <p class="text-muted mb-0 small">
+                    Fill in the inspection details below, then click <strong>“Schedule Inspection”</strong> to save.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="inspectionForm" onsubmit="submitInspectionSchedule(event)">
+                <input type="hidden" id="inspectionFarmer" name="farmer_id">
+
+                <div class="form-wrapper text-start mx-auto">
+                    <div class="row g-3">
+                        <!-- Farmer & Farm Info -->
+                        <div class="col-md-6">
+                            <label for="inspectionFarmerName" class="fw-semibold">Farmer Name</label>
+                            <input type="text" class="form-control mt-1" id="inspectionFarmerName" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inspectionFarmName" class="fw-semibold">Farm Name</label>
+                            <input type="text" class="form-control mt-1" id="inspectionFarmName" readonly>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="col-md-6">
+                            <label for="inspectionDate" class="fw-semibold">Inspection Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="inspectionDate" name="inspection_date" required min="{{ date('Y-m-d') }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inspectionTime" class="fw-semibold">Inspection Time <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control mt-1" id="inspectionTime" name="inspection_time" required>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="col-md-6">
+                            <label for="inspectionPriority" class="fw-semibold">Priority Level <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="inspectionPriority" name="priority" required>
+                                <option value="">Select Priority</option>
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-md-12">
+                            <label for="inspectionNotes" class="fw-semibold">Inspection Notes <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="inspectionNotes" name="notes" rows="3" placeholder="Enter any specific notes or instructions for the inspection..." style="resize: none;"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Notification -->
+                    <div id="inspectionNotification" class="mt-3 text-center" style="display: none;"></div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok" id="inspectionSubmitBtn">Schedule Inspection</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Inspection Details Modal -->
+
+
+<!-- Smart Detail Modal - Farmer Details -->
 <div class="modal fade" id="inspectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="inspectionDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="inspectionDetailsModalLabel">
-                    <i class="fas fa-eye"></i>
-                    Inspection Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-lg"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Inspection Details</h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected inspection.</p>
             </div>
-            <div class="modal-body" id="inspectionDetailsContent">
-                <!-- Content will be loaded here -->
+
+            <!-- Body -->
+            <div class="modal-body">
+                <div id="inspectionDetailsContent" class="detail-wrapper">
+                    <!-- Personal & Farm Info -->
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+
+            <!-- Footer -->
+            <div class="modal-footer justify-content-center mt-4">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Farmer Details Modal -->
-<div class="modal fade" id="farmerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmerDetailsModalLabel" aria-hidden="true">
+
+<!-- Smart Detail Modal - Farmer Details -->
+<div class="modal fade" id="farmerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmerDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="farmerDetailsModalLabel">
-                    <i class="fas fa-user"></i>
-                    Farmer Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-lg"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Farmer Details</h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected farmer.</p>
             </div>
-            <div class="modal-body" id="farmerDetailsContent">
-                <!-- Content will be loaded here -->
+
+            <!-- Body -->
+            <div class="modal-body">
+                <div id="farmerDetailsContent" class="detail-wrapper">
+                    <!-- Personal & Farm Info -->
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+
+            <!-- Footer -->
+            <div class="modal-footer justify-content-center mt-4">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Edit Inspection Modal -->
-<div class="modal fade" id="editInspectionModal" tabindex="-1" role="dialog" aria-labelledby="editInspectionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editInspectionModalLabel">
-                    <i class="fas fa-edit"></i>
-                    Edit Inspection
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="editInspectionForm">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="editInspectionId" name="inspection_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editInspectionDate">Inspection Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="editInspectionDate" name="inspection_date" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editInspectionTime">Inspection Time <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control" id="editInspectionTime" name="inspection_time" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editInspectionPriority">Priority Level <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editInspectionPriority" name="priority" required>
-                                    <option value="">Select Priority</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="urgent">Urgent</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editInspectionStatus">Status <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editInspectionStatus" name="status" required>
-                                    <option value="">Select Status</option>
-                                    <option value="scheduled">Scheduled</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="cancelled">Cancelled</option>
-                                    <option value="rescheduled">Rescheduled</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="editInspectionNotes">Inspection Notes</label>
-                        <textarea class="form-control" id="editInspectionNotes" name="notes" rows="3" placeholder="Enter inspection notes..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="editInspectionFindings">Findings</label>
-                        <textarea class="form-control" id="editInspectionFindings" name="findings" rows="3" placeholder="Enter inspection findings..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-edit">
-                        
-                        Update Inspection
-                    </button>
-                </div>
-            </form>
+<!-- Smart Form Modal - Edit Farmer -->
+<div class="modal fade admin-modal" id="editInspectionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle mb-3">
+          <i class="fas fa-edit fa-lg"></i>
         </div>
+        <h5 class="fw-bold mb-1">Edit Inspection</h5>
+        <p class="text-muted mb-0 small">
+          Update inspection details below and click <strong>Update Inspection</strong> to save changes.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="editInspectionForm">
+        <input type="hidden" id="editInspectionId" name="inspection_id">
+
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3">
+
+            <!-- Full Name -->
+            <div class="col-md-6">
+                <label for="editInspectionDate">Inspection Date <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="editInspectionDate" name="inspection_date" required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+                <label for="editInspectionTime">Inspection Time <span class="text-danger">*</span></label>
+                <input type="time" class="form-control" id="editInspectionTime" name="inspection_time" required>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-md-6">
+                <label for="editInspectionPriority">Priority Level <span class="text-danger">*</span></label>
+                <select class="form-control" id="editInspectionPriority" name="priority" required>
+                    <option value="">Select Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+
+            <!-- Username -->
+            <div class="col-md-6">
+                <label for="editInspectionStatus">Status <span class="text-danger">*</span></label>
+                <select class="form-control" id="editInspectionStatus" name="status" required>
+                    <option value="">Select Status</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="rescheduled">Rescheduled</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="editInspectionNotes">Inspection Notes</label>
+                <textarea class="form-control" id="editInspectionNotes" name="notes" rows="3" placeholder="Enter inspection notes..."></textarea>
+            </div>
+            <div class="col-md-6">
+                <label for="editInspectionFindings">Findings</label>
+                <textarea class="form-control" id="editInspectionFindings" name="findings" rows="3" placeholder="Enter inspection findings..."></textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer justify-content-center mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-approves">
+            Update Inspection
+          </button>
+        </div>
+      </form>
+
     </div>
+  </div>
 </div>
 
 <!-- Smart Cancel Inspection Modal -->
@@ -2068,101 +2691,65 @@ function viewFarmerDetails(farmerId) {
                             
                             // Create calendar HTML with inspections
                             const calendarHtml = `
-                                    <div class="row">
-                                        <!-- 🧑 Farmer Information -->
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card shadow-sm">
-                                                <div class="card-body">
-                                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                                        <i class="fas fa-user mr-2"></i>Farmer Information
-                                                    </h6>
-                                                    <div class="info-group">
-                                                        <div class="row mb-2">
-                                                            <div class="col-5"><strong>Name:</strong></div>
-                                                            <div class="col-7 text-muted">${farmer.first_name || ''} ${farmer.last_name || ''}</div>
-                                                        </div>
-                                                        <div class="row mb-2">
-                                                            <div class="col-5"><strong>Email:</strong></div>
-                                                            <div class="col-7 text-muted">${farmer.email || 'N/A'}</div>
-                                                        </div>
-                                                        <div class="row mb-2">
-                                                            <div class="col-5"><strong>Phone:</strong></div>
-                                                            <div class="col-7 text-muted">${farmer.phone || 'N/A'}</div>
-                                                        </div>
-                                                        <div class="row mb-2">
-                                                            <div class="col-5"><strong>Farm:</strong></div>
-                                                            <div class="col-7 text-muted">${farmer.farm_name || 'N/A'}</div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-5"><strong>Status:</strong></div>
-                                                            <div class="col-7">
-                                                                <span class="badge badge-${farmer.status === 'active' ? 'success' : 'warning'} badge-pill">
-                                                                    <i class="fas fa-${farmer.status === 'active' ? 'check-circle' : 'clock'} mr-1"></i>
-                                                                    ${farmer.status ? farmer.status.charAt(0).toUpperCase() + farmer.status.slice(1) : 'N/A'}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- 🗓️ Scheduled Inspections Calendar -->
-                                        <div class="col-md-8 mb-4">
-                                            <div class="card shadow-sm  h-100">
-                                                <div class="card-body">
-                                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                                        <i class="fas fa-calendar-alt mr-2"></i>Scheduled Inspections Calendar
-                                                    </h6>
-                                                    <div id="farmerCalendar" class="border rounded" style="height: 400px;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farmer Information</h6>
+                                    <p class="text-left"><strong>Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
+                                    <p class="text-left"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
+                                    <p class="text-left"><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
+                                    <p class="text-left"><strong>Farm:</strong> ${farmer.farm_name || 'N/A'}</p>
+                                    <p class="text-left"><strong>Status:</strong> 
+                                        <span class="badge badge-${farmer.status === 'active' ? 'success' : 'warning'} badge-pill">
+                                            <i class="fas fa-${farmer.status === 'active' ? 'check-circle' : 'clock'} mr-1"></i>
+                                            ${farmer.status ? farmer.status.charAt(0).toUpperCase() + farmer.status.slice(1) : 'N/A'}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Scheduled Inspections Calendar</h6>
+                                    <div id="farmerCalendar" class="border rounded" style="height: 400px;">
                                     </div>
-
-                                    <!-- 📋 Upcoming Inspections -->
-                                    <div class="row mt-2">
-                                        <div class="col-12">
-                                            <div class="card shadow-sm ">
-                                                <div class="card-body">
-                                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                                        <i class="fas fa-list mr-2"></i>Upcoming Inspections
-                                                    </h6>
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered table-hover" id="farmersTable" width="100%" cellspacing="0">
-                                                            <thead class="thead-light">
-                                                                <tr>
-                                                                    <th>Date</th>
-                                                                    <th>Time</th>
-                                                                    <th>Priority</th>
-                                                                    <th>Status</th>
-                                                                    <th>Notes</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                ${inspections.length > 0 ? inspections.map(inspection => `
-                                                                    <tr class="${inspection.priority === 'urgent' ? 'table-danger' : (inspection.priority === 'high' ? 'table-warning' : '')}">
-                                                                        <td>${inspection.inspection_date ? new Date(inspection.inspection_date).toLocaleDateString() : 'N/A'}</td>
-                                                                        <td>${inspection.inspection_time ? new Date('1970-01-01T' + inspection.inspection_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'}</td>
-                                                                        <td><span class="badge badge-${getPriorityBadgeClass(inspection.priority)}">${inspection.priority}</span></td>
-                                                                        <td><span class="badge badge-${getStatusBadgeClass(inspection.status)}">${inspection.status}</span></td>
-                                                                        <td class="text-muted">${inspection.notes ? inspection.notes.substring(0, 60) + (inspection.notes.length > 60 ? '...' : '') : 'N/A'}</td>
-                                                                    </tr>
-                                                                `).join('') : `
-                                                                    <tr>
-                                                                        <td colspan="5" class="text-center text-muted py-3">
-                                                                            <i class="fas fa-clipboard-list fa-lg mb-2 d-block"></i>
-                                                                            No scheduled inspections found
-                                                                        </td>
-                                                                    </tr>
-                                                                `}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
+                                <div class="col-md-12">
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                        Upcoming Inspections
+                                    </h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Priority</th>
+                                                    <th>Status</th>
+                                                    <th>Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${inspections.length > 0 ? inspections.map(inspection => `
+                                                    <tr class="${inspection.priority === 'urgent' ? 'table-danger' : (inspection.priority === 'high' ? 'table-warning' : '')}">
+                                                        <td>${inspection.inspection_date ? new Date(inspection.inspection_date).toLocaleDateString() : 'N/A'}</td>
+                                                        <td>${inspection.inspection_time ? new Date('1970-01-01T' + inspection.inspection_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A'}</td>
+                                                        <td><span class="badge badge-${getPriorityBadgeClass(inspection.priority)}">${inspection.priority || 'N/A'}</span></td>
+                                                        <td><span class="badge badge-${getStatusBadgeClass(inspection.status)}">${inspection.status || 'N/A'}</span></td>
+                                                        <td class="text-muted">${inspection.notes ? inspection.notes.substring(0, 60) + (inspection.notes.length > 60 ? '...' : '') : 'N/A'}</td>
+                                                    </tr>
+                                                `).join('') : `
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-3">
+                                                            <i class="fas fa-clipboard-list fa-lg mb-2 d-block"></i>
+                                                            No scheduled inspections found
+                                                        </td>
+                                                    </tr>
+                                                `}
+                                            </tbody>
+                                        </table>
                                     </div>
+                                </div>
+
+                            
+
 
                             `;
                             

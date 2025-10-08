@@ -1106,6 +1106,90 @@
   }
 }
 
+
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#userDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
 </style>
 @endpush
 
@@ -1311,31 +1395,39 @@
 
 </div>
 
-<!-- Details Modal --> 
- <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true"> 
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document"> 
-        <div class="modal-content"> 
-            <div class="modal-header"> 
-                <h5 class="modal-title" id="detailsModalLabel"> 
-                    <i class="fas fa-user mr-2"></i> Farmer Details 
-                </h5> 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> 
-                    <span aria-hidden="true">&times;</span> 
-                </button> 
-            </div> 
-            <div class="modal-body"> 
-                <div id="farmerDetails">
 
-                </div> 
-            </div> 
-            <div class="modal-footer"> 
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button> 
-                <button type="button" class="btn-action btn-action-ok" onclick="openContactModal()"> 
-                    <i class="fas fa-envelope"></i> Contact Farmer 
-                </button> 
-            </div> 
-        </div> 
-    </div> 
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-lg"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Farmer Details </h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
+            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="farmerDetails" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
+        </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-ok" onclick="openContactModal()">
+                Contact Farmer
+            </button>
+        </div>
+
+    </div>
+  </div>
 </div>
 
 

@@ -537,6 +537,276 @@
             text-align: center;
         }
     }
+    /* ============================
+SMART FORM - Enhanced Version
+============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  background: #eef3f8;
+  color: #18375d;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#editProfileModal form {
+  text-align: left;
+}
+
+#editProfileModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editProfileModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editProfileModal .form-control,
+#editProfileModal select.form-control,
+#editProfileModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editProfileModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editProfileModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#changePasswordModal form {
+  text-align: left;
+}
+
+#changePasswordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#changePasswordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#changePasswordModal .form-control,
+#changePasswordModal select.form-control,
+#changePasswordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#changePasswordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#changePasswordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#editProfileModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+#changePasswordModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+    @media (max-width: 768px) {
+    .smart-form {
+        padding: 1.5rem;
+    }
+
+    .smart-form .form-wrapper {
+        max-width: 100%;
+    }
+
+    #editProfileModal .form-control {
+        font-size: 14px;
+    }
+    #changePasswordModal .form-control {
+        font-size: 14px;
+    }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
 </style>
 @endpush
 
@@ -750,176 +1020,199 @@
     </div>
 </div>
 
+<!-- Modern Edit Profile Modal -->
+<div class="modal fade admin-modal" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content smart-form text-center p-4">
+            
+            
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-user-edit fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Edit Profile</h5>
+                <p class="text-muted mb-0 small">
+                    Update your profile information below. Make sure all fields are correct before saving.
+                </p>
+            </div>
 
-<!-- Edit Profile Modal -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <form class="modal-content" method="POST" action="{{ route('admin.profile.update') }}" id="editProfileForm">
-      @csrf
-      @method('PUT')
-      <div class="modal-header">
-        <h5 class="modal-title" id="editProfileLabel">
-            <i class="fas fa-user-edit mr-2"></i>Edit Profile
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span>&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <div class="form-group">
-              <label for="editFullName">
-                  <i class="fas fa-user mr-2"></i>Full Name
-              <span class="text-danger">*</span></label>
-              <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name) }}" required>
-              @error('name')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-          <div class="form-group">
-              <label for="editEmail">
-                  <i class="fas fa-envelope mr-2"></i>Email
-              <span class="text-danger">*</span></label>
-              <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email) }}" required>
-              @error('email')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-          <div class="form-group">
-              <label for="editPhone">
-                  <i class="fas fa-phone mr-2"></i>Contact Number
-              <span class="text-danger">*</span></label>
-              <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone) }}">
-              @error('phone')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-          <div class="form-group">
-              <label for="editBarangay">
-                  <i class="fas fa-map-marker-alt mr-2"></i>Barangay
-              <span class="text-danger">*</span></label>
-              <select class="form-control @error('barangay') is-invalid @enderror" id="editBarangay" name="barangay" required>
-                  <option value="">Select Barangay</option>
-                  <option value="Abang" {{ old('barangay', auth()->user()->barangay) == 'Abang' ? 'selected' : '' }}>Abang</option>
-                  <option value="Aliliw" {{ old('barangay', auth()->user()->barangay) == 'Aliliw' ? 'selected' : '' }}>Aliliw</option>
-                  <option value="Atulinao" {{ old('barangay', auth()->user()->barangay) == 'Atulinao' ? 'selected' : '' }}>Atulinao</option>
-                  <option value="Ayuti (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Ayuti (Poblacion)' ? 'selected' : '' }}>Ayuti (Poblacion)</option>
-                  <option value="Barangay 1 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 1 (Poblacion)' ? 'selected' : '' }}>Barangay 1 (Poblacion)</option>
-                  <option value="Barangay 2 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 2 (Poblacion)' ? 'selected' : '' }}>Barangay 2 (Poblacion)</option>
-                  <option value="Barangay 3 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 3 (Poblacion)' ? 'selected' : '' }}>Barangay 3 (Poblacion)</option>
-                  <option value="Barangay 4 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 4 (Poblacion)' ? 'selected' : '' }}>Barangay 4 (Poblacion)</option>
-                  <option value="Barangay 5 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 5 (Poblacion)' ? 'selected' : '' }}>Barangay 5 (Poblacion)</option>
-                  <option value="Barangay 6 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 6 (Poblacion)' ? 'selected' : '' }}>Barangay 6 (Poblacion)</option>
-                  <option value="Barangay 7 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 7 (Poblacion)' ? 'selected' : '' }}>Barangay 7 (Poblacion)</option>
-                  <option value="Barangay 8 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 8 (Poblacion)' ? 'selected' : '' }}>Barangay 8 (Poblacion)</option>
-                  <option value="Barangay 9 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 9 (Poblacion)' ? 'selected' : '' }}>Barangay 9 (Poblacion)</option>
-                  <option value="Barangay 10 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 10 (Poblacion)' ? 'selected' : '' }}>Barangay 10 (Poblacion)</option>
-                  <option value="Igang" {{ old('barangay', auth()->user()->barangay) == 'Igang' ? 'selected' : '' }}>Igang</option>
-                  <option value="Kabatete" {{ old('barangay', auth()->user()->barangay) == 'Kabatete' ? 'selected' : '' }}>Kabatete</option>
-                  <option value="Kakawit" {{ old('barangay', auth()->user()->barangay) == 'Kakawit' ? 'selected' : '' }}>Kakawit</option>
-                  <option value="Kalangay" {{ old('barangay', auth()->user()->barangay) == 'Kalangay' ? 'selected' : '' }}>Kalangay</option>
-                  <option value="Kalyaat" {{ old('barangay', auth()->user()->barangay) == 'Kalyaat' ? 'selected' : '' }}>Kalyaat</option>
-                  <option value="Kilib" {{ old('barangay', auth()->user()->barangay) == 'Kilib' ? 'selected' : '' }}>Kilib</option>
-                  <option value="Kulapi" {{ old('barangay', auth()->user()->barangay) == 'Kulapi' ? 'selected' : '' }}>Kulapi</option>
-                  <option value="Mahabang Parang" {{ old('barangay', auth()->user()->barangay) == 'Mahabang Parang' ? 'selected' : '' }}>Mahabang Parang</option>
-                  <option value="Malupak" {{ old('barangay', auth()->user()->barangay) == 'Malupak' ? 'selected' : '' }}>Malupak</option>
-                  <option value="Manasa" {{ old('barangay', auth()->user()->barangay) == 'Manasa' ? 'selected' : '' }}>Manasa</option>
-                  <option value="May-It" {{ old('barangay', auth()->user()->barangay) == 'May-It' ? 'selected' : '' }}>May-It</option>
-                  <option value="Nagsinamo" {{ old('barangay', auth()->user()->barangay) == 'Nagsinamo' ? 'selected' : '' }}>Nagsinamo</option>
-                  <option value="Nalunao" {{ old('barangay', auth()->user()->barangay) == 'Nalunao' ? 'selected' : '' }}>Nalunao</option>
-                  <option value="Palola" {{ old('barangay', auth()->user()->barangay) == 'Palola' ? 'selected' : '' }}>Palola</option>
-                  <option value="Piis" {{ old('barangay', auth()->user()->barangay) == 'Piis' ? 'selected' : '' }}>Piis</option>
-                  <option value="Samil" {{ old('barangay', auth()->user()->barangay) == 'Samil' ? 'selected' : '' }}>Samil</option>
-                  <option value="Tiawe" {{ old('barangay', auth()->user()->barangay) == 'Tiawe' ? 'selected' : '' }}>Tiawe</option>
-                  <option value="Tinamnan" {{ old('barangay', auth()->user()->barangay) == 'Tinamnan' ? 'selected' : '' }}>Tinamnan</option>
-              </select>
-              @error('barangay')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-          <div class="form-group">
-              <label for="editPosition">
-                  <i class="fas fa-user-shield mr-2"></i>Position
-              <span class="text-danger">*</span></label>
-              <input type="text" class="form-control @error('position') is-invalid @enderror" id="editPosition" name="position" value="{{ old('position', auth()->user()->position ?? 'Admin') }}">
-              @error('position')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-          <div class="form-group">
-              <label for="editAddress">
-                  <i class="fas fa-map-marker-alt mr-2"></i>Address
-              <span class="text-danger">*</span></label>
-              <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address) }}">
-              @error('address')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
-            Cancel
-        </button>
-        <button type="submit" class="btn-action btn-action-oks">
-                    Save Changes
-                </button>
-      </div>
-    </form>
+            <!-- Form -->
+            <form id="editProfileForm" method="POST" action="{{ route('admin.profile.update') }}" >
+                @csrf
+                @method('PUT')
+
+                <div class="form-wrapper text-start mx-auto">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label for="editFullName">
+                                Full Name
+                            <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="editFullName" name="name" value="{{ old('name', auth()->user()->name) }}" required>
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="editEmail">
+                                Email
+                            <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="editEmail" name="email" value="{{ old('email', auth()->user()->email) }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="editPhone">
+                                Contact Number
+                            <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('phone') is-invalid @enderror" id="editPhone" name="phone" value="{{ old('phone', auth()->user()->phone) }}">
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Barangay -->
+                        <div class="col-md-6">
+                            <label for="editBarangay">
+                                Barangay
+                            <span class="text-danger">*</span></label>
+                            <select class="form-control @error('barangay') is-invalid @enderror" id="editBarangay" name="barangay" required>
+                                <option value="">Select Barangay</option>
+                                <option value="Abang" {{ old('barangay', auth()->user()->barangay) == 'Abang' ? 'selected' : '' }}>Abang</option>
+                                <option value="Aliliw" {{ old('barangay', auth()->user()->barangay) == 'Aliliw' ? 'selected' : '' }}>Aliliw</option>
+                                <option value="Atulinao" {{ old('barangay', auth()->user()->barangay) == 'Atulinao' ? 'selected' : '' }}>Atulinao</option>
+                                <option value="Ayuti (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Ayuti (Poblacion)' ? 'selected' : '' }}>Ayuti (Poblacion)</option>
+                                <option value="Barangay 1 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 1 (Poblacion)' ? 'selected' : '' }}>Barangay 1 (Poblacion)</option>
+                                <option value="Barangay 2 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 2 (Poblacion)' ? 'selected' : '' }}>Barangay 2 (Poblacion)</option>
+                                <option value="Barangay 3 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 3 (Poblacion)' ? 'selected' : '' }}>Barangay 3 (Poblacion)</option>
+                                <option value="Barangay 4 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 4 (Poblacion)' ? 'selected' : '' }}>Barangay 4 (Poblacion)</option>
+                                <option value="Barangay 5 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 5 (Poblacion)' ? 'selected' : '' }}>Barangay 5 (Poblacion)</option>
+                                <option value="Barangay 6 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 6 (Poblacion)' ? 'selected' : '' }}>Barangay 6 (Poblacion)</option>
+                                <option value="Barangay 7 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 7 (Poblacion)' ? 'selected' : '' }}>Barangay 7 (Poblacion)</option>
+                                <option value="Barangay 8 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 8 (Poblacion)' ? 'selected' : '' }}>Barangay 8 (Poblacion)</option>
+                                <option value="Barangay 9 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 9 (Poblacion)' ? 'selected' : '' }}>Barangay 9 (Poblacion)</option>
+                                <option value="Barangay 10 (Poblacion)" {{ old('barangay', auth()->user()->barangay) == 'Barangay 10 (Poblacion)' ? 'selected' : '' }}>Barangay 10 (Poblacion)</option>
+                                <option value="Igang" {{ old('barangay', auth()->user()->barangay) == 'Igang' ? 'selected' : '' }}>Igang</option>
+                                <option value="Kabatete" {{ old('barangay', auth()->user()->barangay) == 'Kabatete' ? 'selected' : '' }}>Kabatete</option>
+                                <option value="Kakawit" {{ old('barangay', auth()->user()->barangay) == 'Kakawit' ? 'selected' : '' }}>Kakawit</option>
+                                <option value="Kalangay" {{ old('barangay', auth()->user()->barangay) == 'Kalangay' ? 'selected' : '' }}>Kalangay</option>
+                                <option value="Kalyaat" {{ old('barangay', auth()->user()->barangay) == 'Kalyaat' ? 'selected' : '' }}>Kalyaat</option>
+                                <option value="Kilib" {{ old('barangay', auth()->user()->barangay) == 'Kilib' ? 'selected' : '' }}>Kilib</option>
+                                <option value="Kulapi" {{ old('barangay', auth()->user()->barangay) == 'Kulapi' ? 'selected' : '' }}>Kulapi</option>
+                                <option value="Mahabang Parang" {{ old('barangay', auth()->user()->barangay) == 'Mahabang Parang' ? 'selected' : '' }}>Mahabang Parang</option>
+                                <option value="Malupak" {{ old('barangay', auth()->user()->barangay) == 'Malupak' ? 'selected' : '' }}>Malupak</option>
+                                <option value="Manasa" {{ old('barangay', auth()->user()->barangay) == 'Manasa' ? 'selected' : '' }}>Manasa</option>
+                                <option value="May-It" {{ old('barangay', auth()->user()->barangay) == 'May-It' ? 'selected' : '' }}>May-It</option>
+                                <option value="Nagsinamo" {{ old('barangay', auth()->user()->barangay) == 'Nagsinamo' ? 'selected' : '' }}>Nagsinamo</option>
+                                <option value="Nalunao" {{ old('barangay', auth()->user()->barangay) == 'Nalunao' ? 'selected' : '' }}>Nalunao</option>
+                                <option value="Palola" {{ old('barangay', auth()->user()->barangay) == 'Palola' ? 'selected' : '' }}>Palola</option>
+                                <option value="Piis" {{ old('barangay', auth()->user()->barangay) == 'Piis' ? 'selected' : '' }}>Piis</option>
+                                <option value="Samil" {{ old('barangay', auth()->user()->barangay) == 'Samil' ? 'selected' : '' }}>Samil</option>
+                                <option value="Tiawe" {{ old('barangay', auth()->user()->barangay) == 'Tiawe' ? 'selected' : '' }}>Tiawe</option>
+                                <option value="Tinamnan" {{ old('barangay', auth()->user()->barangay) == 'Tinamnan' ? 'selected' : '' }}>Tinamnan</option>
+                            </select>
+                            @error('barangay')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Position -->
+                        <div class="col-md-6">
+                            <label for="editPosition">
+                                Position
+                            <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('position') is-invalid @enderror" id="editPosition" name="position" value="{{ old('position', auth()->user()->position ?? 'Admin') }}">
+                            @error('position')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Address -->
+                        <div class="col-md-6">
+                            <label for="editAddress">
+                                Address
+                            <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('address') is-invalid @enderror" id="editAddress" name="address" value="{{ old('address', auth()->user()->address) }}">
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">Save Changes</button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Modern Change Password Modal -->
+<div class="modal fade admin-modal" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content smart-form text-center p-4">
+            
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Change Password</h5>
+                <p class="text-muted mb-0 small">
+                    Please fill in your current and new password below.</p>
+                </p>
+            </div>
+
+      <form id="changePasswordForm" method="POST" action="{{ route('admin.profile.password') }}">
+        @csrf
+        @method('PUT')
+        <div class="form-wrapper text-start mx-auto">
+                <div class="col-md-12">
+                    <label for="currentPassword">
+                        Current Password
+                    <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
+                    @error('current_password')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-12">
+                    <label for="newPassword">
+                        New Password
+                    <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
+                    @error('password')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-12">
+                    <label for="newPassword">
+                        New Password
+                    <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
+                    @error('password')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+        </div>
+
+        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-ok">Change Password</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
-<!-- Change Password Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <form class="modal-content" method="POST" action="{{ route('admin.profile.password') }}" id="changePasswordForm">
-      @csrf
-      <div class="modal-header">
-        <h5 class="modal-title" id="changePasswordLabel">
-            <i class="fas fa-key mr-2"></i>Change Password
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span>&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-          <div class="form-group">
-              <label for="currentPassword">
-                  <i class="fas fa-lock mr-2"></i>Current Password
-              <span class="text-danger">*</span></label>
-              <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="currentPassword" name="current_password" required>
-              @error('current_password')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-          <div class="form-group">
-              <label for="newPassword">
-                  <i class="fas fa-key mr-2"></i>New Password
-              <span class="text-danger">*</span></label>
-              <input type="password" class="form-control @error('password') is-invalid @enderror" id="newPassword" name="password" required>
-              @error('password')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-          <div class="form-group">
-              <label for="confirmPassword">
-                  <i class="fas fa-check-circle mr-2"></i>Confirm New Password
-              <span class="text-danger">*</span></label>
-              <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="confirmPassword" name="password_confirmation" required>
-              @error('password_confirmation')
-                  <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
-            Cancel
-        </button>
-        <button type="submit" class="btn-action btn-action-oks">
-                    Change Password
-                </button>
-      </div>
-    </form>
-  </div>
-</div>
 @endsection
 
 @push('scripts')
