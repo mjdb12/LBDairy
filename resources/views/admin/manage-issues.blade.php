@@ -192,28 +192,33 @@
         </div>
     </div>
 
-<!-- Report Issue Modal -->
-<div class="modal fade admin-modal" id="reportIssueModal" tabindex="-1" role="dialog" aria-labelledby="reportIssueModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportIssueModalLabel">
+<!-- Issue Alert Modal -->
+<div class="modal fade admin-modal" id="reportIssueModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
                     <i class="fas fa-exclamation-triangle mr-2"></i>
-                    Report Issue
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                </div>
+                <h5 class="fw-bold mb-1" id="issueModalTitle">Report Issue</h5>
+                <p class="text-muted mb-0 small">
+                    Fill out the details below to create an issue alert.
+                </p>
             </div>
+
+            <!-- Form -->
             <form id="reportIssueForm" onsubmit="submitIssue(event)">
                 @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="selectedLivestockId" name="livestock_id">
+                <input type="hidden" id="selectedLivestockId" name="livestock_id">
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="issueType" class="font-weight-bold ">Issue Type <span class="text-danger">*</span></label>
+                <div class="form-wrapper text-start mx-auto">
+                    <div class="row g-3">
+
+                        <!-- Issue Type -->
+                        <div class="col-md-12">
+                            <label for="issueType" class="font-weight-bold ">Issue Type <span class="text-danger">*</span></label>
                                 <select class="form-control" id="issueType" name="issue_type" required>
                                     <option value="">Select Issue Type</option>
                                     <option value="Health">Health</option>
@@ -222,11 +227,11 @@
                                     <option value="Environmental">Environmental</option>
                                     <option value="Other">Other</option>
                                 </select>
-                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="priority">Priority <span class="text-danger">*</span></label>
+
+                        <!-- Priority -->
+                        <div class="col-md-12">
+                            <label for="priority">Priority <span class="text-danger">*</span></label>
                                 <select class="form-control" id="priority" name="priority" required>
                                     <option value="">Select Priority</option>
                                     <option value="Low">Low</option>
@@ -234,42 +239,36 @@
                                     <option value="High">High</option>
                                     <option value="Urgent">Urgent</option>
                                 </select>
-                            </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="col-md-6">
                                 <label for="dateReported">Date Reported <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="dateReported" name="date_reported" required value="{{ date('Y-m-d') }}">
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="col-md-6">
                                 <label for="selectedLivestockInfo">Livestock <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="selectedLivestockInfo" name="livestock_info" readonly>
                             </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12">
+                            <label for="description" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="description" rows="4" required placeholder="Describe the issue in detail..." style="resize: none;"></textarea>
                         </div>
-                    </div>
+                        <div class="col-md-12">
+                            <label for="notes" class="fw-semibold">Notes (Optional) <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="notes" rows="4" required placeholder="Additional notes..." style="resize: none;"></textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="description">Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required placeholder="Describe the issue in detail..."></textarea>
-                    </div>
+                        <div id="formNotification" class="mt-2" style="display: none;"></div>
 
-                    <div class="form-group">
-                        <label for="notes">Notes (Optional)</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="Additional notes..."></textarea>
                     </div>
-
-                    <div id="formNotification" class="mt-2" style="display: none;"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn-action btn-action-report-issue">
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">
                         Report Issue
                     </button>
                 </div>
@@ -277,6 +276,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- Issue Details Modal -->
 <div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
@@ -409,6 +410,324 @@
 
 @push('styles')
 <style>
+    /* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  background: #eef3f8;
+  color: #18375d;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#addLivestockModal form {
+  text-align: left;
+}
+
+#addLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#addLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#addLivestockModal .form-control,
+#addLivestockModal select.form-control,
+#addLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#addLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#addLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editLivestockModal form {
+  text-align: left;
+}
+
+#editLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#reportIssueModal form {
+  text-align: left;
+}
+
+#reportIssueModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#reportIssueModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#reportIssueModal .form-control,
+#reportIssueModal select.form-control,
+#reportIssueModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#reportIssueModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#reportIssueModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#reportIssueModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addLivestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #reportIssueModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
