@@ -2943,12 +2943,12 @@
   
   .btn-link {
     font-weight: 400;
-    color: #ffffff;
+    color: #18375d;
     text-decoration: none;
   }
   
   .btn-link:hover {
-    color: #ffffff;
+    color: #18375d;
     text-decoration: underline;
   }
   
@@ -2957,7 +2957,7 @@
   }
   
   .btn-link:disabled, .btn-link.disabled {
-    color: #858796;
+    color: #18375d;
     pointer-events: none;
   }
   
@@ -4745,10 +4745,6 @@
     position: fixed;
     top: 0;
     left: 0;
-}
-
-#content-wrapper {
-    margin-left: 250px; /* Offset content to account for fixed sidebar width */
 }
 
   .breadcrumb {
@@ -9797,8 +9793,8 @@
   }
   
   .bg-gradient-secondary {
-    background-color: #858796;
-    background-image: linear-gradient(180deg, #858796 10%, #60616f 100%);
+    background-color: #18375d;
+    background-image: linear-gradient(180deg, #18375d 10%, #18375d 100%);
     background-size: cover;
   }
   
@@ -10109,40 +10105,75 @@
   .topbar {
     height: 4.375rem;
   }
+  .topbar #sidebarToggleTop {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+  
+  .topbar #sidebarToggleTop:hover {
+    background-color: #eaecf4;
+  }
+  
+  .topbar #sidebarToggleTop:active {
+    background-color: #dddfeb;
+  }
   
   /* Sidebar Toggle Button (Topbar) */
-.sidebar #sidebarToggleTop {
+  .sidebar #sidebarToggleTop {
+    display: none; /* Hide by default on desktop */
     height: 2.5rem;
     width: 2.5rem;
     border: none;
     border-radius: 50%;
     background-color: transparent;
-    display: flex;
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
-}
+  }
 
-/* Hover effect */
-.sidebar #sidebarToggleTop:hover {
+  /* Only show toggle button on mobile */
+  @media (max-width: 768px) {
+    .sidebar #sidebarToggleTop {
+      display: flex;
+    }
+
+    /* When sidebar is toggled on mobile */
+    .sidebar.toggled {
+      display: none !important; /* Force hide sidebar */
+    }
+
+    /* Expand content when sidebar is toggled */
+    .sidebar.toggled + #content-wrapper {
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+
+    /* Ensure content takes full width */
+    #content-wrapper {
+      transition: margin-left 0.3s ease;
+      margin-left: 6.5rem; /* Initial state with sidebar */
+    }
+  }
+  /* Hover effect */
+  .sidebar #sidebarToggleTop:hover {
     background-color: #eaecf4;
-    transform: scale(1.05); /* slight zoom for feedback */
-}
+    transform: scale(1.05);
+  }
 
-/* Active / pressed effect */
-.sidebar #sidebarToggleTop:active {
+  /* Active / pressed effect */
+  .sidebar #sidebarToggleTop:active {
     background-color: #dddfeb;
-    transform: scale(0.95); /* subtle shrink */
-}
+     margin-left: 0;
+    transform: scale(0.95);
+  }
 
-/* Icon styling */
-.sidebar #sidebarToggleTop i {
+  /* Icon styling */
+  .sidebar #sidebarToggleTop i {
     font-size: 1.2rem;
-    color: #18375d; /* match your brand color */
-}
+    color: #18375d;
+  }
 
-  
   .topbar .navbar-search {
     width: 25rem;
   }
@@ -10279,7 +10310,7 @@
   }
   
   .sidebar {
-  width: 6.5rem;
+  width: 7rem;
   min-height: 100vh;
   overflow-y: auto;
   max-height: 100vh;
@@ -10639,9 +10670,6 @@
     }
     .sidebar.toggled .sidebar-brand .sidebar-brand-text {
       display: none;
-    }
-    .sidebar.toggled .sidebar-heading {
-      text-align: center;
     }
   }
   

@@ -12,6 +12,7 @@
 
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <br><br><br>
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}" style="background-color: #ffffffff !important; border-bottom: 2px solid #18375d !important;">
         <div class="sidebar-brand-icon">
