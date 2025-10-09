@@ -446,18 +446,18 @@
     }
 
     .role-admin {
-        background: rgba(78, 115, 223, 0.1);
-        color: var(--primary-color);
+        background: #18375d;
+        color: #ffffffff;
     }
 
     .role-farmer {
-        background: rgba(28, 200, 138, 0.1);
-        color: var(--success-color);
+        background: #387057;
+        color: #ffffffff;
     }
 
     .role-superadmin {
-        background: rgba(231, 74, 59, 0.1);
-        color: var(--danger-color);
+        background: #dc3545;
+        color: #ffffffff;
     }
 
     .role-system {
@@ -466,8 +466,8 @@
     }
 
     .action-login {
-        background: rgba(28, 200, 138, 0.1);
-        color: var(--success-color);
+        background: #387057;
+        color: #ffffff;
     }
 
     .action-update {

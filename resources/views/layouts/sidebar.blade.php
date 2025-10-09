@@ -205,20 +205,12 @@
             </li>
 
             <!-- Nav Item - Livestock -->
-            <li class="nav-item {{ isCurrentRoutePattern('admin.livestock.*') ? 'active' : '' }}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCharts"
-                    aria-expanded="false" aria-controls="collapseCharts" data-toggle="tooltip" data-placement="right" data-original-title="Livestock">
+            <li class="nav-item {{ isCurrentRoute('admin.livestock.index') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.livestock.index') }}" data-toggle="tooltip" data-placement="right" data-original-title="Livestock">
                     <i class="fas fa-fw fa-list"></i>
                     <span>Livestock</span>
                 </a>
-                <div id="collapseCharts" class="collapse" aria-labelledby="headingCharts" data-parent="#accordionSidebar">
-                    <div class="bg-light py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manage:</h6>
-                        <a class="collapse-item {{ isCurrentRoute('admin.livestock.index') ? 'active' : '' }}" href="{{ route('admin.livestock.index') }}">List of Farmers</a>
-                        <div class="collapse-divider"></div>
-                    </div>
-                </div>
-            </li>
+            </li>   
 
             <!-- Nav Item - Analysis -->
             <li class="nav-item {{ isCurrentRoute('admin.analysis.index') ? 'active' : '' }}">

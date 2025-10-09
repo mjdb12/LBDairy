@@ -199,8 +199,8 @@
 
             <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-circle mb-3">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                <div class="icon-circle ">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1" id="issueModalTitle">Report Issue</h5>
                 <p class="text-muted mb-0 small">
@@ -429,18 +429,16 @@
 }
 
 /* Header Icon */
-.smart-form .icon-wrapper {
-  background: #eef3f8;
-  color: #18375d;
-  border-radius: 50%;
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin: 0 auto 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
