@@ -1035,7 +1035,7 @@
 
 
     /* Style all labels inside form Modal */
-    #scheduleInspectionModal .form-group label {
+    #editInspectionModal .form-group label {
         font-weight: 600;           /* make labels bold */
         color: #18375d;             /* Bootstrap primary blue */
         display: inline-block;      /* keep spacing consistent */
@@ -1588,6 +1588,56 @@
   display: inline-block;
   margin-bottom: 0.5rem;
 }
+/* Style all labels inside form Modal */
+    #editInspectionModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    /* User Details Modal Styling */
+    #cancelInspectionModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #cancelInspectionModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #cancelInspectionModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #cancelInspectionModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #cancelInspectionModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #cancelInspectionModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #cancelInspectionModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+
 
 /* Unified input + select + textarea styles */
 #editLivestockModal .form-control,
@@ -1993,7 +2043,7 @@
 
      <!-- Farmers Table -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                     Select Farmer for Inspection
@@ -2010,7 +2060,7 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printFarmersTable()">
+                    <button class="btn-action btn-action-edit" onclick="printFarmersTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-admins" onclick="refreshFarmersData()">
@@ -2058,7 +2108,7 @@
 
     <!-- Inspections Table -->
      <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                     All Inspections
@@ -2075,7 +2125,7 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="inspectionSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printInspectionsTable()">
+                    <button class="btn-action btn-action-edit" onclick="printInspectionsTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-admins" onclick="refreshInspectionsData()">
@@ -2342,9 +2392,9 @@
 </div>
 
 <!-- Smart Cancel Inspection Modal -->
-<div class="modal fade" id="cancelInspectionModal" tabindex="-1" aria-labelledby="cancelInspectionModalLabel" aria-hidden="true">
+<div class="modal fade admin-modal" id="cancelInspectionModal" tabindex="-1" aria-labelledby="cancelInspectionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content smart-modal text-center p-4">
+    <div class="modal-content smart-form text-center p-4">
 
       <!-- Icon -->
       <div class="icon-wrapper mx-auto mb-3 text-danger">
@@ -2363,7 +2413,7 @@
       </p>
 
       <!-- Footer -->
-      <div class="modal-footer d-flex justify-content-center gap-2 flex-wrap">
+      <div class="modal-footer justify-content-center mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
           Cancel
         </button>
@@ -2878,35 +2928,35 @@ function viewInspectionDetails(inspectionId) {
                 const inspection = response.data;
                 $('#inspectionDetailsContent').html(`
                     <div class="row">
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Inspection Information</h6>
-        <p><strong>Date:</strong> ${inspection.inspection_date || 'N/A'}</p>
-        <p><strong>Time:</strong> ${inspection.inspection_time || 'N/A'}</p>
-        <p><strong>Status:</strong> 
-            <span class="badge badge-${inspection.status === 'scheduled' ? 'primary' : 
-                                       (inspection.status === 'completed' ? 'success' : 
-                                       (inspection.status === 'cancelled' ? 'danger' : 'warning'))}">
-                ${inspection.status}
-            </span>
-        </p>
-        <p><strong>Priority:</strong> 
-            <span class="badge badge-${inspection.priority === 'urgent' ? 'danger' : 
-                                         (inspection.priority === 'high' ? 'warning' : 
-                                         (inspection.priority === 'medium' ? 'info' : 'success'))}">
-                ${inspection.priority}
-            </span>
-        </p>
-        <p><strong>Scheduled By:</strong> ${inspection.scheduled_by?.name || 'Admin'}</p>
-    </div>
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farmer Information</h6>
-        <p><strong>Name:</strong> ${inspection.farmer?.first_name || ''} ${inspection.farmer?.last_name || ''}</p>
-        <p><strong>Email:</strong> ${inspection.farmer?.email || 'N/A'}</p>
-        <p><strong>Contact:</strong> ${inspection.farmer?.phone || 'N/A'}</p>
-        <p><strong>Farm Name:</strong> ${inspection.farmer?.farm_name || 'N/A'}</p>
-        <p><strong>Barangay:</strong> ${inspection.farmer?.barangay || 'N/A'}</p>
-    </div>
-</div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Inspection Information</h6>
+                            <p class="text-left"><strong>Date:</strong> ${inspection.inspection_date || 'N/A'}</p>
+                            <p class="text-left"><strong>Time:</strong> ${inspection.inspection_time || 'N/A'}</p>
+                            <p class="text-left"><strong>Status:</strong> 
+                                <span class="badge badge-${inspection.status === 'scheduled' ? 'primary' : 
+                                    (inspection.status === 'completed' ? 'success' : 
+                                    (inspection.status === 'cancelled' ? 'danger' : 'warning'))}">
+                                    ${inspection.status}
+                                </span>
+                            </p>
+                            <p class="text-left"><strong>Priority:</strong> 
+                                <span class="badge badge-${inspection.priority === 'urgent' ? 'danger' : 
+                                    (inspection.priority === 'high' ? 'warning' : 
+                                    (inspection.priority === 'medium' ? 'info' : 'success'))}">
+                                    ${inspection.priority}
+                                </span>
+                            </p>
+                            <p class="text-left"><strong>Scheduled By:</strong> ${inspection.scheduled_by?.name || 'Admin'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farmer Information</h6>
+                            <p class="text-left"><strong>Name:</strong> ${inspection.farmer?.first_name || ''} ${inspection.farmer?.last_name || ''}</p>
+                            <p class="text-left"><strong>Email:</strong> ${inspection.farmer?.email || 'N/A'}</p>
+                            <p class="text-left"><strong>Contact:</strong> ${inspection.farmer?.phone || 'N/A'}</p>
+                            <p class="text-left"><strong>Farm Name:</strong> ${inspection.farmer?.farm_name || 'N/A'}</p>
+                            <p class="text-left"><strong>Barangay:</strong> ${inspection.farmer?.barangay || 'N/A'}</p>
+                        </div>
+                    </div>
 
                     ${inspection.notes ? `
                     <div class="row mt-3">

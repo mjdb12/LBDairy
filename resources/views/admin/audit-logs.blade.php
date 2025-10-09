@@ -73,6 +73,49 @@
     </div>
 </div>
 <!-- Filter Controls -->
+<!-- Audit Logs Table Card -->
+ <div class="card shadow mb-4 fade-in">
+        <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+            <h6 class="mb-0">
+                <i class="fas fa-clipboard-list"></i>
+            System Activity Logs
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search logs..." id="auditSearch">
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    <button class="btn-action btn-action-edit" onclick="printTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshAuditData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="filter-controls">
                 <div class="filter-row">
                     <!-- Role Filter -->
@@ -115,50 +158,6 @@
                     </div>
                 </div>
             </div>
-<!-- Audit Logs Table Card -->
- <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
-            <h6 class="mb-0">
-                <i class="fas fa-clipboard-list"></i>
-            System Activity Logs
-            </h6>
-        </div>
-        <div class="card-body">
-            <div class="search-controls mb-3">
-                <div class="input-group" style="max-width: 300px;">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="fas fa-search"></i>
-                        </span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Search logs..." id="auditSearch">
-                </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshAuditData()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                            <i class="fas fa-tools"></i> Tools
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" onclick="exportCSV()">
-                                <i class="fas fa-file-csv"></i> Download CSV
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPNG()">
-                                <i class="fas fa-image"></i> Download PNG
-                            </a>
-                            <a class="dropdown-item" href="#" onclick="exportPDF()">
-                                <i class="fas fa-file-pdf"></i> Download PDF
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="table-responsive">
                 <table class="table table-bordered" id="auditLogsTable" width="100%" cellspacing="0">
                 <thead>

@@ -840,6 +840,89 @@ SMART FORM - Enhanced Version
     margin-top: 0.5rem;
   }
 }
+
+/* Apply consistent styling for Pending Farmers and Active Farmers tables */
+#recenttable th,
+#recenttable td,
+#activeFarmersTable th,
+#activeFarmersTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#recenttable thead th,
+#activeFarmersTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#recenttable thead th.sorting,
+#recenttable thead th.sorting_asc,
+#recenttable thead th.sorting_desc,
+#activeFarmersTable thead th.sorting,
+#activeFarmersTable thead th.sorting_asc,
+#activeFarmersTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#recenttable thead th::after,
+#activeFarmersTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#recenttable thead th.sorting::after,
+#recenttable thead th.sorting_asc::after,
+#recenttable thead th.sorting_desc::after,
+#activeFarmersTable thead th.sorting::after,
+#activeFarmersTable thead th.sorting_asc::after,
+#activeFarmersTable thead th.sorting_desc::after {
+    display: none;
+}
+
+#recenttable td, 
+#recenttable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#recenttable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#recenttable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
 </style>
 @endpush
 @section('content')
@@ -916,26 +999,23 @@ SMART FORM - Enhanced Version
 </div>
 
 
-
-<!-- Task Board Row -->
-<div class="row fade-in">
-    <!-- Task Board -->
-    <div class="col-12 mb-4">
-        <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
-                <h6 class="mb-0">
-                    <i class="fas fa-tasks"></i>
-                    Task Board
-                </h6>
-                <button class="btn-action btn-action-edits" id="addTaskBtn">
-                    <i class="fas fa-plus mr-2"></i> New Task
-                </button>
-            </div>
-            <div class="card-body">
-                <ul class="list-group" id="taskList"></ul>
-            </div>
-        </div>
-    </div>
+<!-- Task Board Row --> 
+ <div class="row fade-in"> <!-- Task Board --> 
+    <div class="col-12 mb-4"> 
+        <div class="card shadow"> 
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start"> 
+                <h6 class="mb-0"> 
+                    <i class="fas fa-tasks"></i> Task Board 
+                </h6> 
+                <button class="btn-action btn-action-ok" id="addTaskBtn"> 
+                    <i class="fas fa-plus mr-2"></i> New Task 
+                </button> 
+            </div> 
+            <div class="card-body"> 
+                <ul class="list-group" id="taskList"></ul> 
+            </div> 
+        </div> 
+    </div> 
 </div>
 
 <!-- Livestock Trends Chart Row -->
@@ -943,7 +1023,7 @@ SMART FORM - Enhanced Version
     <!-- Livestock Trends Chart -->
     <div class="col-12 mb-4">
         <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2  text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2  text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-chart-line"></i>
                     Livestock Population Trends
@@ -957,12 +1037,11 @@ SMART FORM - Enhanced Version
 </div>
 
 
-
 <!-- Recent System Activity -->
 <div class="row fade-in">
     <div class="col-12">
         <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2  text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2  text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-history"></i>
                     Recent System Activity
@@ -970,7 +1049,7 @@ SMART FORM - Enhanced Version
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-bordered table-hover" id="recenttable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Action</th>
@@ -1138,17 +1217,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     <small class="text-muted">${escapeHtml(task.description || '')}</small>
                 </div>
             </div>
+
             <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
+                <span class="badge badge-${priorityBadge(task.priority)} mr-4">
+                    <i class="far fa-clock"></i> ${formatDue(task.due_date)}
+                </span>
                 <div class="action-buttons">
-                    <button class="btn-action btn-action-edit edit-task" title="Edit Task">
-                    <i class="fas fa-edit"></i>
-                    <span>Edit</span>
+                    <button class="btn-action btn-action-ok edit-task" title="Edit Task">
+                        <i class="fas fa-edit"></i> <span>Edit</span>
+                    </button>
                     <button class="btn-action btn-action-deletes delete-task" title="Delete Task">
-                    <i class="fas fa-trash"></i>
-                    <span>Delete</span>
+                        <i class="fas fa-trash"></i> <span>Delete</span>
+                    </button>
                 </div>
             </div>
+
+
         `;
 
         li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {

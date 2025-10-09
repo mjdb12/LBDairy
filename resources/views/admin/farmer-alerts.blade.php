@@ -91,7 +91,7 @@
 
     <!-- Main Content -->
      <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                         All Farmer Alerts
@@ -108,7 +108,7 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable()">
+                    <button class="btn-action btn-action-edit" onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-alerts" onclick="refreshAlertsData()">
