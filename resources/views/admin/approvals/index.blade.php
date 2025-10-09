@@ -34,7 +34,7 @@
 
     <!-- Pending Registrations -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-clock mr-2"></i>
                 Pending Approvals ({{ $pendingUsers->count() }})
@@ -79,7 +79,7 @@
 
     <!-- Recent Approved Users -->
     <div class="card shadow mb-4">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="m-0 font-weight-bold text-success">
                 <i class="fas fa-check-circle me-2"></i>
                 Recently Approved Users
@@ -121,7 +121,7 @@
 
     <!-- Recent Rejected Users -->
     <div class="card shadow mb-4">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="m-0 font-weight-bold text-danger">
                 <i class="fas fa-times-circle me-2"></i>
                 Recently Rejected Users
@@ -434,6 +434,37 @@ function refreshPendingData() {
 @endpush
 @push('styles')
 <style>
+
+    /* Badge Base */
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.75em;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.5rem;
+    color: #fff; /* default text color */
+}
+
+/* Farmer Role */
+.badge-success {
+    background-color: #387057; /* green */
+}
+
+/* Admin or other Role */
+.badge-info {
+    background-color: #18375d;
+; /* blue */
+}
+
+/* Optional: small icon inside badge */
+.badge i {
+    margin-right: 0.25rem;
+}
+
     /* Optional: Add smooth focus effect */
 #rejectModal .form-control:focus {
     border-color: #198754; /* Bootstrap green */
@@ -732,7 +763,7 @@ function refreshPendingData() {
     }
 
     .badge-success {
-        background-color: #39a400;
+        background-color: #387057;
         color: #fff;
     }
 
@@ -747,7 +778,7 @@ function refreshPendingData() {
     }
 
     .badge-info {
-        background-color: #17a2b8;
+        background-color: #18375d;
         color: #fff;
     }
     

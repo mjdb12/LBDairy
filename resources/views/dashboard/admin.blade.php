@@ -540,15 +540,15 @@
 }
 
 .smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 .smart-modal h5 {
@@ -568,6 +568,360 @@
 
 .btn-delete:hover {
   background: #fca700;
+}
+
+
+/* ============================
+SMART FORM - Enhanced Version
+============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#taskModal form {
+  text-align: left;
+}
+
+#taskModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#taskModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#taskModal .form-control,
+#taskModal select.form-control,
+#taskModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#taskModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#taskModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+
+#changePasswordModal form {
+  text-align: left;
+}
+
+#changePasswordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#changePasswordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#changePasswordModal .form-control,
+#changePasswordModal select.form-control,
+#changePasswordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#changePasswordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#changePasswordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#taskModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+#changePasswordModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+    @media (max-width: 768px) {
+    .smart-form {
+        padding: 1.5rem;
+    }
+
+    .smart-form .form-wrapper {
+        max-width: 100%;
+    }
+
+    #taskModal .form-control {
+        font-size: 14px;
+    }
+    #changePasswordModal .form-control {
+        font-size: 14px;
+    }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Apply consistent styling for Pending Farmers and Active Farmers tables */
+#recenttable th,
+#recenttable td,
+#activeFarmersTable th,
+#activeFarmersTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#recenttable thead th,
+#activeFarmersTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#recenttable thead th.sorting,
+#recenttable thead th.sorting_asc,
+#recenttable thead th.sorting_desc,
+#activeFarmersTable thead th.sorting,
+#activeFarmersTable thead th.sorting_asc,
+#activeFarmersTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#recenttable thead th::after,
+#activeFarmersTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#recenttable thead th.sorting::after,
+#recenttable thead th.sorting_asc::after,
+#recenttable thead th.sorting_desc::after,
+#activeFarmersTable thead th.sorting::after,
+#activeFarmersTable thead th.sorting_asc::after,
+#activeFarmersTable thead th.sorting_desc::after {
+    display: none;
+}
+
+#recenttable td, 
+#recenttable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#recenttable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#recenttable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
 }
 </style>
 @endpush
@@ -645,26 +999,23 @@
 </div>
 
 
-
-<!-- Task Board Row -->
-<div class="row fade-in">
-    <!-- Task Board -->
-    <div class="col-12 mb-4">
-        <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
-                <h6 class="mb-0">
-                    <i class="fas fa-tasks"></i>
-                    Task Board
-                </h6>
-                <button class="btn-action btn-action-edits" id="addTaskBtn">
-                    <i class="fas fa-plus mr-2"></i> New Task
-                </button>
-            </div>
-            <div class="card-body">
-                <ul class="list-group" id="taskList"></ul>
-            </div>
-        </div>
-    </div>
+<!-- Task Board Row --> 
+ <div class="row fade-in"> <!-- Task Board --> 
+    <div class="col-12 mb-4"> 
+        <div class="card shadow"> 
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start"> 
+                <h6 class="mb-0"> 
+                    <i class="fas fa-tasks"></i> Task Board 
+                </h6> 
+                <button class="btn-action btn-action-ok" id="addTaskBtn"> 
+                    <i class="fas fa-plus mr-2"></i> New Task 
+                </button> 
+            </div> 
+            <div class="card-body"> 
+                <ul class="list-group" id="taskList"></ul> 
+            </div> 
+        </div> 
+    </div> 
 </div>
 
 <!-- Livestock Trends Chart Row -->
@@ -672,7 +1023,7 @@
     <!-- Livestock Trends Chart -->
     <div class="col-12 mb-4">
         <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2  text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2  text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-chart-line"></i>
                     Livestock Population Trends
@@ -686,12 +1037,11 @@
 </div>
 
 
-
 <!-- Recent System Activity -->
 <div class="row fade-in">
     <div class="col-12">
         <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2  text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2  text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-history"></i>
                     Recent System Activity
@@ -699,7 +1049,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-bordered table-hover" id="recenttable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Action</th>
@@ -733,48 +1083,71 @@
     </div>
 </div>
 
-<!-- Task Modal -->
-<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <form class="modal-content" id="taskForm">
-            <div class="modal-header">
-                <h5 class="modal-title" id="taskModalTitle">New Task</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
+<!-- Modern Task Modal -->
+<div class="modal fade admin-modal" id="taskModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-wrapper">
+                    <i class="fas fa-tasks fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="taskModalTitle">New Task</h5>
+                <p class="text-muted mb-0 small">
+                    Create or update your task details below, then click <strong>“Add Task”</strong> to save changes.
+                </p>
             </div>
-            <div class="modal-body">
+
+            <!-- Form -->
+            <form id="taskForm">
                 <input type="hidden" id="taskId">
-                <div class="form-group">
-                    <label for="taskTitle">Title<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="taskTitle" required maxlength="255">
+
+                <div class="form-wrapper text-start mx-auto">
+                    
+                        
+                        <!-- Title -->
+                        <div class="col-md-12">
+                            <label for="taskTitle" class="fw-semibold">Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control mt-1" id="taskTitle" required maxlength="255" placeholder="Enter task title">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12">
+                            <label for="taskDescription" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="taskDescription" rows="3" placeholder="Enter task details" style="resize: none;"></textarea>
+                        </div>
+                            <!-- Priority -->
+                        <div class="col-md-12">
+                            <label for="taskPriority" class="fw-semibold">Priority <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="taskPriority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+
+                        <!-- Due Date -->
+                        <div class="col-md-12">
+                            <label for="taskDueDate" class="fw-semibold">Due Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="taskDueDate">
+                        </div>
+
+                    <!-- Notification -->
+                    <div id="taskNotification" class="mt-3 text-center" style="display: none;"></div>
                 </div>
-                <div class="form-group">
-                    <label for="taskDescription">Description<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok" id="taskSubmitBtn">Add Task</button>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="taskPriority">Priority<span class="text-danger">*</span></label>
-                        <select class="form-control" id="taskPriority">
-                            <option value="low">Low</option>
-                            <option value="medium" selected>Medium</option>
-                            <option value="high">High</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="taskDueDate">Due Date<span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="taskDueDate">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn-action btn-action-edit" id="taskSubmitBtn">Add Task</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
+
 
 <!-- Modern Delete Task Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" aria-hidden="true">
@@ -782,7 +1155,7 @@
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Delete</h5>
@@ -844,17 +1217,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     <small class="text-muted">${escapeHtml(task.description || '')}</small>
                 </div>
             </div>
+
             <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
+                <span class="badge badge-${priorityBadge(task.priority)} mr-4">
+                    <i class="far fa-clock"></i> ${formatDue(task.due_date)}
+                </span>
                 <div class="action-buttons">
-                    <button class="btn-action btn-action-edit edit-task" title="Edit Task">
-                    <i class="fas fa-edit"></i>
-                    <span>Edit</span>
+                    <button class="btn-action btn-action-ok edit-task" title="Edit Task">
+                        <i class="fas fa-edit"></i> <span>Edit</span>
+                    </button>
                     <button class="btn-action btn-action-deletes delete-task" title="Delete Task">
-                    <i class="fas fa-trash"></i>
-                    <span>Delete</span>
+                        <i class="fas fa-trash"></i> <span>Delete</span>
+                    </button>
                 </div>
             </div>
+
+
         `;
 
         li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {

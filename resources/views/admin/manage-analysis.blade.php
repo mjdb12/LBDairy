@@ -74,8 +74,6 @@
         </div>
     </div>
 
-    <!-- Farmers List Card -->
-     <!-- Pending Farmers Card -->
     <div class="card shadow mb-4 fade-in">
         <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
@@ -94,7 +92,7 @@
                     <input type="text" class="form-control" placeholder="Search pending farmers..." id="customSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-edit" onclick="printTable('pendingFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
@@ -149,7 +147,7 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="action-buttons">
+                                <div class="btn-group">
                                     <button class="btn-action btn-action-view-live" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
                                         <span>View</span>
@@ -235,159 +233,35 @@
     </div>
 </div>
 
-<!-- Farmer Details Modal -->
-<div class="modal fade" id="farmerDetailsModal" tabindex="-1" aria-labelledby="farmerDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="farmerDetailsModalLabel">
-                    <i class="fas fa-user mr-2"></i>
-                    Farmer Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Smart Detail Modal - Farmer Details -->
+<div class="modal fade" id="farmerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmerDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-2x "></i>
+                </div>
+                <h5 class="fw-bold mb-1">Farmer Details</h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected farmer.</p>
             </div>
+
+            <!-- Body -->
             <div class="modal-body">
-                <!-- Personal & Farm Info -->
-                <div class="row">
-                    <!-- Personal Info -->
-                    <div class="col-md-6">
-                        <div class="card border-left h-100">
-                            <div class="card-body">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                    <i class="fas fa-user-circle mr-2"></i>Personal Information
-                                </h6>
-                                <div class="row">
-                                    <div class="col-6"><strong>Name:</strong></div>
-                                    <div class="col-6"><span id="modalFarmerName">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Email:</strong></div>
-                                    <div class="col-6"><span id="modalFarmerEmail">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Phone:</strong></div>
-                                    <div class="col-6"><span id="modalFarmerPhone">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Location:</strong></div>
-                                    <div class="col-6"><span id="modalFarmerLocation">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Farmer Code:</strong></div>
-                                    <div class="col-6"><span id="modalFarmerCode">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Last Login:</strong></div>
-                                    <div class="col-6"><span id="modalLastLogin">-</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Farm Info -->
-                    <div class="col-md-6">
-                        <div class="card border-left h-100">
-                            <div class="card-body">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                    <i class="fas fa-tractor mr-2"></i>Farm Information
-                                </h6>
-                                <div class="row">
-                                    <div class="col-6"><strong>Farm Name:</strong></div>
-                                    <div class="col-6"><span id="modalFarmName">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Farm Address:</strong></div>
-                                    <div class="col-6"><span id="modalFarmAddress">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Total Farms:</strong></div>
-                                    <div class="col-6"><span id="modalTotalFarms">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Active Farms:</strong></div>
-                                    <div class="col-6"><span id="modalActiveFarms">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Status:</strong></div>
-                                    <div class="col-6">
-                                        <span id="modalFarmerStatus" class="badge badge-pill badge-warning">-</span>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Member Since:</strong></div>
-                                    <div class="col-6"><span id="modalMemberSince">-</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Divider -->
-                <hr class="my-4">
-
-                <!-- Livestock & Production -->
-                <div class="row">
-                    <!-- Livestock Stats -->
-                    <div class="col-md-6">
-                        <div class="card border-left h-100">
-                            <div class="card-body">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                    <i class="fas fa-paw mr-2"></i>Livestock Statistics
-                                </h6>
-                                <div class="row">
-                                    <div class="col-6"><strong>Total Livestock:</strong></div>
-                                    <div class="col-6"><span id="modalTotalLivestock">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Active Livestock:</strong></div>
-                                    <div class="col-6"><span id="modalActiveLivestock">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-6"><strong>Inactive Livestock:</strong></div>
-                                    <div class="col-6"><span id="modalInactiveLivestock">-</span></div>
-                                </div>
-
-                                <div class="mt-3">
-                                    <strong>Livestock by Type:</strong>
-                                    <ul id="livestockTypeList" class="mt-2 list-unstyled text-muted small"></ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Production Stats -->
-                    <div class="col-md-6">
-                        <div class="card border-left h-100">
-                            <div class="card-body">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                    <i class="fas fa-chart-line mr-2"></i>Production Statistics
-                                </h6>
-                                <div class="row">
-                                    <div class="col-7"><strong>Total Production:</strong></div>
-                                    <div class="col-5"><span id="modalTotalProduction">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-7"><strong>Average Daily Production:</strong></div>
-                                    <div class="col-5"><span id="modalAvgDailyProduction">-</span></div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-7"><strong>Recent Production (30 days):</strong></div>
-                                    <div class="col-5"><span id="modalRecentProduction">-</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div id="farmerDetailsContent" class="detail-wrapper">
+                    <!-- Personal & Farm Info -->
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+            <!-- Footer -->
+            <div class="modal-footer justify-content-center mt-4">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Smart Delete Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
@@ -396,7 +270,7 @@
 
       <!-- Icon -->
       <div class="icon-wrapper mx-auto mb-3 text-danger">
-        <i class="fas fa-exclamation-triangle fa-2x"></i>
+        <i class="fas fa-times-circle fa-2x"></i>
       </div>
 
       <!-- Title -->
@@ -464,6 +338,151 @@
 
 @push('styles')
 <style>
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 1.5rem;
+        max-height: 80vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
+
     .smart-modal {
   border: none;
   border-radius: 16px;
@@ -1630,132 +1649,52 @@ function viewFarmerDetails(farmerId) {
 
             <!-- Personal & Farm Info -->
             <div class="row">
-                <!-- Personal Info -->
                 <div class="col-md-6">
-                    <div class="card border-left h-100">
-                        <div class="card-body">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                <i class="fas fa-user-circle mr-2"></i>Personal Information
-                            </h6>
-                            <div class="row">
-                                <div class="col-6"><strong>Name:</strong></div>
-                                <div class="col-6"><span id="modalFarmerName">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Email:</strong></div>
-                                <div class="col-6"><span id="modalFarmerEmail">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Phone:</strong></div>
-                                <div class="col-6"><span id="modalFarmerPhone">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Location:</strong></div>
-                                <div class="col-6"><span id="modalFarmerLocation">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Farmer Code:</strong></div>
-                                <div class="col-6"><span id="modalFarmerCode">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Last Login:</strong></div>
-                                <div class="col-6"><span id="modalLastLogin">-</span></div>
-                            </div>
-                        </div>
-                    </div>
+                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-user-circle mr-2"></i>Personal Information</h6>
+                    <p class="text-left"><strong>Name:</strong> ${farmer.name || 'N/A'}</p>
+                    <p class="text-left"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
+                    <p class="text-left"><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
+                    <p class="text-left"><strong>Location:</strong> ${farmer.location || 'N/A'}</p>
+                    <p class="text-left"><strong>Farmer Code:</strong> ${farmer.code || 'N/A'}</p>
+                    <p class="text-left"><strong>Last Login:</strong> ${farmer.last_login ? new Date(farmer.last_login).toLocaleDateString() : 'N/A'}</p>
                 </div>
-                
-                <!-- Farm Info -->
+
                 <div class="col-md-6">
-                    <div class="card border-left h-100">
-                        <div class="card-body">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                <i class="fas fa-tractor mr-2"></i>Farm Information
-                            </h6>
-                            <div class="row">
-                                <div class="col-6"><strong>Farm Name:</strong></div>
-                                <div class="col-6"><span id="modalFarmName">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Farm Address:</strong></div>
-                                <div class="col-6"><span id="modalFarmAddress">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Total Farms:</strong></div>
-                                <div class="col-6"><span id="modalTotalFarms">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Active Farms:</strong></div>
-                                <div class="col-6"><span id="modalActiveFarms">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Status:</strong></div>
-                                <div class="col-6">
-                                    <span id="modalFarmerStatus" class="badge badge-pill badge-warning">-</span>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Member Since:</strong></div>
-                                <div class="col-6"><span id="modalMemberSince">-</span></div>
-                            </div>
-                        </div>
-                    </div>
+                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-tractor mr-2"></i>Farm Information</h6>
+                    <p class="text-left"><strong>Farm Name:</strong> ${farmer.farm_name || 'N/A'}</p>
+                    <p class="text-left"><strong>Farm Address:</strong> ${farmer.farm_address || 'N/A'}</p>
+                    <p class="text-left"><strong>Total Farms:</strong> ${farmer.total_farms || '0'}</p>
+                    <p class="text-left"><strong>Active Farms:</strong> ${farmer.active_farms || '0'}</p>
+                    <p class="text-left"><strong>Status:</strong> 
+                        <span class="badge badge-${farmer.status === 'approved' ? 'success' : (farmer.status === 'pending' ? 'warning' : 'danger')}">
+                            ${farmer.status || 'N/A'}
+                        </span>
+                    </p>
+                    <p class="text-left"><strong>Member Since:</strong> ${farmer.member_since ? new Date(farmer.member_since).toLocaleDateString() : 'N/A'}</p>
                 </div>
             </div>
 
-            <!-- Livestock & Production -->
+
             <div class="row">
-                <!-- Livestock Stats -->
                 <div class="col-md-6">
-                    <div class="card border-left h-100">
-                        <div class="card-body">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                <i class="fas fa-paw mr-2"></i>Livestock Statistics
-                            </h6>
-                            <div class="row">
-                                <div class="col-6"><strong>Total Livestock:</strong></div>
-                                <div class="col-6"><span id="modalTotalLivestock">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Active Livestock:</strong></div>
-                                <div class="col-6"><span id="modalActiveLivestock">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6"><strong>Inactive Livestock:</strong></div>
-                                <div class="col-6"><span id="modalInactiveLivestock">-</span></div>
-                            </div>
-
-                            <div class="mt-3">
-                                <strong>Livestock by Type:</strong>
-                                <ul id="livestockTypeList" class="mt-2 list-unstyled text-muted small"></ul>
-                            </div>
-                        </div>
-                    </div>
+                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-paw mr-2"></i>Livestock Statistics</h6>
+                    <p class="text-left"><strong>Total Livestock:</strong> ${farmer.total_livestock || '0'}</p>
+                    <p class="text-left"><strong>Active Livestock:</strong> ${farmer.active_livestock || '0'}</p>
+                    <p class="text-left"><strong>Inactive Livestock:</strong> ${farmer.inactive_livestock || '0'}</p>
+                    <p class="text-left"><strong>Livestock by Type:</strong></p>
+                    <ul id="livestockTypeList" class="mt-1 list-unstyled text-muted small">
+                        ${farmer.livestock_types ? farmer.livestock_types.map(type => `<li>${type}</li>`).join('') : '<li>N/A</li>'}
+                    </ul>
                 </div>
 
-                <!-- Production Stats -->
                 <div class="col-md-6">
-                    <div class="card border-left h-100">
-                        <div class="card-body">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                <i class="fas fa-chart-line mr-2"></i>Production Statistics
-                            </h6>
-                            <div class="row">
-                                <div class="col-7"><strong>Total Production:</strong></div>
-                                <div class="col-5"><span id="modalTotalProduction">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-7"><strong>Average Daily Production:</strong></div>
-                                <div class="col-5"><span id="modalAvgDailyProduction">-</span></div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-7"><strong>Recent Production (30 days):</strong></div>
-                                <div class="col-5"><span id="modalRecentProduction">-</span></div>
-                            </div>
-                        </div>
-                    </div>
+                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-chart-line mr-2"></i>Production Statistics</h6>
+                    <p class="text-left"><strong>Total Production:</strong> ${farmer.total_production || '0'}</p>
+                    <p class="text-left"><strong>Average Daily Production:</strong> ${farmer.avg_daily_production || '0'}</p>
+                    <p class="text-left"><strong>Recent Production (30 days):</strong> ${farmer.recent_production || '0'}</p>
                 </div>
             </div>
+
 
             `);
             

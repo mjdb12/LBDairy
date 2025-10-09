@@ -348,8 +348,8 @@
     }
     
     .btn-action-print {
-        background-color: #6c757d !important;
-        border-color: #6c757d !important;
+        background-color: #387057 ;
+        border-color: #387057 ;
         color: white !important;
     }
     
@@ -947,6 +947,7 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+
 .smart-modal {
   border: none;
   border-radius: 16px;
@@ -957,16 +958,15 @@
   transition: all 0.3s ease;
 }
 
-.smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+.smart-modal .icon-circle {
+  width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .smart-modal h5 {
@@ -1045,8 +1045,6 @@
     box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
 }
 
-
-
 /* Contact Farmer Modal Alignment */
 #rejectionModal .smart-modal {
     text-align: center; /* Keep header text centered */
@@ -1106,6 +1104,90 @@
   }
 }
 
+
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#userDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
 </style>
 @endpush
 
@@ -1194,7 +1276,7 @@
                     <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-edit" onclick="printTable('pendingFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
@@ -1261,7 +1343,7 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable('activeFarmersTable')">
+                    <button class="btn-action btn-action-edit" onclick="printTable('activeFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-admins" onclick="refreshAdminsTable('activeFarmersTable')">
@@ -1311,31 +1393,39 @@
 
 </div>
 
-<!-- Details Modal --> 
- <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true"> 
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document"> 
-        <div class="modal-content"> 
-            <div class="modal-header"> 
-                <h5 class="modal-title" id="detailsModalLabel"> 
-                    <i class="fas fa-user mr-2"></i> Farmer Details 
-                </h5> 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> 
-                    <span aria-hidden="true">&times;</span> 
-                </button> 
-            </div> 
-            <div class="modal-body"> 
-                <div id="farmerDetails">
 
-                </div> 
-            </div> 
-            <div class="modal-footer"> 
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button> 
-                <button type="button" class="btn-action btn-action-ok" onclick="openContactModal()"> 
-                    <i class="fas fa-envelope"></i> Contact Farmer 
-                </button> 
-            </div> 
-        </div> 
-    </div> 
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-2x "></i>
+                </div>
+                <h5 class="fw-bold mb-1">Farmer Details </h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
+            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="farmerDetails" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
+        </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-ok" onclick="openContactModal()">
+                Contact Farmer
+            </button>
+        </div>
+
+    </div>
+  </div>
 </div>
 
 
@@ -1344,17 +1434,13 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
-            <div class="icon-wrapper mx-auto mb-4 ">
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
                 <i class="fas fa-paper-plane fa-2x"></i>
             </div>
-
-            <!-- Title -->
-            <h5>Send Message to Farmer</h5>
-
-            <!-- Description -->
-            <p class="text-muted mb-4 px-3">
-                Please fill out the form below to send a message to the farmer. Ensure your message is clear and concise.
-            </p>
+                <h5 class="fw-bold mb-1">Send Message to Farmer </h5>
+                <p class="text-muted mb-0 small">Please fill out the form below to send a message to the farmer. Ensure your message is clear and concise.</p>
+            </div>
 
             <!-- Form -->
             <form onsubmit="sendMessage(event)">

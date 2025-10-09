@@ -1,5 +1,5 @@
 <!-- Topbar -->
- <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow " style="background-color: #ffffffff !important; border-bottom: 2px solid #18375d !important;">
+ <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow fixed-top" style="background-color: #ffffffff !important; border-bottom: 2px solid #18375d !important;">
 <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3 ">
                         <i class="fa fa-bars"></i>
                     </button>

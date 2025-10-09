@@ -947,16 +947,16 @@
   transition: all 0.3s ease;
 }
 
-.smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+.smart-modal .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 .smart-modal h5 {
@@ -976,6 +976,400 @@
 
 .btn-delete:hover {
   background: #fca700;
+}
+
+/* Contact Farmer Modal Alignment */
+#contactModal .smart-modal {
+    text-align: center; /* Keep header text centered */
+}
+
+#contactModal form {
+    text-align: left; /* Align form content to the left */
+}
+
+/* Make sure labels, inputs, and textareas are properly aligned */
+#contactModal .form-group {
+    width: 100%;
+    max-width: 700px; /* Optional: limits width for large screens */
+    margin: 0 auto; /* Centers the form container */
+}
+
+/* Label styling */
+#contactModal label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs and Textareas */
+#contactModal .form-control {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    box-shadow: none;
+}
+
+/* Keep modal buttons centered */
+#contactModal .modal-footer {
+    text-align: center;
+}
+
+/* Optional: Add smooth focus effect */
+#contactModal .form-control:focus {
+    border-color: #198754; /* Bootstrap green */
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#addAdminModal form {
+  text-align: left;
+}
+
+#addAdminModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#addAdminModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#addAdminModal .form-control,
+#addAdminModal select.form-control,
+#addAdminModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#addAdminModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#addAdminModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#editAdminModal form {
+  text-align: left;
+}
+
+#editAdminModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editAdminModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editAdminModal .form-control,
+#editAdminModal select.form-control,
+#editAdminModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editAdminModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editAdminModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#userModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addAdminModal .form-control {
+    font-size: 14px;
+  }
+
+  #editAdminModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#userDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
 }
 </style>
 @endpush
@@ -1211,63 +1605,212 @@
     </div>
 </div>
 
-<!-- Details Modal -->
-<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="userDetailsModal" tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailsModalLabel">
-                    <i class="fas fa-user"></i>
-                    Admin Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-user fa-lg"></i>
+                </div>
+                <h5 class="fw-bold mb-1">User Details</h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
             </div>
-            <div class="modal-body">
-                <div id="farmerDetails"></div>
+
+            <!-- Body -->
+             <div class="modal-body">
+                <div id="userDetails" class="detail-wrapper text-start">
+                    <!-- Example user detail layout -->
+                    <div class="detail-row">
+                        <span class="detail-label">Full Name:</span>
+                        <span class="detail-value" id="detailName">John Doe</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" id="detailEmail">john@example.com</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Role:</span>
+                        <span class="detail-value" id="detailRole">Admin</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value" id="detailStatus">Active</span>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn-action btn-action-ok" onclick="openContactModal()">
-                    Contact Admin
-                </button>
+
+            <!-- Footer -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Contact Admin Modal -->
-<div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="contactModalLabel">
-                    <i class="fas fa-paper-plane mr-2"></i>
-                    Send Message to Admin
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Admin Details</h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
             </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="farmerDetails" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
+        </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-ok" onclick="openContactModal()">
+                Contact Admin
+            </button>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modern Contact Admin Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-modal text-center p-4">
+
+            <!-- Icon -->
+            <div class="icon-circle mx-auto mb-4">
+                <i class="fas fa-paper-plane fa-2x"></i>
+            </div>
+
+            <!-- Title -->
+            <h5>Send Message to Admin</h5>
+
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Please fill out the form below to send a message to the admin. Ensure your message is clear and concise.
+            </p>
+
+            <!-- Form -->
             <form onsubmit="sendMessage(event)">
                 @csrf
-                <div class="modal-body">
                     <input type="hidden" id="farmerNameHidden">
                     <input type="hidden" id="adminIdHidden">
-                    <div class="form-group">
-                        <label for="messageSubject">Subject <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="messageSubject" required>
+
+                    <!-- Subject Field -->
+                    <div class="form-group px-3 text-start">
+                        <label for="messageSubject" class="fw-semibold text-start">
+                            Subject <span class="text-danger">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control mt-1" 
+                            id="messageSubject" 
+                            required 
+                            placeholder="Enter a subject here...">
                     </div>
-                    <div class="form-group">
-                        <label for="messageBody">Message <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="messageBody" rows="4" required></textarea>
+
+                    <!-- Message Field -->
+                    <div class="form-group px-3 text-start mt-3">
+                        <label for="messageBody" class="fw-semibold text-start">
+                            Message <span class="text-danger">*</span>
+                        </label>
+                        <textarea 
+                            class="form-control mt-1" 
+                            id="messageBody" 
+                            rows="5" 
+                            required 
+                            placeholder="Write your message here..." 
+                            style="resize: none;"></textarea>
                     </div>
-                    <div id="messageNotification" class="mt-2" style="display: none;"></div>
+
+                    <!-- Notification -->
+                    <div id="messageNotification" class="mt-3 text-center" style="display: none;"></div>
+            
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">
+                        Send Message
+                    </button>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-ok">
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modern Contact Farmer Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-circle mx-auto mb-4 ">
+                <i class="fas fa-paper-plane fa-2x"></i>
+            </div>
+
+            <!-- Title -->
+            <h5>Send Message to Admin</h5>
+
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Please fill out the form below to send a message to the admin. Ensure your message is clear and concise.
+            </p>
+
+            <!-- Form -->
+            <form onsubmit="sendMessage(event)">
+                @csrf
+                <input type="hidden" id="farmerNameHidden">
+
+                <!-- Subject Field -->
+                <div class="form-group px-3 text-start">
+                    <label for="messageSubject" class="fw-semibold text-start">
+                        Subject <span class="text-danger">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-control mt-1" 
+                        id="messageSubject" 
+                        required 
+                        placeholder="Enter a subject here...">
+                </div>
+
+                <!-- Message Field -->
+                <div class="form-group px-3 text-start mt-3">
+                    <label for="messageBody" class="fw-semibold text-start">
+                        Message <span class="text-danger">*</span>
+                    </label>
+                    <textarea 
+                        class="form-control mt-1" 
+                        id="messageBody" 
+                        rows="5" 
+                        required 
+                        placeholder="Write your message here..." 
+                        style="resize: none;"></textarea>
+                </div>
+
+                <!-- Notification -->
+                <div id="messageNotification" class="mt-3 text-center" style="display: none;"></div>
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">
                         Send Message
                     </button>
                 </div>
@@ -1276,282 +1819,284 @@
     </div>
 </div>
 
-<!-- Add Admin Modal -->
-<div class="modal fade" id="addAdminModal" tabindex="-1" role="dialog" aria-labelledby="addAdminModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addAdminModalLabel">
-                    <i class="fas fa-user-plus mr-2"></i>
-                    Add New Admin
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="addAdminForm" onsubmit="saveNewAdmin(event)">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminFirstName">First Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="adminFirstName" name="first_name" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminLastName">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="adminLastName" name="last_name" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminEmail">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="adminEmail" name="email" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminUsername">Username <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="adminUsername" name="username" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminPhone">Contact Number<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="adminPhone" name="phone">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="barangay">Barangay</label>
-                                <select class="form-control" id="adminBarangay" name="barangay">
-                                    <option value="">Select Barangay</option>
-                                    <option value="Abang">Abang</option>
-                                    <option value="Aliliw">Aliliw</option>
-                                    <option value="Atulinao">Atulinao</option>
-                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
-                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
-                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
-                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
-                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
-                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
-                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
-                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
-                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
-                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
-                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
-                                    <option value="Igang">Igang</option>
-                                    <option value="Kabatete">Kabatete</option>
-                                    <option value="Kakawit">Kakawit</option>
-                                    <option value="Kalangay">Kalangay</option>
-                                    <option value="Kalyaat">Kalyaat</option>
-                                    <option value="Kilib">Kilib</option>
-                                    <option value="Kulapi">Kulapi</option>
-                                    <option value="Mahabang Parang">Mahabang Parang</option>
-                                    <option value="Malupak">Malupak</option>
-                                    <option value="Manasa">Manasa</option>
-                                    <option value="May-It">May-It</option>
-                                    <option value="Nagsinamo">Nagsinamo</option>
-                                    <option value="Nalunao">Nalunao</option>
-                                    <option value="Palola">Palola</option>
-                                    <option value="Piis">Piis</option>
-                                    <option value="Samil">Samil</option>
-                                    <option value="Tiawe">Tiawe</option>
-                                    <option value="Tinamnan">Tinamnan</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminRole">Role <span class="text-danger">*</span></label>
-                                <select class="form-control" id="adminRole" name="role" required>
-                                    <option value="">Select Role</option>
-                                    <option value="admin" selected>Admin</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminStatus">Status <span class="text-danger">*</span></label>
-                                <select class="form-control" id="adminStatus" name="status" required>
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" id="passwordFields">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="adminPasswordConfirm">Password <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="adminPassword" name="password" required>
-                                <small class="form-text text-muted">Leave blank to keep existing password when editing</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="passwordConfirmation">Confirm Password <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="adminFormNotification" class="mt-2" style="display: none;"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-save" id="saveAdminBtn">
-                        Save User
-                    </button>
-            </form>
+<!-- Smart Form Modal - Add Admin -->
+<div class="modal fade admin-modal" id="addAdminModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-wrapper mb-3">
+          <i class="fas fa-user-plus fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Add New Admin</h5>
+        <p class="text-muted mb-0 small">
+          Fill out the form below to add a new admin account.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="addAdminForm" onsubmit="saveNewAdmin(event)">
+        @csrf
+
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3">
+            
+            <!-- First Name -->
+            <div class="col-md-6">
+              <label for="adminFirstName" class="fw-semibold">First Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="adminFirstName" name="first_name" required>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-md-6">
+              <label for="adminLastName" class="fw-semibold">Last Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="adminLastName" name="last_name" required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="adminEmail" class="fw-semibold">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="adminEmail" name="email" required>
+            </div>
+
+            <!-- Username -->
+            <div class="col-md-6">
+              <label for="adminUsername" class="fw-semibold">Username <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="adminUsername" name="username" required>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-md-6">
+              <label for="adminPhone" class="fw-semibold">Contact Number <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="adminPhone" name="phone">
+            </div>
+
+            <!-- Barangay -->
+            <div class="col-md-6">
+              <label for="adminBarangay" class="fw-semibold">Barangay</label>
+              <select class="form-control" id="adminBarangay" name="barangay">
+                <option value="">Select Barangay</option>
+                <option value="Abang">Abang</option>
+                <option value="Aliliw">Aliliw</option>
+                <option value="Atulinao">Atulinao</option>
+                <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                <option value="Igang">Igang</option>
+                <option value="Kabatete">Kabatete</option>
+                <option value="Kakawit">Kakawit</option>
+                <option value="Kalangay">Kalangay</option>
+                <option value="Kalyaat">Kalyaat</option>
+                <option value="Kilib">Kilib</option>
+                <option value="Kulapi">Kulapi</option>
+                <option value="Mahabang Parang">Mahabang Parang</option>
+                <option value="Malupak">Malupak</option>
+                <option value="Manasa">Manasa</option>
+                <option value="May-It">May-It</option>
+                <option value="Nagsinamo">Nagsinamo</option>
+                <option value="Nalunao">Nalunao</option>
+                <option value="Palola">Palola</option>
+                <option value="Piis">Piis</option>
+                <option value="Samil">Samil</option>
+                <option value="Tiawe">Tiawe</option>
+                <option value="Tinamnan">Tinamnan</option>
+              </select>
+            </div>
+
+            <!-- Role -->
+            <div class="col-md-6">
+              <label for="adminRole" class="fw-semibold">Role <span class="text-danger">*</span></label>
+              <select class="form-control" id="adminRole" name="role" required>
+                <option value="">Select Role</option>
+                <option value="admin" selected>Admin</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+              <label for="adminStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
+              <select class="form-control" id="adminStatus" name="status" required>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+
+            <!-- Password -->
+            <div class="col-md-6">
+              <label for="adminPassword" class="fw-semibold">Password <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="adminPassword" name="password" required>
+              <small class="text-muted">Leave blank to keep existing password when editing.</small>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="col-md-6">
+              <label for="adminPasswordConfirm" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
+            </div>
+
+          </div>
+
+          <div id="adminFormNotification" class="mt-3 text-center" style="display: none;"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer justify-content-center mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-ok" id="saveAdminBtn">
+            Save User
+          </button>
+        </div>
+      </form>
+
     </div>
+  </div>
 </div>
 
-<!-- Edit Admin Modal -->
-<div class="modal fade" id="editAdminModal" tabindex="-1" role="dialog" aria-labelledby="editAdminModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editAdminModalLabel">
-                    <i class="fas fa-edit mr-2"></i>
-                    Edit Admin
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="editAdminForm">
-                <div class="modal-body">
-                    <input type="hidden" id="editAdminId" name="admin_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editFirstName">First Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editFirstName" name="first_name" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editLastName">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editLastName" name="last_name" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editEmail">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="editEmail" name="email" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editUsername">Username <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editUsername" name="username" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editPhone">Contact Number</label>
-                                <input type="text" class="form-control" id="editPhone" name="phone">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="barangay">Barangay</label>
-                                <select class="form-control" id="editBarangay" name="barangay">
-                                    <option value="">Select Barangay</option>
-                                    <option value="Abang">Abang</option>
-                                    <option value="Aliliw">Aliliw</option>
-                                    <option value="Atulinao">Atulinao</option>
-                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
-                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
-                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
-                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
-                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
-                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
-                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
-                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
-                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
-                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
-                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
-                                    <option value="Igang">Igang</option>
-                                    <option value="Kabatete">Kabatete</option>
-                                    <option value="Kakawit">Kakawit</option>
-                                    <option value="Kalangay">Kalangay</option>
-                                    <option value="Kalyaat">Kalyaat</option>
-                                    <option value="Kilib">Kilib</option>
-                                    <option value="Kulapi">Kulapi</option>
-                                    <option value="Mahabang Parang">Mahabang Parang</option>
-                                    <option value="Malupak">Malupak</option>
-                                    <option value="Manasa">Manasa</option>
-                                    <option value="May-It">May-It</option>
-                                    <option value="Nagsinamo">Nagsinamo</option>
-                                    <option value="Nalunao">Nalunao</option>
-                                    <option value="Palola">Palola</option>
-                                    <option value="Piis">Piis</option>
-                                    <option value="Samil">Samil</option>
-                                    <option value="Tiawe">Tiawe</option>
-                                    <option value="Tinamnan">Tinamnan</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editRole">Role <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editRole" name="role" required>
-                                    <option value="">Select Role</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editPassword">Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="editPassword" name="password">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('editPassword')">
-                                            <i class="fas fa-eye" id="editPasswordIcon"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <small class="form-text text-muted">Leave blank to keep current password</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="editAdminFormNotification" class="mt-2" style="display: none;"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-edit" id="updateAdminBtn">
-                        Update Admin
-                    </button>
-                </div>
-            </form>
+
+<!-- Smart Form: Edit Admin Modal -->
+<div class="modal fade admin-modal" id="editAdminModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-wrapper mb-3">
+          <i class="fas fa-edit fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Edit Admin</h5>
+        <p class="text-muted mb-0 small">
+          Update the admin’s details below.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="editAdminForm">
+        @csrf
+        <input type="hidden" id="editAdminId" name="admin_id">
+
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3">
+
+            <!-- First Name -->
+            <div class="col-md-6">
+              <label for="editFirstName" class="fw-semibold">First Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editFirstName" name="first_name" required>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-md-6">
+              <label for="editLastName" class="fw-semibold">Last Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editLastName" name="last_name" required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="editEmail" class="fw-semibold">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="editEmail" name="email" required>
+            </div>
+
+            <!-- Username -->
+            <div class="col-md-6">
+              <label for="editUsername" class="fw-semibold">Username <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editUsername" name="username" required>
+            </div>
+
+            <!-- Contact Number -->
+            <div class="col-md-6">
+              <label for="editPhone" class="fw-semibold">Contact Number</label>
+              <input type="text" class="form-control" id="editPhone" name="phone">
+            </div>
+
+            <!-- Barangay -->
+            <div class="col-md-6">
+              <label for="editBarangay" class="fw-semibold">Barangay</label>
+              <select class="form-control" id="editBarangay" name="barangay">
+                <option value="">Select Barangay</option>
+                <option value="Abang">Abang</option>
+                <option value="Aliliw">Aliliw</option>
+                <option value="Atulinao">Atulinao</option>
+                <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                <option value="Igang">Igang</option>
+                <option value="Kabatete">Kabatete</option>
+                <option value="Kakawit">Kakawit</option>
+                <option value="Kalangay">Kalangay</option>
+                <option value="Kalyaat">Kalyaat</option>
+                <option value="Kilib">Kilib</option>
+                <option value="Kulapi">Kulapi</option>
+                <option value="Mahabang Parang">Mahabang Parang</option>
+                <option value="Malupak">Malupak</option>
+                <option value="Manasa">Manasa</option>
+                <option value="May-It">May-It</option>
+                <option value="Nagsinamo">Nagsinamo</option>
+                <option value="Nalunao">Nalunao</option>
+                <option value="Palola">Palola</option>
+                <option value="Piis">Piis</option>
+                <option value="Samil">Samil</option>
+                <option value="Tiawe">Tiawe</option>
+                <option value="Tinamnan">Tinamnan</option>
+              </select>
+            </div>
+
+            <!-- Role -->
+            <div class="col-md-6">
+              <label for="editRole" class="fw-semibold">Role <span class="text-danger">*</span></label>
+              <select class="form-control" id="editRole" name="role" required>
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <!-- Password -->
+            <div class="col-md-6">
+              <label for="editPassword" class="fw-semibold">Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="editPassword" name="password">
+              </div>
+              <small class="text-muted">Leave blank to keep current password.</small>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer justify-content-center mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-ok">Update Admin</button>
+        </div>
+
+      </form>
     </div>
+  </div>
 </div>
+
+
 <!-- Modern Delete Task Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteAdminModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Delete</h5>

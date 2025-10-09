@@ -14,128 +14,49 @@
 <div class="row">
   <div class="col-xl-8 col-lg-7">
     <div class="card shadow mb-4 userinfo-card">
-      <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+      <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
         <h6 class="m-0 fw-bold text-white">
           <i class="fas fa-user me-2"></i>
           Registration Information
         </h6>
-      </div>
-      <div class="card-body" id="userinfoCardBody">
-            <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-end">
                 <a href="{{ route('admin.approvals') }}" class="btn-action btn-secondary btn-sm">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
             </div>
-            <br>
-            <!-- Section: Basic Info -->
-            <h6><i class="fas fa-user me-2"></i> Basic Information</h6>
-            <div class="row">
-            <div class="col-md-6 mb-3 form-group">
-                <label>Full Name</label>
-                <p class="form-control-plaintext">{{ $user->first_name }} {{ $user->last_name }}</p>
-            </div>
-            <div class="col-md-6 mb-3 form-group">
-                <label>Username</label>
-                <p class="form-control-plaintext">{{ $user->username }}</p>
-            </div>
-            </div>
-
-            <!-- Section: Contact -->
-            <h6><i class="fas fa-envelope me-2"></i> Contact Information</h6>
-            <div class="row">
-            <div class="col-md-6 mb-3 form-group">
-                <label>Email Address</label>
-                <p class="form-control-plaintext">{{ $user->email }}</p>
-            </div>
-            <div class="col-md-6 mb-3 form-group">
-                <label>Contact Number</label>
-                <p class="form-control-plaintext">{{ $user->phone ?? 'Not provided' }}</p>
-            </div>
-            </div>
-
-            <!-- Section: Role -->
-            <h6><i class="fas fa-id-badge me-2"></i> Role Details</h6>
-            <div class="row">
-            <div class="col-md-6 mb-3 form-group">
-                <label>Role</label>
-                <p class="form-control-plaintext">
-                <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
-                    <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>
-                    {{ ucfirst($user->role) }}
-                </span>
-                </p>
-            </div>
-            <div class="col-md-6 mb-3 form-group">
-                <label>Barangay</label>
-                <p class="form-control-plaintext">{{ $user->barangay }}</p>
-            </div>
-            </div>
-
-            @if($user->role === 'admin')
-            <h6><i class="fas fa-user-shield me-2"></i> Admin Details</h6>
-            <div class="row">
-            <div class="col-md-6 mb-3 form-group">
-                <label>Admin Code</label>
-                <p class="form-control-plaintext">{{ $user->admin_code }}</p>
-            </div>
-            <div class="col-md-6 mb-3 form-group">
-                <label>Position</label>
-                <p class="form-control-plaintext">{{ $user->position }}</p>
-            </div>
-            </div>
-            @endif
-
-            @if($user->role === 'farmer')
-            <h6><i class="fas fa-seedling me-2"></i> Farmer Details</h6>
-            <div class="row">
-            <div class="col-md-6 mb-3 form-group">
-                <label>Farmer Code</label>
-                <p class="form-control-plaintext">{{ $user->farmer_code }}</p>
-            </div>
-            <div class="col-md-6 mb-3 form-group">
-                <label>Farm Name</label>
-                <p class="form-control-plaintext">{{ $user->farm_name }}</p>
-            </div>
-            </div>
-            <div class="row">
-            <div class="col-12 mb-3 form-group">
-                <label>Farm Address</label>
-                <p class="form-control-plaintext">{{ $user->farm_address }}</p>
-            </div>
-            </div>
-            @endif
-
-            <!-- Section: Registration -->
-            <h6><i class="fas fa-calendar-alt me-2"></i> Registration</h6>
-            <div class="row">
-            <div class="col-md-6 mb-3 form-group">
-                <label>Registration Date</label>
-                <p class="form-control-plaintext">{{ $user->created_at->format('F d, Y \a\t g:i A') }}</p>
-            </div>
-            <div class="col-md-6 mb-3 form-group">
-                <label>Status</label>
-                <p class="form-control-plaintext">
-                <span class="badge bg-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
-                    <i class="fas fa-{{ $user->status === 'pending' ? 'clock' : ($user->status === 'approved' ? 'check' : 'times') }} me-1"></i>
-                    {{ ucfirst($user->status) }}
-                </span>
-                </p>
-            </div>
-            </div>
-
-            @if($user->terms_accepted)
-            <h6><i class="fas fa-file-contract me-2"></i> Terms</h6>
-            <div class="row">
-            <div class="col-12 mb-3 form-group">
-                <label>Terms Accepted</label>
-                <p class="form-control-plaintext text-success">
-                <i class="fas fa-check-circle me-2"></i>
-                User has accepted the terms and conditions
-                </p>
-            </div>
-            </div>
-            @endif
       </div>
+        <div class="card-body" id="userinfoCardBody">
+
+            <!-- Section: Basic Information -->
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-user me-2"></i> Basic Information</h6>
+                    <p class="text-left"><strong>Full Name:</strong> {{ $user->first_name }} {{ $user->last_name }}</p>
+                    <p class="text-left"><strong>Username:</strong> {{ $user->username }}</p>
+                    <p class="text-left"><strong>Email Address:</strong> {{ $user->email }}</p>
+                    <p class="text-left"><strong>Contact Number:</strong> {{ $user->phone ?? 'Not provided' }}</p>
+                    <p class="text-left"><strong>Role:</strong><span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
+                        <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>{{ ucfirst($user->role) }}</span>
+                    </p>
+                    <p class="text-left"><strong>Barangay:</strong> {{ $user->barangay }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-user-shield me-2"></i> Admin Details</h6>
+                    <p class="text-left"><strong>Admin Code:</strong> {{ $user->admin_code }}</p>
+                    <p class="text-left"><strong>Position:</strong> {{ $user->position }}</p>
+                    <p class="text-left"><strong>Farmer Code:</strong> {{ $user->farmer_code }}</p>
+                    <p class="text-left"><strong>Farm Address:</strong> {{ $user->farm_address }}</p>
+                    <p class="text-left"><strong>Registration Date:</strong> {{ $user->created_at->format('F d, Y \a\t g:i A') }}</p>
+                    <p class="text-left"><strong>Status:</strong> <span class="badge bg-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
+                        <i class="fas fa-{{ $user->status === 'pending' ? 'clock' : ($user->status === 'approved' ? 'check' : 'times') }} me-1"></i>{{ ucfirst($user->status) }}</span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-file-contract me-2"></i> Terms</h6>
+                    <p class="text-left">Terms Accepted: User has accepted the terms and conditions</p>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
 
@@ -144,7 +65,7 @@
         <!-- Action Card -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
-                <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-cogs me-2"></i>
                         Actions
@@ -191,7 +112,7 @@
 
             <!-- Quick Stats -->
             <div class="card shadow mb-4">
-                <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="m-0 font-weight-bold ">
                         <i class="fas fa-chart-bar me-2"></i>
                         Quick Stats
@@ -218,25 +139,30 @@
         </div>
     </div>
 
-<!-- Approve User Modal -->
-<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+<!-- Modern Approve Farmer Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approveModalLabel"><i class="fas fa-check-circle mr-2"></i>Approve User Registration</h5>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-success">
+                <i class="fas fa-check-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to approve <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>'s registration?</p>
-                <p class="text-muted">The user will be able to access the system immediately after approval.</p>
+            <!-- Title -->
+            <h5>Approve User Registration</h5>
+            <!-- Description -->
+            <div class="text-muted mb-4 px-3">
+                <p> Are you sure you want to <strong>approve</strong> this user’s registration?
+                    The user will gain full access to the system immediately after approval. 
+                </p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-action-cancel" data-dismiss="modal">Cancel</button>
+
+
+            <!-- Form -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <form method="POST" action="{{ route('admin.approvals.approve', $user->id) }}" style="display: inline;">
                     @csrf
-                    <button type="submit" class="btn-action btn-action-edit">
+                    <button type="submit" class="btn-modern btn-approve">
                         Approve User
                     </button>
                 </form>
@@ -244,34 +170,50 @@
         </div>
     </div>
 </div>
-
-<!-- Reject User Modal -->
-<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+<!-- Modern Rejection Reason Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rejectModalLabel"><i class="fas fa-times-circle mr-2"></i>Reject User Registration</h5>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to reject <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>'s registration?</p>
-                <div class="mb-3">
-                    <label for="rejectionReason" class="form-label">Rejection Reason <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="rejectionReason" name="rejection_reason" rows="3" required placeholder="Please provide a reason for rejection..."></textarea>
+            <!-- Title -->
+            <h5>Reject User Registration</h5>
+            <!-- Description -->
+            <div class="text-muted mb-4 px-3">
+                <p>Are you sure you want to <strong>reject</strong> this user’s registration?
+                The user will <strong>not</strong> be able to access the system after rejection.</p>
+            </div>
+
+
+
+            <!-- Form -->
+            <form onsubmit="submitRejection(event)">
+                @csrf
+                <input type="hidden" id="farmerIdHidden">
+
+                <!-- Reason Field -->
+                <div class="form-group px-3 text-start">
+                    <label for="rejectionReason" class="fw-semibold  text-start">
+                        Reason for Rejection <span class="text-danger">*</span>
+                    </label>
+                    <textarea class="form-control mt-1" id="rejectionReason" rows="4" required placeholder="Enter reason for rejection..."></textarea>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-action-cancel" data-dismiss="modal">Cancel</button>
+
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <form method="POST" action="{{ route('admin.approvals.reject', $user->id) }}" style="display: inline;">
                     @csrf
-                    <input type="hidden" name="rejection_reason" id="rejectionReasonInput">
-                    <button type="submit" class="btn-action btn-action-deletes">
+                    <button type="submit" class="btn-modern btn-delete">
                         Reject User
                     </button>
                 </form>
-            </div>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -299,6 +241,165 @@
 @endpush
 @push('styles')
 <style>
+    
+.smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-wrapper {
+  background-color: #ffffffff;
+  color: #18375d;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-approve {
+  background: #387057;
+  color: #fff;
+  border: none;
+}
+.btn-approve:hover {
+  background: #fca700;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+.btn-delete:hover {
+  background: #fca700;
+}
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+  border: none;
+}
+.btn-ok:hover {
+  background: #fca700;
+}
+
+/* Contact Farmer Modal Alignment */
+#rejectModal .smart-modal {
+    text-align: center; /* Keep header text centered */
+}
+
+#rejectModal form {
+    text-align: left; /* Align form content to the left */
+}
+
+/* Make sure labels, inputs, and textareas are properly aligned */
+#rejectModal .form-group {
+    width: 100%;
+    max-width: 700px; /* Optional: limits width for large screens */
+    margin: 0 auto; /* Centers the form container */
+}
+
+/* Label styling */
+#rejectModal label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs and Textareas */
+#rejectModal .form-control {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    box-shadow: none;
+}
+
+/* Keep modal buttons centered */
+#rejectModal .modal-footer {
+    text-align: center;
+}
+
+/* Optional: Add smooth focus effect */
+#rejectModal .form-control:focus {
+    border-color: #198754; /* Bootstrap green */
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+
+
+/* Contact Farmer Modal Alignment */
+#approveModal .smart-modal {
+    text-align: center; /* Keep header text centered */
+}
+
+#rejectapproveModalionModal form {
+    text-align: left; /* Align form content to the left */
+}
+
+/* Make sure labels, inputs, and textareas are properly aligned */
+#approveModal .form-group {
+    width: 100%;
+    max-width: 700px; /* Optional: limits width for large screens */
+    margin: 0 auto; /* Centers the form container */
+}
+
+/* Label styling */
+#approveModal label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs and Textareas */
+#approveModal .form-control {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    box-shadow: none;
+}
+
+/* Keep modal buttons centered */
+#approveModal .modal-footer {
+    text-align: center;
+}
+
+/* Optional: Add smooth focus effect */
+#approveModal .form-control:focus {
+    border-color: #198754; /* Bootstrap green */
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+/* Ensure internal content aligns properly */
+.smart-modal .details-content {
+    text-align: left;
+}
+/* Custom modal width */
+.custom-width {
+  max-width: 1000px !important; /* adjust as needed */
+  width: 90%; /* keeps it responsive */
+}
+
+/* Optional: make sure it scales well on smaller screens */
+@media (max-width: 992px) {
+  .custom-width {
+    max-width: 95% !important;
+    width: 95%;
+  }
+}
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;

@@ -820,15 +820,26 @@
 }
 
 .smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+.smart-modal .form-control {
+    border-radius: 0.5rem;
+    border: 1px solid #ced4da;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+.smart-modal .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
 }
 
 .smart-modal h5 {
@@ -848,6 +859,357 @@
 
 .btn-delete:hover {
   background: #fca700;
+}
+/* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#userModal form {
+  text-align: left;
+}
+
+#userModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#userModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#userModal .form-control,
+#userModal select.form-control,
+#userModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#userModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#userModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#editAdminModal form {
+  text-align: left;
+}
+
+#editAdminModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editAdminModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editAdminModal .form-control,
+#editAdminModal select.form-control,
+#editAdminModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editAdminModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editAdminModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approve {
+  background: #387057;
+  color: #fff;
+}
+.btn-approve:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#userModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #userModal .form-control {
+    font-size: 14px;
+  }
+
+  #editAdminModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approve {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#userDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
 }
 </style>
 @endpush
@@ -990,283 +1352,281 @@
         </div>
     </div>
 
-<!-- Add/Edit User Modal -->
-<div class="modal fade superadmin-modal" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="userModalLabel">
-                    <i class="fas fa-user-plus"></i>
-                    Add New User
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="userForm" onsubmit="saveUser(event)">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="userId" name="user_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="firstName">First Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Enter first name" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="lastName">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Enter last name" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="email">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="username">Username <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="phone">Contact Number</label>
-                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter contact number">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="barangay">Barangay</label>
-                                <select class="form-control" id="barangay" name="barangay">
-                                    <option value="">Select Barangay</option>
-                                    <option value="Abang">Abang</option>
-                                    <option value="Aliliw">Aliliw</option>
-                                    <option value="Atulinao">Atulinao</option>
-                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
-                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
-                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
-                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
-                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
-                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
-                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
-                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
-                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
-                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
-                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
-                                    <option value="Igang">Igang</option>
-                                    <option value="Kabatete">Kabatete</option>
-                                    <option value="Kakawit">Kakawit</option>
-                                    <option value="Kalangay">Kalangay</option>
-                                    <option value="Kalyaat">Kalyaat</option>
-                                    <option value="Kilib">Kilib</option>
-                                    <option value="Kulapi">Kulapi</option>
-                                    <option value="Mahabang Parang">Mahabang Parang</option>
-                                    <option value="Malupak">Malupak</option>
-                                    <option value="Manasa">Manasa</option>
-                                    <option value="May-It">May-It</option>
-                                    <option value="Nagsinamo">Nagsinamo</option>
-                                    <option value="Nalunao">Nalunao</option>
-                                    <option value="Palola">Palola</option>
-                                    <option value="Piis">Piis</option>
-                                    <option value="Samil">Samil</option>
-                                    <option value="Tiawe">Tiawe</option>
-                                    <option value="Tinamnan">Tinamnan</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="userRole">Role <span class="text-danger">*</span></label>
-                                <select class="form-control" id="userRole" name="role" required>
-                                    <option value="">Select Role</option>
-                                    <option value="farmer">Farmer</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="superadmin">Super Admin</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="userStatus">Status <span class="text-danger">*</span></label>
-                                <select class="form-control" id="userStatus" name="status" required>
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" id="passwordFields">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="password">Password <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="password" name="password">
-                                <small class="form-text text-muted">Leave blank to keep existing password when editing</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="passwordConfirmation">Confirm Password <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="passwordConfirmation" name="password_confirmation">
-                            </div>
-                        </div>
-                    </div>
-                    <div id="formNotification" class="mt-2" style="display: none;"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-edit">
-                        Save User
-                    </button>
-                </div>
-            </form>
+<!-- Smart Form Modal -->
+<div class="modal fade admin-modal" id="userModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-wrapper mb-3">
+          <i class="fas fa-user-plus fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Add New User</h5>
+        <p class="text-muted mb-0 small">
+          Fill out the form below to add or update a user’s information.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="userForm" onsubmit="saveUser(event)">
+        @csrf
+        <input type="hidden" id="userId" name="user_id">
+
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3">
+            <!-- First Name -->
+            <div class="col-md-6">
+              <label for="firstName" class="fw-semibold text-#18375d">First Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Enter first name" required>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-md-6">
+              <label for="lastName" class="fw-semibold">Last Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Enter last name" required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="email" class="fw-semibold">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address" required>
+            </div>
+
+            <!-- Username -->
+            <div class="col-md-6">
+              <label for="username" class="fw-semibold">Username <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-md-6">
+              <label for="phone" class="fw-semibold">Contact Number</label>
+              <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter contact number">
+            </div>
+
+            <!-- Barangay -->
+            <div class="col-md-6">
+              <label for="barangay" class="fw-semibold">Barangay</label>
+              <select class="form-control" id="barangay" name="barangay">
+                <option value="">Select Barangay</option>
+                    <option value="Abang">Abang</option>
+                    <option value="Aliliw">Aliliw</option>
+                    <option value="Atulinao">Atulinao</option>
+                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                    <option value="Igang">Igang</option>
+                    <option value="Kabatete">Kabatete</option>
+                    <option value="Kakawit">Kakawit</option>
+                    <option value="Kalangay">Kalangay</option>
+                    <option value="Kalyaat">Kalyaat</option>
+                    <option value="Kilib">Kilib</option>
+                    <option value="Kulapi">Kulapi</option>
+                    <option value="Mahabang Parang">Mahabang Parang</option>
+                    <option value="Malupak">Malupak</option>
+                    <option value="Manasa">Manasa</option>
+                    <option value="May-It">May-It</option>
+                    <option value="Nagsinamo">Nagsinamo</option>
+                    <option value="Nalunao">Nalunao</option>
+                    <option value="Palola">Palola</option>
+                    <option value="Piis">Piis</option>
+                    <option value="Samil">Samil</option>
+                    <option value="Tiawe">Tiawe</option>
+                    <option value="Tinamnan">Tinamnan</option>
+                <!-- Add more -->
+              </select>
+            </div>
+
+            <!-- Role -->
+            <div class="col-md-6">
+              <label for="userRole" class="fw-semibold">Role <span class="text-danger">*</span></label>
+              <select class="form-control" id="userRole" name="role" required>
+                <option value="">Select Role</option>
+                <option value="farmer">Farmer</option>
+                <option value="admin">Admin</option>
+                <option value="superadmin">Super Admin</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+              <label for="userStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
+              <select class="form-control" id="userStatus" name="status" required>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+
+            <!-- Password -->
+            <div class="col-md-6">
+              <label for="password" class="fw-semibold">Password <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
+              <small class="text-muted">Leave blank to keep existing password when editing.</small>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="col-md-6">
+              <label for="passwordConfirmation" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="passwordConfirmation" name="password_confirmation" placeholder="Confirm password">
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer justify-content-center mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-ok">Save User</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
-<!-- Edit Admin Modal -->
-<div class="modal fade superadmin-modal" id="editAdminModal" tabindex="-1" role="dialog" aria-labelledby="editAdminModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editAdminModalLabel">
-                    <i class="fas fa-edit mr-2"></i>
-                    Edit User
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="editAdminForm">
-                <div class="modal-body">
-                    <input type="hidden" id="editAdminId" name="user_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminFirstName">First Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editAdminFirstName" name="first_name" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminLastName">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editAdminLastName" name="last_name" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminEmail">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="editAdminEmail" name="email" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminUsername">Username <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editAdminUsername" name="username" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminPhone">Contact Number</label>
-                                <input type="text" class="form-control" id="editAdminPhone" name="phone">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminBarangay">Barangay <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editAdminBarangay" name="barangay" required>
-                                    <option value="">Select Barangay</option>
-                                    <option value="Abang">Abang</option>
-                                    <option value="Aliliw">Aliliw</option>
-                                    <option value="Atulinao">Atulinao</option>
-                                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
-                                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
-                                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
-                                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
-                                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
-                                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
-                                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
-                                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
-                                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
-                                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
-                                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
-                                    <option value="Igang">Igang</option>
-                                    <option value="Kabatete">Kabatete</option>
-                                    <option value="Kakawit">Kakawit</option>
-                                    <option value="Kalangay">Kalangay</option>
-                                    <option value="Kalyaat">Kalyaat</option>
-                                    <option value="Kilib">Kilib</option>
-                                    <option value="Kulapi">Kulapi</option>
-                                    <option value="Mahabang Parang">Mahabang Parang</option>
-                                    <option value="Malupak">Malupak</option>
-                                    <option value="Manasa">Manasa</option>
-                                    <option value="May-It">May-It</option>
-                                    <option value="Nagsinamo">Nagsinamo</option>
-                                    <option value="Nalunao">Nalunao</option>
-                                    <option value="Palola">Palola</option>
-                                    <option value="Piis">Piis</option>
-                                    <option value="Samil">Samil</option>
-                                    <option value="Tiawe">Tiawe</option>
-                                    <option value="Tinamnan">Tinamnan</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminRole">Role <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editAdminRole" name="role" required>
-                                    <option value="farmer">Farmer</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="superadmin">Super Admin</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminStatus">Status <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editAdminStatus" name="status" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="editAdminPassword">New Password (leave blank to keep current)</label>
-                                <input type="password" class="form-control" id="editAdminPassword" name="password">
-                            </div>
-                        </div>
-                    </div>
-                    <div id="editAdminFormNotification" class="mt-2" style="display: none;"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" id="updateAdminBtn" class="btn-action btn-action-edit">
-                        Update User
-                    </button>
-                </div>
-            </form>
+<!-- Smart Form Modal - Edit User -->
+<div class="modal fade admin-modal" id="editAdminModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle mb-3">
+          <i class="fas fa-user-edit fa-lg"></i>
         </div>
+        <h5 class="fw-bold mb-1">Edit User</h5>
+        <p class="text-muted mb-0 small">
+          Modify the details below to update the selected user’s information.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="editAdminForm" onsubmit="updateAdmin(event)">
+        @csrf
+        <input type="hidden" id="editAdminId" name="user_id">
+
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3">
+            
+            <!-- First Name -->
+            <div class="col-md-6">
+              <label for="editAdminFirstName" class="fw-semibold">First Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editAdminFirstName" name="first_name" placeholder="Enter first name" required>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-md-6">
+              <label for="editAdminLastName" class="fw-semibold">Last Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editAdminLastName" name="last_name" placeholder="Enter last name" required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="editAdminEmail" class="fw-semibold">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="editAdminEmail" name="email" placeholder="Enter email address" required>
+            </div>
+
+            <!-- Username -->
+            <div class="col-md-6">
+              <label for="editAdminUsername" class="fw-semibold">Username <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editAdminUsername" name="username" placeholder="Enter username" required>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-md-6">
+              <label for="editAdminPhone" class="fw-semibold">Contact Number</label>
+              <input type="text" class="form-control" id="editAdminPhone" name="phone" placeholder="Enter contact number">
+            </div>
+
+            <!-- Barangay -->
+            <div class="col-md-6">
+              <label for="editAdminBarangay" class="fw-semibold">Barangay <span class="text-danger">*</span></label>
+              <select class="form-control" id="editAdminBarangay" name="barangay" required>
+                <option value="">Select Barangay</option>
+                <option value="Abang">Abang</option>
+                <option value="Aliliw">Aliliw</option>
+                <option value="Atulinao">Atulinao</option>
+                <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                <option value="Igang">Igang</option>
+                <option value="Kabatete">Kabatete</option>
+                <option value="Kakawit">Kakawit</option>
+                <option value="Kalangay">Kalangay</option>
+                <option value="Kalyaat">Kalyaat</option>
+                <option value="Kilib">Kilib</option>
+                <option value="Kulapi">Kulapi</option>
+                <option value="Mahabang Parang">Mahabang Parang</option>
+                <option value="Malupak">Malupak</option>
+                <option value="Manasa">Manasa</option>
+                <option value="May-It">May-It</option>
+                <option value="Nagsinamo">Nagsinamo</option>
+                <option value="Nalunao">Nalunao</option>
+                <option value="Palola">Palola</option>
+                <option value="Piis">Piis</option>
+                <option value="Samil">Samil</option>
+                <option value="Tiawe">Tiawe</option>
+                <option value="Tinamnan">Tinamnan</option>
+              </select>
+            </div>
+
+            <!-- Role -->
+            <div class="col-md-6">
+              <label for="editAdminRole" class="fw-semibold">Role <span class="text-danger">*</span></label>
+              <select class="form-control" id="editAdminRole" name="role" required>
+                <option value="">Select Role</option>
+                <option value="farmer">Farmer</option>
+                <option value="admin">Admin</option>
+                <option value="superadmin">Super Admin</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+              <label for="editAdminStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
+              <select class="form-control" id="editAdminStatus" name="status" required>
+                <option value="active">Active</option> 
+                    <option value="inactive">Inactive</option> 
+              </select>
+            </div>
+
+            <!-- New Password -->
+            <div class="col-md-6">
+              <label for="editAdminPassword" class="fw-semibold">New Password</label>
+              <input type="password" class="form-control" id="editAdminPassword" name="password" placeholder="Leave blank to keep current">
+              <small class="text-muted">Leave blank to retain existing password.</small>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer justify-content-center mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" id="updateAdminBtn" class="btn-modern btn-ok">Update User</button>
+        </div>
+      </form>
+
     </div>
+  </div>
 </div>
+
 
 <!-- Modern Delete Task Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
@@ -1274,7 +1634,7 @@
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Delete</h5>
@@ -1294,28 +1654,52 @@
     </div>
 </div>
 
-<!-- User Details Modal -->
-<div class="modal fade" id="userDetailsModal" tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="userDetailsModal" tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="userDetailsModalLabel">
-                    <i class="fas fa-user"></i>
-                    User Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-user fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">User Details</h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
             </div>
-            <div class="modal-body">
-                <div id="userDetails"></div>
+
+            <!-- Body -->
+             <div class="modal-body">
+                <div id="userDetails" class="detail-wrapper text-start">
+                    <!-- Example user detail layout -->
+                    <div class="detail-row">
+                        <span class="detail-label">Full Name:</span>
+                        <span class="detail-value" id="detailName">John Doe</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" id="detailEmail">john@example.com</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Role:</span>
+                        <span class="detail-value" id="detailRole">Admin</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value" id="detailStatus">Active</span>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            <!-- Footer -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             </div>
+
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')

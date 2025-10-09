@@ -1017,6 +1017,7 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+
 .smart-modal {
   border: none;
   border-radius: 16px;
@@ -1027,16 +1028,15 @@
   transition: all 0.3s ease;
 }
 
-.smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+.smart-modal .icon-circle {
+  width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .smart-modal h5 {
@@ -1048,14 +1048,516 @@
   color: #6b7280;
   font-size: 0.95rem;
 }
+.btn-approve {
+  background: #387057;
+  color: #fff;
+  border: none;
+}
+.btn-approve:hover {
+  background: #fca700;
+}
 .btn-delete {
   background: #dc3545;
   color: #fff;
   border: none;
 }
-
 .btn-delete:hover {
   background: #fca700;
+}
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+  border: none;
+}
+.btn-ok:hover {
+  background: #fca700;
+}
+/* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#addLivestockModal form {
+  text-align: left;
+}
+
+#addLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#addLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#addLivestockModal .form-control,
+#addLivestockModal select.form-control,
+#addLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#addLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#addLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editLivestockModal form {
+  text-align: left;
+}
+
+#editLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#issueAlertModal form {
+  text-align: left;
+}
+
+#issueAlertModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#issueAlertModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#issueAlertModal .form-control,
+#issueAlertModal select.form-control,
+#issueAlertModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#issueAlertModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#issueAlertModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#addLivestockModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addLivestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #issueAlertModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 0.5rem;
+        max-height: 95vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
+/* QR Code Modal Specific Adjustments */
+#qrCodeModal .modal-body {
+    background: #ffffff;
+    padding: 2rem 2.5rem;   /* slightly smaller padding than main modal */
+    border-radius: 1rem;
+    max-height: 70vh;       /* smaller than main modal for QR code */
+    overflow-y: auto;
+    text-align: center;     /* center QR code and text */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* QR Code Image */
+#qrCodeModal.smart-detail #qrCodeContent img {
+    max-width: 150px;       /* restrict QR code size */
+    width: 100%;
+    height: auto;
+    margin: 0 auto 1rem;    /* spacing below QR code */
+}
+
+/* QR Code Text */
+#qrCodeModal.smart-detail #qrCodeText {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
 </style>
@@ -1071,7 +1573,7 @@
 
     <!-- Farmer Selection Section -->
      <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 Select Farmer
@@ -1117,7 +1619,7 @@
 
     <!-- Livestock Section (Initially Hidden) -->
     <div class="card shadow mb-4" id="livestockCard" style="display: none;" id="selectedLivestockId">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 List of Livestock
@@ -1148,8 +1650,8 @@
             
             <!-- Livestock Table -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="livestockTable">
-                    <thead>
+                <table class="table table-bordered table-hover" id="livestockTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Tag Number</th>
                             <th>Type</th>
@@ -1168,502 +1670,485 @@
         </div>
     </div>
 
-<!-- Add Livestock Modal -->
-<div class="modal fade" id="addLivestockModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-plus mr-2"></i> Add New Livestock</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <form id="addLivestockForm">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="selectedFarmerId" name="farmer_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Tag Number <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="tag_number" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="name" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Type <span class="text-danger">*</span></label>
-                                <select class="form-control" name="type" required>
-                                    <option value="">Select Type</option>
-                                    <option value="cow">Cow</option>
-                                    <option value="buffalo">Buffalo</option>
-                                    <option value="goat">Goat</option>
-                                    <option value="sheep">Sheep</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Breed <span class="text-danger">*</span></label>
-                                <select class="form-control" name="breed" required>
-                                    <option value="">Select Breed</option>
-                                    <option value="holstein">Holstein</option>
-                                    <option value="jersey">Jersey</option>
-                                    <option value="guernsey">Guernsey</option>
-                                    <option value="ayrshire">Ayrshire</option>
-                                    <option value="brown_swiss">Brown Swiss</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Farm <span class="text-danger">*</span></label>
-                                <select class="form-control" name="farm_id" required>
-                                    <option value="">Select Farm</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Registry ID</label>
-                                <input type="text" class="form-control" name="registry_id">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Birth Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" name="birth_date" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Gender <span class="text-danger">*</span></label>
-                                <select class="form-control" name="gender" required>
-                                    <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Weight (kg)</label>
-                                <input type="number" class="form-control" name="weight" min="0" step="0.1">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Health Status <span class="text-danger">*</span></label>
-                                <select class="form-control" name="health_status" required>
-                                    <option value="healthy">Healthy</option>
-                                    <option value="sick">Sick</option>
-                                    <option value="recovering">Recovering</option>
-                                    <option value="under_treatment">Under Treatment</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Status <span class="text-danger">*</span></label>
-                                <select class="form-control" name="status" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Natural Marks</label>
-                                <input type="text" class="form-control" name="natural_marks">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Property Number</label>
-                                <input type="text" class="form-control" name="property_no">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Acquisition Date</label>
-                                <input type="date" class="form-control" name="acquisition_date">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Acquisition Cost (₱)</label>
-                                <input type="number" class="form-control" name="acquisition_cost" min="0" step="0.01">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Sire ID</label>
-                                <input type="text" class="form-control" name="sire_id">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Sire Name</label>
-                                <input type="text" class="form-control" name="sire_name">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Dam ID</label>
-                                <input type="text" class="form-control" name="dam_id">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Dam Name</label>
-                                <input type="text" class="form-control" name="dam_name">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Dispersal From</label>
-                                <input type="text" class="form-control" name="dispersal_from">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Owned By</label>
-                                <input type="text" class="form-control" name="owned_by">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="3" placeholder="Additional remarks about the livestock..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Description/Notes</label>
-                                <textarea class="form-control" name="description" rows="3" placeholder="Additional notes about the livestock..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-view-live">Add Livestock</button>
-                </div>
-            </form>
+<!-- Smart Form Modal - Add Livestock -->
+<div class="modal fade smart-form-modal" id="addLivestockModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle mb-3">
+          <i class="fas fa-list fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Add New Livestock</h5>
+        <p class="text-muted mb-0 small">
+          Fill out the details below to register a new livestock record.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="addLivestockForm">
+        @csrf
+        <div class="form-wrapper text-start mx-auto">
+          <input type="hidden" id="selectedFarmerId" name="farmer_id">
+
+          <div class="row g-3">
+            <!-- Tag Number -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Tag Number <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="tag_number" required>
+            </div>
+
+            <!-- Name -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+
+            <!-- Type -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Type <span class="text-danger">*</span></label>
+              <select class="form-control" name="type" required>
+                <option value="">Select Type</option>
+                <option value="cow">Cow</option>
+                <option value="buffalo">Buffalo</option>
+                <option value="goat">Goat</option>
+                <option value="sheep">Sheep</option>
+              </select>
+            </div>
+
+            <!-- Breed -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Breed <span class="text-danger">*</span></label>
+              <select class="form-control" name="breed" required>
+                <option value="">Select Breed</option>
+                <option value="holstein">Holstein</option>
+                <option value="jersey">Jersey</option>
+                <option value="guernsey">Guernsey</option>
+                <option value="ayrshire">Ayrshire</option>
+                <option value="brown_swiss">Brown Swiss</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <!-- Farm -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Farm <span class="text-danger">*</span></label>
+              <select class="form-control" name="farm_id" required>
+                <option value="">Select Farm</option>
+              </select>
+            </div>
+
+            <!-- Registry ID -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Registry ID</label>
+              <input type="text" class="form-control" name="registry_id">
+            </div>
+
+            <!-- Birth Date -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Birth Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" name="birth_date" required>
+            </div>
+
+            <!-- Gender -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Gender <span class="text-danger">*</span></label>
+              <select class="form-control" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            <!-- Weight -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Weight (kg)</label>
+              <input type="number" class="form-control" name="weight" min="0" step="0.1">
+            </div>
+
+            <!-- Health Status -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Health Status <span class="text-danger">*</span></label>
+              <select class="form-control" name="health_status" required>
+                <option value="healthy">Healthy</option>
+                <option value="sick">Sick</option>
+                <option value="recovering">Recovering</option>
+                <option value="under_treatment">Under Treatment</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Status <span class="text-danger">*</span></label>
+              <select class="form-control" name="status" required>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+
+            <!-- Natural Marks -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Natural Marks</label>
+              <input type="text" class="form-control" name="natural_marks">
+            </div>
+
+            <!-- Property Number -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Property Number</label>
+              <input type="text" class="form-control" name="property_no">
+            </div>
+
+            <!-- Acquisition Date -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Acquisition Date</label>
+              <input type="date" class="form-control" name="acquisition_date">
+            </div>
+
+            <!-- Acquisition Cost -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Acquisition Cost (₱)</label>
+              <input type="number" class="form-control" name="acquisition_cost" min="0" step="0.01">
+            </div>
+
+            <!-- Sire ID -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Sire ID</label>
+              <input type="text" class="form-control" name="sire_id">
+            </div>
+
+            <!-- Sire Name -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Sire Name</label>
+              <input type="text" class="form-control" name="sire_name">
+            </div>
+
+            <!-- Dam ID -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Dam ID</label>
+              <input type="text" class="form-control" name="dam_id">
+            </div>
+
+            <!-- Dam Name -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Dam Name</label>
+              <input type="text" class="form-control" name="dam_name">
+            </div>
+
+            <!-- Dispersal From -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Dispersal From</label>
+              <input type="text" class="form-control" name="dispersal_from">
+            </div>
+
+            <!-- Owned By -->
+            <div class="col-lg-4 col-md-6 col-12">
+              <label class="fw-semibold">Owned By</label>
+              <input type="text" class="form-control" name="owned_by">
+            </div>
+
+            <!-- Remarks -->
+            <div class="col-md-12">
+                <label for="description" class="fw-semibold">Remarks </label>
+                <textarea class="form-control mt-1" id="editRemarks" rows="4" required placeholder="Additional notes about the livestock..." style="resize: none;"></textarea>
+            </div>
+
+            <!-- Description -->
+            <div class="col-md-12">
+                <label for="description" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                <textarea class="form-control mt-1" id="description" rows="4" required placeholder="Additional notes about the livestock..." style="resize: none;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer justify-content-center mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-ok">
+            Add Livestock
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
-<!-- Livestock Details Modal -->
-<div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
+
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="livestockDetailsLabel">
-                    <i class="fas fa-cow mr-2"></i>
-                    Livestock Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Livestock Details </h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected livestock.</p>
             </div>
-            
-            <div class="modal-body">
-                <div id="livestockDetailsContent"></div>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">
-                    Close
-                </button>
-                <button type="button" class="btn-action btn-action-ok" onclick="openLivestockEditModal()">
-                    Edit Livestock
-                </button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="livestockDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-ok" onclick="openLivestockEditModal()">
+                Edit Livestock
+            </button>
+        </div>
+
     </div>
+  </div>
 </div>
 
 
-<!-- QR Code Modal -->
+<!-- Smart Detail Modal -->
 <div class="modal fade" id="qrCodeModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-qrcode mr-2"></i>
-                    QR Code
-                </h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle ">
+                    <i class="fas fa-qrcode fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">QR Code </h5>
+                <p class="text-muted mb-0 small">Below are the generated qr code of the selected livestock.</p>
             </div>
-            <div class="modal-body text-center">
-                <div id="qrCodeContent"></div>
-                <p class="mt-3" id="qrCodeText"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn-action btn-action-ok" onclick="downloadQRCode()">
-                    Download
-                </button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="qrCodeContent" class="detail-wrapper">
+          <p class="mt-3" id="qrCodeText"></p>
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-ok" onclick="downloadQRCode()">
+                Download
+            </button>
+        </div>
+
     </div>
+  </div>
 </div>
 
 <!-- Edit Livestock Modal -->
-<div class="modal fade" id="editLivestockModal" tabindex="-1" role="dialog" aria-labelledby="editLivestockLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editLivestockLabel">
-                    <i class="fas fa-edit mr-2"></i>
-                    Edit Livestock
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<div class="modal fade smart-form-modal" id="editLivestockModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-edit fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Edit Livestock</h5>
+                <p class="text-muted mb-0 small">
+                    Update livestock details below and click <strong>Update Livestock</strong> to save changes.
+                </p>
             </div>
+
+            <!-- Form -->
             <form id="editLivestockForm">
                 @csrf
                 @method('PUT')
-                <div class="modal-body">
-                    <input type="hidden" id="editLivestockId" name="livestock_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Tag Number <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editTagNumber" name="tag_number" required>
-                            </div>
+                <input type="hidden" id="editLivestockId" name="livestock_id">
+
+                <div class="form-wrapper text-start mx-auto">
+
+                    <div class="row g-3">
+                        <!-- Tag Number -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Tag Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editTagNumber" name="tag_number" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editName" name="name" required>
-                            </div>
+
+                        <!-- Name -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editName" name="name" required>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Type <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editType" name="type" required>
-                                    <option value="">Select Type</option>
-                                    <option value="cow">Cow</option>
-                                    <option value="buffalo">Buffalo</option>
-                                    <option value="goat">Goat</option>
-                                    <option value="sheep">Sheep</option>
-                                </select>
-                            </div>
+
+                        <!-- Type -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Type <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editType" name="type" required>
+                                <option value="">Select Type</option>
+                                <option value="cow">Cow</option>
+                                <option value="buffalo">Buffalo</option>
+                                <option value="goat">Goat</option>
+                                <option value="sheep">Sheep</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Breed <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editBreed" name="breed" required>
-                                    <option value="">Select Breed</option>
-                                    <option value="holstein">Holstein</option>
-                                    <option value="jersey">Jersey</option>
-                                    <option value="guernsey">Guernsey</option>
-                                    <option value="ayrshire">Ayrshire</option>
-                                    <option value="brown_swiss">Brown Swiss</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
+
+                        <!-- Breed -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Breed <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editBreed" name="breed" required>
+                                <option value="">Select Breed</option>
+                                <option value="holstein">Holstein</option>
+                                <option value="jersey">Jersey</option>
+                                <option value="guernsey">Guernsey</option>
+                                <option value="ayrshire">Ayrshire</option>
+                                <option value="brown_swiss">Brown Swiss</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Farm <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editFarmId" name="farm_id" required>
-                                    <option value="">Select Farm</option>
-                                </select>
-                            </div>
+
+                        <!-- Farm -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Farm <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editFarmId" name="farm_id" required>
+                                <option value="">Select Farm</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Registry ID</label>
-                                <input type="text" class="form-control" id="editRegistryId" name="registry_id">
-                            </div>
+
+                        <!-- Registry ID -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Registry ID</label>
+                            <input type="text" class="form-control" id="editRegistryId" name="registry_id">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Birth Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="editBirthDate" name="birth_date" required>
-                            </div>
+
+                        <!-- Birth Date -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Birth Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="editBirthDate" name="birth_date" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Gender <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editGender" name="gender" required>
-                                    <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
+
+                        <!-- Gender -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Gender <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editGender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Weight (kg)</label>
-                                <input type="number" class="form-control" id="editWeight" name="weight" min="0" step="0.1">
-                            </div>
+
+                        <!-- Weight -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Weight (kg)</label>
+                            <input type="number" class="form-control" id="editWeight" name="weight" min="0" step="0.1">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Health Status</label>
-                                <select class="form-control" id="editHealthStatus" name="health_status">
-                                    <option value="healthy">Healthy</option>
-                                    <option value="sick">Sick</option>
-                                    <option value="injured">Injured</option>
-                                    <option value="pregnant">Pregnant</option>
-                                    <option value="lactating">Lactating</option>
-                                </select>
-                            </div>
+
+                        <!-- Health Status -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Health Status</label>
+                            <select class="form-control" id="editHealthStatus" name="health_status">
+                                <option value="healthy">Healthy</option>
+                                <option value="sick">Sick</option>
+                                <option value="injured">Injured</option>
+                                <option value="pregnant">Pregnant</option>
+                                <option value="lactating">Lactating</option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Status <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editStatus" name="status" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
+
+                        <!-- Status -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editStatus" name="status" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Natural Marks</label>
-                                <input type="text" class="form-control" id="editNaturalMarks" name="natural_marks">
-                            </div>
+
+                        <!-- Natural Marks -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Natural Marks</label>
+                            <input type="text" class="form-control" id="editNaturalMarks" name="natural_marks">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Property Number</label>
-                                <input type="text" class="form-control" id="editPropertyNo" name="property_no">
-                            </div>
+
+                        <!-- Property Number -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Property Number</label>
+                            <input type="text" class="form-control" id="editPropertyNo" name="property_no">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Acquisition Date</label>
-                                <input type="date" class="form-control" id="editAcquisitionDate" name="acquisition_date">
-                            </div>
+
+                        <!-- Acquisition Date -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Acquisition Date</label>
+                            <input type="date" class="form-control" id="editAcquisitionDate" name="acquisition_date">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Acquisition Cost (₱)</label>
-                                <input type="number" class="form-control" id="editAcquisitionCost" name="acquisition_cost" min="0" step="0.01">
-                            </div>
+
+                        <!-- Acquisition Cost -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Acquisition Cost (₱)</label>
+                            <input type="number" class="form-control" id="editAcquisitionCost" name="acquisition_cost" min="0" step="0.01">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Sire ID</label>
-                                <input type="text" class="form-control" id="editSireId" name="sire_id">
-                            </div>
+
+                        <!-- Sire ID -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Sire ID</label>
+                            <input type="text" class="form-control" id="editSireId" name="sire_id">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Sire Name</label>
-                                <input type="text" class="form-control" id="editSireName" name="sire_name">
-                            </div>
+
+                        <!-- Sire Name -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Sire Name</label>
+                            <input type="text" class="form-control" id="editSireName" name="sire_name">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Dam ID</label>
-                                <input type="text" class="form-control" id="editDamId" name="dam_id">
-                            </div>
+
+                        <!-- Dam ID -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Dam ID</label>
+                            <input type="text" class="form-control" id="editDamId" name="dam_id">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Dam Name</label>
-                                <input type="text" class="form-control" id="editDamName" name="dam_name">
-                            </div>
+
+                        <!-- Dam Name -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Dam Name</label>
+                            <input type="text" class="form-control" id="editDamName" name="dam_name">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Dispersal From</label>
-                                <input type="text" class="form-control" id="editDispersalFrom" name="dispersal_from">
-                            </div>
+
+                        <!-- Dispersal From -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Dispersal From</label>
+                            <input type="text" class="form-control" id="editDispersalFrom" name="dispersal_from">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Owned By</label>
-                                <input type="text" class="form-control" id="editOwnedBy" name="owned_by">
-                            </div>
+
+                        <!-- Owned By -->
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <label class="fw-semibold">Owned By</label>
+                            <input type="text" class="form-control" id="editOwnedBy" name="owned_by">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Remarks</label>
-                                <textarea class="form-control" id="editRemarks" name="remarks" rows="3" placeholder="Additional remarks about the livestock..."></textarea>
-                            </div>
+
+                        <!-- Remarks -->
+                        <div class="col-md-12">
+                            <label for="description" class="fw-semibold">Remarks </label>
+                            <textarea class="form-control mt-1" id="editRemarks" rows="4" required placeholder="Additional notes about the livestock..." style="resize: none;"></textarea>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label>Description/Notes</label>
-                                <textarea class="form-control" id="editDescription" name="description" rows="3" placeholder="Additional notes about the livestock..."></textarea>
-                            </div>
+
+                        <!-- Description/Notes -->
+                        <div class="col-md-12">
+                            <label for="description" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="description" rows="4" required placeholder="Additional notes about the livestock..." style="resize: none;"></textarea>
                         </div>
+
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-ok">
-                        Update Livestock
-                    </button>
+
+                <!-- Footer -->
+                <div class="modal-footer justify-content-center mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">Update Livestock</button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
+
 
 <!-- Modern Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
@@ -1672,8 +2157,8 @@
 
       <!-- Icon -->
       <div class="icon-wrapper mx-auto mb-4 text-danger">
-        <i class="fas fa-exclamation-triangle fa-2x"></i>
-      </div>
+                <i class="fas fa-times-circle fa-2x"></i>
+            </div>
 
       <!-- Title -->
       <h5>Confirm Delete</h5>
@@ -1695,60 +2180,106 @@
   </div>
 </div>
 
-
-<!-- Issue Alert Modal -->
-<div class="modal fade" id="issueAlertModal" tabindex="-1" role="dialog" aria-labelledby="issueAlertLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    Issue Alert
-                </h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
+<!-- Modern Approve Farmer Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-success">
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
+            <!-- Title -->
+            <h5>Approve Farmer Registration</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to <strong>approve</strong> this farmer’s registration?
+            </p>
+
+            <!-- Form -->
+            <form onsubmit="submitApproval(event)">
+                @csrf
+                <input type="hidden" id="farmerIdHiddenApprove">
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-approve">
+                        Approve
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Issue Alert Modal -->
+<div class="modal fade admin-modal" id="issueAlertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle ">
+                    <i class="fas fas fa-exclamation-triangle fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="issueModalTitle">Issue Alert</h5>
+                <p class="text-muted mb-0 small">
+                    Fill out the details below to create an issue alert.
+                </p>
+            </div>
+
+            <!-- Form -->
             <form id="issueAlertForm">
                 @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="alertLivestockId">
-                    <div class="form-group">
-                        <label for="issueType">Issue Type <span class="text-danger">*</span></label>
-                        <select class="form-control" id="issueType" required>
-                            <option value="">Select Issue Type</option>
-                            <option value="health">Health Issue</option>
-                            <option value="injury">Injury</option>
-                            <option value="production">Production Issue</option>
-                            <option value="behavioral">Behavioral Issue</option>
-                            <option value="environmental">Environmental Issue</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="issuePriority">Priority <span class="text-danger">*</span></label>
-                        <select class="form-control" id="issuePriority" required>
-                            <option value="">Select Priority</option>
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                            <option value="urgent">Urgent</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="issueDescription">Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="issueDescription" rows="4" required placeholder="Describe the issue in detail..."></textarea>
-                    </div>
+                <input type="hidden" id="alertLivestockId">
+
+                <div class="form-wrapper text-start mx-auto">
+
+                        <!-- Issue Type -->
+                        <div class="col-md-12">
+                            <label for="issueType" class="fw-semibold">Issue Type <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="issueType" required>
+                                <option value="">Select Issue Type</option>
+                                <option value="health">Health Issue</option>
+                                <option value="injury">Injury</option>
+                                <option value="production">Production Issue</option>
+                                <option value="behavioral">Behavioral Issue</option>
+                                <option value="environmental">Environmental Issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="col-md-12">
+                            <label for="issuePriority" class="fw-semibold">Priority <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="issuePriority" required>
+                                <option value="">Select Priority</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12">
+                            <label for="issueDescription" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="issueDescription" rows="4" required placeholder="Describe the issue in detail..." style="resize: none;"></textarea>
+                        </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-ok">
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">
                         Issue Alert
                     </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
+
+
 @endsection
 
 @push('styles')
@@ -1995,7 +2526,7 @@ $(document).ready(function () {
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="action-buttons">
+                                        <div class="btn-group">
                                             <button class="btn-action btn-action-view-live" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
@@ -2254,25 +2785,26 @@ $(document).ready(function () {
                         <div class="row">
                             <div class="col-md-6">
                                 <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Basic Information</h6>
-                                <p><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
-                                <p><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
-                                <p><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
-                                <p><strong>Gender:</strong> ${livestock.gender || 'N/A'}</p>
-                                <p><strong>Birth Date:</strong> ${livestock.birth_date ? new Date(livestock.birth_date).toLocaleDateString() : 'N/A'}</p>
+                                <p class="text-left" ><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
+                                <p class="text-left" ><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
+                                <p class="text-left" ><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
+                                <p class="text-left" ><strong>Gender:</strong> ${livestock.gender || 'N/A'}</p>
+                                <p class="text-left" ><strong>Birth Date:</strong> ${livestock.birth_date ? new Date(livestock.birth_date).toLocaleDateString() : 'N/A'}</p>
                             </div>
 
                             <div class="col-md-6">
                                 <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farm Information</h6>
-                                <p><strong>Farm:</strong> ${livestock.farm ? livestock.farm.name : 'N/A'}</p>
-                                <p><strong>Status:</strong> 
+                                <p class="text-left"><strong>Farm:</strong> ${livestock.farm ? livestock.farm.name : 'N/A'}</p>
+                                <p class="text-left"><strong>Status:</strong> 
                                     <span class="badge badge-${livestock.status === 'active' ? 'success' : 'danger'}">
                                         ${livestock.status || 'N/A'}
                                     </span>
                                 </p>
-                                <p><strong>Health Status:</strong> ${livestock.health_status || 'N/A'}</p>
-                                <p><strong>Weight:</strong> ${livestock.weight ? livestock.weight + ' kg' : 'N/A'}</p>
-                                <p><strong>Registration Date:</strong> ${livestock.created_at ? new Date(livestock.created_at).toLocaleDateString() : 'N/A'}</p>
+                                <p class="text-left"><strong>Health Status:</strong> ${livestock.health_status || 'N/A'}</p>
+                                <p class="text-left"><strong>Weight:</strong> ${livestock.weight ? livestock.weight + ' kg' : 'N/A'}</p>
+                                <p class="text-left"><strong>Registration Date:</strong> ${livestock.created_at ? new Date(livestock.created_at).toLocaleDateString() : 'N/A'}</p>
                             </div>
+
                         </div>
 
                         ${livestock.description ? `
@@ -2284,28 +2816,26 @@ $(document).ready(function () {
                         </div>
                         ` : ''}
 
-                        <div class="row mt-3">
-                            <div class="col-12">
+                        <div class="col-md-12">
                                 <h6 class="mb-3" style="color: #18375d; font-weight: 600;">QR Code</h6>
                                 ${livestock.qr_code_generated ? `
                                     <div class="text-center">
-                                        <img src="${livestock.qr_code_url}" alt="QR Code" class="img-fluid mb-3" style="max-width: 150px;">
-                                        <p class="text-muted small mb-2">Generated by: ${livestock.qr_code_generator ? livestock.qr_code_generator.name : 'Unknown'}</p>
-                                        <p class="text-muted small mb-3">Generated on: ${livestock.qr_code_generated_at ? new Date(livestock.qr_code_generated_at).toLocaleDateString() : 'Unknown'}</p>
+                                        <img src="${livestock.qr_code_url}" alt="QR Code" class="img-fluid mb-3" style="max-width: 115px;">
+                                        <p class="text-center text-muted small mb-2">Generated by: ${livestock.qr_code_generator ? livestock.qr_code_generator.name : 'Unknown'}</p>
+                                        <p class="text-center text-muted small mb-3">Generated on: ${livestock.qr_code_generated_at ? new Date(livestock.qr_code_generated_at).toLocaleDateString() : 'Unknown'}</p>
                                         <button class="btn-action btn-action-ok btn-sm" onclick="downloadQRCodeFromDetails('${livestock.qr_code_url}', '${livestock.tag_number}')">
                                             <i class="fas fa-download"></i> Download QR Code
                                         </button>
                                     </div>
                                 ` : `
                                     <div class="text-center">
-                                        <p class="text-muted">No QR code generated yet</p>
-                                        <button class="btn-action btn-action-qr btn-sm" onclick="generateQRCodeFromDetails('${livestock.id}')">
+                                        <p class="text-center text-muted">No QR code generated yet</p>
+                                        <button class="btn-action btn-action-ok btn-sm" onclick="generateQRCodeFromDetails('${livestock.id}')">
                                             <i class="fas fa-qrcode"></i> Generate QR Code
                                         </button>
                                     </div>
                                 `}
                             </div>
-                        </div>
                     `);
                     $('#livestockDetailsModal').modal('show');
                 } else {
@@ -2330,9 +2860,9 @@ $(document).ready(function () {
                     const generatedDate = response.generated_at ? new Date(response.generated_at).toLocaleDateString() : 'Just now';
                     $('#qrCodeContent').html(`
                         <div class="text-center">
-                            <img src="${response.qr_code}" alt="QR Code" class="img-fluid mb-3" style="max-width: 200px;">
-                            <p class="text-muted small">Generated by: ${response.generated_by}</p>
-                            <p class="text-muted small">Generated on: ${generatedDate}</p>
+                            <img src="${response.qr_code}" alt="QR Code" class="img-fluid mb-3" style="max-width: 150px;">
+                            <p class="text-center text-muted small mb-2">Generated by: ${response.generated_by}</p>
+                            <p class="text-center text-muted small mb-3">Generated on: ${generatedDate}</p>
                         </div>
                     `);
                     $('#qrCodeText').text(`QR Code for ${response.livestock_id}`);

@@ -166,48 +166,69 @@
     </div>
 </div>
 
-<!-- Task Modal -->
-<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <form class="modal-content" id="taskForm">
-            <div class="modal-header">
-                <h5 class="modal-title" id="taskModalTitle">New Task</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Task Modal -->
+<div class="modal fade admin-modal" id="taskModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-wrapper mb-3">
+                    <i class="fas fa-tasks fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="taskModalTitle">New Task</h5>
+                <p class="text-muted mb-0 small">
+                    Create or update your task details below, then click <strong>“Add Task”</strong> to save changes.
+                </p>
             </div>
-            <div class="modal-body">
+
+            <!-- Form -->
+            <form id="taskForm">
                 <input type="hidden" id="taskId">
-                <div class="form-group">
-                    <label for="taskTitle">Title<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="taskTitle" required maxlength="255">
+
+                <div class="form-wrapper text-start mx-auto">
+                        
+                        <!-- Title -->
+                        <div class="col-md-12">
+                            <label for="taskTitle" class="fw-semibold">Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control mt-1" id="taskTitle" required maxlength="255" placeholder="Enter task title">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12">
+                            <label for="taskDescription" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="taskDescription" rows="3" placeholder="Enter task details" style="resize: none;"></textarea>
+                        </div>
+                            <!-- Priority -->
+                        <div class="col-md-12">
+                            <label for="taskPriority" class="fw-semibold">Priority <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="taskPriority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+
+                        <!-- Due Date -->
+                        <div class="col-md-12">
+                            <label for="taskDueDate" class="fw-semibold">Due Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="taskDueDate">
+                        </div>
+
+                    <!-- Notification -->
+                    <div id="taskNotification" class="mt-3 text-center" style="display: none;"></div>
                 </div>
-                <div class="form-group">
-                    <label for="taskDescription">Description<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-approves" id="taskSubmitBtn">Add Task</button>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="taskPriority">Priority<span class="text-danger">*</span></label>
-                        <select class="form-control" id="taskPriority">
-                            <option value="low">Low</option>
-                            <option value="medium" selected>Medium</option>
-                            <option value="high">High</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="taskDueDate">Due Date<span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="taskDueDate">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn-action btn-action-edit" id="taskSubmitBtn">Add Task</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
+
 
 <!-- Modern Delete Task Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteTaskModal" tabindex="-1" aria-hidden="true">
@@ -215,7 +236,7 @@
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Delete</h5>
@@ -239,6 +260,275 @@
 
 @push('styles')
 <style>
+    /* ============================
+SMART FORM - Enhanced Version
+============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-wrapper {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#taskModal form {
+  text-align: left;
+}
+
+#taskModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#taskModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#taskModal .form-control,
+#taskModal select.form-control,
+#taskModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#taskModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#taskModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+
+#changePasswordModal form {
+  text-align: left;
+}
+
+#changePasswordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#changePasswordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#changePasswordModal .form-control,
+#changePasswordModal select.form-control,
+#changePasswordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#changePasswordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#changePasswordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#taskModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+#changePasswordModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+    @media (max-width: 768px) {
+    .smart-form {
+        padding: 1.5rem;
+    }
+
+    .smart-form .form-wrapper {
+        max-width: 100%;
+    }
+
+    #taskModal .form-control {
+        font-size: 14px;
+    }
+    #changePasswordModal .form-control {
+        font-size: 14px;
+    }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
     .smart-modal {
   border: none;
   border-radius: 16px;
@@ -250,15 +540,15 @@
 }
 
 .smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 .smart-modal h5 {

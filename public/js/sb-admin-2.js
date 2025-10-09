@@ -24,13 +24,14 @@
     };
   });
 
-  // Allow normal scrolling on the sidebar
-  $('.sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
-    // Only prevent default if we're on mobile or if the sidebar is toggled
-    if ($(window).width() <= 768 || $(".sidebar").hasClass("toggled")) {
+  // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
+  $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
+    if ($(window).width() > 768) {
+      var e0 = e.originalEvent,
+        delta = e0.wheelDelta || -e0.detail;
+      this.scrollTop += (delta < 0 ? 1 : -1) * 30;
       e.preventDefault();
     }
-    // Otherwise, let the natural scrolling happen
   });
 
   // Scroll to top button appear
