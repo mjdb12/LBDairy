@@ -14,7 +14,7 @@
     <!-- Farmer Selection Section -->
     
     <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 Select Farmer
@@ -59,7 +59,7 @@
 
     <!-- Livestock Selection Section (Initially Hidden) -->
     <div class="card shadow mb-4" id="livestockCard" style="display: none;">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-user-tie"></i>Select Livestock for: <span id="selectedFarmerName" class="font-weight-bold"></span>
             </h6>
@@ -103,7 +103,7 @@
 
     <!-- All Issues Section -->
     <div class="card shadow mb-4">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 All Issues

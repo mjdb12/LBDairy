@@ -348,8 +348,8 @@
     }
     
     .btn-action-print {
-        background-color: #6c757d !important;
-        border-color: #6c757d !important;
+        background-color: #387057 ;
+        border-color: #387057 ;
         color: white !important;
     }
     
@@ -947,6 +947,7 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+
 .smart-modal {
   border: none;
   border-radius: 16px;
@@ -1043,8 +1044,6 @@
     border-color: #198754; /* Bootstrap green */
     box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
 }
-
-
 
 /* Contact Farmer Modal Alignment */
 #rejectionModal .smart-modal {
@@ -1277,7 +1276,7 @@
                     <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-edit" onclick="printTable('pendingFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
@@ -1344,7 +1343,7 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable('activeFarmersTable')">
+                    <button class="btn-action btn-action-edit" onclick="printTable('activeFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-admins" onclick="refreshAdminsTable('activeFarmersTable')">

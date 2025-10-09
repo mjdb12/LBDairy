@@ -443,6 +443,7 @@
     font-style: italic;
 }
 
+
 /* -------------------------
    Custom Action Buttons (Details Header)
 -------------------------- */
@@ -961,7 +962,7 @@ SMART FORM - Enhanced Version
     <!-- Profile Details -->
     <div class="col-12 col-md-7 col-lg-8 mb-4">
         <div class="card shadow h-100">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-user-edit"></i>
                     Profile Details

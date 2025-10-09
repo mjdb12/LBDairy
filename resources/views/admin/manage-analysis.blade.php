@@ -92,7 +92,7 @@
                     <input type="text" class="form-control" placeholder="Search pending farmers..." id="customSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-edit" onclick="printTable('pendingFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
@@ -147,7 +147,7 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="action-buttons">
+                                <div class="btn-group">
                                     <button class="btn-action btn-action-view-live" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
                                         <span>View</span>

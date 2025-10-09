@@ -1017,6 +1017,7 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+
 .smart-modal {
   border: none;
   border-radius: 16px;
@@ -1028,15 +1029,14 @@
 }
 
 .smart-modal .icon-circle {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+  width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .smart-modal h5 {
@@ -1048,16 +1048,30 @@
   color: #6b7280;
   font-size: 0.95rem;
 }
+.btn-approve {
+  background: #387057;
+  color: #fff;
+  border: none;
+}
+.btn-approve:hover {
+  background: #fca700;
+}
 .btn-delete {
   background: #dc3545;
   color: #fff;
   border: none;
 }
-
 .btn-delete:hover {
   background: #fca700;
 }
-
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+  border: none;
+}
+.btn-ok:hover {
+  background: #fca700;
+}
 /* ============================
    SMART FORM - Enhanced Version
    ============================ */
@@ -1500,8 +1514,8 @@
 
 @media (max-width: 576px) {
     .smart-detail .modal-body {
-        padding: 1.5rem;
-        max-height: 80vh;
+        padding: 0.5rem;
+        max-height: 95vh;
     }
 
     .smart-detail .detail-wrapper {
@@ -1559,7 +1573,7 @@
 
     <!-- Farmer Selection Section -->
      <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 Select Farmer
@@ -1605,7 +1619,7 @@
 
     <!-- Livestock Section (Initially Hidden) -->
     <div class="card shadow mb-4" id="livestockCard" style="display: none;" id="selectedLivestockId">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 List of Livestock
@@ -1636,8 +1650,8 @@
             
             <!-- Livestock Table -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="livestockTable">
-                    <thead>
+                <table class="table table-bordered table-hover" id="livestockTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
                             <th>Tag Number</th>
                             <th>Type</th>
@@ -2165,6 +2179,38 @@
     </div>
   </div>
 </div>
+
+<!-- Modern Approve Farmer Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-success">
+                <i class="fas fa-times-circle fa-2x"></i>
+            </div>
+            <!-- Title -->
+            <h5>Approve Farmer Registration</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to <strong>approve</strong> this farmer’s registration?
+            </p>
+
+            <!-- Form -->
+            <form onsubmit="submitApproval(event)">
+                @csrf
+                <input type="hidden" id="farmerIdHiddenApprove">
+
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-approve">
+                        Approve
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- Issue Alert Modal -->
 <div class="modal fade admin-modal" id="issueAlertModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
@@ -2480,7 +2526,7 @@ $(document).ready(function () {
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="action-buttons">
+                                        <div class="btn-group">
                                             <button class="btn-action btn-action-view-live" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
@@ -2758,6 +2804,7 @@ $(document).ready(function () {
                                 <p class="text-left"><strong>Weight:</strong> ${livestock.weight ? livestock.weight + ' kg' : 'N/A'}</p>
                                 <p class="text-left"><strong>Registration Date:</strong> ${livestock.created_at ? new Date(livestock.created_at).toLocaleDateString() : 'N/A'}</p>
                             </div>
+
                         </div>
 
                         ${livestock.description ? `
@@ -2769,8 +2816,7 @@ $(document).ready(function () {
                         </div>
                         ` : ''}
 
-                        <div class="row mt-3">
-                            <div class="col-12">
+                        <div class="col-md-12">
                                 <h6 class="mb-3" style="color: #18375d; font-weight: 600;">QR Code</h6>
                                 ${livestock.qr_code_generated ? `
                                     <div class="text-center">
@@ -2790,7 +2836,6 @@ $(document).ready(function () {
                                     </div>
                                 `}
                             </div>
-                        </div>
                     `);
                     $('#livestockDetailsModal').modal('show');
                 } else {

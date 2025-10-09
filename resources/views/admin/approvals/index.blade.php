@@ -34,7 +34,7 @@
 
     <!-- Pending Registrations -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-clock mr-2"></i>
                 Pending Approvals ({{ $pendingUsers->count() }})
@@ -79,7 +79,7 @@
 
     <!-- Recent Approved Users -->
     <div class="card shadow mb-4">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="m-0 font-weight-bold text-success">
                 <i class="fas fa-check-circle me-2"></i>
                 Recently Approved Users
@@ -121,7 +121,7 @@
 
     <!-- Recent Rejected Users -->
     <div class="card shadow mb-4">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="m-0 font-weight-bold text-danger">
                 <i class="fas fa-times-circle me-2"></i>
                 Recently Rejected Users

@@ -14,7 +14,7 @@
 <div class="row">
   <div class="col-xl-8 col-lg-7">
     <div class="card shadow mb-4 userinfo-card">
-      <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+      <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
         <h6 class="m-0 fw-bold text-white">
           <i class="fas fa-user me-2"></i>
           Registration Information
@@ -65,7 +65,7 @@
         <!-- Action Card -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
-                <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-cogs me-2"></i>
                         Actions
@@ -112,7 +112,7 @@
 
             <!-- Quick Stats -->
             <div class="card shadow mb-4">
-                <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="m-0 font-weight-bold ">
                         <i class="fas fa-chart-bar me-2"></i>
                         Quick Stats
