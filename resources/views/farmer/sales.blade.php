@@ -707,6 +707,8 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Hidden CSV input for Import -->
+                    <input id="csvInput" type="file" accept=".csv" style="display:none" onchange="importCSV(event)">
 <br>
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="salesTable" width="100%" cellspacing="0">
@@ -1004,10 +1006,57 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script>
 let saleToDelete = null;
+let salesDT = null;
+let downloadCounter = 1;
 
 $(document).ready(function () {
     // Initialize history data
     renderSalesHistory();
+
+    // Initialize DataTable for Sales Records with hidden export buttons
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        buttons: [
+            { extend: 'csvHtml5', title: 'Farmer_Sales_Report', className: 'd-none' },
+            { extend: 'pdfHtml5', title: 'Farmer_Sales_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
+            { extend: 'print', title: 'Farmer Sales Report', className: 'd-none' }
+        ],
+        language: {
+            search: "",
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>'
+        }
+    };
+
+    if ($('#salesTable').length) {
+        try {
+            salesDT = $('#salesTable').DataTable({
+                ...commonConfig,
+                order: [[1, 'desc']], // Sort by Date
+                columnDefs: [
+                    { width: '120px', targets: 0 }, // Sale ID
+                    { width: '120px', targets: 1 }, // Date
+                    { width: '200px', targets: 2 }, // Customer
+                    { width: '140px', targets: 3 }, // Quantity
+                    { width: '160px', targets: 4 }, // Unit Price
+                    { width: '180px', targets: 5 }, // Total Amount
+                    { width: '120px', targets: 6 }, // Status
+                    { width: '220px', targets: 7, orderable: false } // Actions
+                ]
+            });
+        } catch (e) {
+            console.error('Failed to initialize sales DataTable:', e);
+        }
+    }
+
+    // Hide default DataTables UI elements we replace with custom controls
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
 
     // Form submission
     document.getElementById('addLivestockDetailsForm').addEventListener('submit', function(e) {
@@ -1248,11 +1297,11 @@ function updateStats() {
 
 function exportCSV() {
     // Get current table data without actions column
-    const tableData = dataTable.data().toArray();
+    const tableData = salesDT ? salesDT.data().toArray() : [];
     const csvData = [];
     
     // Add headers (excluding Actions column)
-    const headers = ['Sale ID', 'Client Name', 'Product', 'Quantity', 'Price', 'Total', 'Date', 'Status'];
+    const headers = ['Sale ID', 'Date', 'Customer', 'Quantity (L)', 'Unit Price (₱)', 'Total Amount (₱)', 'Status'];
     csvData.push(headers.join(','));
     
     // Add data rows (excluding Actions column)
@@ -1301,20 +1350,20 @@ function exportPDF() {
         // Force custom PDF generation to match superadmin styling
         // Don't fall back to DataTables PDF export as it has different styling
         
-        const tableData = dataTable.data().toArray();
+        const tableData = salesDT ? salesDT.data().toArray() : [];
         const pdfData = [];
         
-        const headers = ['Sale ID', 'Product', 'Quantity', 'Price', 'Total', 'Customer', 'Date'];
+        const headers = ['Sale ID', 'Date', 'Customer', 'Quantity (L)', 'Unit Price (₱)', 'Total Amount (₱)', 'Status'];
         
         tableData.forEach(row => {
             const rowData = [
                 row[0] || '', // Sale ID
-                row[1] || '', // Product
-                row[2] || '', // Quantity
-                row[3] || '', // Price
-                row[4] || '', // Total
-                row[5] || '', // Customer
-                row[6] || ''  // Date
+                row[1] || '', // Date
+                row[2] || '', // Customer
+                row[3] || '', // Quantity (L)
+                row[4] || '', // Unit Price (₱)
+                row[5] || '', // Total Amount (₱)
+                row[6] || ''  // Status
             ];
             pdfData.push(rowData);
         });
@@ -1345,17 +1394,17 @@ function exportPDF() {
         // Increment download counter
         downloadCounter++;
         
-        showToast('PDF exported successfully!', 'success');
+        showNotification('PDF exported successfully!', 'success');
         
     } catch (error) {
         console.error('Error generating PDF:', error);
-        showToast('Error generating PDF. Please try again.', 'error');
+        showNotification('Error generating PDF. Please try again.', 'error');
     }
 }
 
 function exportPNG() {
     // Create a temporary table without the Actions column for export
-    const originalTable = document.getElementById('dataTable');
+    const originalTable = document.getElementById('salesTable');
     const tempTable = originalTable.cloneNode(true);
     
     // Remove the Actions column header
@@ -1413,8 +1462,36 @@ function exportPNG() {
 }
 
 function printProductivity() {
-    dataTable.button('.buttons-print').trigger();
+    try {
+        if (salesDT) {
+            salesDT.button('.buttons-print').trigger();
+        } else {
+            window.print();
+        }
+    } catch (e) {
+        console.error('printProductivity error:', e);
+        window.print();
+    }
 }
+
+function refreshSalesTable() {
+    const btn = document.querySelector('.btn-action-refresh');
+    if (btn) {
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+        btn.disabled = true;
+    }
+    sessionStorage.setItem('showRefreshNotificationSales', 'true');
+    setTimeout(() => { location.reload(); }, 800);
+}
+
+// After reload, show notification
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationSales') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationSales');
+        setTimeout(() => { showNotification('Data refreshed successfully!', 'success'); }, 400);
+    }
+});
 
 function importCSV(event) {
     const file = event.target.files[0];

@@ -765,6 +765,33 @@
         </form>
     </div>
 </div>
+<!-- Event Details Modal -->
+<div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventDetailsModalLabel">
+                    <i class="fas fa-circle-info"></i>
+                    <span id="eventDetailsTitle">Event Details</span>
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="eventDetailsContent">
+                <!-- Filled by JS -->
+            </div>
+            <div class="modal-footer">
+                <div class="mr-auto">
+                    <button type="button" id="btnMarkTodo" class="btn-action btn-secondary">Mark To-do</button>
+                    <button type="button" id="btnMarkInProgress" class="btn-action btn-action-edit">Mark In&nbsp;Progress</button>
+                    <button type="button" id="btnMarkDone" class="btn-action btn-action-ok">Mark Completed</button>
+                </div>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('styles')
@@ -804,7 +831,27 @@ function initializeCalendar() {
         },
         initialView: 'dayGridMonth',
         height: 'auto',
-        events: '/calendar/events',
+        // Fetch events with credentials to ensure auth cookies are sent
+        events: function(info, successCallback, failureCallback) {
+            fetch('/calendar/events', {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to load events');
+                return res.json();
+            })
+            .then(data => {
+                try { console.log('[Calendar] Loaded events count:', Array.isArray(data) ? data.length : 'n/a'); } catch (e) {}
+                successCallback(data || []);
+            })
+            .catch(err => {
+                console.error('Calendar events load error:', err);
+                showNotification('Failed to load calendar events.', 'error');
+                if (failureCallback) failureCallback(err);
+            });
+        },
         editable: true,
         droppable: false,
         eventResizableFromStart: true,
@@ -813,14 +860,26 @@ function initializeCalendar() {
         
         // Event interactions
         eventClick: function(info) {
-            handleEventClick(info);
+            openEventDetailsModal(info.event);
         },
         
         eventDrop: function(info) {
+            // Block moving admin-scheduled inspections
+            if ((info.event.id && info.event.id.startsWith('insp_')) || info.event.extendedProps.category === 'inspection') {
+                showNotification('Inspection events cannot be moved.', 'error');
+                info.revert();
+                return;
+            }
             updateEvent(info.event);
         },
         
         eventResize: function(info) {
+            // Block resizing admin-scheduled inspections
+            if ((info.event.id && info.event.id.startsWith('insp_')) || info.event.extendedProps.category === 'inspection') {
+                showNotification('Inspection events cannot be resized.', 'error');
+                info.revert();
+                return;
+            }
             updateEvent(info.event);
         },
         
@@ -831,13 +890,32 @@ function initializeCalendar() {
         
         // Event loading
         eventDidMount: function(info) {
-            // Add tooltip with event details
-            $(info.el).tooltip({
-                title: info.event.title + (info.event.extendedProps.description ? '<br>' + info.event.extendedProps.description : ''),
-                html: true,
-                placement: 'top',
-                trigger: 'hover'
-            });
+            // Add tooltip with event details (only if Bootstrap tooltip is available)
+            try {
+                if (window.jQuery && jQuery.fn && typeof jQuery.fn.tooltip === 'function') {
+                    jQuery(info.el).tooltip({
+                        title: info.event.title + (info.event.extendedProps.description ? '<br>' + info.event.extendedProps.description : ''),
+                        html: true,
+                        placement: 'top',
+                        trigger: 'hover'
+                    });
+                }
+            } catch (e) {
+                // Fail silently; tooltips are optional
+                console.warn('Tooltip init failed:', e);
+            }
+        },
+        
+        // Refresh stats whenever events are updated in the view
+        eventsSet: function(events) {
+            try { console.log('[Calendar] eventsSet size:', events ? events.length : 'n/a'); } catch (e) {}
+            updateStats(events);
+        },
+        // Also refresh stats when loading finishes (safety net)
+        loading: function(isLoading) {
+            if (!isLoading) {
+                updateStats();
+            }
         }
     });
     
@@ -923,25 +1001,39 @@ function initializeEventForm() {
         }
         
         // Prepare data for API
+        // Normalize to ISO timestamps to avoid validation issues
+        var startIso = start ? new Date(start).toISOString() : null;
+        var endIso = end ? new Date(end).toISOString() : null;
         var eventData = {
             title: title,
-            start: start,
-            end: end || start,
+            start: startIso,
+            end: endIso || startIso,
             priority: priority,
             description: description,
             category: category
         };
+        try { console.log('[Calendar] Submitting eventData:', eventData); } catch (e) {}
         
         // Send to API
         fetch('/calendar/events', {
             method: 'POST',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             body: JSON.stringify(eventData)
         })
-        .then(response => response.json())
+        .then(async response => {
+            let payload = null;
+            try { payload = await response.json(); } catch (e) {}
+            if (!response.ok) {
+                const msg = (payload && (payload.message || (payload.errors && JSON.stringify(payload.errors)))) || `HTTP ${response.status}`;
+                throw new Error(msg);
+            }
+            return payload || { success: true };
+        })
         .then(data => {
             if (data.success) {
                 // Refresh calendar
@@ -954,30 +1046,81 @@ function initializeEventForm() {
                 showNotification('Event added successfully!', 'success');
                 updateStats();
             } else {
-                showNotification('Error adding event!', 'error');
+                showNotification('Error adding event: ' + (data.message || 'Unknown error'), 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showNotification('Error adding event!', 'error');
+            showNotification('Error adding event: ' + (error && error.message ? error.message : error), 'error');
         });
     });
 }
 
 
 
-function handleEventClick(info) {
-    // Show event details in a modal or tooltip
-    var event = info.event;
-    var details = `
-        <strong>${event.title}</strong><br>
-        <small class="text-muted">${event.start.toLocaleString()}</small><br>
-        ${event.extendedProps.description ? '<br>' + event.extendedProps.description : ''}<br>
-        <span class="badge badge-${getPriorityBadgeClass(event.extendedProps.priority)}">${event.extendedProps.priority}</span>
-        <span class="badge badge-${getStatusBadgeClass(event.extendedProps.status)}">${event.extendedProps.status}</span>
-    `;
-    
-    showNotification(details, 'info');
+function openEventDetailsModal(event) {
+    try {
+        // Title
+        document.getElementById('eventDetailsTitle').textContent = event.title || 'Event Details';
+
+        // Dates
+        const startStr = event.start ? event.start.toLocaleString() : '';
+        const endStr = event.end ? event.end.toLocaleString() : '';
+        let whenHtml = startStr;
+        if (endStr && endStr !== startStr) {
+            whenHtml += ' - ' + endStr;
+        }
+
+        // Extended properties
+        const ext = event.extendedProps || {};
+        const category = ext.category || (event.id && event.id.startsWith('insp_') ? 'inspection' : 'general');
+        const priority = ext.priority || 'medium';
+        const status = ext.status || 'todo';
+        const description = ext.description || '';
+
+        const content = `
+            <div class="mb-2">
+                <strong>When:</strong><br>
+                <span>${whenHtml}</span>
+            </div>
+            <div class="mb-2">
+                <strong>Category:</strong><br>
+                <span class="badge badge-info">${category}</span>
+            </div>
+            <div class="mb-2">
+                <strong>Priority / Status:</strong><br>
+                <span class="badge badge-${getPriorityBadgeClass(priority)} mr-1">${priority}</span>
+                <span class="badge badge-${getStatusBadgeClass(status)}">${status}</span>
+            </div>
+            ${description ? `<div class=\"mb-2\"><strong>Description:</strong><br><div>${description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>` : ''}
+            ${(category === 'inspection' || (event.id && event.id.startsWith('insp_'))) ? `<div class=\"text-muted small\"><i class=\"fas fa-lock mr-1\"></i>Admin-scheduled inspection (read-only)</div>` : ''}
+        `;
+
+        const container = document.getElementById('eventDetailsContent');
+        container.innerHTML = content;
+        // Wire status buttons
+        const isInspection = (category === 'inspection' || (event.id && event.id.startsWith('insp_')));
+        const btnTodo = document.getElementById('btnMarkTodo');
+        const btnInProg = document.getElementById('btnMarkInProgress');
+        const btnDone = document.getElementById('btnMarkDone');
+
+        if (btnTodo && btnInProg && btnDone) {
+            // Reset previous handlers
+            btnTodo.onclick = null; btnInProg.onclick = null; btnDone.onclick = null;
+            if (isInspection) {
+                [btnTodo, btnInProg, btnDone].forEach(b => { b.disabled = true; b.title = 'Inspection events are read-only'; });
+            } else {
+                [btnTodo, btnInProg, btnDone].forEach(b => { b.disabled = false; b.title = ''; });
+                btnTodo.onclick = () => setEventStatus(event, 'todo');
+                btnInProg.onclick = () => setEventStatus(event, 'in_progress');
+                btnDone.onclick = () => setEventStatus(event, 'done');
+            }
+        }
+        $('#eventDetailsModal').modal('show');
+    } catch (e) {
+        console.error('Failed to open event details modal:', e);
+        showNotification('Could not open event details.', 'error');
+    }
 }
 
 function updateEvent(event) {
@@ -990,29 +1133,68 @@ function updateEvent(event) {
         status: event.extendedProps.status
     };
     
-    fetch(`/calendar/events/${event.id}`, {
+    return fetch(`/calendar/events/${event.id}`, {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
         body: JSON.stringify(eventData)
     })
-    .then(response => response.json())
+    .then(async response => {
+        let payload = null;
+        try { payload = await response.json(); } catch (e) {}
+        if (!response.ok) {
+            const msg = (payload && (payload.message || (payload.errors && JSON.stringify(payload.errors)))) || `HTTP ${response.status}`;
+            throw new Error(msg);
+        }
+        return payload || { success: true };
+    })
     .then(data => {
         if (data.success) {
             showNotification('Event updated successfully!', 'success');
             updateStats();
         } else {
-            showNotification('Error updating event!', 'error');
+            showNotification('Error updating event: ' + (data.message || 'Unknown error'), 'error');
             calendar.refetchEvents(); // Refresh to revert changes
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showNotification('Error updating event!', 'error');
+        showNotification('Error updating event: ' + (error && error.message ? error.message : error), 'error');
         calendar.refetchEvents(); // Refresh to revert changes
     });
+}
+
+function setEventStatus(event, newStatus) {
+    try {
+        if ((event.id && event.id.startsWith('insp_')) || event.extendedProps.category === 'inspection') {
+            showNotification('Inspection events cannot be edited here.', 'error');
+            return;
+        }
+        // Update local event first for responsive UI
+        if (typeof event.setExtendedProp === 'function') {
+            event.setExtendedProp('status', newStatus);
+        } else {
+            event.extendedProps.status = newStatus;
+        }
+        // Persist to server
+        updateEvent(event).then(() => {
+            // Refresh details badge without closing modal
+            try {
+                const contentEl = document.getElementById('eventDetailsContent');
+                if (contentEl) {
+                    // Replace only the status badge area by reopening details content
+                    openEventDetailsModal(event);
+                }
+            } catch (e) {}
+        });
+    } catch (e) {
+        console.error('Failed to set status:', e);
+        showNotification('Failed to change status.', 'error');
+    }
 }
 
 function getPriorityBadgeClass(priority) {
@@ -1038,14 +1220,14 @@ function openAddEventModal(dateStr) {
     $('#addEventModal').modal('show');
 }
 
-function updateStats() {
-    var events = calendar.getEvents();
+function updateStats(eventsArg) {
+    var events = Array.isArray(eventsArg) && eventsArg.length !== undefined ? eventsArg : calendar.getEvents();
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     
     var total = events.length;
-    var completed = events.filter(e => e.extendedProps.status === 'done').length;
-    var pending = events.filter(e => e.extendedProps.status === 'todo' || e.extendedProps.status === 'in_progress').length;
+    var completed = events.filter(e => ['done','completed'].includes(e.extendedProps.status)).length;
+    var pending = events.filter(e => ['todo','in_progress','scheduled'].includes(e.extendedProps.status)).length;
     var todayCount = events.filter(e => {
         var eventDate = new Date(e.start);
         eventDate.setHours(0, 0, 0, 0);

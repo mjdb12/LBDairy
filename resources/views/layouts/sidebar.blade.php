@@ -150,13 +150,6 @@
                 System
             </div>
 
-            <li class="nav-item {{ isCurrentRoute('farmer.audit-logs') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.audit-logs') }}" data-toggle="tooltip" data-placement="right" data-original-title="Audit Logs">
-                    <i class="fas fa-fw fa-file-alt"></i>
-                    <span>Audit Logs</span>
-                </a>
-            </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 

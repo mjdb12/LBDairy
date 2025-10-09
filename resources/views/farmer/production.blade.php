@@ -149,40 +149,54 @@
 
 <!-- Production Table -->
 <div class="card shadow fade-in-up">
-    <div class="card-header">
-        <h6 class="m-0 font-weight-bold text-white">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold">
             <i class="fas fa-table"></i>
             Production Records
         </h6>
-        <div class="d-flex align-items-center">
-            <div class="dropdown mr-2">
-                <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-download"></i> Export
-                </button>
-                <div class="dropdown-menu" aria-labelledby="exportDropdown">
-                    <a class="dropdown-item" href="#" onclick="exportCSV()">
-                        <i class="fas fa-file-csv"></i> CSV
-                    </a>
-                    <a class="dropdown-item" href="#" onclick="exportPDF()">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                    <a class="dropdown-item" href="#" onclick="exportPNG()">
-                        <i class="fas fa-image"></i> PNG
-                    </a>
-                </div>
-            </div>
-            <button class="btn btn-secondary btn-sm mr-2" onclick="printProductivity()">
-                <i class="fas fa-print"></i>
-            </button>
-            <button class="btn btn-info btn-sm mr-2" data-toggle="modal" data-target="#historyModal">
-                <i class="fas fa-history"></i> History
-            </button>
-            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addProductionModal">
-                <i class="fas fa-plus"></i> Add Record
-            </button>
-        </div>
     </div>
     <div class="card-body">
+        <!-- Search (left) + Actions (right) -->
+        <div class="search-controls mb-3">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
+                <div class="input-group" style="max-width: 380px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input type="text" id="productionSearch" class="form-control" placeholder="Search production records...">
+                </div>
+                <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addProductionModal">
+                        <i class="fas fa-plus"></i> Add Record
+                    </button>
+                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#historyModal">
+                        <i class="fas fa-history"></i> History
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="printProductionTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn btn-warning btn-sm" onclick="refreshProductionTable()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="productionTable">
                 <thead>
@@ -248,7 +262,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('farmer.production.store') }}" method="POST">
+            <form id="addProductionForm" action="{{ route('farmer.production.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -296,7 +310,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" id="saveProductionBtn" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save Record
                     </button>
                 </div>
@@ -347,35 +361,30 @@
             <div class="modal-body">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="sortHistory" class="font-weight-bold">Sort By:</label>
-                        <select id="sortHistory" class="form-control form-control-sm" onchange="loadHistory()">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
+                        <label for="yearHistory" class="font-weight-bold">Year:</label>
+                        <select id="yearHistory" class="form-control form-control-sm" onchange="loadHistory()">
+                            @php($currentYear = (int)date('Y'))
+                            @for($y = $currentYear; $y >= $currentYear - 5; $y--)
+                                <option value="{{ $y }}">{{ $y }}</option>
+                            @endfor
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="filterHistory" class="font-weight-bold">Filter By:</label>
-                        <select id="filterHistory" class="form-control form-control-sm" onchange="loadHistory()">
-                            <option value="all">All</option>
-                            <option value="high_quality">High Quality (8-10)</option>
-                            <option value="medium_quality">Medium Quality (5-7)</option>
-                            <option value="low_quality">Low Quality (1-4)</option>
-                        </select>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="text-muted small">Showing quarterly aggregates</div>
                     </div>
                 </div>
                 <div id="historyContent" class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="historyQuarterTable">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Livestock</th>
-                                <th>Milk Quantity (L)</th>
-                                <th>Quality Score</th>
-                                <th>Notes</th>
+                                <th>Quarter</th>
+                                <th>Total Production (L)</th>
+                                <th>Average Quality</th>
+                                <th>Records</th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody">
-                            <!-- Production history will be dynamically populated here -->
+                            <!-- Quarterly history will be dynamically populated here -->
                         </tbody>
                     </table>
                 </div>
@@ -393,26 +402,91 @@
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 @endpush
 
 @push('scripts')
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 
 <!-- Required libraries for PDF/Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- jsPDF and autoTable for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
 <script>
+let productionDT = null;
 $(document).ready(function() {
-    // DataTable initialization disabled to prevent column count warnings
-    // The table will function as a standard HTML table with Bootstrap styling
-    console.log('Production table loaded successfully');
+    const productionStoreAction = $('#addProductionForm').attr('action');
+    // Initialize DataTable for Production Records
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        buttons: [
+            { extend: 'csvHtml5', title: 'Farmer_Production_Report', className: 'd-none' },
+            { extend: 'pdfHtml5', title: 'Farmer_Production_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
+            { extend: 'print', title: 'Farmer Production Report', className: 'd-none' }
+        ],
+        language: { search: "", emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>' }
+    };
+
+    if ($('#productionTable').length) {
+        try {
+            productionDT = $('#productionTable').DataTable({
+                ...commonConfig,
+                order: [[0, 'desc']],
+                columnDefs: [
+                    { width: '120px', targets: 0 },
+                    { width: '220px', targets: 1 },
+                    { width: '140px', targets: 2 },
+                    { width: '140px', targets: 3 },
+                    { width: '260px', targets: 4 },
+                    { width: '160px', targets: 5, orderable: false }
+                ]
+            });
+        } catch (e) {
+            console.error('Failed to initialize Production DataTable:', e);
+        }
+    }
+
+    // Hide default DataTables search and buttons; wire custom search
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
+    $('#productionSearch').on('keyup', function(){
+        if (productionDT) productionDT.search(this.value).draw();
+    });
+
+    // Reset form to create mode when modal closes
+    $('#addProductionModal').on('hidden.bs.modal', function(){
+        resetProductionFormMode();
+        $('#addProductionForm')[0].reset();
+        $('#production_date').val('{{ date('Y-m-d') }}');
+    });
+
+    // Load history whenever the modal opens
+    $('#historyModal').on('shown.bs.modal', function(){
+        try { loadHistory(); } catch(e){ console.error('loadHistory error:', e); }
+    });
+
+    function resetProductionFormMode(){
+        $('#addProductionForm').attr('action', productionStoreAction);
+        $('#addProductionForm').find('input[name="_method"]').remove();
+        $('#addProductionModalLabel').html('<i class="fas fa-plus"></i> Add Production Record');
+        $('#saveProductionBtn').html('<i class="fas fa-save"></i> Save Record');
+    }
 
     // Production Trend Chart
     const productionTrendCtx = document.getElementById('productionTrendChart').getContext('2d');
@@ -510,32 +584,32 @@ function confirmDelete(recordId) {
 }
 
 function loadHistory() {
-    const sortBy = document.getElementById('sortHistory').value;
-    const filterBy = document.getElementById('filterHistory').value;
-    
-    // Fetch filtered history data
-    fetch(`/farmer/production/history?sort=${sortBy}&filter=${filterBy}`)
+    const year = document.getElementById('yearHistory').value;
+    // Fetch quarterly aggregates
+    fetch(`/farmer/production/history?mode=quarterly&year=${year}`)
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.success && data.mode === 'quarterly') {
                 const tbody = document.getElementById('historyTableBody');
                 tbody.innerHTML = '';
-                
-                data.records.forEach(record => {
+                const quarters = Array.isArray(data.quarters) ? data.quarters : [];
+                if (quarters.length) {
+                    quarters.forEach(q => {
+                        const label = `Q${q.quarter} ${q.year}`;
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${label}</td>
+                            <td>${Number(q.total_production).toLocaleString(undefined, { maximumFractionDigits: 1 })}</td>
+                            <td>${q.avg_quality != null ? (Number(q.avg_quality).toFixed(1) + '/10') : 'N/A'}</td>
+                            <td>${q.records}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
                     const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${new Date(record.production_date).toLocaleDateString()}</td>
-                        <td>${record.livestock?.name || 'Unknown'}</td>
-                        <td>${record.milk_quantity}</td>
-                        <td>
-                            <span class="badge badge-${record.milk_quality_score >= 8 ? 'success' : (record.milk_quality_score >= 6 ? 'warning' : 'danger')}">
-                                ${record.milk_quality_score || 'N/A'}/10
-                            </span>
-                        </td>
-                        <td>${record.notes || 'No notes'}</td>
-                    `;
+                    row.innerHTML = '<td colspan="4" class="text-center text-muted">No quarterly data for the selected year.</td>';
                     tbody.appendChild(row);
-                });
+                }
             }
         })
         .catch(error => {
@@ -545,109 +619,41 @@ function loadHistory() {
 }
 
 function exportCSV() {
-    // Get current table data without actions column
-    const tableData = productionTable.data().toArray();
-    const csvData = [];
-    
-    // Add headers (excluding Actions column)
-    const headers = ['Production ID', 'Livestock ID', 'Date', 'Product Type', 'Quantity', 'Quality', 'Notes'];
-    csvData.push(headers.join(','));
-    
-    // Add data rows (excluding Actions column)
-    tableData.forEach(row => {
-        // Extract text content from each cell, excluding the last column (Actions)
-        const rowData = [];
-        for (let i = 0; i < row.length - 1; i++) {
-            let cellText = '';
-            if (row[i]) {
-                // Remove HTML tags and get clean text
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = row[i];
-                cellText = tempDiv.textContent || tempDiv.innerText || '';
-                // Clean up the text (remove extra spaces, newlines)
-                cellText = cellText.replace(/\s+/g, ' ').trim();
+    try {
+        if (!productionDT) return showAlert('danger', 'Table is not ready.');
+        const rows = productionDT.data().toArray();
+        const headers = ['Date','Livestock','Milk Quantity (L)','Quality Score','Notes'];
+        const csv = [headers.join(',')];
+        rows.forEach(r => {
+            const arr = [];
+            for (let i = 0; i < r.length - 1; i++) { // exclude Actions
+                const tmp = document.createElement('div'); tmp.innerHTML = r[i];
+                let t = tmp.textContent || tmp.innerText || '';
+                t = t.replace(/\s+/g, ' ').trim();
+                if (t.includes(',') || t.includes('"') || t.includes('\n')) t = '"' + t.replace(/"/g, '""') + '"';
+                arr.push(t);
             }
-            // Escape commas and quotes for CSV
-            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
-                cellText = '"' + cellText.replace(/"/g, '""') + '"';
-            }
-            rowData.push(cellText);
-        }
-        csvData.push(rowData.join(','));
-    });
-    
-    // Create and download CSV file
-    const csvContent = csvData.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `Farmer_ProductionReport_${downloadCounter}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Increment download counter
-    downloadCounter++;
-    
-    showAlert('success', 'CSV exported successfully!');
+            csv.push(arr.join(','));
+        });
+        const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Farmer_ProductionReport_${Date.now()}.csv`; a.click();
+        showAlert('success', 'CSV exported successfully!');
+    } catch (e) { console.error('CSV export error:', e); showAlert('danger', 'Error generating CSV.'); }
 }
 
 function exportPDF() {
     try {
-        // Force custom PDF generation to match superadmin styling
-        // Don't fall back to DataTables PDF export as it has different styling
-        
-        const tableData = productionTable.data().toArray();
-        const pdfData = [];
-        
-        const headers = ['Production ID', 'Livestock ID', 'Product Type', 'Quantity', 'Date', 'Status'];
-        
-        tableData.forEach(row => {
-            const rowData = [
-                row[0] || '', // Production ID
-                row[1] || '', // Livestock ID
-                row[2] || '', // Product Type
-                row[3] || '', // Quantity
-                row[4] || '', // Date
-                row[5] || ''  // Status
-            ];
-            pdfData.push(rowData);
-        });
-        
-        // Create PDF using jsPDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('landscape', 'mm', 'a4');
-        
-        // Set title
-        doc.setFontSize(18);
-        doc.text('Farmer Production Report', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        
-        // Create table
-        doc.autoTable({
-            head: [headers],
-            body: pdfData,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] }
-        });
-        
-        // Save the PDF
-        doc.save(`Farmer_ProductionReport_${downloadCounter}.pdf`);
-        
-        // Increment download counter
-        downloadCounter++;
-        
+        if (!productionDT) return showAlert('danger', 'Table is not ready.');
+        const rows = productionDT.data().toArray();
+        const data = rows.map(r => [r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'']);
+        const headers = ['Date','Livestock','Milk Quantity (L)','Quality Score','Notes'];
+        const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape','mm','a4');
+        doc.setFontSize(18); doc.text('Farmer Production Report', 14, 22);
+        doc.setFontSize(12); doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
+        doc.autoTable({ head: [headers], body: data, startY: 40, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [24,55,93], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245,245,245] } });
+        doc.save(`Farmer_ProductionReport_${Date.now()}.pdf`);
         showAlert('success', 'PDF exported successfully!');
-        
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        showAlert('error', 'Error generating PDF. Please try again.');
-    }
+    } catch (error) { console.error('Error generating PDF:', error); showAlert('danger', 'Error generating PDF.'); }
 }
 
 function viewRecord(recordId) {
@@ -655,9 +661,10 @@ function viewRecord(recordId) {
     $.ajax({
         url: `/farmer/production/${recordId}`,
         method: 'GET',
+        dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                const record = response.record;
+            const record = response && response.success ? response.record : response;
+            if (record) {
                 const modalHtml = `
                     <div class="modal fade" id="viewRecordModal" tabindex="-1" role="dialog">
                         <div class="modal-dialog modal-lg" role="document">
@@ -675,14 +682,14 @@ function viewRecord(recordId) {
                                     <div class="row">
                                         <div class="col-md-6">
                                             <h6>Production Information</h6>
-                                            <p><strong>Date:</strong> ${record.production_date}</p>
-                                            <p><strong>Livestock:</strong> ${record.livestock_name} (${record.livestock_tag})</p>
+                                            <p><strong>Date:</strong> ${record.production_date || ''}</p>
+                                            <p><strong>Livestock:</strong> ${record.livestock_name ? `${record.livestock_name} (${record.livestock_tag||''})` : `ID ${record.livestock_id||''}`}</p>
                                             <p><strong>Quantity:</strong> ${record.milk_quantity} L</p>
                                             <p><strong>Quality Score:</strong> ${record.milk_quality_score}/10</p>
                                         </div>
                                         <div class="col-md-6">
                                             <h6>Additional Details</h6>
-                                            <p><strong>Farm:</strong> ${record.farm_name}</p>
+                                            <p><strong>Farm:</strong> ${record.farm_name || ''}</p>
                                             <p><strong>Notes:</strong> ${record.notes || 'No notes'}</p>
                                         </div>
                                     </div>
@@ -709,23 +716,36 @@ function viewRecord(recordId) {
 function editRecord(recordId) {
     // Load record data for editing
     $.ajax({
-        url: `/farmer/production/${recordId}/edit`,
+        url: `/farmer/production/${recordId}`,
         method: 'GET',
+        dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                const record = response.record;
-                
+            const record = response && response.success ? response.record : response;
+            if (record) {
                 // Populate the add production modal with existing data
                 $('#addProductionModal').modal('show');
-                $('#production_date').val(record.production_date);
-                $('#livestock_id').val(record.livestock_id);
-                $('#milk_quantity').val(record.milk_quantity);
-                $('#milk_quality_score').val(record.milk_quality_score);
-                $('#notes').val(record.notes);
-                
-                // Change form action to update
+                // Set date string directly to avoid timezone shifts
+                $('#production_date').val(record.production_date || '');
+                // Ensure option exists in select even if livestock inactive
+                if (record.livestock_id) {
+                    const sel = $('#livestock_id');
+                    if (!sel.find(`option[value="${record.livestock_id}"]`).length) {
+                        const label = (record.livestock_name || 'Livestock') + (record.livestock_tag ? ` (${record.livestock_tag})` : '');
+                        sel.append(`<option value="${record.livestock_id}">${label}</option>`);
+                    }
+                    sel.val(record.livestock_id).trigger('change');
+                } else {
+                    $('#livestock_id').val('').trigger('change');
+                }
+                $('#milk_quantity').val(record.milk_quantity || '');
+                $('#milk_quality_score').val(record.milk_quality_score || '').trigger('change');
+                $('#notes').val(record.notes || '');
+
+                // Change form action to update with method spoofing
                 $('#addProductionForm').attr('action', `/farmer/production/${recordId}`);
-                $('#addProductionForm').attr('method', 'PUT');
+                const methodInput = $('#addProductionForm').find('input[name="_method"]');
+                if (methodInput.length) { methodInput.val('PUT'); }
+                else { $('#addProductionForm').prepend('<input type="hidden" name="_method" value="PUT">'); }
                 $('#addProductionModalLabel').html('<i class="fas fa-edit"></i> Edit Production Record');
                 $('#saveProductionBtn').html('<i class="fas fa-save"></i> Update Record');
             }
@@ -786,59 +806,79 @@ function exportPNG() {
         }
     });
     
-    // Temporarily add the temp table to the DOM (hidden)
-    tempTable.style.position = 'absolute';
-    tempTable.style.left = '-9999px';
-    tempTable.style.top = '-9999px';
-    document.body.appendChild(tempTable);
+    // Place temp table inside an offscreen container so layout computes size
+    const offscreen = document.createElement('div');
+    offscreen.style.position = 'absolute';
+    offscreen.style.left = '-9999px';
+    offscreen.style.top = '0';
+    offscreen.style.background = '#ffffff';
+    offscreen.appendChild(tempTable);
+    document.body.appendChild(offscreen);
+    // Match width to original table for proper rendering
+    tempTable.style.width = originalTable.offsetWidth + 'px';
     
     // Generate PNG using html2canvas
     html2canvas(tempTable, {
-        scale: 2, // Higher quality
+        scale: 2,
         backgroundColor: '#ffffff',
-        width: tempTable.offsetWidth,
-        height: tempTable.offsetHeight
+        useCORS: true,
+        logging: false,
+        windowWidth: tempTable.scrollWidth,
+        windowHeight: tempTable.scrollHeight
     }).then(canvas => {
         // Create download link
         const link = document.createElement('a');
-        link.download = `Farmer_ProductionReport_${downloadCounter}.png`;
+        link.download = `Farmer_ProductionReport_${Date.now()}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
         
-        // Increment download counter
-        downloadCounter++;
-        
-        // Clean up - remove temporary table
-        document.body.removeChild(tempTable);
+        // Clean up - remove temporary container
+        document.body.removeChild(offscreen);
         
         showAlert('success', 'PNG exported successfully!');
     }).catch(error => {
         console.error('Error generating PNG:', error);
         // Clean up on error
-        if (document.body.contains(tempTable)) {
-            document.body.removeChild(tempTable);
+        if (document.body.contains(offscreen)) {
+            document.body.removeChild(offscreen);
         }
         showAlert('error', 'Error generating PNG export');
     });
 }
 
-function printProductivity() {
-    window.print();
+function printProductionTable() {
+    try { if (productionDT) productionDT.button('.buttons-print').trigger(); else window.print(); }
+    catch(e){ console.error('printProductionTable error:', e); window.print(); }
 }
+
+function refreshProductionTable(){
+    const btn = document.querySelector('.btn.btn-warning.btn-sm');
+    if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
+    sessionStorage.setItem('showRefreshNotificationProduction','true');
+    setTimeout(()=>location.reload(), 800);
+}
+
+$(document).ready(function(){
+    if (sessionStorage.getItem('showRefreshNotificationProduction') === 'true'){
+        sessionStorage.removeItem('showRefreshNotificationProduction');
+        setTimeout(()=>showAlert('success', 'Data refreshed successfully!'), 400);
+    }
+});
 
 function exportHistory() {
-    // Implement history export functionality
-    showAlert('info', 'History export functionality will be implemented soon.');
-}
-
-function viewRecord(recordId) {
-    // Implement view record functionality
-    showAlert('info', 'View record functionality will be implemented soon.');
-}
-
-function editRecord(recordId) {
-    // Implement edit record functionality
-    showAlert('info', 'Edit record functionality will be implemented soon.');
+    // Export quarterly table to CSV
+    try {
+        const year = document.getElementById('yearHistory').value;
+        const rows = [];
+        rows.push(['Quarter','Total Production (L)','Average Quality','Records'].join(','));
+        document.querySelectorAll('#historyQuarterTable tbody tr').forEach(tr => {
+            const cells = Array.from(tr.querySelectorAll('td')).map(td => (td.textContent||'').trim());
+            if (cells.length === 4) rows.push(cells.join(','));
+        });
+        const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Production_Quarterly_${year}.csv`; a.click();
+        showAlert('success', 'Quarterly history exported successfully!');
+    } catch(e) { console.error('exportHistory error:', e); showAlert('danger', 'Failed to export history.'); }
 }
 
 function showAlert(type, message) {

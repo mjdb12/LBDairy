@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('category');
             $table->string('name');
             $table->string('quantity_text')->nullable();
-            $table->string('farm_id')->nullable(); // keep as string to match UI-provided IDs
+            $table->unsignedBigInteger('farm_id');
+            $table->foreign('farm_id')->references('id')->on('farms')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -55,6 +55,11 @@ Route::middleware(['auth'])->group(function () {
     // Main dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
+    // Calendar routes (shared by roles)
+    Route::get('/calendar/events', [App\Http\Controllers\CalendarController::class, 'index'])->name('calendar.events.index');
+    Route::post('/calendar/events', [App\Http\Controllers\CalendarController::class, 'store'])->name('calendar.events.store');
+    Route::put('/calendar/events/{id}', [App\Http\Controllers\CalendarController::class, 'update'])->name('calendar.events.update');
+    
     // Farmer routes
     Route::middleware(['auth', 'role:farmer'])->prefix('farmer')->name('farmer.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'farmerDashboard'])->name('dashboard');
@@ -73,10 +78,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/livestock/{id}/status', [FarmerController::class, 'updateLivestockStatus'])->name('livestock.update-status');
         Route::get('/production', [FarmerController::class, 'production'])->name('production');
         Route::post('/production', [FarmerController::class, 'storeProduction'])->name('production.store');
+        // Place static routes before parameterized routes to avoid conflicts
+        Route::get('/production/history', [FarmerController::class, 'productionHistory'])->name('production.history');
         Route::get('/production/{id}', [FarmerController::class, 'showProduction'])->name('production.show');
         Route::put('/production/{id}', [FarmerController::class, 'updateProduction'])->name('production.update');
         Route::delete('/production/{id}', [FarmerController::class, 'deleteProduction'])->name('production.destroy');
-        Route::get('/production/history', [FarmerController::class, 'productionHistory'])->name('production.history');
         Route::get('/users', function () { return view('farmer.users'); })->name('users');
         Route::get('/suppliers', [App\Http\Controllers\FarmerController::class, 'suppliers'])->name('suppliers');
         Route::get('/schedule', function () { return view('farmer.schedule'); })->name('schedule');
@@ -90,6 +96,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/sales/{id}', [App\Http\Controllers\FarmerController::class, 'deleteSale'])->name('sales.destroy');
         Route::get('/expenses', [FarmerController::class, 'expenses'])->name('expenses');
         Route::post('/expenses', [FarmerController::class, 'storeExpense'])->name('expenses.store');
+        // Static history route before parameterized routes
+        Route::get('/expenses/history', [FarmerController::class, 'expenseHistory'])->name('expenses.history');
         Route::get('/expenses/{id}', [FarmerController::class, 'showExpense'])->name('expenses.show');
         Route::put('/expenses/{id}', [FarmerController::class, 'updateExpense'])->name('expenses.update');
         Route::delete('/expenses/{id}', [FarmerController::class, 'deleteExpense'])->name('expenses.destroy');
@@ -106,11 +114,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/livestock/{id}/history', [App\Http\Controllers\FarmerController::class, 'getLivestockHistory'])->name('livestock.history');
         Route::get('/clients', [App\Http\Controllers\FarmerController::class, 'clients'])->name('clients');
         Route::get('/inventory', [App\Http\Controllers\FarmerController::class, 'inventory'])->name('inventory');
-        
-        // Audit logs routes for farmer
-        Route::get('/audit-logs', [FarmerController::class, 'auditLogs'])->name('audit-logs');
-        Route::get('/audit-logs/{id}/details', [FarmerController::class, 'getAuditLogDetails'])->name('audit-logs.details');
-        Route::get('/audit-logs/export', [FarmerController::class, 'exportAuditLogs'])->name('audit-logs.export');
+        // Static routes before parameterized routes
+        Route::get('/inventory/history', [App\Http\Controllers\FarmerController::class, 'inventoryHistory'])->name('inventory.history');
+        // CRUD routes for inventory
+        Route::post('/inventory', [App\Http\Controllers\FarmerController::class, 'storeInventory'])->name('inventory.store');
+        Route::get('/inventory/{id}', [App\Http\Controllers\FarmerController::class, 'showInventory'])->name('inventory.show');
+        Route::put('/inventory/{id}', [App\Http\Controllers\FarmerController::class, 'updateInventory'])->name('inventory.update');
+        Route::delete('/inventory/{id}', [App\Http\Controllers\FarmerController::class, 'deleteInventory'])->name('inventory.destroy');
         
         // Inspection routes for farmer
         Route::get('/inspections/{id}', [FarmerController::class, 'showInspection'])->name('inspections.show');

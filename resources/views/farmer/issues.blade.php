@@ -1257,6 +1257,20 @@ function printInspectionsTable() {
     window.print();
 }
 
+// Trigger DataTables print for Livestock Alerts table
+function printAlertsTable() {
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
+            $('#alertsTable').DataTable().button('.buttons-print').trigger();
+        } else {
+            window.print();
+        }
+    } catch (e) {
+        console.error('printAlertsTable error:', e);
+        window.print();
+    }
+}
+
 // Alert related functions
 function viewAlertDetails(alertId) {
     $.ajax({

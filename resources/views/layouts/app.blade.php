@@ -1315,22 +1315,25 @@
         $(document).ready(function() {
 
             
-            // Optimized tooltip initialization
-            if (typeof $.fn.tooltip !== 'undefined') {
-                // Set global defaults for all tooltips
-                $.fn.tooltip.Constructor.Default.template = '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>';
-                $.fn.tooltip.Constructor.Default.delay = { show: 0, hide: 0 };
-                $.fn.tooltip.Constructor.Default.trigger = 'hover';
-                $.fn.tooltip.Constructor.Default.animation = false;
-                
-                // Initialize tooltips with optimized settings
-                $('[data-toggle="tooltip"]').tooltip({
-                    delay: { show: 0, hide: 0 },
-                    trigger: 'hover',
-                    animation: false
-                });
-                
-
+            // Optimized tooltip initialization (guarded)
+            try {
+                if (window.jQuery && $.fn && $.fn.tooltip) {
+                    // Set global defaults only if constructor/defaults exist
+                    if ($.fn.tooltip.Constructor && $.fn.tooltip.Constructor.Default) {
+                        $.fn.tooltip.Constructor.Default.template = '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>';
+                        $.fn.tooltip.Constructor.Default.delay = { show: 0, hide: 0 };
+                        $.fn.tooltip.Constructor.Default.trigger = 'hover';
+                        $.fn.tooltip.Constructor.Default.animation = false;
+                    }
+                    // Initialize tooltips with optimized settings
+                    $('[data-toggle="tooltip"]').tooltip({
+                        delay: { show: 0, hide: 0 },
+                        trigger: 'hover',
+                        animation: false
+                    });
+                }
+            } catch (e) {
+                console.warn('Global tooltip init failed:', e);
             }
             
             // Let SB Admin 2 handle the sidebar toggle

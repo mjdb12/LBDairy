@@ -1,5 +1,6 @@
-const CACHE_NAME = 'lb-dairy-v3';
+const CACHE_NAME = 'lb-dairy-v4';
 const urlsToCache = [
+  // Optionally pre-cache the home page only
   '/'
 ];
 
@@ -8,58 +9,58 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
-        // Cache files one by one to handle missing files gracefully
+        // Precache whitelisted URLs
         return Promise.allSettled(
-          urlsToCache.map(url => 
-            cache.add(url).catch(err => {
-              console.log('Failed to cache:', url, err);
-              return null;
-            })
-          )
+          urlsToCache.map(url => cache.add(url).catch(() => null))
         );
       })
   );
+  // Activate new SW immediately
+  self.skipWaiting();
 });
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', event => {
+  const req = event.request;
+  const url = new URL(req.url);
+
+  // Do not handle non-GET requests (allow POST/PUT/DELETE to hit network directly)
+  if (req.method !== 'GET') {
+    return event.respondWith(fetch(req));
+  }
+
+  // Bypass caching for API or dynamic endpoints
+  const isAPI = url.pathname.startsWith('/calendar/') || url.pathname.startsWith('/api/');
+  if (isAPI) {
+    return event.respondWith(fetch(req).catch(() => caches.match(req)));
+  }
+
+  // For navigation requests, use network-first with cache fallback (avoid caching HTML aggressively)
+  if (req.mode === 'navigate') {
+    return event.respondWith(
+      fetch(req).catch(() => caches.match(req))
+    );
+  }
+
+  // Only cache static assets by extension
+  const isStatic = /\.(?:css|js|png|jpg|jpeg|gif|svg|webp|ico|woff2?|ttf|eot|map)$/i.test(url.pathname);
+  if (!isStatic) {
+    // Default: try network, fallback to cache
+    return event.respondWith(fetch(req).catch(() => caches.match(req)));
+  }
+
+  // Cache-first for static assets with background update (stale-while-revalidate)
   event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        // Cache successful responses
-        if (response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
+    caches.match(req).then(cached => {
+      const fetchPromise = fetch(req).then(networkResp => {
+        if (networkResp && networkResp.status === 200) {
+          const clone = networkResp.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
         }
-        return response;
-      })
-      .catch(() => {
-        // Return cached version if fetch fails
-        return caches.match(event.request).then(response => {
-          if (response) {
-            return response;
-          }
-          // If no cached version and it's a navigation request, return offline page
-          if (event.request.mode === 'navigate') {
-            return new Response(`
-              <!DOCTYPE html>
-              <html>
-                <head><title>Offline - LB Dairy</title></head>
-                <body>
-                  <h1>You're Offline</h1>
-                  <p>Please check your internet connection and try again.</p>
-                  <button onclick="window.location.reload()">Retry</button>
-                </body>
-              </html>
-            `, {
-              headers: { 'Content-Type': 'text/html' }
-            });
-          }
-        });
-      })
+        return networkResp;
+      }).catch(() => cached);
+      return cached || fetchPromise;
+    })
   );
 });
 
@@ -76,4 +77,6 @@ self.addEventListener('activate', event => {
       );
     })
   );
+  // Take control of clients immediately
+  self.clients.claim();
 });

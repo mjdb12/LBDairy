@@ -678,6 +678,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form class="modal-content" method="POST" action="{{ route('farmer.profile.password') }}" id="changePasswordForm">
       @csrf
+      @method('PUT')
       <div class="modal-header">
         <h5 class="modal-title" id="changePasswordLabel">
             <i class="fas fa-key mr-2"></i>Change Password

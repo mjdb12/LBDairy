@@ -131,40 +131,54 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow fade-in">
-                <div class="card-header">
-                    <h6 class="m-0 font-weight-bold text-white">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-list"></i>
                         Expenses List
                     </h6>
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-primary btn-sm" onclick="openAddExpenseModal()">
-                            <i class="fas fa-plus"></i> Add New Expense
-                        </button>
-                        <div class="export-controls ml-3">
-                            <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#" onclick="exportToCSV()">
-                                    <i class="fas fa-file-csv"></i> CSV
-                                </a>
-                                <a class="dropdown-item" href="#" onclick="exportToPDF()">
-                                    <i class="fas fa-file-pdf"></i> PDF
-                                </a>
-                                <a class="dropdown-item" href="#" onclick="exportToPNG()">
-                                    <i class="fas fa-file-image"></i> PNG
-                                </a>
-                            </div>
-                        </div>
-                        <button class="btn btn-info btn-sm ml-2" onclick="openHistoryModal()">
-                            <i class="fas fa-history"></i> History
-                        </button>
-                        <button class="btn btn-secondary btn-sm ml-2" onclick="printExpenses()">
-                            <i class="fas fa-print"></i> Print
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
+                    <!-- Search (left) + Actions (right) -->
+                    <div class="search-controls mb-3">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
+                            <div class="input-group" style="max-width: 380px;">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div>
+                                <input type="text" id="expensesSearch" class="form-control" placeholder="Search expenses...">
+                            </div>
+                            <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
+                                <button class="btn btn-primary btn-sm" onclick="openAddExpenseModal()">
+                                    <i class="fas fa-plus"></i> Add Expense
+                                </button>
+                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#historyModal">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="printExpenses()">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                                <button class="btn btn-warning btn-sm" onclick="refreshExpenses()">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm" type="button" data-toggle="dropdown">
+                                        <i class="fas fa-tools"></i> Tools
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                            <i class="fas fa-file-csv"></i> Download CSV
+                                        </a>
+                                        <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                            <i class="fas fa-image"></i> Download PNG
+                                        </a>
+                                        <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                            <i class="fas fa-file-pdf"></i> Download PDF
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="expensesTable" width="100%" cellspacing="0">
                             <thead>
@@ -364,43 +378,52 @@
 
 <!-- History Modal -->
 <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="historyModalLabel">
                     <i class="fas fa-history"></i>
-                    Expense History & Analytics
+                    Expenses History (Quarterly)
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
+                <div class="row mb-3">
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <h6 class="mb-0"><i class="fas fa-chart-pie"></i> Monthly Breakdown</h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="monthlyChart" width="400" height="200"></canvas>
-                            </div>
-                        </div>
+                        <label for="expensesYear" class="font-weight-bold">Year:</label>
+                        <select id="expensesYear" class="form-control form-control-sm" onchange="loadExpensesHistory()">
+                            @php($currentYear = (int)date('Y'))
+                            @for($y = $currentYear; $y >= $currentYear - 5; $y--)
+                                <option value="{{ $y }}">{{ $y }}</option>
+                            @endfor
+                        </select>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header bg-success text-white">
-                                <h6 class="mb-0"><i class="fas fa-chart-bar"></i> Category Distribution</h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="categoryChart" width="400" height="200"></canvas>
-                            </div>
-                        </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="text-muted small">Showing quarterly aggregates</div>
                     </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="expensesHistoryQuarterTable">
+                        <thead>
+                            <tr>
+                                <th>Quarter</th>
+                                <th>Total Expenses (₱)</th>
+                                <th>Records</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesHistoryTableBody">
+                            <!-- Quarterly history rows here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="exportExpensesHistory()">
+                    <i class="fas fa-download"></i> Export History
+                </button>
             </div>
         </div>
     </div>
@@ -454,17 +477,67 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 let currentExpenseId = null;
+let expensesDT = null;
 
 $(document).ready(function() {
-    // DataTable initialization disabled to prevent column count warnings
-    // The table will function as a standard HTML table with Bootstrap styling
-    console.log('Expenses table loaded successfully');
+    // Initialize DataTable for Expenses
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        buttons: [
+            { extend: 'csvHtml5', title: 'Farmer_Expenses_Report', className: 'd-none' },
+            { extend: 'pdfHtml5', title: 'Farmer_Expenses_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
+            { extend: 'print', title: 'Farmer Expenses Report', className: 'd-none' }
+        ],
+        language: { search: "", emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>' }
+    };
+
+    if ($('#expensesTable').length) {
+        try {
+            expensesDT = $('#expensesTable').DataTable({
+                ...commonConfig,
+                order: [[1, 'desc']],
+                columnDefs: [
+                    { width: '140px', targets: 0 },
+                    { width: '140px', targets: 1 },
+                    { width: '260px', targets: 2 },
+                    { width: '140px', targets: 3 },
+                    { width: '160px', targets: 4 },
+                    { width: '160px', targets: 5 },
+                    { width: '200px', targets: 6, orderable: false }
+                ]
+            });
+        } catch (e) { console.error('Failed to initialize Expenses DataTable:', e); }
+    }
+
+    // Hide default DataTables search and buttons; wire custom search
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
+    $('#expensesSearch').on('keyup', function(){
+        if (expensesDT) expensesDT.search(this.value).draw();
+    });
+
+    // Load quarterly history when modal opens
+    $('#historyModal').on('shown.bs.modal', function(){
+        try { loadExpensesHistory(); } catch(e){ console.error('loadExpensesHistory error:', e); }
+    });
 
     // Handle form submission
     $('#expenseForm').on('submit', function(e) {
         e.preventDefault();
         submitExpenseForm();
     });
+
+    // Refresh notification after reload
+    if (sessionStorage.getItem('showRefreshNotificationExpenses') === 'true'){
+        sessionStorage.removeItem('showRefreshNotificationExpenses');
+        setTimeout(()=>showToast('Data refreshed successfully!', 'success'), 400);
+    }
 
     // Expense Trend Chart
     const expenseTrendCtx = document.getElementById('expenseTrendChart').getContext('2d');
@@ -520,7 +593,11 @@ function openEditExpenseModal(expenseId) {
     $('#expenseModalLabel').html('<i class="fas fa-edit"></i> Edit Expense');
     $('#expenseForm').attr('action', `/farmer/expenses/${expenseId}`);
     $('#expenseForm').attr('method', 'POST');
-    $('#expenseForm').append('<input type="hidden" name="_method" value="PUT">');
+    if (!$('#expenseForm').find('input[name="_method"]').length) {
+        $('#expenseForm').prepend('<input type="hidden" name="_method" value="PUT">');
+    } else {
+        $('#expenseForm').find('input[name="_method"]').val('PUT');
+    }
     
     // Load expense data
     loadExpenseData(expenseId);
@@ -535,21 +612,20 @@ function viewExpenseDetails(expenseId) {
 
 function loadExpenseData(expenseId) {
     $.ajax({
-        url: `/farmer/expenses/${expenseId}/edit`,
+        url: `/farmer/expenses/${expenseId}`,
         method: 'GET',
+        dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                const expense = response.expense;
-                $('#expense_id').val(expense.expense_id);
-                $('#expense_date').val(expense.expense_date);
-                $('#expense_name').val(expense.expense_name);
-                $('#category').val(expense.category);
-                $('#amount').val(expense.amount);
-                $('#payment_status').val(expense.payment_status);
-                $('#payment_method').val(expense.payment_method);
-                $('#due_date').val(expense.due_date);
-                $('#description').val(expense.description);
-                $('#notes').val(expense.notes);
+            const expense = response && response.success ? response.expense : response;
+            if (expense) {
+                $('#expense_date').val(expense.expense_date || '');
+                $('#description').val(expense.description || '');
+                $('#expense_type').val(expense.expense_type || '').trigger('change');
+                $('#amount').val(expense.amount || '');
+                $('#payment_method').val(expense.payment_method || '').trigger('change');
+                $('#receipt_number').val(expense.receipt_number || '');
+                $('#notes').val(expense.notes || '');
+                if (expense.farm_id) $('#farm_id').val(expense.farm_id).trigger('change');
             }
         },
         error: function() {
@@ -680,135 +756,64 @@ function editCurrentExpense() {
     }
 }
 
-function openHistoryModal() {
-    $('#historyModal').modal('show');
-    // Load charts after modal is shown
-    $('#historyModal').on('shown.bs.modal', function() {
-        loadCharts();
-    });
-}
-
-function loadCharts() {
-    // Sample data - replace with actual data from backend
-    const monthlyData = [12000, 15000, 18000, 14000, 16000, 19000];
-    const categoryData = [45, 25, 20, 10, 0];
-    
-    // Monthly expenses chart
-    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-    new Chart(monthlyCtx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Monthly Expenses',
-                data: monthlyData,
-                borderColor: '#4e73df',
-                backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-
-    // Category distribution chart
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    new Chart(categoryCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Feed', 'Veterinary', 'Maintenance', 'Utilities', 'Other'],
-            datasets: [{
-                data: categoryData,
-                backgroundColor: [
-                    '#1cc88a',
-                    '#36b9cc',
-                    '#f6c23e',
-                    '#e74a3b',
-                    '#6c757d'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-}
-
-function exportToCSV() {
-    // Get current table data without actions column
-    const tableData = expensesTable.data().toArray();
-    const csvData = [];
-    
-    // Add headers (excluding Actions column)
-    const headers = ['Expense ID', 'Date', 'Expense Name', 'Amount', 'Payment Status', 'Payment Method'];
-    csvData.push(headers.join(','));
-    
-    // Add data rows (excluding Actions column)
-    tableData.forEach(row => {
-        // Extract text content from each cell, excluding the last column (Actions)
-        const rowData = [];
-        for (let i = 0; i < row.length - 1; i++) {
-            let cellText = '';
-            if (row[i]) {
-                // Remove HTML tags and get clean text
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = row[i];
-                cellText = tempDiv.textContent || tempDiv.innerText || '';
-                // Clean up the text (remove extra spaces, newlines)
-                cellText = cellText.replace(/\s+/g, ' ').trim();
+function loadExpensesHistory() {
+    const year = document.getElementById('expensesYear').value;
+    fetch(`/farmer/expenses/history?year=${year}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.mode === 'quarterly') {
+                const tbody = document.getElementById('expensesHistoryTableBody');
+                tbody.innerHTML = '';
+                const quarters = Array.isArray(data.quarters) ? data.quarters : [];
+                if (quarters.length) {
+                    quarters.forEach(q => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>Q${q.quarter} ${q.year}</td>
+                            <td>₱${Number(q.total_expenses).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                            <td>${q.records}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = '<td colspan="3" class="text-center text-muted">No quarterly data for the selected year.</td>';
+                    tbody.appendChild(tr);
+                }
             }
-            // Escape commas and quotes for CSV
-            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
-                cellText = '"' + cellText.replace(/"/g, '""') + '"';
-            }
-            rowData.push(cellText);
-        }
-        csvData.push(rowData.join(','));
-    });
-    
-    // Create and download CSV file
-    const csvContent = csvData.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `Farmer_ExpensesReport_${downloadCounter}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Increment download counter
-    downloadCounter++;
-    
-    showToast('CSV exported successfully!', 'success');
+        })
+        .catch(err => { console.error('expenses history error:', err); showToast('Failed to load history', 'error'); });
 }
 
-function exportToPDF() {
+function exportCSV(){
     try {
-        // Force custom PDF generation to match superadmin styling
-        // Don't fall back to DataTables PDF export as it has different styling
-        
-        const tableData = expensesTable.data().toArray();
-        const pdfData = [];
-        
-        const headers = ['Expense ID', 'Category', 'Description', 'Amount', 'Date', 'Status'];
-        
-        tableData.forEach(row => {
-            const rowData = [
-                row[0] || '', // Expense ID
-                row[1] || '', // Category
-                row[2] || '', // Description
-                row[3] || '', // Amount
-                row[4] || '', // Date
-                row[5] || ''  // Status
-            ];
-            pdfData.push(rowData);
+        if (!expensesDT) return showToast('Table is not ready.', 'error');
+        const rows = expensesDT.data().toArray();
+        const headers = ['Expense ID','Date','Expense Name','Amount','Payment Status','Payment Method'];
+        const csv = [headers.join(',')];
+        rows.forEach(r => {
+            const arr = [];
+            for (let i = 0; i < r.length - 1; i++) { // exclude Actions
+                const tmp = document.createElement('div'); tmp.innerHTML = r[i];
+                let t = tmp.textContent || tmp.innerText || '';
+                t = t.replace(/\s+/g, ' ').trim();
+                if (t.includes(',') || t.includes('"') || t.includes('\n')) t = '"' + t.replace(/"/g, '""') + '"';
+                arr.push(t);
+            }
+            csv.push(arr.join(','));
         });
-        
+        const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Farmer_ExpensesReport_${Date.now()}.csv`; a.click();
+        showToast('CSV exported successfully!', 'success');
+    } catch(e){ console.error('CSV export error:', e); showToast('Error generating CSV.', 'error'); }
+}
+
+function exportPDF() {
+    try {
+        if (!expensesDT) return showToast('Table is not ready.', 'error');
+        const rows = expensesDT.data().toArray();
+        const data = rows.map(r => [r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'', r[5]||'']);
+        const headers = ['Expense ID','Date','Expense Name','Amount','Payment Status','Payment Method'];
         // Create PDF using jsPDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('landscape', 'mm', 'a4');
@@ -822,7 +827,7 @@ function exportToPDF() {
         // Create table
         doc.autoTable({
             head: [headers],
-            body: pdfData,
+            body: data,
             startY: 40,
             styles: { fontSize: 8, cellPadding: 2 },
             headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
@@ -830,10 +835,7 @@ function exportToPDF() {
         });
         
         // Save the PDF
-        doc.save(`Farmer_ExpensesReport_${downloadCounter}.pdf`);
-        
-        // Increment download counter
-        downloadCounter++;
+        doc.save(`Farmer_ExpensesReport_${Date.now()}.pdf`);
         
         showToast('PDF exported successfully!', 'success');
         
@@ -843,7 +845,7 @@ function exportToPDF() {
     }
 }
 
-function exportToPNG() {
+function exportPNG() {
     // Create a temporary table without the Actions column for export
     const originalTable = document.getElementById('expensesTable');
     const tempTable = originalTable.cloneNode(true);
@@ -866,44 +868,78 @@ function exportToPNG() {
         }
     });
     
-    // Temporarily add the temp table to the DOM (hidden)
-    tempTable.style.position = 'absolute';
-    tempTable.style.left = '-9999px';
-    tempTable.style.top = '-9999px';
-    document.body.appendChild(tempTable);
+    // Place temp table inside an offscreen container so layout computes size
+    const offscreen = document.createElement('div');
+    offscreen.style.position = 'absolute';
+    offscreen.style.left = '-9999px';
+    offscreen.style.top = '0';
+    offscreen.style.background = '#ffffff';
+    offscreen.appendChild(tempTable);
+    document.body.appendChild(offscreen);
+    tempTable.style.width = originalTable.offsetWidth + 'px';
     
     // Generate PNG using html2canvas
     html2canvas(tempTable, {
-        scale: 2, // Higher quality
+        scale: 2,
         backgroundColor: '#ffffff',
-        width: tempTable.offsetWidth,
-        height: tempTable.offsetHeight
+        useCORS: true,
+        logging: false,
+        windowWidth: tempTable.scrollWidth,
+        windowHeight: tempTable.scrollHeight
     }).then(canvas => {
         // Create download link
         const link = document.createElement('a');
-        link.download = `Farmer_ExpensesReport_${downloadCounter}.png`;
+        link.download = `Farmer_ExpensesReport_${Date.now()}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
-        
-        // Increment download counter
-        downloadCounter++;
-        
-        // Clean up - remove temporary table
-        document.body.removeChild(tempTable);
+        // Clean up - remove temporary container
+        document.body.removeChild(offscreen);
         
         showToast('PNG exported successfully!', 'success');
     }).catch(error => {
         console.error('Error generating PNG:', error);
         // Clean up on error
-        if (document.body.contains(tempTable)) {
-            document.body.removeChild(tempTable);
+        if (document.body.contains(offscreen)) {
+            document.body.removeChild(offscreen);
         }
         showToast('Error generating PNG export', 'error');
     });
 }
 
 function printExpenses() {
-    window.print();
+    try { if (expensesDT) expensesDT.button('.buttons-print').trigger(); else window.print(); }
+    catch(e){ console.error('printExpenses error:', e); window.print(); }
+}
+
+function refreshExpenses(){
+    const btn = document.querySelector('.btn.btn-warning.btn-sm');
+    if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
+    sessionStorage.setItem('showRefreshNotificationExpenses','true');
+    setTimeout(()=>location.reload(), 800);
+}
+
+function exportExpensesHistory() {
+    try {
+        const year = document.getElementById('expensesYear').value;
+        const rows = [];
+        rows.push(['Quarter','Total Expenses (PHP)','Records'].join(','));
+        document.querySelectorAll('#expensesHistoryQuarterTable tbody tr').forEach(tr => {
+            const cells = Array.from(tr.querySelectorAll('td')).map(td => (td.textContent||'').trim());
+            if (cells.length === 3) rows.push(cells.join(','));
+        });
+        const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Expenses_Quarterly_${year}.csv`; a.click();
+        showToast('Quarterly history exported successfully!', 'success');
+    } catch(e) { console.error('exportExpensesHistory error:', e); showToast('Failed to export history.', 'error'); }
+}
+
+function getExpenseColor(category){
+    const c = (category||'').toLowerCase();
+    if (c.includes('feed')) return 'success';
+    if (c.includes('medicine') || c.includes('veter')) return 'info';
+    if (c.includes('equipment') || c.includes('maint')) return 'warning';
+    if (c.includes('labor')) return 'primary';
+    return 'secondary';
 }
 
 function showToast(message, type = 'info') {
@@ -936,6 +972,8 @@ function showToast(message, type = 'info') {
 @endpush
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 <style>
 
 

@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Register View Composer for audit logs
-        View::composer('farmer.audit-logs', \App\View\Composers\AuditLogComposer::class);
+        // Removed farmer audit logs view composer
     }
 }

@@ -264,6 +264,19 @@
 @endsection
 
 @push('scripts')
+<!-- DataTables and dependencies (needed for print/csv/pdf buttons) -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<!-- Required libraries for PDF/Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- jsPDF and autoTable for custom PDF generation (if needed) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script>
 $(document).ready(function() {
     // Initialize DataTables with Super Admin configuration
@@ -401,6 +414,20 @@ $(document).ready(function() {
         }, 500);
     }
 });
+
+// Print handler for My Alerts table - triggers DataTables print button
+function printTable() {
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
+            $('#alertsTable').DataTable().button('.buttons-print').trigger();
+        } else {
+            window.print();
+        }
+    } catch (e) {
+        console.error('printTable error:', e);
+        window.print();
+    }
+}
 </script>
 @endpush
 

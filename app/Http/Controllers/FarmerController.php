@@ -15,6 +15,7 @@ use App\Models\LivestockAlert;
 use App\Models\ProductionRecord;
 use App\Models\Sale;
 use App\Models\Expense;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\DB;
 
 class FarmerController extends Controller
@@ -47,6 +48,120 @@ class FarmerController extends Controller
         }
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
+
+    /**
+     * Store a new inventory item for the current farmer.
+     */
+    public function storeInventory(Request $request)
+    {
+        $user = Auth::user();
+        $farm = Farm::where('owner_id', $user->id)->first();
+        if (!$farm) {
+            return $request->ajax()
+                ? response()->json(['success' => false, 'message' => 'No farm found.'], 422)
+                : redirect()->back()->with('error', 'No farm found.');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:50',
+            'quantity' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|string|max:50',
+            'date' => 'nullable|date',
+        ]);
+
+        $code = 'INV' . str_pad((string)((Inventory::max('id') ?? 0) + 1), 4, '0', STR_PAD_LEFT);
+        $quantityText = $request->quantity !== null && $request->unit
+            ? ($request->quantity . ' ' . $request->unit)
+            : ($request->quantity ?? '');
+
+        $item = Inventory::create([
+            'code' => $code,
+            'date' => $request->date ?? now()->toDateString(),
+            'category' => ucfirst(strtolower($request->category)),
+            'name' => $request->name,
+            'quantity_text' => (string)$quantityText,
+            'farm_id' => $farm->id,
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'item' => $this->formatInventory($item)]);
+        }
+
+        return redirect()->route('farmer.inventory')->with('success', 'Inventory item added.');
+    }
+
+    /**
+     * Show a single inventory item owned by current farmer.
+     */
+    public function showInventory($id)
+    {
+        $user = Auth::user();
+        $item = Inventory::whereHas('farm', function($q) use ($user) { $q->where('owner_id', $user->id); })
+            ->findOrFail($id);
+
+        return response()->json(['success' => true, 'item' => $this->formatInventory($item)]);
+    }
+
+    /**
+     * Update a farmer-owned inventory item.
+     */
+    public function updateInventory(Request $request, $id)
+    {
+        $user = Auth::user();
+        $item = Inventory::whereHas('farm', function($q) use ($user) { $q->where('owner_id', $user->id); })
+            ->findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:50',
+            'quantity' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|string|max:50',
+            'date' => 'nullable|date',
+        ]);
+
+        $quantityText = $request->quantity !== null && $request->unit
+            ? ($request->quantity . ' ' . $request->unit)
+            : ($request->quantity ?? '');
+
+        $item->update([
+            'date' => $request->date ?? $item->date,
+            'category' => ucfirst(strtolower($request->category)),
+            'name' => $request->name,
+            'quantity_text' => (string)$quantityText,
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'item' => $this->formatInventory($item->fresh())]);
+        }
+
+        return redirect()->route('farmer.inventory')->with('success', 'Inventory item updated.');
+    }
+
+    /**
+     * Delete a farmer-owned inventory item.
+     */
+    public function deleteInventory($id)
+    {
+        $user = Auth::user();
+        $item = Inventory::whereHas('farm', function($q) use ($user) { $q->where('owner_id', $user->id); })
+            ->findOrFail($id);
+        $item->delete();
+        return response()->json(['success' => true]);
+    }
+
+    private function formatInventory(Inventory $item)
+    {
+        return [
+            'id' => $item->id,
+            'code' => $item->code,
+            'date' => optional($item->date)->format('Y-m-d'),
+            'category' => $item->category,
+            'name' => $item->name,
+            'quantity_text' => $item->quantity_text,
+            'farm_id' => $item->farm_id,
+        ];
     }
 
     /**
@@ -182,6 +297,73 @@ class FarmerController extends Controller
             'resolvedIssues',
             'scheduledInspections'
         ));
+    }
+
+    /**
+     * Get expenses history (quarterly aggregates per year) for AJAX requests.
+     */
+    public function expenseHistory(Request $request)
+    {
+        $user = Auth::user();
+        $year = (int) $request->get('year', now()->year);
+
+        $quarters = \App\Models\Expense::whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })
+            ->whereYear('expense_date', $year)
+            ->selectRaw('YEAR(expense_date) as year, QUARTER(expense_date) as quarter, SUM(amount) as total_expenses, COUNT(*) as records')
+            ->groupBy('year', 'quarter')
+            ->orderBy('quarter')
+            ->get()
+            ->map(function($row){
+                return [
+                    'year' => (int) $row->year,
+                    'quarter' => (int) $row->quarter,
+                    'total_expenses' => (float) $row->total_expenses,
+                    'records' => (int) $row->records,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'mode' => 'quarterly',
+            'year' => $year,
+            'quarters' => $quarters
+        ]);
+    }
+
+    /**
+     * Inventory history (quarterly) derived from expenses as a proxy for stock inflows.
+     */
+    public function inventoryHistory(Request $request)
+    {
+        $user = Auth::user();
+        $year = (int) $request->get('year', now()->year);
+
+        $quarters = \App\Models\Expense::whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })
+            ->whereYear('expense_date', $year)
+            ->whereIn('expense_type', ['feed','medicine','equipment','other'])
+            ->selectRaw('YEAR(expense_date) as year, QUARTER(expense_date) as quarter, COUNT(*) as items, SUM(amount) as total_cost')
+            ->groupBy('year', 'quarter')
+            ->orderBy('quarter')
+            ->get()
+            ->map(function($row){
+                return [
+                    'year' => (int) $row->year,
+                    'quarter' => (int) $row->quarter,
+                    'items' => (int) $row->items,
+                    'total_cost' => (float) $row->total_cost,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'mode' => 'quarterly',
+            'year' => $year,
+            'quarters' => $quarters
+        ]);
     }
 
     /**
@@ -814,11 +996,25 @@ class FarmerController extends Controller
     public function showProduction($id)
     {
         $user = Auth::user();
-        $productionRecord = \App\Models\ProductionRecord::whereHas('farm', function($query) use ($user) {
-            $query->where('owner_id', $user->id);
-        })->findOrFail($id);
+        $record = \App\Models\ProductionRecord::with('livestock')
+            ->whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
 
-        return response()->json($productionRecord);
+        return response()->json([
+            'success' => true,
+            'record' => [
+                'id' => $record->id,
+                'production_date' => optional($record->production_date)->format('Y-m-d'),
+                'livestock_id' => $record->livestock_id,
+                'livestock_name' => $record->livestock ? $record->livestock->name : null,
+                'livestock_tag' => $record->livestock ? $record->livestock->tag_number : null,
+                'milk_quantity' => $record->milk_quantity,
+                'milk_quality_score' => $record->milk_quality_score,
+                'notes' => $record->notes,
+            ]
+        ]);
     }
 
     /**
@@ -891,22 +1087,68 @@ class FarmerController extends Controller
     public function productionHistory(Request $request)
     {
         $user = Auth::user();
-        $sortBy = $request->get('sort', 'production_date');
-        $filterBy = $request->get('filter', 'all');
+        $mode = $request->get('mode', 'records'); // 'records' | 'quarterly'
+        $sortParam = $request->get('sort', 'newest'); // 'newest' | 'oldest'
+        $filterBy = $request->get('filter', 'all');   // 'all' | 'high_quality' | 'medium_quality' | 'low_quality'
+        $year = (int) $request->get('year', now()->year);
 
-        $query = \App\Models\ProductionRecord::whereHas('farm', function($query) use ($user) {
-            $query->where('owner_id', $user->id);
-        });
+        if ($mode === 'quarterly') {
+            // Aggregate per quarter for the selected/current year
+            $quarters = \App\Models\ProductionRecord::whereHas('farm', function($query) use ($user) {
+                    $query->where('owner_id', $user->id);
+                })
+                ->whereYear('production_date', $year)
+                ->selectRaw('YEAR(production_date) as year, QUARTER(production_date) as quarter, SUM(milk_quantity) as total_production, AVG(milk_quality_score) as avg_quality, COUNT(*) as records')
+                ->groupBy('year', 'quarter')
+                ->orderBy('quarter')
+                ->get()
+                ->map(function($row){
+                    return [
+                        'year' => (int) $row->year,
+                        'quarter' => (int) $row->quarter,
+                        'total_production' => (float) $row->total_production,
+                        'avg_quality' => $row->avg_quality ? round((float) $row->avg_quality, 1) : null,
+                        'records' => (int) $row->records,
+                    ];
+                });
 
-        // Apply filters
-        if ($filterBy !== 'all') {
-            $query->where('milk_quality_score', '>=', $filterBy);
+            return response()->json([
+                'success' => true,
+                'mode' => 'quarterly',
+                'year' => $year,
+                'quarters' => $quarters
+            ]);
         }
 
-        $records = $query->orderBy($sortBy, 'desc')->get();
+        // Default: return individual records
+        $query = \App\Models\ProductionRecord::with('livestock')
+            ->whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            });
+
+        // Apply filters
+        switch ($filterBy) {
+            case 'high_quality':
+                $query->whereNotNull('milk_quality_score')->where('milk_quality_score', '>=', 8);
+                break;
+            case 'medium_quality':
+                $query->whereNotNull('milk_quality_score')->whereBetween('milk_quality_score', [5, 7]);
+                break;
+            case 'low_quality':
+                $query->whereNotNull('milk_quality_score')->whereBetween('milk_quality_score', [1, 4]);
+                break;
+            default:
+                // no filter
+                break;
+        }
+
+        // Apply sort
+        $direction = $sortParam === 'oldest' ? 'asc' : 'desc';
+        $records = $query->orderBy('production_date', $direction)->get();
 
         return response()->json([
             'success' => true,
+            'mode' => 'records',
             'records' => $records
         ]);
     }
@@ -1070,6 +1312,7 @@ class FarmerController extends Controller
                 'lowStock' => 0,
                 'outOfStock' => 0,
                 'inventoryData' => [],
+                'inventory' => collect(),
                 'farms' => [],
                 'inventoryStats' => []
             ]);
@@ -1110,12 +1353,18 @@ class FarmerController extends Controller
             })->values()
         ];
 
+        // Actual persisted inventory records for table
+        $inventory = Inventory::whereIn('farm_id', $farmIds)
+            ->orderByDesc('date')
+            ->get();
+
         return view('farmer.inventory', compact(
             'totalItems',
             'inStock',
             'lowStock',
             'outOfStock',
             'inventoryData',
+            'inventory',
             'farms',
             'inventoryStats'
         ));
@@ -1126,8 +1375,43 @@ class FarmerController extends Controller
      */
     private function generateInventoryData($farmIds)
     {
-        // Return empty collection to start with no inventory items
-        return collect();
+        // Synthesize inventory from recent expenses (last 6 months)
+        $since = now()->subMonths(6);
+        $raw = \App\Models\Expense::whereIn('farm_id', $farmIds)
+            ->where('expense_date', '>=', $since)
+            ->whereIn('expense_type', ['feed','medicine','equipment','other'])
+            ->get()
+            ->groupBy(function($e){
+                // Group by category + description to make an item
+                return ($e->expense_type ?: 'other') . '|' . (trim($e->description) ?: 'Item');
+            });
+
+        $items = collect();
+        $id = 1;
+        foreach ($raw as $groupKey => $group) {
+            [$type, $name] = array_pad(explode('|', $groupKey, 2), 2, 'Item');
+            $category = ucfirst($type);
+            $quantity = $group->count(); // approximate using number of purchases
+            $unit = 'pcs';
+            $status = $this->determineStockStatus($quantity, $category);
+            $icon = $this->getItemIcon($category);
+            $color = $this->getItemColor($category);
+            $description = $this->getItemDescription($name);
+
+            $items->push([
+                'id' => $id++,
+                'name' => $name,
+                'category' => $category,
+                'quantity' => $quantity,
+                'unit' => $unit,
+                'status' => $status,
+                'icon' => $icon,
+                'color' => $color,
+                'description' => $description,
+            ]);
+        }
+
+        return $items->sortByDesc('quantity')->values();
     }
 
     /**
@@ -1251,8 +1535,21 @@ class FarmerController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Expense recorded successfully!',
+                    'expense' => $expense
+                ]);
+            }
             return redirect()->route('farmer.expenses')->with('success', 'Expense recorded successfully!');
         } catch (\Exception $e) {
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to record expense: ' . $e->getMessage()
+                ], 500);
+            }
             return redirect()->back()->with('error', 'Failed to record expense: ' . $e->getMessage())->withInput();
         }
     }
@@ -1267,7 +1564,22 @@ class FarmerController extends Controller
             $query->where('owner_id', $user->id);
         })->findOrFail($id);
 
-        return response()->json($expense);
+        return response()->json([
+            'success' => true,
+            'expense' => [
+                'id' => $expense->id,
+                'expense_id' => 'EXP' . str_pad($expense->id, 3, '0', STR_PAD_LEFT),
+                'expense_date' => optional($expense->expense_date)->format('Y-m-d'),
+                'description' => $expense->description,
+                'expense_type' => $expense->expense_type,
+                'amount' => $expense->amount,
+                'payment_status' => 'Paid',
+                'payment_method' => $expense->payment_method,
+                'receipt_number' => $expense->receipt_number,
+                'notes' => $expense->notes,
+                'farm_id' => $expense->farm_id,
+            ]
+        ]);
     }
 
     /**
@@ -1300,6 +1612,12 @@ class FarmerController extends Controller
             'notes' => $request->notes,
         ]);
 
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Expense updated successfully!'
+            ]);
+        }
         return redirect()->route('farmer.expenses')->with('success', 'Expense updated successfully!');
     }
 
@@ -1315,6 +1633,12 @@ class FarmerController extends Controller
 
         $expense->delete();
 
+        if (request()->ajax() || request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Expense deleted successfully!'
+            ]);
+        }
         return redirect()->route('farmer.expenses')->with('success', 'Expense deleted successfully!');
     }
 

@@ -678,6 +678,42 @@
                 </button>
             </div>
             <div class="card-body">
+                <!-- Search + Actions controls -->
+                <div class="search-controls mb-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
+                        <div class="input-group" style="max-width: 380px;">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input type="text" id="clientSearch" class="form-control" placeholder="Search clients...">
+                        </div>
+                        <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
+                            <button class="btn-action btn-action-print" onclick="printClientsTable()">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                            <button class="btn-action btn-action-refresh" onclick="refreshClientsTable()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                    <i class="fas fa-tools"></i> Tools
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="exportClientsCSV()">
+                                        <i class="fas fa-file-csv"></i> Download CSV
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="exportClientsPNG()">
+                                        <i class="fas fa-image"></i> Download PNG
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="exportClientsPDF()">
+                                        <i class="fas fa-file-pdf"></i> Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -931,12 +967,23 @@
 @endsection
 
 @push('scripts')
+<!-- DataTables + Buttons -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<!-- PDF/PNG helpers -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+let clientsDT = null;
 document.addEventListener('DOMContentLoaded', function() {
     // Client Distribution Chart
     const clientCtx = document.getElementById('clientDistributionChart').getContext('2d');
-    const clientChart = new Chart(clientCtx, {
+    window.clientChart = new Chart(clientCtx, {
         type: 'doughnut',
         data: {
             labels: ['Retail', 'Wholesale', 'Business', 'Market'],
@@ -964,35 +1011,182 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Initialize DataTable for Client Directory
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        buttons: [
+            { extend: 'csvHtml5', title: 'Farmer_Clients_Report', className: 'd-none' },
+            { extend: 'pdfHtml5', title: 'Farmer_Clients_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
+            { extend: 'print', title: 'Farmer Clients Report', className: 'd-none' }
+        ],
+        language: {
+            search: "",
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>'
+        }
+    };
+
+    if ($('#dataTable').length) {
+        try {
+            clientsDT = $('#dataTable').DataTable({
+                ...commonConfig,
+                order: [[0, 'asc']],
+                columnDefs: [
+                    { width: '260px', targets: 0 }, // Client Name
+                    { width: '180px', targets: 1 }, // Contact
+                    { width: '120px', targets: 2 }, // Type
+                    { width: '120px', targets: 3 }, // Status
+                    { width: '140px', targets: 4 }, // Total Orders
+                    { width: '180px', targets: 5, orderable: false } // Action
+                ]
+            });
+        } catch (e) {
+            console.error('Failed to initialize Client Directory table:', e);
+        }
+    }
+
+    // Hide default DataTables search and buttons; use custom controls
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
+
+    // Wire custom search
+    $('#clientSearch').on('keyup', function(){
+        if (clientsDT) clientsDT.search(this.value).draw();
+    });
+
     // Form submission
     document.getElementById('addClientForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Show success message
-        const notification = document.createElement('div');
-        notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
-        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        notification.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            Client added successfully!
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Close modal
+        const name = document.getElementById('clientName').value.trim();
+        const type = document.getElementById('clientType').value;
+        const phone = document.getElementById('clientPhone').value.trim();
+        const email = document.getElementById('clientEmail').value.trim();
+        const address = document.getElementById('clientAddress').value.trim();
+        const notes = document.getElementById('clientNotes').value.trim();
+        const status = document.getElementById('clientStatus').value;
+
+        if (!name || !type || !phone) {
+            showNotification('Please fill in the required fields.', 'error');
+            return;
+        }
+
+        // Map labels and badges
+        const typeLabelMap = { retail: 'Retail', wholesale: 'Wholesale', business: 'Business', market: 'Market' };
+        const typeBadgeMap = { retail: 'badge badge-success', wholesale: 'badge badge-info', business: 'badge badge-warning', market: 'badge badge-secondary' };
+        const statusLabelMap = { active: 'Active', inactive: 'Inactive', pending: 'Pending' };
+        const statusBadgeMap = { active: 'badge badge-success', inactive: 'badge badge-secondary', pending: 'badge badge-warning' };
+
+        const nameCell = `
+            <div class="d-flex align-items-center">
+                <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
+                <div>
+                    <div class="font-weight-bold">${name}</div>
+                    <small class="text-muted">${typeLabelMap[type] || 'N/A'}</small>
+                </div>
+            </div>`;
+        const contactCell = `<div>${phone || 'N/A'}</div><small class="text-muted">${email || 'N/A'}</small>`;
+        const typeCell = `<span class="${typeBadgeMap[type] || 'badge badge-secondary'}">${typeLabelMap[type] || 'N/A'}</span>`;
+        const statusCell = `<span class="${statusBadgeMap[status] || 'badge badge-secondary'}">${statusLabelMap[status] || 'N/A'}</span>`;
+        const totalOrdersCell = `0`;
+        const actionCell = `
+            <button class="btn btn-sm btn-outline-primary" onclick="viewClient('${name.replace(/'/g, "&#39;")}')">View</button>
+            <button class="btn btn-sm btn-outline-info" onclick="editClient('${name.replace(/'/g, "&#39;")}')">Edit</button>`;
+
+        if (clientsDT) {
+            clientsDT.row.add([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false);
+        }
+
+        // Update Chart counts
+        try {
+            const idxMap = { retail: 0, wholesale: 1, business: 2, market: 3 };
+            const idx = idxMap[type];
+            if (typeof idx !== 'undefined' && window.clientChart) {
+                window.clientChart.data.datasets[0].data[idx] = (window.clientChart.data.datasets[0].data[idx] || 0) + 1;
+                window.clientChart.update();
+            }
+        } catch (err) { console.warn('Chart update failed:', err); }
+
+        showNotification('Client added successfully!', 'success');
         $('#addClientModal').modal('hide');
-        
-        // Reset form
         this.reset();
-        
-        // Remove notification after 5 seconds
-        setTimeout(() => {
-            notification.remove();
-        }, 5000);
     });
 });
+
+// Print using DataTables button
+function printClientsTable(){
+    try { if (clientsDT) clientsDT.button('.buttons-print').trigger(); else window.print(); }
+    catch(e){ console.error('printClientsTable error:', e); window.print(); }
+}
+
+function refreshClientsTable(){
+    const btn = document.querySelector('.btn-action-refresh');
+    if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
+    sessionStorage.setItem('showRefreshNotificationClients','true');
+    setTimeout(()=>location.reload(), 800);
+}
+
+// After reload, show notification
+$(document).ready(function(){
+    if (sessionStorage.getItem('showRefreshNotificationClients') === 'true'){
+        sessionStorage.removeItem('showRefreshNotificationClients');
+        setTimeout(()=>showNotification('Data refreshed successfully!','success'), 400);
+    }
+});
+
+function exportClientsCSV(){
+    if (!clientsDT) return showNotification('Table not ready', 'error');
+    const rows = clientsDT.data().toArray();
+    const headers = ['Client Name','Contact','Type','Status','Total Orders'];
+    const csv = [headers.join(',')];
+    rows.forEach(r=>{
+        const arr = [];
+        for (let i=0;i<r.length-1;i++){
+            let t=''; const tmp=document.createElement('div'); tmp.innerHTML=r[i]; t=tmp.textContent||tmp.innerText||''; t=t.replace(/\s+/g,' ').trim(); if (t.includes(',')||t.includes('"')||t.includes('\n')) t='"'+t.replace(/"/g,'""')+'"'; arr.push(t);
+        }
+        csv.push(arr.join(','));
+    });
+    const blob=new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8;'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`Farmer_ClientsReport_${Date.now()}.csv`; a.click();
+}
+
+function exportClientsPDF(){
+    try{
+        if (!clientsDT) return showNotification('Table not ready','error');
+        const rows = clientsDT.data().toArray();
+        const data = rows.map(r=>[r[0]||'',r[1]||'',r[2]||'',r[3]||'',r[4]||'']);
+        const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape','mm','a4');
+        doc.setFontSize(18); doc.text('Farmer Clients Report',14,22);
+        doc.setFontSize(12); doc.text(`Generated on: ${new Date().toLocaleDateString()}`,14,32);
+        doc.autoTable({ head: [['Client Name','Contact','Type','Status','Total Orders']], body: data, startY: 40, styles:{fontSize:8, cellPadding:2}, headStyles:{ fillColor:[24,55,93], textColor:255, fontStyle:'bold' }, alternateRowStyles:{ fillColor:[245,245,245] } });
+        doc.save(`Farmer_ClientsReport_${Date.now()}.pdf`);
+    }catch(e){ console.error('PDF export error:', e); showNotification('Error generating PDF','error'); }
+}
+
+function exportClientsPNG(){
+    const tbl = document.getElementById('dataTable'); if (!tbl) return;
+    const clone = tbl.cloneNode(true);
+    const headRow = clone.querySelector('thead tr'); if (headRow) headRow.lastElementChild && headRow.lastElementChild.remove();
+    clone.querySelectorAll('tbody tr').forEach(tr=>{ tr.lastElementChild && tr.lastElementChild.remove(); });
+    clone.style.position='absolute'; clone.style.left='-9999px'; document.body.appendChild(clone);
+    html2canvas(clone,{scale:2, backgroundColor:'#ffffff', width:clone.offsetWidth, height:clone.offsetHeight}).then(canvas=>{
+        const a=document.createElement('a'); a.download=`Farmer_ClientsReport_${Date.now()}.png`; a.href=canvas.toDataURL('image/png'); a.click(); document.body.removeChild(clone);
+    }).catch(err=>{ console.error('PNG export error:', err); document.body.contains(clone)&&document.body.removeChild(clone); showNotification('Error generating PNG','error'); });
+}
+
+function showNotification(message, type){
+    const t = document.createElement('div');
+    t.className = `alert alert-${type==='error'?'danger':type} alert-dismissible fade show position-fixed`;
+    t.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    t.innerHTML = `${message}<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>`;
+    document.body.appendChild(t); setTimeout(()=>t.remove(), 5000);
+}
+
+function viewClient(name){ showNotification(`View client: ${name}`,'info'); }
+function editClient(name){ showNotification(`Edit client: ${name}`,'info'); }
 </script>
 @endpush

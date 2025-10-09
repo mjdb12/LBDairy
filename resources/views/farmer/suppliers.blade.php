@@ -675,37 +675,48 @@
                 </h6>
             </div>
             <div class="card-body">
-                <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
-                        <button class="btn-action btn-action-edits" data-toggle="modal" data-target="#addLivestockDetailsModal">
-                        <i class="fas fa-plus mr-1"></i> Add Supplier
-                        </button>
-                        <button class="btn-action btn-action-print " onclick="window.print()">
-                        <i class="fas fa-print mr-1"></i> Print
-                        </button>
-                        <button class="btn-action btn-action-refresh" onclick="refreshSuppliersTable('suppliersTable')">
-                        <i class="fas fa-sync-alt mr-1"></i> Refresh
-                        </button>
-                        <button class="btn-action btn-action-history" data-toggle="modal" data-target="#historyModal">
-                        <i class="fas fa-history mr-1"></i> History
-                        </button>
-                        <div class="dropdown">
-                            <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                                <i class="fas fa-tools"></i> Tools
+                <!-- Search (left) + Actions (right) -->
+                <div class="search-controls mb-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
+                        <div class="input-group" style="max-width: 380px;">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input type="text" id="supplierSearch" class="form-control" placeholder="Search suppliers...">
+                        </div>
+                        <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
+                            <button class="btn-action btn-action-edits" data-toggle="modal" data-target="#addLivestockDetailsModal">
+                                <i class="fas fa-plus mr-1"></i> Add Supplier
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#" onclick="exportCSV()">
-                                    <i class="fas fa-file-csv"></i> Download CSV
-                                </a>
-                                <a class="dropdown-item" href="#" onclick="exportPNG()">
-                                    <i class="fas fa-image"></i> Download PNG
-                                </a>
-                                <a class="dropdown-item" href="#" onclick="exportPDF()">
-                                    <i class="fas fa-file-pdf"></i> Download PDF
-                                </a>
+                            <button class="btn-action btn-action-print" onclick="printSuppliersTable()">
+                                <i class="fas fa-print mr-1"></i> Print
+                            </button>
+                            <button class="btn-action btn-action-refresh" onclick="refreshSuppliersTable()">
+                                <i class="fas fa-sync-alt mr-1"></i> Refresh
+                            </button>
+                            <button class="btn-action btn-action-history" data-toggle="modal" data-target="#historyModal">
+                                <i class="fas fa-history mr-1"></i> History
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                    <i class="fas fa-tools"></i> Tools
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="exportCSV()">
+                                        <i class="fas fa-file-csv"></i> Download CSV
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="exportPNG()">
+                                        <i class="fas fa-image"></i> Download PNG
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="exportPDF()">
+                                        <i class="fas fa-file-pdf"></i> Download PDF
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <br>
+                </div>
+                <br>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="suppliersTable">
                         <thead>
@@ -963,7 +974,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="fas fa-plus-circle mr-2"></i>
-                    Add New Sale
+                    Add New Supplier
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span>&times;</span>
@@ -991,7 +1002,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" form="addLivestockDetailsForm" class="btn-action btn-action-edits">
+                <button type="submit" id="saveSupplierBtn" form="addLivestockDetailsForm" class="btn-action btn-action-edits">
                     Save Supplier
                 </button>
             </div>
@@ -1028,12 +1039,153 @@
 @push('scripts')
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+let suppliersDT = null;
 // Initialize DataTable
 $(document).ready(function() {
-    // DataTable initialization disabled to prevent column count warnings
-    // The table will function as a standard HTML table with Bootstrap styling
-    console.log('Suppliers table loaded successfully');
+    const commonConfig = {
+        dom: 'Bfrtip',
+        searching: true,
+        paging: true,
+        info: true,
+        ordering: true,
+        lengthChange: false,
+        pageLength: 10,
+        buttons: [
+            { extend: 'csvHtml5', title: 'Farmer_Suppliers_Report', className: 'd-none' },
+            { extend: 'pdfHtml5', title: 'Farmer_Suppliers_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
+            { extend: 'print', title: 'Farmer Suppliers Report', className: 'd-none' }
+        ],
+        language: {
+            search: "",
+            emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>'
+        }
+    };
+
+    if ($('#suppliersTable').length) {
+        try {
+            suppliersDT = $('#suppliersTable').DataTable({
+                ...commonConfig,
+                order: [[0, 'asc']],
+                columnDefs: [
+                    { width: '140px', targets: 0 }, // Supplier ID
+                    { width: '200px', targets: 1 }, // Name
+                    { width: '240px', targets: 2 }, // Address
+                    { width: '160px', targets: 3 }, // Contact
+                    { width: '120px', targets: 4 }, // Status
+                    { width: '200px', targets: 5, orderable: false } // Actions
+                ]
+            });
+        } catch (e) {
+            console.error('Failed to initialize suppliers DataTable:', e);
+        }
+    }
+
+    // Hide default DataTables search and buttons
+    $('.dataTables_filter').hide();
+    $('.dt-buttons').hide();
+
+    // Wire up custom search
+    $('#supplierSearch').on('keyup', function(){
+        if (suppliersDT) suppliersDT.search(this.value).draw();
+    });
+});
+
+// Add Supplier form submission -> add a new row to the DataTable
+$(document).ready(function(){
+    // Ensure Save button reliably triggers the form submit
+    $('#saveSupplierBtn').on('click', function(e){
+        e.preventDefault();
+        $('#addLivestockDetailsForm').trigger('submit');
+    });
+
+    $('#addLivestockDetailsForm').on('submit', function(e){
+        e.preventDefault();
+        const id = $('#add_supplierId').val().trim();
+        const name = $('#add_supplierName').val().trim();
+        const address = $('#add_supplierAddress').val().trim();
+        const contact = $('#add_supplierContact').val().trim();
+
+        if (!id || !name || !address || !contact){
+            showNotification('Please fill in all required fields.', 'error');
+            return;
+        }
+
+        const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        const safeId = esc(id);
+        const safeName = esc(name);
+        const safeAddress = esc(address);
+        const safeContact = esc(contact);
+
+        const statusCell = '<span class="status-badge badge badge-success">Active</span>';
+        const actionCell = `
+            <div class="action-buttons">
+                <button class="btn-action btn-action-ledger" onclick="viewLedger('${safeName.replace(/'/g, '&#39;')}')" title="View Ledger">
+                    <i class="fas fa-book"></i>
+                    <span>Ledger</span>
+                </button>
+                <button class="btn-action btn-action-view" onclick="viewDetails('${safeName.replace(/'/g, '&#39;')}')" title="View Details">
+                    <i class="fas fa-eye"></i>
+                    <span>View</span>
+                </button>
+                <button class="btn-action btn-action-delete" onclick="confirmDelete('${safeName.replace(/'/g, '&#39;')}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete</span>
+                </button>
+            </div>`;
+
+        if (suppliersDT){
+            // Remove placeholder row if present
+            suppliersDT.rows().every(function(){
+                const d = this.data();
+                if (Array.isArray(d) && d[4] && (d[4]+"").toLowerCase().includes('no suppliers')){
+                    this.remove();
+                }
+            });
+
+            const rowNode = suppliersDT
+                .row.add([safeId, safeName, safeAddress, safeContact, statusCell, actionCell])
+                .draw(false)
+                .node();
+
+            // Ensure it's visible: clear search and go to last page
+            if (suppliersDT.search()) suppliersDT.search('');
+            suppliersDT.page('last').draw('page');
+
+            if (rowNode){
+                rowNode.classList.add('table-success');
+                rowNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(()=> rowNode.classList.remove('table-success'), 2000);
+            }
+        } else {
+            // Fallback if DataTables not initialized
+            $('#suppliersTableBody').append(`
+                <tr>
+                    <td>${safeId}</td>
+                    <td>${safeName}</td>
+                    <td>${safeAddress}</td>
+                    <td>${safeContact}</td>
+                    <td>${statusCell}</td>
+                    <td>${actionCell}</td>
+                </tr>`);
+            const last = $('#suppliersTableBody tr:last')[0];
+            if (last){
+                last.classList.add('table-success');
+                last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(()=> last.classList.remove('table-success'), 2000);
+            }
+        }
+
+        // Close modal, reset form, and notify
+        $('#addLivestockDetailsModal').modal('hide');
+        this.reset();
+        showNotification('Supplier added successfully!', 'success');
+    });
 });
 
 // View Ledger function
@@ -1097,6 +1249,81 @@ function importCSV(event) {
 function exportHistory() {
     // Handle export logic here
     console.log('Exporting history...');
+}
+
+// Print suppliers table using DataTables
+function printSuppliersTable(){
+    try { if (suppliersDT) suppliersDT.button('.buttons-print').trigger(); else window.print(); }
+    catch(e){ console.error('printSuppliersTable error:', e); window.print(); }
+}
+
+// Refresh suppliers table
+function refreshSuppliersTable(){
+    const btn = document.querySelector('.btn-action-refresh');
+    if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
+    sessionStorage.setItem('showRefreshNotificationSuppliers','true');
+    setTimeout(()=>location.reload(), 800);
+}
+
+// After reload, show notification
+$(document).ready(function(){
+    if (sessionStorage.getItem('showRefreshNotificationSuppliers') === 'true'){
+        sessionStorage.removeItem('showRefreshNotificationSuppliers');
+        setTimeout(()=>showNotification('Data refreshed successfully!','success'), 400);
+    }
+});
+
+// CSV export (exclude Actions column)
+function exportCSV(){
+    if (!suppliersDT) return showNotification('Table not ready','error');
+    const rows = suppliersDT.data().toArray();
+    const headers = ['Supplier ID','Name','Address','Contact','Status'];
+    const csv = [headers.join(',')];
+    rows.forEach(r=>{
+        const arr=[]; for(let i=0;i<r.length-1;i++){ // exclude Actions
+            const tmp=document.createElement('div'); tmp.innerHTML=r[i];
+            let t=tmp.textContent||tmp.innerText||''; t=t.replace(/\s+/g,' ').trim();
+            if(t.includes(',')||t.includes('"')||t.includes('\n')) t='"'+t.replace(/"/g,'""')+'"';
+            arr.push(t);
+        }
+        csv.push(arr.join(','));
+    });
+    const blob=new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8;'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`Farmer_SuppliersReport_${Date.now()}.csv`; a.click();
+}
+
+// PDF export via jsPDF
+function exportPDF(){
+    try{
+        if (!suppliersDT) return showNotification('Table not ready','error');
+        const rows = suppliersDT.data().toArray();
+        const data = rows.map(r=>[r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'']);
+        const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape','mm','a4');
+        doc.setFontSize(18); doc.text('Farmer Suppliers Report',14,22);
+        doc.setFontSize(12); doc.text(`Generated on: ${new Date().toLocaleDateString()}`,14,32);
+        doc.autoTable({ head: [['Supplier ID','Name','Address','Contact','Status']], body: data, startY:40, styles:{fontSize:8, cellPadding:2}, headStyles:{ fillColor:[24,55,93], textColor:255, fontStyle:'bold' }, alternateRowStyles:{ fillColor:[245,245,245] } });
+        doc.save(`Farmer_SuppliersReport_${Date.now()}.pdf`);
+    }catch(e){ console.error('PDF export error:', e); showNotification('Error generating PDF','error'); }
+}
+
+// PNG export via html2canvas
+function exportPNG(){
+    const tbl = document.getElementById('suppliersTable'); if (!tbl) return;
+    const clone = tbl.cloneNode(true);
+    const headRow = clone.querySelector('thead tr'); if (headRow) headRow.lastElementChild && headRow.lastElementChild.remove();
+    clone.querySelectorAll('tbody tr').forEach(tr=>{ tr.lastElementChild && tr.lastElementChild.remove(); });
+    clone.style.position='absolute'; clone.style.left='-9999px'; document.body.appendChild(clone);
+    html2canvas(clone,{scale:2, backgroundColor:'#ffffff', width:clone.offsetWidth, height:clone.offsetHeight}).then(canvas=>{
+        const a=document.createElement('a'); a.download=`Farmer_SuppliersReport_${Date.now()}.png`; a.href=canvas.toDataURL('image/png'); a.click(); document.body.removeChild(clone);
+    }).catch(err=>{ console.error('PNG export error:', err); document.body.contains(clone)&&document.body.removeChild(clone); showNotification('Error generating PNG','error'); });
+}
+
+function showNotification(message, type){
+    const t=document.createElement('div');
+    t.className = `alert alert-${type==='error'?'danger':type} alert-dismissible fade show position-fixed`;
+    t.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    t.innerHTML = `${message}<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>`;
+    document.body.appendChild(t); setTimeout(()=>t.remove(), 5000);
 }
 </script>
 @endpush
