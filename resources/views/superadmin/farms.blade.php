@@ -830,15 +830,15 @@
 }
 
 .smart-modal .icon-wrapper {
-  background-color: #ffffffff;
-  color: #18375d;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 .smart-modal h5 {
@@ -878,18 +878,16 @@
 }
 
 /* Header Icon */
-.smart-form .icon-wrapper {
-  background: #eef3f8;
-  color: #18375d;
-  border-radius: 50%;
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin: 0 auto 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1086,14 +1084,15 @@
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     background-color: #e8f0fe;
-    color: #1a73e8;
+    color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1301,7 +1300,7 @@
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Delete</h5>
@@ -1330,7 +1329,7 @@
         <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle">
-                    <i class="fas fa-university"></i>
+                    <i class="fas fa-university fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Farm Details</h5>
                 <p class="text-muted mb-0 small">Below are the complete details of the selected farm.</p>
@@ -1361,7 +1360,7 @@
       <!-- Header -->
       <div class="d-flex flex-column align-items-center mb-4">
         <div class="icon-circle mb-3">
-          <i class="fas fa-university fa-lg"></i>
+          <i class="fas fa-university fa-2x"></i>
         </div>
         <h5 class="fw-bold mb-1">Edit Farm</h5>
         <p class="text-muted mb-0 small">
@@ -1424,19 +1423,19 @@
             </div>
 
             <!-- Owner Name -->
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label for="ownerName" class="fw-semibold">Owner Name</label>
               <input type="text" class="form-control" id="ownerName" name="owner_name" placeholder="Enter owner name">
             </div>
 
             <!-- Owner Email -->
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label for="ownerEmail" class="fw-semibold">Owner Email</label>
               <input type="email" class="form-control" id="ownerEmail" name="owner_email" placeholder="Enter owner email">
             </div>
 
             <!-- Owner Phone -->
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label for="ownerPhone" class="fw-semibold">Owner Phone</label>
               <input type="text" class="form-control" id="ownerPhone" name="owner_phone" placeholder="Enter owner phone">
             </div>
@@ -1459,7 +1458,7 @@
         <!-- Footer -->
         <div class="modal-footer justify-content-center mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-modern btn-approves">
+          <button type="submit" class="btn-modern btn-ok">
             Save Farm
           </button>
         </div>

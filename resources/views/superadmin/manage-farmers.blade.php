@@ -766,18 +766,16 @@
 }
 
 /* Header Icon */
-.smart-form .icon-wrapper {
-  background: #eef3f8;
-  color: #18375d;
-  border-radius: 50%;
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin: 0 auto 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1026,14 +1024,15 @@
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     background-color: #e8f0fe;
-    color: #1a73e8;
+    color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1280,7 +1279,7 @@
       <!-- Header -->
       <div class="d-flex flex-column align-items-center mb-4">
         <div class="icon-circle mb-3">
-          <i class="fas fa-user-plus fa-lg"></i>
+          <i class="fas fa-user-plus fa-2x"></i>
         </div>
         <h5 class="fw-bold mb-1">Add New User</h5>
         <p class="text-muted mb-0 small">
@@ -1388,7 +1387,7 @@
         <!-- Footer -->
         <div class="modal-footer justify-content-center mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-modern btn-approves">
+          <button type="submit" class="btn-modern btn-ok">
             Save User
           </button>
         </div>
@@ -1407,7 +1406,7 @@
         <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle">
-                    <i class="fas fa-user fa-lg"></i>
+                    <i class="fas fa-user fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Farmer Details</h5>
                 <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
@@ -1438,7 +1437,7 @@
       <!-- Header -->
       <div class="d-flex flex-column align-items-center mb-4">
         <div class="icon-circle mb-3">
-          <i class="fas fa-edit fa-lg"></i>
+          <i class="fas fa-edit fa-2x"></i>
         </div>
         <h5 class="fw-bold mb-1">Edit Farmer</h5>
         <p class="text-muted mb-0 small">
@@ -1559,7 +1558,7 @@
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Delete</h5>

@@ -832,11 +832,26 @@
             display: none !important;
         }
         
-        /* Content wrapper adjustments */
+        /* Content wrapper adjustments (desktop) */
         html body #content-wrapper {
             margin-left: 14rem !important;
             transition: margin-left 0.3s ease !important;
         }
+
+        /* Mobile view (screen width ≤ 768px) */
+        @media (max-width: 768px) {
+            html body #content-wrapper {
+                margin-left: 7rem !important; /* Sidebar hidden by default */
+                width: 100% !important;   /* Full width for content */
+            }
+
+            /* When sidebar is visible on mobile */
+            body.sidebar-toggled #content-wrapper {
+                margin-left: 14rem !important; /* Same width as sidebar */
+                width: calc(100% - 14rem) !important;
+            }
+        }
+
         
         html body.sidebar-toggled #content-wrapper {
             margin-left: 6.5rem !important;
@@ -1220,18 +1235,13 @@
             height: 300px;
             padding: 1rem;
         }
-
-
-        
-
-        
-
     </style>
     
     @stack('styles')
 </head>
 
 <body id="page-top">
+    <br><br><br><br>
     <!-- Page Wrapper -->
     <div id="wrapper">
         @include('layouts.sidebar')

@@ -844,6 +844,91 @@
             margin-bottom: 1rem;
         }
     }
+
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+     width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#userDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
 </style>
 @endpush
 
@@ -1298,27 +1383,35 @@
         </div>
     </div>
 
-<!-- Log Details Modal -->
-<div class="modal fade" id="logDetailsModal" tabindex="-1" role="dialog">
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="logDetailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-history mr-2"></i>
-                    Audit Log Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-history fa-2x "></i>
+                </div>
+                <h5 class="fw-bold mb-1">Audit Log Details </h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected audit log.</p>
             </div>
-            <div class="modal-body" id="logDetailsContent">
-                <!-- Content will be loaded here -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="logDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
     </div>
+  </div>
 </div>
 
 <!-- Advanced Filter Modal -->
@@ -1965,20 +2058,20 @@ function openLogDetails(logId) {
     // Create compact content similar to other modals
     const logDetailsHtml = `
         <div class="row">
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Log Information</h6>
-        <p><strong>Log ID:</strong> ${cleanData[0]}</p>
-        <p><strong>Timestamp:</strong> ${cleanData[1]}</p>
-        <p><strong>User:</strong> ${cleanData[2]}</p>
-        <p><strong>Action:</strong> ${cleanData[3]}</p>
-    </div>
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
-        <p><strong>Severity:</strong> <span class="badge badge-${getSeverityBadgeClass(cleanData[7])}">${cleanData[7]}</span></p>
-        <p><strong>IP Address:</strong> ${cleanData[6]}</p>
-        <p><strong>Details:</strong> ${cleanData[5] || 'No additional details available'}</p>
-    </div>
-</div>
+            <div class="col-md-6">
+                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Log Information</h6>
+                <p><strong>Log ID:</strong> ${cleanData[0]}</p>
+                <p><strong>Timestamp:</strong> ${cleanData[1]}</p>
+                <p><strong>User:</strong> ${cleanData[2]}</p>
+                <p><strong>Action:</strong> ${cleanData[3]}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
+                <p><strong>Severity:</strong> <span class="badge badge-${getSeverityBadgeClass(cleanData[7])}">${cleanData[7]}</span></p>
+                <p><strong>IP Address:</strong> ${cleanData[6]}</p>
+                <p><strong>Details:</strong> ${cleanData[5] || 'No additional details available'}</p>
+            </div>
+        </div>
 
     `;
     
