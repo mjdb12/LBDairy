@@ -95,7 +95,7 @@ class AuthController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:farmer,admin',
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'regex:/^\d{11}$/'],
             'address' => 'required|string|max:500',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',

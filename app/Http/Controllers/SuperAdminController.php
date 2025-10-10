@@ -42,7 +42,7 @@ class SuperAdminController extends Controller
         try {
             $request->validate([
                 'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-                'phone' => 'nullable|string|max:20',
+                'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'barangay' => 'required|string|max:255',
                 'position' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
@@ -658,7 +658,7 @@ class SuperAdminController extends Controller
                 'email' => 'required|email|unique:users',
                 'username' => 'required|string|max:255|unique:users',
                 'role' => 'required|in:farmer,admin,superadmin',
-                'phone' => 'nullable|string|max:20',
+                'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'barangay' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
                 'status' => 'required|in:pending,approved,rejected',
@@ -719,7 +719,7 @@ class SuperAdminController extends Controller
                 'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
                 'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($id)],
                 'role' => 'required|in:farmer,admin,superadmin',
-                'phone' => 'nullable|string|max:20',
+                'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'barangay' => 'nullable|string|max:255',
                 'address' => 'nullable|string|max:500',
                 // Accept UI variants and normalize below

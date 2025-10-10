@@ -30,7 +30,7 @@ class FarmerController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'phone' => 'nullable|string|max:20',
+            'phone' => ['nullable', 'regex:/^\d{11}$/'],
             'address' => 'nullable|string|max:500',
             'farm_name' => 'nullable|string|max:255',
         ]);

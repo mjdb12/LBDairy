@@ -162,7 +162,7 @@ class FarmController extends Controller
                 'farms' => 'required|array',
                 'farms.*.owner_name' => 'required|string|max:255',
                 'farms.*.email' => 'required|email|max:255',
-                'farms.*.phone' => 'nullable|string|max:20',
+                'farms.*.phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'farms.*.location' => 'required|string|max:255',
                 'farms.*.status' => 'nullable|in:active,inactive'
             ]);
