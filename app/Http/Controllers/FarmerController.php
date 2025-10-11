@@ -842,7 +842,11 @@ class FarmerController extends Controller
                 'qualityScore' => 0,
                 'productionData' => [],
                 'livestockList' => [],
-                'productionStats' => []
+                'productionStats' => [
+                    'monthly_trend' => collect(),
+                    'quality_distribution' => collect(),
+                    'top_producers' => []
+                ]
             ]);
         }
 
@@ -1179,7 +1183,11 @@ class FarmerController extends Controller
                 'budgetExcess' => 0,
                 'expensesData' => [],
                 'farms' => [],
-                'expenseStats' => []
+                'expenseStats' => [
+                    'monthly_trend' => collect(),
+                    'category_distribution' => collect(),
+                    'payment_method_distribution' => collect()
+                ]
             ]);
         }
 
@@ -1311,7 +1319,7 @@ class FarmerController extends Controller
                 'inStock' => 0,
                 'lowStock' => 0,
                 'outOfStock' => 0,
-                'inventoryData' => [],
+                'inventoryData' => collect(),
                 'inventory' => collect(),
                 'farms' => [],
                 'inventoryStats' => []
@@ -1959,7 +1967,33 @@ class FarmerController extends Controller
                 'activeIssues' => 0,
                 'productionData' => [],
                 'livestockDistribution' => [],
-                'performanceMetrics' => [],
+                'performanceMetrics' => [
+                    'milk_production' => [
+                        'current' => 0,
+                        'previous' => 0,
+                        'change' => 0
+                    ],
+                    'feed_consumption' => [
+                        'current' => 0,
+                        'previous' => 0,
+                        'change' => 0
+                    ],
+                    'veterinary_costs' => [
+                        'current' => 0,
+                        'previous' => 0,
+                        'change' => 0
+                    ],
+                    'health_score' => [
+                        'current' => 0,
+                        'previous' => 0,
+                        'change' => 0
+                    ],
+                    'breeding_success' => [
+                        'current' => 0,
+                        'previous' => 0,
+                        'change' => 0
+                    ]
+                ],
                 'recommendations' => []
             ]);
         }
@@ -2105,7 +2139,8 @@ class FarmerController extends Controller
         $total = $query->count();
         if ($total == 0) return 0;
         
-        $healthy = $query->where('health_status', 'Healthy')->count();
+        // Use lowercase comparison to be robust against casing differences
+        $healthy = $query->whereRaw('LOWER(health_status) = ?', ['healthy'])->count();
         return round(($healthy / $total) * 100, 1);
     }
 

@@ -80,4 +80,17 @@ class Livestock extends Model
     {
         return $this->belongsTo(User::class, 'qr_code_generated_by');
     }
+
+    /**
+     * Normalize health_status casing to lowercase on set and get.
+     */
+    public function setHealthStatusAttribute($value)
+    {
+        $this->attributes['health_status'] = is_string($value) ? strtolower($value) : $value;
+    }
+
+    public function getHealthStatusAttribute($value)
+    {
+        return is_string($value) ? strtolower($value) : $value;
+    }
 }

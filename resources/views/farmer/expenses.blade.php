@@ -544,10 +544,10 @@ $(document).ready(function() {
     new Chart(expenseTrendCtx, {
         type: 'line',
         data: {
-            labels: {!! json_encode($expenseStats['monthly_trend']->pluck('month')) !!},
+            labels: {!! json_encode(($expenseStats['monthly_trend'] ?? collect())->pluck('month')) !!},
             datasets: [{
                 label: 'Expenses (₱)',
-                data: {!! json_encode($expenseStats['monthly_trend']->pluck('expenses')) !!},
+                data: {!! json_encode(($expenseStats['monthly_trend'] ?? collect())->pluck('expenses')) !!},
                 borderColor: '#e74a3b',
                 backgroundColor: 'rgba(231, 74, 59, 0.1)',
                 borderWidth: 2,

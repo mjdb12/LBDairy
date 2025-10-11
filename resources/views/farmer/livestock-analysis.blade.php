@@ -1263,13 +1263,14 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center">
-                            <div class="empty-state">
-                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                <h5>No livestock data available</h5>
-                                <p class="text-muted">Add livestock to see analysis data here.</p>
-                            </div>
-                        </td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">No livestock data available</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
                     </tr>
                     @endforelse
                 </tbody>

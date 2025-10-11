@@ -165,7 +165,12 @@
                     </tr>
                     @empty
                     <tr>
-                        <td class="text-center text-muted" colspan="6">No inventory items available</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">No inventory items available</td>
+                        <td class="text-center text-muted">N/A</td>
+                        <td class="text-center text-muted">N/A</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -186,7 +191,7 @@
     </div>
     <div class="card-body">
         <div class="list-group list-group-flush">
-            @forelse($inventoryData->whereIn('status', ['Low Stock', 'Out of Stock']) as $item)
+            @forelse(collect($inventoryData)->whereIn('status', ['Low Stock', 'Out of Stock']) as $item)
             <div class="list-group-item d-flex justify-content-between align-items-center">
                 <div>
                     <div class="font-weight-bold">{{ $item['name'] }}</div>

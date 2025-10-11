@@ -493,10 +493,10 @@ $(document).ready(function() {
     new Chart(productionTrendCtx, {
         type: 'line',
         data: {
-            labels: {!! json_encode($productionStats['monthly_trend']->pluck('month')) !!},
+            labels: {!! json_encode(($productionStats['monthly_trend'] ?? collect())->pluck('month')) !!},
             datasets: [{
                 label: 'Production (L)',
-                data: {!! json_encode($productionStats['monthly_trend']->pluck('production')) !!},
+                data: {!! json_encode(($productionStats['monthly_trend'] ?? collect())->pluck('production')) !!},
                 borderColor: '#4e73df',
                 backgroundColor: 'rgba(78, 115, 223, 0.1)',
                 borderWidth: 2,
@@ -530,9 +530,9 @@ $(document).ready(function() {
     new Chart(qualityDistributionCtx, {
         type: 'doughnut',
         data: {
-            labels: {!! json_encode($productionStats['quality_distribution']->pluck('score')->map(function($score) { return 'Score ' . $score; })) !!},
+            labels: {!! json_encode(($productionStats['quality_distribution'] ?? collect())->pluck('score')->map(function($score) { return 'Score ' . $score; })) !!},
             datasets: [{
-                data: {!! json_encode($productionStats['quality_distribution']->pluck('count')) !!},
+                data: {!! json_encode(($productionStats['quality_distribution'] ?? collect())->pluck('count')) !!},
                 backgroundColor: [
                     '#e74a3b', '#f6c23e', '#1cc88a', '#36b9cc', '#4e73df',
                     '#6f42c1', '#fd7e14', '#20c9a6', '#5a5c69', '#858796'
