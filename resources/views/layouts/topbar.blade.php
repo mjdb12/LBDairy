@@ -253,7 +253,7 @@ function updateNotificationsList(notifications) {
             <a class="dropdown-item d-flex align-items-center notification-item" ${clickHandler}>
                 <div class="mr-3">
                     <div class="icon-circle ${typeClass}">
-                        <i class="${iconClass} text-white"></i>
+                        <i class="${iconClass} text-white fw-light" style="color: white !important;"></i>
                     </div>
                 </div>
                 <div class="flex-grow-1">
@@ -576,6 +576,23 @@ function testNotificationSystem() {
 
 .notification-item:hover .icon-circle {
     transform: scale(1.1);
+}
+
+.bg-info {
+    background-color: #18375d !important;
+}
+.bg-sucsess {
+    background-color: #387057 !important;
+}
+.bg-warning {
+    background-color: #fca700 !important;
+}
+.bg-info {
+    background-color: #dc3545 !important;
+}
+
+.icon-circle.bg-info {
+    box-shadow: #18375d;
 }
 </style>
 @endif

@@ -92,14 +92,14 @@
                     <input type="text" class="form-control" placeholder="Search logs..." id="auditSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="printTable()">
+                    <button class="btn-action btn-action-edit" title="print" onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshAuditData()">
+                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshAuditData('auditLogsTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -149,10 +149,10 @@
 
                     <!-- Buttons -->
                     <div class="filter-actions">
-                        <button class="btn-action btn-action-apply" onclick="applyFilters()">
+                        <button class="btn-action btn-action-apply" title="Refresh" onclick="applyFilters()">
                             <i class="fas fa-filter"></i> Apply
                         </button>
-                        <button class="btn-action btn-action-clear" onclick="clearFilters()">
+                        <button class="btn-action btn-action-clear" title="Clear" onclick="clearFilters()">
                             <i class="fas fa-times"></i> Clear
                         </button>
                     </div>
@@ -186,8 +186,8 @@
                             </span>
                         </td>
                         <td>
-                            <span class="action-badge action-{{ strtolower($log->action) }}">
-                                {{ ucfirst($log->action) }}
+                            <span class="badge badge-{{ $log->severity === 'critical' ? 'danger' : ($log->severity === 'warning' ? 'warning' : 'info') }}">
+                                {{ $log->action }}
                             </span>
                         </td>
                         <td>{{ $log->description ?? 'No details available' }}</td>
@@ -213,6 +213,65 @@
 
 @push('styles')
 <style>
+/* Role and Action Badges */
+    .role-badge,
+    .action-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .role-admin {
+        background: #18375d;
+        color: #ffffffff;
+    }
+
+    .role-farmer {
+        background: #387057;
+        color: #ffffffff;
+    }
+
+    .role-superadmin {
+        background: #dc3545;
+        color: #ffffffff;
+    }
+
+    .role-system {
+        background: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+    }
+
+    .action-login {
+        background: #387057;
+        color: #ffffff;
+    }
+
+    .action-update {
+        background: rgba(54, 185, 204, 0.1);
+        color: var(--info-color);
+    }
+
+    .action-delete {
+        background: rgba(231, 74, 59, 0.1);
+        color: var(--danger-color);
+    }
+
+    .action-create {
+        background: rgba(28, 200, 138, 0.1);
+        color: var(--success-color);
+    }
+
+    .action-export {
+        background: rgba(246, 194, 62, 0.1);
+        color: var(--warning-color);
+    }
+
+
+
+
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
@@ -433,61 +492,6 @@
         color: white;
     }
     
-    /* Role and Action Badges */
-    .role-badge,
-    .action-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .role-admin {
-        background: #18375d;
-        color: #ffffffff;
-    }
-
-    .role-farmer {
-        background: #387057;
-        color: #ffffffff;
-    }
-
-    .role-superadmin {
-        background: #dc3545;
-        color: #ffffffff;
-    }
-
-    .role-system {
-        background: rgba(108, 117, 125, 0.1);
-        color: #6c757d;
-    }
-
-    .action-login {
-        background: #387057;
-        color: #ffffff;
-    }
-
-    .action-update {
-        background: rgba(54, 185, 204, 0.1);
-        color: var(--info-color);
-    }
-
-    .action-delete {
-        background: rgba(231, 74, 59, 0.1);
-        color: var(--danger-color);
-    }
-
-    .action-create {
-        background: rgba(28, 200, 138, 0.1);
-        color: var(--success-color);
-    }
-
-    .action-export {
-        background: rgba(246, 194, 62, 0.1);
-        color: var(--warning-color);
-    }
 
     /* Animation Classes */
     .fade-in {
@@ -814,8 +818,8 @@
     }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
+        background-color: #fca700;
+        border-color: #fca700;
         color: white;
     }
     
@@ -1467,20 +1471,48 @@ function clearFilters() {
     auditLogsTable.draw();
 }
 
+
+// Refresh Admins Table
 function refreshAuditData() {
-    const refreshBtn = $('button[onclick="refreshAuditData()"]');
-    const originalIcon = refreshBtn.html();
+    const refreshBtn = document.querySelector('.btn-action-refresh-farmers');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
 
-    // Show spinner
-    refreshBtn.html('<i class="fas fa-spinner fa-spin"></i> Refreshing...');
-    refreshBtn.prop('disabled', true);
+    // Use unique flag for admins
+    sessionStorage.setItem('showRefreshNotificationAlerts', 'true');
 
-    // After reload, reset button & show notification
     setTimeout(() => {
-        refreshBtn.html(originalIcon);
-        refreshBtn.prop('disabled', false);
-        showNotification('Audit logs data refreshed successfully!', 'success');
-    }, 800);
+        location.reload();
+    }, 1000);
+}
+
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationAlerts') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAlerts');
+        setTimeout(() => {
+            showNotification('Audit Logs data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
 }
 
 function exportCSV() {

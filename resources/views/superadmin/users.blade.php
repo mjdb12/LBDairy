@@ -1286,7 +1286,7 @@
 
     <!-- User Management Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 User Directory
@@ -1303,17 +1303,17 @@
                     <input type="text" class="form-control" placeholder="Search users..." id="userSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="showAddUserModal()">
+                    <button class="btn-action btn-action-ok" title="Add User" onclick="showAddUserModal()">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
-                    <button class="btn-action btn-action-print" onclick="printTable()">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh" onclick="refreshData()">
+                    <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1468,17 +1468,26 @@
             </div>
 
             <!-- Password -->
-            <div class="col-md-6">
-              <label for="password" class="fw-semibold">Password <span class="text-danger">*</span></label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-              <small class="text-muted">Leave blank to keep existing password when editing.</small>
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="password" class="fw-semibold">Password <span class="text-danger">*</span></label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="password" name="password" placeholder="Enter password">
+                <i class="fas fa-eye toggle-password position-absolute" data-target="#password"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+            </div>
+                <small class="text-muted">Leave blank to keep existing password when editing.</small>
             </div>
 
             <!-- Confirm Password -->
-            <div class="col-md-6">
-              <label for="passwordConfirmation" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
-              <input type="password" class="form-control" id="passwordConfirmation" name="password_confirmation" placeholder="Confirm password">
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="passwordConfirmation" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="passwordConfirmation" name="password_confirmation" placeholder="Confirm password">
+                <i class="fas fa-eye toggle-password position-absolute" data-target="#passwordConfirmation"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
             </div>
+            </div>
+
           </div>
         </div>
 
@@ -1499,8 +1508,8 @@
 
       <!-- Header -->
       <div class="d-flex flex-column align-items-center mb-4">
-        <div class="icon-circle mb-3">
-          <i class="fas fa-user-edit fa-lg"></i>
+        <div class="icon-wrapper mb-3">
+          <i class="fas fa-user-edit fa-2x"></i>
         </div>
         <h5 class="fw-bold mb-1">Edit User</h5>
         <p class="text-muted mb-0 small">
@@ -1606,11 +1615,15 @@
               </select>
             </div>
 
-            <!-- New Password -->
-            <div class="col-md-6">
-              <label for="editAdminPassword" class="fw-semibold">New Password</label>
-              <input type="password" class="form-control" id="editAdminPassword" name="password" placeholder="Leave blank to keep current">
-              <small class="text-muted">Leave blank to retain existing password.</small>
+
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="editAdminPassword" class="fw-semibold">New Password </label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="editAdminPassword" name="password" placeholder="Leave blank to keep current">
+                <i class="fas fa-eye toggle-newpassword position-absolute" data-target="#newpassword"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+            </div>
+                <small class="text-muted">Leave blank to keep current password.</small>
             </div>
 
           </div>
@@ -1719,6 +1732,69 @@
 <!-- jsPDF and autoTable for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Script for see password -->
+<script>
+    // Handle password toggle visibility for both password fields in the Add Admin form
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', () => {
+                    // Find the closest input field to this icon
+                    const input = icon.closest('.position-relative').querySelector('input');
+                    
+                    // Toggle password visibility
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password'; 
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // Validate password match on input
+            document.getElementById('passwordConfirmation').addEventListener('input', function() {
+                const password = document.getElementById('password').value;
+                const confirmation = this.value;
+                const notification = document.getElementById('userFormNotification');
+                
+                if (password !== confirmation) {
+                    notification.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Passwords do not match
+                        </div>
+                    `;
+                    notification.style.display = 'block';
+                } else {
+                    notification.style.display = 'none';
+                }
+            });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Password toggle functionality for edit modal
+        document.querySelectorAll('.toggle-newpassword').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const targetId = icon.getAttribute('data-target');
+                const input = document.querySelector(targetId) || icon.parentElement.querySelector('input');
+                
+                // Toggle password visibility
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    });
+</script>
 
 <script>
 let usersTable;
@@ -1838,8 +1914,8 @@ function loadUsers() {
                         `<span class="badge badge-${getStatusBadgeClass(user.status)}">${user.status}</span>`,
                         new Date(user.created_at).toLocaleDateString(),
                         getLastLoginDisplay(user),
-                        `<div class="action-buttons">
-                            <button type="button" class="btn-action btn-action-edit" data-toggle="modal" data-target="#editAdminModal" data-user-id="${user.id}" onclick="editUser('${user.id}')" title="Edit">
+                        `<div class="btn-group">
+                            <button type="button" class="btn-action btn-action-ok" data-toggle="modal" data-target="#editAdminModal" data-user-id="${user.id}" onclick="editUser('${user.id}')" title="Edit">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit</span>
                             </button>

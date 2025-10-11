@@ -20,7 +20,7 @@
           Registration Information
         </h6>
         <div class="d-flex justify-content-end">
-                <a href="{{ route('admin.approvals') }}" class="btn-action btn-secondary btn-sm">
+                <a href="{{ route('admin.approvals') }}" title="Back" class="btn-action btn-secondary btn-sm">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
             </div>
@@ -35,7 +35,7 @@
                     <p class="text-left"><strong>Username:</strong> {{ $user->username }}</p>
                     <p class="text-left"><strong>Email Address:</strong> {{ $user->email }}</p>
                     <p class="text-left"><strong>Contact Number:</strong> {{ $user->phone ?? 'Not provided' }}</p>
-                    <p class="text-left"><strong>Role:</strong><span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
+                    <p class="text-left"><strong>Role:</strong><span class="role-badge role-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
                         <i class="fas fa-{{ $user->role === 'farmer' ? 'seedling' : 'user-shield' }} me-1"></i>{{ ucfirst($user->role) }}</span>
                     </p>
                     <p class="text-left"><strong>Barangay:</strong> {{ $user->barangay }}</p>
@@ -47,7 +47,7 @@
                     <p class="text-left"><strong>Farmer Code:</strong> {{ $user->farmer_code }}</p>
                     <p class="text-left"><strong>Farm Address:</strong> {{ $user->farm_address }}</p>
                     <p class="text-left"><strong>Registration Date:</strong> {{ $user->created_at->format('F d, Y \a\t g:i A') }}</p>
-                    <p class="text-left"><strong>Status:</strong> <span class="badge bg-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
+                    <p class="text-left"><strong>Status:</strong> <span class="role-badge status-{{ $user->status === 'pending' ? 'warning' : ($user->status === 'approved' ? 'success' : 'danger') }}">
                         <i class="fas fa-{{ $user->status === 'pending' ? 'clock' : ($user->status === 'approved' ? 'check' : 'times') }} me-1"></i>{{ ucfirst($user->status) }}</span>
                     </p>
                 </div>
@@ -75,12 +75,12 @@
                     @if($user->status === 'pending')
                         <div class="row g-2">
                             <div class="col-12 col-md-6">
-                                <button type="button" class="btn-action btn-success btn-lg" onclick="approveUser({{ $user->id }})">
+                                <button type="button" class="btn-action btn-success btn-lg" title="Approve Registration" onclick="approveUser({{ $user->id }})">
                                     <i class="fas fa-check mr-2"></i> Approve Registration
                                 </button>
                             </div>
                             <div class="col-12 col-md-6">
-                                <button type="button" class="btn-action btn-danger  btn-lg" onclick="rejectUser({{ $user->id }})">
+                                <button type="button" class="btn-action btn-danger  btn-lg" title="Reject Registration" onclick="rejectUser({{ $user->id }})">
                                     <i class="fas fa-times mr-2"></i> Reject Registration
                                 </button>
                             </div>
@@ -102,7 +102,7 @@
                     <hr>
 
                     <div class="text-center">
-                        <a href="mailto:{{ $user->email }}" class="btn-action btn-action-send">
+                        <a href="mailto:{{ $user->email }}" title="Send Email" class="btn-action btn-action-send">
                             <i class="fas fa-envelope me-2"></i>
                             Send Email
                         </a>
@@ -241,7 +241,51 @@
 @endpush
 @push('styles')
 <style>
-    
+    /* Role badge base styles */
+    .role-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-block;
+    }
+
+    /* Success variant (farmer) */
+    .role-badge.role-success {
+        background: #387057;
+        color: #ffffff;
+    }
+    /* Info variant (admin/other roles) */
+    .role-badge.role-info {
+        background: #18375d;
+        color: #ffffff;
+    }
+    .role-badge.role-warning {
+        background: #fca700;
+        color: #ffffff;
+    }
+
+    /* Success variant (farmer) */
+    .role-badge.status-pending {
+        background: #387057;
+        color: #ffffff;
+    }
+    /* Info variant (admin/other roles) */
+    .role-badge.status-warning {
+        background: #fca700;
+        color: #ffffff;
+    }
+    .role-badge.status-danger {
+        background: #dc3545;
+        color: #ffffff;
+    }
+    /* Success variant (farmer) */
+    .role-badge.status-approve {
+        background: #387057;
+        color: #ffffff;
+    }=
 .smart-modal {
   border: none;
   border-radius: 16px;

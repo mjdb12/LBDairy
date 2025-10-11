@@ -1259,7 +1259,7 @@
 
     <!-- Pending Farmers Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 Pending Farmer Registrations
@@ -1276,14 +1276,14 @@
                     <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable('pendingFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1326,7 +1326,7 @@
 
     <!-- Active Farmers Card -->
      <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 Active Farmers
@@ -1343,14 +1343,14 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="printTable('activeFarmersTable')">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable('activeFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-admins" onclick="refreshAdminsTable('activeFarmersTable')">
+                    <button class="btn-action btn-action-refresh-admins" title="Refresh" onclick="refreshAdminsTable('activeFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1405,7 +1405,7 @@
                     <i class="fas fa-user fa-2x "></i>
                 </div>
                 <h5 class="fw-bold mb-1">Farmer Details </h5>
-                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected user.</p>
             </div>
 
       <!-- Body -->
@@ -1738,14 +1738,14 @@ $(document).ready(function() {
     if (sessionStorage.getItem('showRefreshNotificationFarmers') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationFarmers');
         setTimeout(() => {
-            showNotification('Farmers data refreshed successfully!', 'success');
+            showNotification('Pending Farmers data refreshed successfully!', 'success');
         }, 500);
     }
 
     if (sessionStorage.getItem('showRefreshNotificationAdmins') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationAdmins');
         setTimeout(() => {
-            showNotification('Admins data refreshed successfully!', 'success');
+            showNotification('Active Farmers data refreshed successfully!', 'success');
         }, 500);
     }
 });
@@ -1941,7 +1941,7 @@ function loadPendingFarmers() {
                         farmer.email || 'N/A',
                         farmer.username || 'N/A',
                         farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A',
-                        `<div class="action-buttons">
+                        `<div class="btn-group">
                             <button class="btn-action btn-action-ok" onclick="approveFarmer('${farmer.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
                                 <span>Approve</span>
@@ -2231,37 +2231,28 @@ function sendMessage(event) {
             message: message
         },
         success: function(response) {
-            if (response.success) {
-                document.getElementById('messageNotification').innerHTML = `
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i>
-                        Message sent to <strong>${name}</strong> successfully!
-                    </div>
-                `;
-                document.getElementById('messageNotification').style.display = 'block';
+            document.getElementById('messageNotification').innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="fas fa-check-circle mr-2"></i>
+                   Message sent to <strong>&nbsp;${name}&nbsp;</strong> successfully!
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `;
+            document.getElementById('messageNotification').style.display = 'block';
 
-                document.getElementById('messageSubject').value = '';
-                document.getElementById('messageBody').value = '';
-                
-                setTimeout(() => {
-                    $('#contactModal').modal('hide');
-                    document.getElementById('messageNotification').style.display = 'none';
-                }, 2000);
-            } else {
-                document.getElementById('messageNotification').innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle"></i>
-                        ${response.message || 'Error sending message. Please try again.'}
-                    </div>
-                `;
-                document.getElementById('messageNotification').style.display = 'block';
-            }
+            document.getElementById('messageSubject').value = '';
+            document.getElementById('messageBody').value = '';
         },
         error: function(xhr) {
             document.getElementById('messageNotification').innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle"></i>
+                    <i class="fas fa-exclamation-circle mr-2"></i>
                     Error sending message. Please try again.
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
                 </div>
             `;
             document.getElementById('messageNotification').style.display = 'block';
@@ -2395,7 +2386,7 @@ function exportPDF(tableId) {
             headers = ['User ID', 'Name', 'Farm Name', 'Barangay', 'Contact', 'Email', 'Username', 'Registration Date'];
             reportTitle = 'Admin Pending Registrations Report';
         } else {
-            headers = ['User ID', 'Name', 'Farm Name', 'Barangay', 'Contact', 'Username', 'Registration Date'];
+            headers = ['User ID', 'Name', 'Farm Name', 'Barangay', 'Contact', 'Email', 'Username', 'Registration Date'];
             reportTitle = 'Admin Active Farmers Report';
         }
         
@@ -2497,6 +2488,7 @@ function printTable(tableId) {
                             <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Farm Name</th>
                             <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Barangay</th>
                             <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Contact</th>
+                            <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Email</th>
                             <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Username</th>
                             <th style="border: 2px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>`;
         }

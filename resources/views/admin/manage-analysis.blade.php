@@ -75,7 +75,7 @@
     </div>
 
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 Farmer Productivity Overview
@@ -89,17 +89,17 @@
                             <i class="fas fa-search"></i>
                         </span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="customSearch">
+                    <input type="text" class="form-control" placeholder="Search farmer..." id="customSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable('pendingFarmersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1431,13 +1431,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
-let dataTable;
+let farmersTable;
 let chartInstance;
 let downloadCounter = 1;
 
 $(document).ready(function () {
+    // Initialize DataTables
+    initializeDataTables();
+    
+    // Load data
+    loadfarmersTable();
+    loadActiveFarmers();
+    updateStats();
+
+    // Custom search functionality
+    $('#customSearch').on('keyup', function() {
+        farmersTableTable.search(this.value).draw();
+    });
+});
+$(document).ready(function () {
     // Initialize DataTable
-    dataTable = $('#dataTable').DataTable({
+    dataTable = $('#farmersTable').DataTable({
         dom: 'Bfrtip',
         searching: true,
         paging: true,

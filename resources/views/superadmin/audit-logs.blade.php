@@ -1006,10 +1006,10 @@
         <!-- Activity Timeline Chart -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
-                <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-chart-line"></i>
-                        System Activity Timeline (Last 24 Hours)
+                        System Activity Timeline 
                     </h6>
                 </div>
                 <div class="card-body">
@@ -1043,7 +1043,7 @@
         <!-- Severity Distribution -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
-                <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-chart-pie"></i>
                         Events by Severity
@@ -1072,7 +1072,7 @@
 
     <!-- Security Alerts -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-shield-alt"></i>
                 Security Alerts & Critical Events
@@ -1089,14 +1089,14 @@
                     <input type="text" class="form-control" placeholder="Search alerts..." id="securitySearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printSecurityTable()">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printSecurityTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh" onclick="refreshSecurityAlerts()">
+                    <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshSecurityAlerts()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1136,7 +1136,7 @@
                             </td>
                             <td>{{ $alert->details ?? 'N/A' }}</td>
                             <td>
-                                <button class="btn-action btn-action-add" onclick="investigateAlert('{{ $alert->id }}')" title="Investigate">
+                                <button class="btn-action btn-action-add" title="Investigate" onclick="investigateAlert('{{ $alert->id }}')" title="Investigate">
                                     <i class="fas fa-search"></i>
                                     <span>Investigate</span>
                                 </button>
@@ -1160,7 +1160,7 @@
 
     <!-- User Activity Summary -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 User Activity Summary
@@ -1177,11 +1177,11 @@
                     <input type="text" class="form-control" placeholder="Search users..." id="userActivitySearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                        <button class="btn-action btn-action-refresh" onclick="refreshUserActivity()">
+                        <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshUserActivity()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1245,10 +1245,10 @@
 
     <!-- System Activity Logs Table (Moved to bottom) -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-table"></i>
-                System Activity Logs (Latest 30 Entries)
+                System Activity Logs (Latest)
             </h6>
         </div>
         <div class="card-body">
@@ -1262,14 +1262,14 @@
                     <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printSystemLogsTable()">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printSystemLogsTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh" onclick="refreshSystemLogs()">
+                    <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshSystemLogs()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1394,7 +1394,7 @@
                     <i class="fas fa-history fa-2x "></i>
                 </div>
                 <h5 class="fw-bold mb-1">Audit Log Details </h5>
-                <p class="text-muted mb-0 small">Below are the complete details of the selected audit log.</p>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected audit log.</p>
             </div>
 
       <!-- Body -->

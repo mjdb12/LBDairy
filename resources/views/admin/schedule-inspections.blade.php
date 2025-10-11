@@ -498,6 +498,11 @@
         border-color: #387057;
         color: white;
     }
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
 
     .btn-action-ok {
         background-color: #18375d;
@@ -2060,14 +2065,14 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="printFarmersTable()">
+                    <button class="btn-action btn-action-add" title="Print" onclick="printFarmersTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-admins" onclick="refreshFarmersData()">
+                    <button class="btn-action btn-action-refresh-admins" title="Refresh" onclick="refreshFarmersData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -2125,14 +2130,14 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="inspectionSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="printInspectionsTable()">
+                    <button class="btn-action btn-action-add" title="Print" onclick="printInspectionsTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-admins" onclick="refreshInspectionsData()">
+                    <button class="btn-action btn-action-refresh-admins" title="Refresh" onclick="refreshInspectionsData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -2239,7 +2244,7 @@
                 <!-- Footer Buttons -->
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok" id="inspectionSubmitBtn">Schedule Inspection</button>
+                    <button type="submit" class="btn-modern btn-ok" id="inspectionSubmitBtn" title="Schedule Inspection" >Schedule Inspection</button>
                 </div>
             </form>
         </div>
@@ -3043,7 +3048,7 @@ function refreshInspectionsData() {
     setTimeout(() => {
         refreshBtn.html(originalIcon);
         refreshBtn.prop('disabled', false);
-        showNotification('Inspections data refreshed', 'success');
+        showNotification('Inspections data refreshed successfully!', 'success');
     }, 1000);
 }
 
@@ -3058,7 +3063,7 @@ function refreshFarmersData() {
     setTimeout(() => {
         refreshBtn.html(originalIcon);
         refreshBtn.prop('disabled', false);
-        showNotification('Farmers data refreshed', 'success');
+        showNotification('Farmers data refreshed successfully!', 'success');
     }, 1000);
 }
 

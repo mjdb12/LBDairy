@@ -254,8 +254,25 @@
         color: white;
     }
 
-    /* Custom styles for admin profile */
-    
+       
+    /* Profile Picture Enhancement */
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .img-profile {
+        border: 6px solid white;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .img-profile:hover {
+        transform: scale(1.08);
+        box-shadow: 0 1.5rem 4rem rgba(24, 55, 93, 0.25);
+    }
+
     /* Profile Picture Enhancement */
     .profile-picture-container {
         position: relative;
@@ -390,60 +407,264 @@
     background: #18375d;
     color: #fff;
 }
+    
+    /* Profile Picture Enhancement */
+    .profile-picture-container {
+        position: relative;
+        display: inline-block;
+    }
 
-/* -------------------------
-   Profile Info Table (Right Column)
--------------------------- */
-.profile-info-table {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-}
+    .img-profile {
+        border: 6px solid white;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
 
-.profile-info-table th {
-    color: #18375d;
-    font-weight: 600;
-    width: 200px;
-    font-size: 0.9rem;
-    padding: 1rem 0.75rem;
-    border-bottom: 1px solid #e3e6f0;
-    vertical-align: middle;
-    white-space: nowrap;
-}
+    .img-profile:hover {
+        transform: scale(1.08);
+        box-shadow: 0 1.5rem 4rem rgba(24, 55, 93, 0.25);
+    }
 
-.profile-info-table th i {
-    margin-right: 0.5rem;
-    width: 18px;
-    text-align: center;
-}
+    /* Profile Card Thick Blue Border */
+    .profile-card-bordered {
+        background: #18375d;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 4px 32px rgba(24, 55, 93, 0.10);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+    }
 
-.profile-info-table td {
-    color: #5a5c69;
-    font-weight: 500;
-    font-size: 0.95rem;
-    padding: 1rem 0.75rem;
-    border-bottom: 1px solid #e3e6f0;
-    vertical-align: middle;
-}
+    /* Card Headers */
+    .card-header {
+        background: linear-gradient(135deg, #18375d 0%, #122a47 100%);
+        color: white;
+        border-bottom: none;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-.profile-info-table tbody tr:hover {
-    background-color: #f8f9fc;
-    transition: background-color 0.2s ease;
-}
+    .card-header h6 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1rem;
+    }
 
-.profile-info-table tbody tr:last-child td,
-.profile-info-table tbody tr:last-child th {
-    border-bottom: none;
-}
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    /* Custom button colors */
+    .btn-edit-profile {
+        background-color: #387057 !important;
+        border-color: #387057 !important;
+        color: white !important;
+    }
+    .btn-action-edit-profile {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+        .btn-action-edit-profile:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
 
-/* Empty cell fallback */
-.profile-info-table td:empty::after {
-    content: "Not provided";
-    color: #858796;
-    font-style: italic;
-}
+    .btn-action-edit-pass {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+        .btn-action-edit-pass:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-edit-profile:hover,
+    .btn-edit-profile:focus {
+        background-color: #2d5a47 !important;
+        border-color: #2d5a47 !important;
+        color: white !important;
+        box-shadow: 0 0 0 0.2rem rgba(56, 112, 87, 0.25) !important;
+    }
+    
+    .btn-change-password {
+        background-color: #fca700 !important;
+        border-color: #fca700 !important;
+        color: white !important;
+    }
+    
+    .btn-change-password:hover,
+    .btn-change-password:focus {
+        background-color: #e69500 !important;
+        border-color: #e69500 !important;
+        color: white !important;
+        box-shadow: 0 0 0 0.2rem rgba(252, 167, 0, 0.25) !important;
+    }
 
+     /* Profile Info Table */
+    .profile-info-table {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .profile-info-table td {
+        color: #5a5c69 !important;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e3e6f0;
+        font-size: 0.95rem;
+        vertical-align: middle;
+    }
+    
+    .profile-info-table th {
+        color: #18375d !important;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e3e6f0;
+        font-weight: 600;
+        width: 200px;
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+    
+    .profile-info-table th i {
+        margin-right: 0.5rem;
+        width: 16px;
+        text-align: center;
+    }
+    
+    .profile-info-table tbody tr:hover {
+        background-color: #f8f9fc;
+        transition: background-color 0.2s ease;
+    }
+    
+    .profile-info-table tbody tr:last-child td,
+    .profile-info-table tbody tr:last-child th {
+        border-bottom: none;
+    }
+    
+    /* Profile detail values styling */
+    .profile-info-table td {
+        font-weight: 500;
+    }
+    
+    .profile-info-table td:empty::after {
+        content: "Not provided";
+        color: #858796;
+        font-style: italic;
+    }
+    /* Stagger Animation */
+    .stagger-animation .col-12 {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .stagger-animation .col-12:nth-child(1) { animation-delay: 0.1s; }
+    .stagger-animation .col-12:nth-child(2) { animation-delay: 0.2s; }
+    .stagger-animation .col-12:nth-child(3) { animation-delay: 0.3s; }
+    .stagger-animation .col-12:nth-child(4) { animation-delay: 0.4s; }
 
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Notification Styles */
+    .notification {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease-out;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    
+
+/* Responsive Design */
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .card-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .profile-info-table th {
+            width: 150px;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info-table td {
+            font-size: 0.9rem;
+        }
+        
+        .profile-info-table th i {
+            width: 14px;
+            margin-right: 0.4rem;
+        }
+        
+        .profile-card-bordered {
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .profile-info-table th {
+            width: 120px;
+            font-size: 0.8rem;
+            padding: 0.75rem 0;
+        }
+        
+        .profile-info-table td {
+            font-size: 0.85rem;
+            padding: 0.75rem 0;
+        }
+        
+        .profile-info-table th i {
+            width: 12px;
+            margin-right: 0.3rem;
+        }
+    }
 /* -------------------------
    Custom Action Buttons (Details Header)
 -------------------------- */
@@ -538,6 +759,33 @@
             text-align: center;
         }
     }
+    /* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
     /* ============================
 SMART FORM - Enhanced Version
 ============================ */
@@ -935,7 +1183,7 @@ SMART FORM - Enhanced Version
                 
                 <!-- Camera Button Below Profile Picture -->
                 <div class="mt-3">
-                    <button class="btn-action btn-action-ok" onclick="document.getElementById('uploadProfilePicture').click()">
+                    <button class="btn-action btn-action-ok" title="Upload Profile Picture" onclick="document.getElementById('uploadProfilePicture').click()">
                         <i class="fas fa-camera"></i>
                     </button>
                     <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
@@ -959,11 +1207,11 @@ SMART FORM - Enhanced Version
         </div>
     </div>
     
-    <!-- Profile Details -->
+       <!-- Profile Details -->
     <div class="col-12 col-md-7 col-lg-8 mb-4">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
-                <h6 class="mb-0">
+                <h6>
                     <i class="fas fa-user-edit"></i>
                     Profile Details
                 </h6>
@@ -974,43 +1222,45 @@ SMART FORM - Enhanced Version
                     <table class="table table-borderless mb-0 profile-info-table">
                         <tbody>
                             <tr>
-                                <th><i class="fas fa-user mr-2"></i> Full Name</th>
+                                <th scope="row" >
+                                    <i class="fas fa-user"></i> Full Name
+                                </th>
                                 <td>{{ auth()->user()->name ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-envelope mr-2 "></i> Email</th>
+                                <th scope="row"><i class="fas fa-envelope  "></i> Email</th>
                                 <td>{{ auth()->user()->email ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-phone mr-2 "></i> Phone</th>
+                                <th scope="row"><i class="fas fa-phone  "></i> Phone</th>
                                 <td>{{ auth()->user()->phone ?? 'Not provided' }}</td>
                             </tr>
-                            <tr>
-                                <th><i class="fas fa-user-shield mr-2 "></i> Position</th>
+                           <tr>
+                                <th scope="row"><i class="fas fa-user-shield  "></i> Position</th>
                                 <td>{{ auth()->user()->position ?? 'Super Admin' }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-map-marker-alt mr-2 "></i> Barangay</th>
+                                <th scope="row"><i class="fas fa-map-marker-alt  "></i> Barangay</th>
                                 <td>{{ auth()->user()->barangay ?? 'Not specified' }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-home mr-2 "></i> Address</th>
+                                <th scope="row"><i class="fas fa-home  "></i> Address</th>
                                 <td>{{ auth()->user()->address ?? 'Not provided' }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-calendar-alt mr-2 "></i> Member Since</th>
+                                <th scope="row"><i class="fas fa-calendar-alt  "></i> Member Since</th>
                                 <td>{{ auth()->user()->created_at ? auth()->user()->created_at->format('F j, Y') : 'Unknown' }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-clock mr-2 "></i> Last Updated</th>
+                                <th scope="row"><i class="fas fa-clock "></i> Last Updated</th>
                                 <td>{{ auth()->user()->updated_at ? auth()->user()->updated_at->format('F j, Y g:i A') : 'Never' }}</td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-user-tag mr-2 "></i> Role</th>
+                                <th scope="row"><i class="fas fa-user-tag "></i> Role</th>
                                 <td><span class="badge badge-primary">{{ ucfirst(auth()->user()->role ?? 'Unknown') }}</span></td>
                             </tr>
                             <tr>
-                                <th><i class="fas fa-check-circle mr-2 "></i> Status</th>
+                                <th scope="row"><i class="fas fa-check-circle  "></i> Status</th>
                                 <td><span class="badge badge-success">{{ ucfirst(auth()->user()->status ?? 'Active') }}</span></td>
                             </tr>
                         </tbody>

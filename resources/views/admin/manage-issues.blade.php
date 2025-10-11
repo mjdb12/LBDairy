@@ -31,7 +31,7 @@
                     <input type="text" class="form-control" placeholder="Search pending farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshfarmersTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshfarmersTable('pendingFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
@@ -75,7 +75,7 @@
                     <input type="text" class="form-control" placeholder="Search livestock..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-secondary btn-sm" onclick="backToFarmers()">
+                    <button class="btn-action btn-secondary btn-sm" title="Back" onclick="backToFarmers()">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
                 </div>
@@ -120,7 +120,7 @@
                     <input type="text" class="form-control" placeholder="Search livestock..." id="issueSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh-issues" onclick="refreshissuesTable('issuesTable')">
+                    <button class="btn-action btn-action-refresh-issues" title="Refresh" onclick="refreshissuesTable('issuesTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
@@ -268,7 +268,7 @@
                 <!-- Footer Buttons -->
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok">
+                    <button type="submit" class="btn-modern btn-ok" title="Report Issue" >
                         Report Issue
                     </button>
                 </div>
@@ -1778,7 +1778,8 @@
     });
 });
 
-// Refresh Farmer Table
+
+// Refresh Pending Farmers Table
 function refreshfarmersTable() {
     const refreshBtn = document.querySelector('.btn-action-refresh-farmers');
     const originalText = refreshBtn.innerHTML;
@@ -1793,31 +1794,34 @@ function refreshfarmersTable() {
     }, 1000);
 }
 
-   // Refresh issue Table
+// Refresh Admins Table
 function refreshissuesTable() {
     const refreshBtn = document.querySelector('.btn-action-refresh-issues');
     const originalText = refreshBtn.innerHTML;
     refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
     refreshBtn.disabled = true;
 
-    // Use unique flag for farmers
+    // Use unique flag for admins
     sessionStorage.setItem('showRefreshNotificationIssues', 'true');
 
     setTimeout(() => {
         location.reload();
     }, 1000);
 }
+
+// Check notifications after reload
 $(document).ready(function() {
     if (sessionStorage.getItem('showRefreshNotificationFarmers') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationFarmers');
         setTimeout(() => {
-            showNotification('Farmer table refreshed successfully!', 'success');
+            showNotification('Farmers data refreshed successfully!', 'success');
         }, 500);
     }
+
     if (sessionStorage.getItem('showRefreshNotificationIssues') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationIssues');
         setTimeout(() => {
-            showNotification('Issues table refreshed successfully!', 'success');
+            showNotification('Issues data refreshed successfully!', 'success');
         }, 500);
     }
 });
@@ -1850,7 +1854,7 @@ $(document).ready(function() {
                                     <td>${farmer.livestock_count || 0}</td>
                                     <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</td>
                                     <td>
-                                        <button class="btn-action btn-action-report-farmers" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                        <button class="btn-action btn-action-report-farmers" title="Report Issue" onclick="selectFarmer('${farmer.id}', '${displayName}')">
                                             <i class="fas fa-exclamation-triangle"></i> Report Issue
                                         </button>
                                     </td>
@@ -1915,7 +1919,7 @@ $(document).ready(function() {
                                     <td>${animal.farm ? animal.farm.name : 'N/A'}</td>
                                     <td><span class="badge badge-${animal.status === 'active' ? 'success' : 'secondary'}">${animal.status}</span></td>
                                     <td>
-                                        <button class="btn-action btn-action-report-livestock" onclick="selectLivestock('${animal.id}', '${animal.tag_number}')">
+                                        <button class="btn-action btn-action-report-livestock" title="Report Issue" onclick="selectLivestock('${animal.id}', '${animal.tag_number}')">
                                             <i class="fas fa-exclamation-triangle"></i> Report Issue
                                         </button>
                                     </td>
@@ -2003,27 +2007,22 @@ $(document).ready(function() {
     });
 
     function showNotification(message, type) {
-        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        
-        const notification = document.createElement('div');
-        notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
-        notification.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
-        notification.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
             ${message}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
             </button>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 3000);
-    }
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
+}
 
     // Issue management functions
     function viewIssue(issueId) {
