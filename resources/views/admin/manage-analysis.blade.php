@@ -1436,22 +1436,11 @@ let chartInstance;
 let downloadCounter = 1;
 
 $(document).ready(function () {
-    // Initialize DataTables
-    initializeDataTables();
-    
-    // Load data
-    loadfarmersTable();
-    loadActiveFarmers();
-    updateStats();
-
-    // Custom search functionality
-    $('#customSearch').on('keyup', function() {
-        farmersTableTable.search(this.value).draw();
-    });
+    // DataTable is initialized below; keep this block minimal to avoid duplicate init
 });
 $(document).ready(function () {
     // Initialize DataTable
-    dataTable = $('#farmersTable').DataTable({
+    farmersTable = $('#farmersTable').DataTable({
         dom: 'Bfrtip',
         searching: true,
         paging: true,

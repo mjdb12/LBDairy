@@ -260,10 +260,6 @@ $(document).ready(function () {
     // ✅ Initialize DataTable
     initializeDataTables();
 
-    // ✅ Load data (your own function)
-    loadPendingTable();
-    updateStats();
-
     // ✅ Custom search functionality
     $('#pendingSearch').on('keyup', function () {
         if (pendingTable) {

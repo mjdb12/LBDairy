@@ -1715,13 +1715,12 @@ class AdminController extends Controller
     {
         try {
             $request->validate([
-                'name' => 'required|string|max:255',
+                'farmer_id' => 'required|exists:users,id',
                 'subject' => 'required|string|max:255',
                 'message' => 'required|string|max:1000',
             ]);
 
-            // This would typically send an email or notification
-            // For now, just return success
+            // Placeholder: integrate actual messaging/notification later
             return response()->json(['success' => true, 'message' => 'Message sent to farmer successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to send message'], 500);

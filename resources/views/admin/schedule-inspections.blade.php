@@ -3752,6 +3752,7 @@ $(document).ready(function() {
         
         const inspectionId = $('#editInspectionId').val();
         const formData = new FormData(this);
+        formData.append('_method', 'PUT');
         
         // Show loading state
         const submitBtn = $(this).find('button[type="submit"]');
@@ -3760,12 +3761,14 @@ $(document).ready(function() {
         
         $.ajax({
             url: `{{ route("admin.inspections.update", ":id") }}`.replace(':id', inspectionId),
-            method: 'PUT',
+            method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-HTTP-Method-Override': 'PUT',
+                'Accept': 'application/json'
             },
             success: function(response) {
                 if (response.success) {

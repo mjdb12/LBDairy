@@ -38,14 +38,14 @@
 
     <!-- Scanner Controls - Now outside the scanner container -->
     <div class="scanner-controls">
-        <button id="captureButton" class="scanner-btn" onclick="captureQRCode()" title="Capture QR Code">
+        <button id="captureButton" type="button" class="scanner-btn" onclick="toggleCamera()" title="Start/Stop Camera">
             <i class="fas fa-camera"></i>
         </button>
         <label for="uploadQR" class="scanner-btn mb-0" title="Upload QR Image">
             <i class="fas fa-upload"></i>
         </label>
         <input type="file" id="uploadQR" accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.webp" style="display: none;">
-        <button id="manualInputBtn" class="scanner-btn" onclick="showManualInput()" title="Manual Input">
+        <button id="manualInputBtn" type="button" class="scanner-btn" onclick="showManualInput()" title="Manual Input">
             <i class="fas fa-keyboard"></i>
         </button>
     </div>
@@ -933,6 +933,8 @@
 <script>
 let html5QrCode;
 let isScanning = false;
+let currentCameraId = null;
+const scannerConfig = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize forms
@@ -944,26 +946,87 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeScanner() {
     html5QrCode = new Html5Qrcode("qr-reader");
-    
-    const config = {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1.0
-    };
-    
-    // Start scanning automatically
-    html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        onScanSuccess,
-        onScanFailure
-    ).then(() => {
+    updateStatus('Ready to Scan', 'ready');
+}
+
+function isSecureOrigin() {
+    return (window.isSecureContext === true) || location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+}
+
+function updateCameraButton(active) {
+    const btn = document.getElementById('captureButton');
+    if (!btn) return;
+    btn.innerHTML = active ? '<i class="fas fa-stop"></i>' : '<i class="fas fa-camera"></i>';
+}
+
+async function startScanner() {
+    if (!isSecureOrigin()) {
+        updateStatus('Camera requires HTTPS. Use Upload or Manual Input.', 'error');
+        return;
+    }
+    try {
+        if (!html5QrCode) {
+            html5QrCode = new Html5Qrcode("qr-reader");
+        }
+        let started = false;
+        try {
+            await html5QrCode.start(
+                { facingMode: "environment" },
+                scannerConfig,
+                onScanSuccess,
+                onScanFailure
+            );
+            started = true;
+        } catch (fmErr) {
+            const cameras = await Html5Qrcode.getCameras();
+            if (cameras && cameras.length > 0) {
+                const back = cameras.find(c => /back|rear|environment/i.test(c.label));
+                const cam = back || cameras[0];
+                currentCameraId = cam.id;
+                await html5QrCode.start(
+                    { deviceId: { exact: cam.id } },
+                    scannerConfig,
+                    onScanSuccess,
+                    onScanFailure
+                );
+                started = true;
+            }
+        }
+        if (!started) {
+            updateStatus('No camera found', 'error');
+            return;
+        }
         isScanning = true;
         updateStatus('Scanning...', 'scanning');
-    }).catch(err => {
+        updateCameraButton(true);
+    } catch (err) {
         console.error('Failed to start scanner:', err);
-        updateStatus('Failed to start scanner', 'error');
-    });
+        const msg = (err && err.name === 'NotAllowedError') ? 'Camera permission denied. Allow camera access in your browser settings.' :
+                    (err && err.name === 'NotFoundError') ? 'No camera available.' :
+                    (err && /insecure|secure context/i.test(err.message || '')) ? 'Camera blocked on HTTP. Use HTTPS.' :
+                    'Failed to start scanner';
+        updateStatus(msg, 'error');
+    }
+}
+
+async function stopScanner() {
+    try {
+        if (html5QrCode && isScanning) {
+            await html5QrCode.stop();
+        }
+    } finally {
+        isScanning = false;
+        updateStatus('Ready to Scan', 'ready');
+        updateCameraButton(false);
+    }
+}
+
+function toggleCamera() {
+    if (isScanning) {
+        stopScanner();
+    } else {
+        startScanner();
+    }
 }
 
 function updateStatus(message, type) {

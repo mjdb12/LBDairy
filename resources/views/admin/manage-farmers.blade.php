@@ -1446,6 +1446,7 @@
             <form onsubmit="sendMessage(event)">
                 @csrf
                 <input type="hidden" id="farmerNameHidden">
+                <input type="hidden" id="farmerIdHidden">
 
                 <!-- Subject Field -->
                 <div class="form-group px-3 text-start">
@@ -1998,7 +1999,7 @@ function loadActiveFarmers() {
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </button>
-                            <button class="btn-action btn-action-edit" onclick="openContactModal()" title="Contact">
+                            <button class="btn-action btn-action-edit" onclick="openContactModal(${farmer.id})" title="Contact">
                                 <i class="fas fa-envelope"></i>
                                 <span>Contact</span>
                             </button>
@@ -2076,6 +2077,7 @@ function showFarmerDetails(farmerId) {
 
                 document.getElementById('farmerDetails').innerHTML = details;
                 document.getElementById('farmerNameHidden').value = `${farmer.first_name || ''} ${farmer.last_name || ''}`;
+                document.getElementById('farmerIdHidden').value = farmer.id;
                 
                 // Hide contact farmer button for all farmers when accessed via user ID click
                 const contactButton = $('#detailsModal .modal-footer button[onclick="openContactModal()"]');
@@ -2207,7 +2209,15 @@ $('#confirmRejectBtn').off('click').on('click', function () {
 
 
 
-function openContactModal() {
+function openContactModal(farmerId, farmerName) {
+    if (typeof farmerId !== 'undefined' && farmerId !== null) {
+        const idInput = document.getElementById('farmerIdHidden');
+        if (idInput) idInput.value = farmerId;
+    }
+    if (typeof farmerName !== 'undefined' && farmerName !== null) {
+        const nameInput = document.getElementById('farmerNameHidden');
+        if (nameInput) nameInput.value = farmerName;
+    }
     $('#detailsModal').modal('hide');
     $('#contactModal').modal('show');
 }
@@ -2215,8 +2225,23 @@ function openContactModal() {
 function sendMessage(event) {
     event.preventDefault();
     const name = document.getElementById('farmerNameHidden').value;
+    const farmerId = document.getElementById('farmerIdHidden').value;
     const subject = document.getElementById('messageSubject').value;
     const message = document.getElementById('messageBody').value;
+
+    if (!farmerId) {
+        document.getElementById('messageNotification').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                Please select a farmer before sending a message.
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `;
+        document.getElementById('messageNotification').style.display = 'block';
+        return;
+    }
 
     // Send message via AJAX
     $.ajax({
@@ -2226,15 +2251,16 @@ function sendMessage(event) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         data: {
-            name: name,
+            farmer_id: farmerId,
             subject: subject,
             message: message
         },
         success: function(response) {
+            const recipient = (name && name.trim().length) ? name : 'farmer';
             document.getElementById('messageNotification').innerHTML = `
                 <div class="alert alert-success alert-dismissible fade show">
                     <i class="fas fa-check-circle mr-2"></i>
-                   Message sent to <strong>&nbsp;${name}&nbsp;</strong> successfully!
+                   Message sent to <strong>&nbsp;${recipient}&nbsp;</strong> successfully!
                     <button type="button" class="close" data-dismiss="alert">
                         <span>&times;</span>
                     </button>

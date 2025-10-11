@@ -95,6 +95,10 @@ class NotificationController extends Controller
                     
                     // Get notifications again after generation
                     $notifications = Notification::unread()
+                        ->where(function($query) use ($user) {
+                            $query->where('recipient_id', $user->id)
+                                  ->orWhereNull('recipient_id'); // Global notifications
+                        })
                         ->recent()
                         ->orderBy('created_at', 'desc')
                         ->limit(10)
@@ -408,6 +412,13 @@ class NotificationController extends Controller
                     'success' => false,
                     'error' => 'Notification not found'
                 ], 404);
+            }
+
+            if (!is_null($notification->recipient_id) && (int)$notification->recipient_id !== (int)$user->id) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Forbidden'
+                ], 403);
             }
 
             $notification->markAsRead($user->id);

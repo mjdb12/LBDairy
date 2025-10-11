@@ -253,11 +253,11 @@
                         <!-- Description -->
                         <div class="col-md-12">
                             <label for="description" class="fw-semibold">Description <span class="text-danger">*</span></label>
-                            <textarea class="form-control mt-1" id="description" rows="4" required placeholder="Describe the issue in detail..." style="resize: none;"></textarea>
+                            <textarea class="form-control mt-1" id="description" name="description" rows="4" required placeholder="Describe the issue in detail..." style="resize: none;"></textarea>
                         </div>
                         <div class="col-md-12">
-                            <label for="notes" class="fw-semibold">Notes (Optional) <span class="text-danger">*</span></label>
-                            <textarea class="form-control mt-1" id="notes" rows="4" required placeholder="Additional notes..." style="resize: none;"></textarea>
+                            <label for="notes" class="fw-semibold">Notes (Optional)</label>
+                            <textarea class="form-control mt-1" id="notes" name="notes" rows="4" placeholder="Additional notes..." style="resize: none;"></textarea>
                         </div>
 
                         <div id="formNotification" class="mt-2" style="display: none;"></div>
