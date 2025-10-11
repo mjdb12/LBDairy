@@ -108,14 +108,14 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="printTable()">
+                    <button class="btn-action btn-action-edit" title="Print"  onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-alerts" onclick="refreshAlertsData()">
+                    <button class="btn-action btn-action-refresh-alerts" title="Refresh" onclick="refreshAlertsData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" ype="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -810,31 +810,22 @@ $(document).ready(function() {
     }
 });
 
-function showToast(message, type = 'info') {
-    const toast = `
-        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} text-white">
-                <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body">${message}</div>
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
         </div>
-    `;
+    `);
     
-    // Add toast to page and show it
-    const toastContainer = document.createElement('div');
-    toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
-    toastContainer.innerHTML = toast;
-    document.body.appendChild(toastContainer);
+    $('body').append(notification);
     
-    const toastElement = toastContainer.querySelector('.toast');
-    const bsToast = new bootstrap.Toast(toastElement);
-    bsToast.show();
-    
-    // Remove toast after it's hidden
-    toastElement.addEventListener('hidden.bs.toast', () => {
-        document.body.removeChild(toastContainer);
-    });
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
 }
 </script>
 @endpush

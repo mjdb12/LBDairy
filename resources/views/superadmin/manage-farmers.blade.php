@@ -650,6 +650,18 @@
         border-color: #fca700;
         color: white;
     }
+
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
     
     .btn-action-delete {
         background-color: #dc3545;
@@ -706,6 +718,52 @@
         min-width: 280px !important;
         overflow: visible !important;
     }
+
+    #editFarmerModal form {
+  text-align: left;
+}
+
+#editFarmerModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editFarmerModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editFarmerModal .form-control,
+#editFarmerModal select.form-control,
+#editFarmerModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editFarmerModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editFarmerModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
     .smart-modal {
   border: none;
   border-radius: 16px;
@@ -1171,7 +1229,7 @@
 
     <!-- Farmers Directory -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-users"></i>
                 Farmers Directory
@@ -1188,17 +1246,17 @@
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmersSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="showAddUserModal()">
+                    <button class="btn-action btn-action-ok" title="Add User" onclick="showAddUserModal()">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
-                    <button class="btn-action btn-action-print" onclick="printFarmersTable()">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printFarmersTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh" onclick="refreshFarmers()">
+                    <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshFarmers()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1252,15 +1310,15 @@
                             </td>
                             <td>{{ $farmer->created_at->format('M d, Y') }}</td>
                             <td>
-                                <div class="action-buttons">
-                                    <button class="btn-action btn-action-edit" onclick="editFarmer('{{ $farmer->id }}')" title="Edit">
+                                <div class="btn-group">
+                                    <button class="btn-action btn-action-ok" onclick="editFarmer('{{ $farmer->id }}')" title="Edit">
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>
                                     </button>
-                                                        <button class="btn-action btn-action-deletes" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
-                        <i class="fas fa-trash"></i>
-                        <span>Delete</span>
-                    </button>
+                                    <button class="btn-action btn-action-deletes" onclick="confirmDeleteFarmer('{{ $farmer->id }}')" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -1367,16 +1425,24 @@
             </div>
 
             <!-- Password -->
-            <div class="col-md-6">
-              <label for="userPassword" class="fw-semibold">Password <span class="text-danger">*</span></label>
-              <input type="password" class="form-control" id="userPassword" name="password" required>
-              <small class="text-muted">Leave blank to keep existing password when editing</small>
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="userPassword" class="fw-semibold">Password <span class="text-danger">*</span></label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="userPassword" name="password" placeholder="Enter password">
+                <i class="fas fa-eye toggle-password position-absolute" data-target="#password"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+            </div>
+                <small class="text-muted">Leave blank to keep existing password when editing.</small>
             </div>
 
             <!-- Confirm Password -->
-            <div class="col-md-6">
-              <label for="userConfirmPassword" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
-              <input type="password" class="form-control" id="userConfirmPassword" name="confirm_password" required>
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="userConfirmPassword" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="userConfirmPassword" name="password_confirmation" placeholder="Confirm password">
+                <i class="fas fa-eye toggle-password position-absolute" data-target="#passwordConfirmation"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+            </div>
             </div>
 
           </div>
@@ -1409,7 +1475,7 @@
                     <i class="fas fa-user fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Farmer Details</h5>
-                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected user.</p>
             </div>
 
       <!-- Body -->
@@ -1430,7 +1496,7 @@
 </div>
 
 <!-- Smart Form Modal - Edit Farmer -->
-<div class="modal fade superadmin-modal" id="editFarmerModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade admin-modal" id="editFarmerModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content smart-form text-center p-4">
 
@@ -1450,90 +1516,94 @@
         <input type="hidden" id="editFarmerId" name="farmer_id">
 
         <div class="form-wrapper text-start mx-auto">
-          <div class="row g-3">
+            <div class="row g-3">
+                <!-- Full Name -->
+                <div class="col-md-6">
+                    <label for="editFarmerName" class="fw-semibold">Full Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="editFarmerName" name="name" required>
+                </div>
 
-            <!-- Full Name -->
-            <div class="col-md-6">
-              <label for="editFarmerName" class="fw-semibold">Full Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="editFarmerName" name="name" required>
+                <!-- Email -->
+                <div class="col-md-6">
+                    <label for="editFarmerEmail" class="fw-semibold">Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="editFarmerEmail" name="email" required>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-md-6">
+                    <label for="editFarmerPhone" class="fw-semibold">Contact Number</label>
+                    <input type="text" class="form-control" id="editFarmerPhone" name="phone">
+                </div>
+
+                <!-- Username -->
+                <div class="col-md-6">
+                    <label for="editFarmerUsername" class="fw-semibold">Username <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="editFarmerUsername" name="username" required>
+                </div>
+
+                <!-- Barangay -->
+                <div class="col-md-6">
+                    <label for="editFarmerBarangay" class="fw-semibold">Barangay <span class="text-danger">*</span></label>
+                    <select class="form-control" id="editFarmerBarangay" name="barangay" required>
+                    <option value="">Select Barangay</option>
+                    <option value="Abang">Abang</option>
+                    <option value="Aliliw">Aliliw</option>
+                    <option value="Atulinao">Atulinao</option>
+                    <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
+                    <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
+                    <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
+                    <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
+                    <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
+                    <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
+                    <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
+                    <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
+                    <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
+                    <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
+                    <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
+                    <option value="Igang">Igang</option>
+                    <option value="Kabatete">Kabatete</option>
+                    <option value="Kakawit">Kakawit</option>
+                    <option value="Kalangay">Kalangay</option>
+                    <option value="Kalyaat">Kalyaat</option>
+                    <option value="Kilib">Kilib</option>
+                    <option value="Kulapi">Kulapi</option>
+                    <option value="Mahabang Parang">Mahabang Parang</option>
+                    <option value="Malupak">Malupak</option>
+                    <option value="Manasa">Manasa</option>
+                    <option value="May-It">May-It</option>
+                    <option value="Nagsinamo">Nagsinamo</option>
+                    <option value="Nalunao">Nalunao</option>
+                    <option value="Palola">Palola</option>
+                    <option value="Piis">Piis</option>
+                    <option value="Samil">Samil</option>
+                    <option value="Tiawe">Tiawe</option>
+                    <option value="Tinamnan">Tinamnan</option>
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-6">
+                    <label for="editFarmerStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
+                    <select class="form-control" id="editFarmerStatus" name="status" required>
+                    <option value="">Select Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <!-- Password -->
+                <div class="col-md-6 mb-3 position-relative">
+                    <label for="editFarmerPassword" class="fw-semibold">New Password </label>
+                <div class="position-relative">
+                    <input type="password" class="form-control pe-5" id="editFarmerPassword" name="password" placeholder="Leave blank to keep current">
+                    <i class="fas fa-eye toggle-newpassword position-absolute" data-target="#newpassword"
+                    style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+                </div>
+                    <small class="text-muted">Leave blank to keep current password.</small>
+                </div>
+
             </div>
-
-            <!-- Email -->
-            <div class="col-md-6">
-              <label for="editFarmerEmail" class="fw-semibold">Email <span class="text-danger">*</span></label>
-              <input type="email" class="form-control" id="editFarmerEmail" name="email" required>
-            </div>
-
-            <!-- Contact -->
-            <div class="col-md-6">
-              <label for="editFarmerPhone" class="fw-semibold">Contact Number</label>
-              <input type="text" class="form-control" id="editFarmerPhone" name="phone">
-            </div>
-
-            <!-- Username -->
-            <div class="col-md-6">
-              <label for="editFarmerUsername" class="fw-semibold">Username <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="editFarmerUsername" name="username" required>
-            </div>
-
-            <!-- Barangay -->
-            <div class="col-md-6">
-              <label for="editFarmerBarangay" class="fw-semibold">Barangay <span class="text-danger">*</span></label>
-              <select class="form-control" id="editFarmerBarangay" name="barangay" required>
-                <option value="">Select Barangay</option>
-                <option value="Abang">Abang</option>
-                <option value="Aliliw">Aliliw</option>
-                <option value="Atulinao">Atulinao</option>
-                <option value="Ayuti (Poblacion)">Ayuti (Poblacion)</option>
-                <option value="Barangay 1 (Poblacion)">Barangay 1 (Poblacion)</option>
-                <option value="Barangay 2 (Poblacion)">Barangay 2 (Poblacion)</option>
-                <option value="Barangay 3 (Poblacion)">Barangay 3 (Poblacion)</option>
-                <option value="Barangay 4 (Poblacion)">Barangay 4 (Poblacion)</option>
-                <option value="Barangay 5 (Poblacion)">Barangay 5 (Poblacion)</option>
-                <option value="Barangay 6 (Poblacion)">Barangay 6 (Poblacion)</option>
-                <option value="Barangay 7 (Poblacion)">Barangay 7 (Poblacion)</option>
-                <option value="Barangay 8 (Poblacion)">Barangay 8 (Poblacion)</option>
-                <option value="Barangay 9 (Poblacion)">Barangay 9 (Poblacion)</option>
-                <option value="Barangay 10 (Poblacion)">Barangay 10 (Poblacion)</option>
-                <option value="Igang">Igang</option>
-                <option value="Kabatete">Kabatete</option>
-                <option value="Kakawit">Kakawit</option>
-                <option value="Kalangay">Kalangay</option>
-                <option value="Kalyaat">Kalyaat</option>
-                <option value="Kilib">Kilib</option>
-                <option value="Kulapi">Kulapi</option>
-                <option value="Mahabang Parang">Mahabang Parang</option>
-                <option value="Malupak">Malupak</option>
-                <option value="Manasa">Manasa</option>
-                <option value="May-It">May-It</option>
-                <option value="Nagsinamo">Nagsinamo</option>
-                <option value="Nalunao">Nalunao</option>
-                <option value="Palola">Palola</option>
-                <option value="Piis">Piis</option>
-                <option value="Samil">Samil</option>
-                <option value="Tiawe">Tiawe</option>
-                <option value="Tinamnan">Tinamnan</option>
-              </select>
-            </div>
-
-            <!-- Status -->
-            <div class="col-md-6">
-              <label for="editFarmerStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
-              <select class="form-control" id="editFarmerStatus" name="status" required>
-                <option value="">Select Status</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-
-            <!-- Password -->
-            <div class="col-md-6">
-              <label for="editFarmerPassword" class="fw-semibold">New Password (leave blank to keep current)</label>
-              <input type="password" class="form-control" id="editFarmerPassword" name="password">
-            </div>
-
-          </div>
 
           <!-- Notification -->
           <div id="editFarmerFormNotification" class="mt-3 text-center" style="display: none;"></div>
@@ -1542,7 +1612,7 @@
         <!-- Footer -->
         <div class="modal-footer justify-content-center mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" id="updateFarmerBtn" class="btn-modern btn-approves">
+          <button type="submit" id="updateFarmerBtn" class="btn-modern btn-ok">
             Update Farmer
           </button>
         </div>
@@ -1586,6 +1656,69 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Script for see password -->
+<script>
+    // Handle password toggle visibility for both password fields in the Add Admin form
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', () => {
+                    // Find the closest input field to this icon
+                    const input = icon.closest('.position-relative').querySelector('input');
+                    
+                    // Toggle password visibility
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password'; 
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // Validate password match on input
+            document.getElementById('userConfirmPassword').addEventListener('input', function() {
+                const password = document.getElementById('userPassword').value;
+                const confirmation = this.value;
+                const notification = document.getElementById('userFormNotification');
+                
+                if (password !== confirmation) {
+                    notification.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Passwords do not match
+                        </div>
+                    `;
+                    notification.style.display = 'block';
+                } else {
+                    notification.style.display = 'none';
+                }
+            });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Password toggle functionality for edit modal
+        document.querySelectorAll('.toggle-newpassword').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const targetId = icon.getAttribute('data-target');
+                const input = document.querySelector(targetId) || icon.parentElement.querySelector('input');
+                
+                // Toggle password visibility
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    });
+</script>
+
 <script>
 // Libraries loaded, ready to use
 $(document).ready(function() {
