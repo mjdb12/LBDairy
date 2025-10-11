@@ -430,24 +430,24 @@
         white-space: nowrap;
     }
 
-     .btn-action-ok {
+    .btn-action-oks {
         background-color: #18375d;
         border-color: #18375d;
         color: white;
     }
-    .btn-action-ok:hover {
+    .btn-action-oks:hover {
         background-color: #fca700;
         border-color: #fca700;
         color: white;
     }
 
-     .btn-action-edit {
+     .btn-action-edits {
         background-color: #387057;
         border-color: #387057;
         color: white;
     }
     
-    .btn-action-edit:hover {
+    .btn-action-edits:hover {
         background-color: #fca700;
         border-color: #fca700;
         color: white;
@@ -1185,7 +1185,7 @@
     <!-- Farm Analysis Table -->
     <div class="col-12 mb-4">
         <div class="card shadow mb-4 fade-in">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-table"></i>
                     Farm Analysis Data
@@ -1202,14 +1202,14 @@
                         <input type="text" class="form-control" placeholder="Search farms..." id="farmSearch">
                     </div>
                     <div class="d-flex flex-column flex-sm-row align-items-center">
-                        <button class="btn-action btn-action-print" onclick="printFarmTable()">
+                        <button class="btn-action btn-action-edits" title="Print" onclick="printFarmTable()">
                             <i class="fas fa-print"></i> Print
                         </button>
-                        <button class="btn-action btn-action-refresh" onclick="refreshFarmData()">
+                        <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshFarmData()">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </button>
                         <div class="dropdown">
-                            <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                                 <i class="fas fa-tools"></i> Tools
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
@@ -1274,7 +1274,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="action-buttons">
+                                    <div class="btn-group">
                                         <button class="btn-action btn-action-edit" onclick="editFarm('{{ $farm->id }}')" title="Edit">
                                             <i class="fas fa-edit"></i>
                                             <span>Edit</span>
@@ -1417,7 +1417,7 @@
                         </div>
 
                     <!-- Description -->
-                    <div class="form-group ">
+                    <div class="col-md-12">
                         <label for="editFarmDescription" class="fw-semibold">Description</label>
                         <textarea class="form-control mt-1" id="editFarmDescription" name="description" rows="3" style="resize: none;"></textarea>
                     </div>
@@ -2122,8 +2122,8 @@ function showNotification(message, type) {
     #farmAnalysisTable .btn-action.btn-action-edit,
     .action-buttons .btn-action.btn-action-edit,
     .btn-action.btn-action-edit {
-        background-color: #387057 !important;
-        border-color: #387057 !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
         color: white !important;
     }
     

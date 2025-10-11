@@ -724,7 +724,28 @@ SMART FORM - Enhanced Version
   background: #fca700;
   color: #fff;
 }
+/* Camera Button Below Profile Picture */
+.btn-action-ok {
+    background: #18375d;
+    color: #fff;
+    border-radius: 50%; /* perfect circle */
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: all 0.2s ease-in-out;
+    border: none;
+    margin: 0 auto;
+}
 
+.btn-action-ok:hover {
+    background: #fca700;
+    transform: scale(1.1); /* subtle pop effect */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
 /* ============================
    FOOTER & ALIGNMENT
    ============================ */
@@ -893,7 +914,7 @@ SMART FORM - Enhanced Version
                 
                 <!-- Camera Button Below Profile Picture -->
                 <div class="mt-3">
-                    <button class="btn-action btn-action-ok" onclick="document.getElementById('uploadProfilePicture').click()">
+                    <button class="btn-action btn-action-ok" title="Upload Profile Picture" onclick="document.getElementById('uploadProfilePicture').click()">
                         <i class="fas fa-camera"></i>
                     </button>
                     <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
@@ -924,7 +945,7 @@ SMART FORM - Enhanced Version
     <!-- Profile Details -->
     <div class="col-12 col-md-7 col-lg-8 mb-4">
         <div class="card shadow h-100">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                 <h6>
                     <i class="fas fa-user-edit"></i>
                     Profile Details

@@ -1254,6 +1254,22 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <style>
+                        @media (max-width: 768px) {
+                            .alert {
+                                margin: 30px;  /* Reduced side margins */
+                                padding: 15px;
+                                font-size: 14px;
+                                width: calc(100% - 60px); /* Make alert wider */
+                            }
+
+                            .alert .btn-close {
+                                padding: 0.5rem;
+                                margin: -0.5rem -0.5rem -0.5rem auto;
+                            }
+                        }
+                    </style>
+
                     @if(session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}

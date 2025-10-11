@@ -523,8 +523,8 @@
     }
     
     .btn-action-add-live {
-        background-color: #387057;
-        border-color: #387057;
+        background-color: #18375d;
+        border-color: #18375d;
         color: white;
     }
 
@@ -1590,7 +1590,7 @@
                     <input type="text" class="form-control" placeholder="Search farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh-farmers" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
@@ -1636,13 +1636,13 @@
                     <input type="text" class="form-control" placeholder="Search livestock..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-secondary btn-sm" onclick="backToFarmers()">
+                    <button class="btn-action btn-secondary btn-sm" title="Back to Farmers" onclick="backToFarmers()">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
-                    <button class="btn-action btn-action-add-live" data-toggle="modal" data-target="#addLivestockModal">
+                    <button class="btn-action btn-action-add-live" title="Add Livestock" data-toggle="modal" data-target="#addLivestockModal">
                         <i class="fas fa-plus"></i> Add Livestock
                     </button>
-                    <button class="btn-action btn-action-refresh-admins" onclick="refreshAdminsTable('activeFarmersTable')">
+                    <button class="btn-action btn-action-refresh-admins" title="Refresh" onclick="refreshAdminsTable('activeFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
@@ -2455,7 +2455,7 @@ $(document).ready(function () {
                                     <td>${farmer.livestock_count || 0}</td>
                                     <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</span></td>
                                     <td>
-                                        <button class="btn-action btn-action-view-livestock" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                        <button class="btn-action btn-action-view-livestock" title="View Livestock" onclick="selectFarmer('${farmer.id}', '${displayName}')">
                                             <i class="fas fa-eye"></i> View Livestock
                                         </button>
                                     </td>

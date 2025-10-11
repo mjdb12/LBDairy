@@ -51,7 +51,7 @@
                     <input type="text" class="form-control" placeholder="Search pending approvals..." id="pendingSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-refresh-pending" onclick="refreshPendingData()">
+                    <button class="btn-action btn-action-refresh-pending" title="Refresh" onclick="refreshPendingData('pendingTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
@@ -102,7 +102,7 @@
                             <tr>
                                 <td>{{ $user->first_name }} {{ $user->last_name }}</td>
                                 <td>
-                                    <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
+                                    <span class="role-badge role-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
                                         {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
@@ -144,7 +144,7 @@
                             <tr>
                                 <td>{{ $user->first_name }} {{ $user->last_name }}</td>
                                 <td>
-                                    <span class="badge bg-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
+                                    <span class="role-badge role-{{ $user->role === 'farmer' ? 'success' : 'info' }}">
                                         {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
@@ -350,13 +350,13 @@ function initializeDataTables() {
                 render: function(row) {
                     return `
                         <div class="btn-group" role="group">
-                            <a href="/admin/approvals/${row.id}" class="btn-action btn-action-ok">
+                            <a href="/admin/approvals/${row.id}" title="View" class="btn-action btn-action-ok">
                                 <i class="fas fa-eye mr-1"></i>View
                             </a>
-                            <button type="button" class="btn-action btn-action-edit" onclick="approveUser(${row.id})">
+                            <button type="button" class="btn-action btn-action-edit" title="Approve" onclick="approveUser(${row.id})">
                                 <i class="fas fa-check mr-1"></i>Approve
                             </button>
-                            <button type="button" class="btn-action btn-action-deletes" onclick="rejectUser(${row.id})">
+                            <button type="button" class="btn-action btn-action-deletes" title="Reject" onclick="rejectUser(${row.id})">
                                 <i class="fas fa-times mr-1"></i>Reject
                             </button>
                         </div>`;
@@ -391,21 +391,47 @@ function initializeDataTables() {
     console.log("✅ pendingTable initialized", pendingTable);
 }
 
-// ✅ Refresh Pending Table
+// Refresh Admins Table
 function refreshPendingData() {
     const refreshBtn = document.querySelector('.btn-action-refresh-pending');
-    if (!refreshBtn) return;
-
     const originalText = refreshBtn.innerHTML;
     refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
     refreshBtn.disabled = true;
 
-    // Flag for notification
-    sessionStorage.setItem('showRefreshNotificationPending', 'true');
+    // Use unique flag for admins
+    sessionStorage.setItem('showRefreshNotificationAlerts', 'true');
 
     setTimeout(() => {
         location.reload();
     }, 1000);
+}
+
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationAlerts') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAlerts');
+        setTimeout(() => {
+            showNotification('Pending Approvals data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
 }
 
 
@@ -434,7 +460,62 @@ function refreshPendingData() {
 @endpush
 @push('styles')
 <style>
+     /* Role badge base styles */
+    .role-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-block;
+    }
 
+    /* Success variant (farmer) */
+    .role-badge.role-success {
+        background: #387057;
+        color: #ffffff;
+    }
+
+    /* Info variant (admin/other roles) */
+    .role-badge.role-info {
+        background: #18375d;
+        color: #ffffff;
+    }
+    .role-badge.role-warning {
+        background: #fca700;
+        color: #ffffff;
+    }
+/* Role and Action Badges */
+    .role-badge,
+    .action-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .role-admin {
+        background: #18375d;
+        color: #ffffffff;
+    }
+
+    .role-farmer {
+        background: #387057;
+        color: #ffffffff;
+    }
+
+    .role-superadmin {
+        background: #fca700;
+        color: #ffffffff;
+    }
+
+    .role-system {
+        background: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+    }
     /* Badge Base */
 .badge {
     display: inline-block;
@@ -456,8 +537,7 @@ function refreshPendingData() {
 
 /* Admin or other Role */
 .badge-info {
-    background-color: #18375d;
-; /* blue */
+    background-color: #18375d;/* blue */
 }
 
 /* Optional: small icon inside badge */

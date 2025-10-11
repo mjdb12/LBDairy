@@ -456,6 +456,18 @@
         color: white;
     }
 
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 1200px) {
         .action-buttons {
@@ -1230,7 +1242,7 @@
 
     <!-- Farm Management Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+        <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
                 Farm Directory
@@ -1247,14 +1259,14 @@
                     <input type="text" class="form-control" placeholder="Search farms..." id="farmSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-print" onclick="printTable()">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh" onclick="refreshData()">
+                    <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1353,7 +1365,7 @@
 </div>
 
 <!-- Smart Form Modal - Edit Farm -->
-<div class="modal fade superadmin-modal" id="farmModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade admin-modal" id="farmModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content smart-form text-center p-4">
 
@@ -1558,7 +1570,7 @@ function loadFarms() {
                     `${farm.owner?.phone || ''}`,
                     `${farm.barangay || ''}`,
                     `<span class="badge badge-${farm.status === 'active' ? 'success' : 'danger'}">${farm.status}</span>`,
-                    `<div class=\"action-buttons\">\n\	\t\t\t\t\t<button class=\"btn-action btn-action-edit\" onclick=\"editFarm('${farm.id}')\" title=\"Edit\">\n\	\t\t\t\t\t\t<i class=\"fas fa-edit\"></i>\n\	\t\t\t\t\t\t<span>Edit</span>\n\	\t\t\t\t\t</button>\n\	\t\t\t\t\t<button class=\"btn-action btn-action-deletes\" onclick=\"confirmDelete('${farm.id}')\" title=\"Delete\">\n\	\t\t\t\t\t\t<i class=\"fas fa-trash\"></i>\n\	\t\t\t\t\t\t<span>Delete</span>\n\	\t\t\t\t\t</button>\n\	\t\t\t\t</div>`
+                    `<div class=\"btn-group\">\n\	\t\t\t\t\t<button class=\"btn-action btn-action-ok\" onclick=\"editFarm('${farm.id}')\" title=\"Edit\">\n\	\t\t\t\t\t\t<i class=\"fas fa-edit\"></i>\n\	\t\t\t\t\t\t<span>Edit</span>\n\	\t\t\t\t\t</button>\n\	\t\t\t\t\t<button class=\"btn-action btn-action-deletes\" onclick=\"confirmDelete('${farm.id}')\" title=\"Delete\">\n\	\t\t\t\t\t\t<i class=\"fas fa-trash\"></i>\n\	\t\t\t\t\t\t<span>Delete</span>\n\	\t\t\t\t\t</button>\n\	\t\t\t\t</div>`
                 ];
                 
                 farmsTable.row.add(rowData).draw(false);
@@ -1939,7 +1951,7 @@ function refreshData() {
     setTimeout(() => {
         refreshBtn.html(originalIcon);
         refreshBtn.prop('disabled', false);
-        showNotification('Data refreshed successfully', 'success');
+        showNotification('Farms data refreshed successfully', 'success');
     }, 1000);
 }
 

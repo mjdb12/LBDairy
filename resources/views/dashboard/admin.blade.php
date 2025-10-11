@@ -1007,7 +1007,7 @@ SMART FORM - Enhanced Version
                 <h6 class="mb-0"> 
                     <i class="fas fa-tasks"></i> Task Board 
                 </h6> 
-                <button class="btn-action btn-action-ok" id="addTaskBtn"> 
+                <button class="btn-action btn-action-ok" title="New Task" id="addTaskBtn"> 
                     <i class="fas fa-plus mr-2"></i> New Task 
                 </button> 
             </div> 
@@ -1222,7 +1222,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <span class="badge badge-${priorityBadge(task.priority)} mr-4">
                     <i class="far fa-clock"></i> ${formatDue(task.due_date)}
                 </span>
-                <div class="action-buttons">
+                <div class="btn-group">
                     <button class="btn-action btn-action-ok edit-task" title="Edit Task">
                         <i class="fas fa-edit"></i> <span>Edit</span>
                     </button>
@@ -1231,8 +1231,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     </button>
                 </div>
             </div>
-
-
         `;
 
         li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {

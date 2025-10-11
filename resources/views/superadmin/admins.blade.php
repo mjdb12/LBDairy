@@ -1445,7 +1445,7 @@
 
     <!-- Pending Admins Card -->
     <div class="card shadow mb-4 fade-in">
-       <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+       <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-clock"></i>
                 Pending Admin Registrations
@@ -1486,7 +1486,7 @@
 
     <!-- Active Admins Card -->
     <div class="card shadow mb-4 fade-in">
-        <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+         <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-user-check"></i>
                 Active Admins
@@ -1503,17 +1503,17 @@
                     <input type="text" class="form-control" placeholder="Search active admins..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" onclick="showAddAdminModal()">
+                    <button class="btn-action btn-action-ok" title="Add User" onclick="showAddAdminModal()">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
-                    <button class="btn-action btn-action-print" onclick="printActiveAdminsTable()">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printActiveAdminsTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh" onclick="refreshActiveAdmins()">
+                    <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshActiveAdmins()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1662,7 +1662,7 @@
                     <i class="fas fa-user fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Admin Details</h5>
-                <p class="text-muted mb-0 small">Below are the complete details of the selected user.</p>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected user.</p>
             </div>
 
       <!-- Body -->
@@ -1931,17 +1931,26 @@
               </select>
             </div>
 
+
             <!-- Password -->
-            <div class="col-md-6">
-              <label for="adminPassword" class="fw-semibold">Password <span class="text-danger">*</span></label>
-              <input type="password" class="form-control" id="adminPassword" name="password" required>
-              <small class="text-muted">Leave blank to keep existing password when editing.</small>
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="adminPassword" class="fw-semibold">Password <span class="text-danger">*</span></label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="adminPassword" name="password" placeholder="Enter password">
+                <i class="fas fa-eye toggle-password position-absolute" data-target="#password"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+            </div>
+                <small class="text-muted">Leave blank to keep existing password when editing.</small>
             </div>
 
             <!-- Confirm Password -->
-            <div class="col-md-6">
-              <label for="adminPasswordConfirm" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
-              <input type="password" class="form-control" id="adminPasswordConfirm" name="password_confirmation" required>
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="adminPasswordConfirm" class="fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="adminPasswordConfirm" name="password_confirmation" placeholder="Confirm password">
+                <i class="fas fa-eye toggle-password position-absolute" data-target="#passwordConfirmation"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+            </div>
             </div>
 
           </div>
@@ -2066,13 +2075,14 @@
               </select>
             </div>
 
-            <!-- Password -->
-            <div class="col-md-6">
-              <label for="editPassword" class="fw-semibold">Password</label>
-              <div class="input-group">
-                <input type="password" class="form-control" id="editPassword" name="password">
-              </div>
-              <small class="text-muted">Leave blank to keep current password.</small>
+            <div class="col-md-6 mb-3 position-relative">
+                <label for="editPassword" class="fw-semibold">Password </label>
+            <div class="position-relative">
+                <input type="password" class="form-control pe-5" id="editPassword" name="password" placeholder="Leave blank to keep current">
+                <i class="fas fa-eye toggle-newpassword position-absolute" data-target="#newpassword"
+                style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer; color: #6c757d;"></i>
+            </div>
+                <small class="text-muted">Leave blank to keep current password.</small>
             </div>
 
           </div>
@@ -2132,6 +2142,69 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+<!-- Script for see password -->
+<script>
+    // Handle password toggle visibility for both password fields in the Add Admin form
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', () => {
+                    // Find the closest input field to this icon
+                    const input = icon.closest('.position-relative').querySelector('input');
+                    
+                    // Toggle password visibility
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password'; 
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // Validate password match on input
+            document.getElementById('adminPasswordConfirm').addEventListener('input', function() {
+                const password = document.getElementById('adminPassword').value;
+                const confirmation = this.value;
+                const notification = document.getElementById('adminFormNotification');
+                
+                if (password !== confirmation) {
+                    notification.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Passwords do not match
+                        </div>
+                    `;
+                    notification.style.display = 'block';
+                } else {
+                    notification.style.display = 'none';
+                }
+            });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Password toggle functionality for edit modal
+        document.querySelectorAll('.toggle-newpassword').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const targetId = icon.getAttribute('data-target');
+                const input = document.querySelector(targetId) || icon.parentElement.querySelector('input');
+                
+                // Toggle password visibility
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    });
+</script>
+
 <script>
 // Toggle password visibility
 function togglePassword(fieldId) {
@@ -2186,7 +2259,7 @@ $(document).ready(function () {
     });
 
     // Delegated handler to ensure Edit button works after DataTables redraws (avoid inline onclick)
-    $(document).on('click', '.btn-action-edit[data-admin-id]', function(e) {
+    $(document).on('click', '.btn-action-ok[data-admin-id]', function(e) {
         e.preventDefault();
         const adminId = $(this).data('admin-id');
         if (adminId) {
@@ -2346,7 +2419,7 @@ function loadPendingAdmins() {
                         admin.email || '',
                         admin.username || '',
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
-                        `<div class="action-buttons">
+                        `<div class="btn-group">
                             <button class="btn-action btn-action-edit" onclick="approveAdmin('${admin.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
                                 <span>Approve</span>
@@ -2390,8 +2463,8 @@ function loadActiveAdmins() {
                         admin.username || '',
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
                         admin.last_login_at ? new Date(admin.last_login_at).toLocaleDateString() : 'Never',
-                        `<div class="action-buttons">
-                            <button type="button" class="btn-action btn-action-edit" data-admin-id="${admin.id}" title="Edit">
+                        `<div class="btn-group">
+                            <button type="button" class="btn-action btn-action-ok" data-admin-id="${admin.id}" title="Edit">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit</span>
                             </button>
@@ -2615,9 +2688,12 @@ function sendMessage(event) {
         },
         success: function(response) {
             document.getElementById('messageNotification').innerHTML = `
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i>
-                    Message sent to <strong>${name}</strong> successfully!
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="fas fa-check-circle mr-2"></i>
+                   Message sent to <strong>&nbsp;${name}&nbsp;</strong> successfully!
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
                 </div>
             `;
             document.getElementById('messageNotification').style.display = 'block';
@@ -2630,6 +2706,9 @@ function sendMessage(event) {
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-circle"></i>
                     Error sending message. Please try again.
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
                 </div>
             `;
             document.getElementById('messageNotification').style.display = 'block';
