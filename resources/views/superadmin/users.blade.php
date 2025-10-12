@@ -1490,7 +1490,7 @@
 
           </div>
         </div>
-
+        <div id="userFormNotification" class="mt-3 text-center" style="display: none;"></div>
         <!-- Footer -->
         <div class="modal-footer justify-content-center mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
@@ -2214,10 +2214,28 @@ function resetUserForm() {
     $('#userForm')[0].reset();
     $('#userId').val('');
     $('#formNotification').hide();
+    $('#userFormNotification').hide();
 }
 
 function saveUser(event) {
     event.preventDefault();
+    
+    // Validate password confirmation (show form notification like Manage Admins)
+    const password = $('#password').val();
+    const confirmPassword = $('#passwordConfirmation').val();
+    const userFormNotification = document.getElementById('userFormNotification');
+    if ((password || confirmPassword) && password !== confirmPassword) {
+        userFormNotification.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                Passwords do not match. Please try again.
+            </div>
+        `;
+        userFormNotification.style.display = 'block';
+        return;
+    } else if (userFormNotification) {
+        userFormNotification.style.display = 'none';
+    }
     
     const userId = $('#userId').val();
     const url = userId ? `{{ route("superadmin.users.update", ":id") }}`.replace(':id', userId) : '{{ route("superadmin.users.store") }}';
@@ -2276,13 +2294,13 @@ function saveUser(event) {
                 errorMessage += `\n• ${field}: ${errors[field][0]}`;
             });
             
-            document.getElementById('formNotification').innerHTML = `
+            document.getElementById('userFormNotification').innerHTML = `
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-circle"></i>
                     ${errorMessage}
                 </div>
             `;
-            document.getElementById('formNotification').style.display = 'block';
+            document.getElementById('userFormNotification').style.display = 'block';
         }
     });
 }

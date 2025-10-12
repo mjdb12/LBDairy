@@ -1344,7 +1344,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
+            'phone' => ['nullable', 'regex:/^\d{11}$/'],
             'role' => 'required|string|in:admin,super_admin',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -1444,7 +1444,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
+            'phone' => ['nullable', 'regex:/^\d{11}$/'],
             'address' => 'nullable|string|max:500',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -1505,7 +1505,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($id)],
             'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
-            'phone' => 'nullable|string|max:20',
+            'phone' => ['nullable', 'regex:/^\d{11}$/'],
             'address' => 'nullable|string|max:500',
         ]);
 

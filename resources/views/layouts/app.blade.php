@@ -1420,6 +1420,42 @@
                 console.log('Sidebar clientHeight:', $('.sidebar')[0].clientHeight);
             }
 
+            // Enforce numeric-only and 11-digit limit for contact/phone inputs globally
+            function enforcePhoneRules($inputs) {
+                $inputs.each(function() {
+                    const $el = $(this);
+                    // Set helpful attributes
+                    $el.attr({ inputmode: 'numeric', maxlength: 11, pattern: '^\\d{11}$' });
+                    // Sanitize initial value
+                    $el.val(($el.val() || '').toString().replace(/\D/g, '').slice(0, 11));
+                });
+            }
+
+            function bindPhoneHandlers($inputs) {
+                $inputs.off('input.enforcePhone').on('input.enforcePhone', function() {
+                    const cleaned = this.value.replace(/\D/g, '').slice(0, 11);
+                    if (this.value !== cleaned) this.value = cleaned;
+                });
+            }
+
+            function initPhoneEnforcement() {
+                // Target common phone/contact fields
+                const $targets = $(
+                    'input[name="phone"], ' +
+                    'input[id*="Phone" i], ' +
+                    'input[id*="phone" i], ' +
+                    'input[name*="contact" i], ' +
+                    'input[id*="contact" i]'
+                ).filter('input[type="text"], input[type="tel"], input:not([type])');
+                enforcePhoneRules($targets);
+                bindPhoneHandlers($targets);
+            }
+
+            // Initialize now and after any dynamic DOM updates
+            initPhoneEnforcement();
+            // Re-apply on modal show (for dynamically injected forms)
+            $(document).on('shown.bs.modal', function() { initPhoneEnforcement(); });
+
             // Scroll to Top Button Functionality
             $(document).on('scroll', function() {
                 var scrollDistance = $(this).scrollTop();

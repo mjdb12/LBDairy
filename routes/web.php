@@ -51,7 +51,7 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 
 // Protected routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     // Main dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     

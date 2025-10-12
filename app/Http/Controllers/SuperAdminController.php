@@ -984,7 +984,7 @@ class SuperAdminController extends Controller
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'username' => 'required|string|max:255|unique:users,username',
-                'phone' => 'nullable|string|max:20',
+                'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'barangay' => 'required|string|max:255',
                 'password' => 'required|string|min:8|confirmed',
                 'status' => 'required|in:approved,pending',
@@ -1163,7 +1163,7 @@ class SuperAdminController extends Controller
                 'status' => 'required|in:active,inactive',
                 'owner_name' => 'nullable|string|max:255',
                 'owner_email' => 'nullable|email',
-                'owner_phone' => 'nullable|string|max:50',
+                'owner_phone' => ['nullable', 'regex:/^\d{11}$/'],
             ]);
 
             $farm = \App\Models\Farm::findOrFail($id);
@@ -1204,7 +1204,7 @@ class SuperAdminController extends Controller
                 'status' => 'required|in:active,inactive',
                 'owner_name' => 'nullable|string|max:255',
                 'owner_email' => 'nullable|email',
-                'owner_phone' => 'nullable|string|max:50',
+                'owner_phone' => ['nullable', 'regex:/^\d{11}$/'],
             ]);
 
             // Determine owner_id to satisfy non-nullable foreign key
@@ -1563,7 +1563,7 @@ class SuperAdminController extends Controller
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|max:255|unique:users,username',
                 'email' => 'required|email|unique:users,email',
-                'phone' => 'nullable|string|max:20',
+                'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'address' => 'nullable|string|max:500',
                 'password' => 'required|string|min:8|confirmed',
             ]);
@@ -1709,7 +1709,7 @@ class SuperAdminController extends Controller
                 'last_name' => 'required|string|max:255',
                 'email' => ['required', 'email', Rule::unique('users')->ignore($admin->id)],
                 'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($admin->id)],
-                'phone' => 'nullable|string|max:20',
+                'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'barangay' => 'required|string|max:255',
                 'role' => 'required|string|in:admin',
                 'password' => 'nullable|string|min:8',
@@ -1854,7 +1854,7 @@ class SuperAdminController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
                 'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($id)],
-                'phone' => 'nullable|string|max:20',
+                'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'barangay' => 'required|string|max:255',
                 'status' => 'required|in:pending,approved,rejected',
                 'password' => 'nullable|string|min:8',
