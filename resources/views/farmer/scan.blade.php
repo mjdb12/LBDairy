@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header fade-in">
+<div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
     <h1>
         <i class="fas fa-qrcode"></i>
         QR Code Scanner
@@ -64,34 +64,49 @@
 </div>
 
 <!-- Manual Input Modal -->
-<div class="modal fade" id="manualInputModal" tabindex="-1" role="dialog" aria-labelledby="manualInputLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-keyboard mr-2"></i>
-                    Manual Livestock ID Input
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p class="text-muted">Enter the livestock ID or tag number manually if QR code scanning is not working.</p>
-                <div class="form-group">
-                    <label for="manualLivestockId">Livestock ID / Tag Number</label>
-                    <input type="text" class="form-control" id="manualLivestockId" placeholder="Enter livestock ID or tag number" autofocus>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-edit" onclick="processManualInput()">
-                    Search
-                </button>
-            </div>
+<div class="modal fade admin-modal" id="manualInputModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-keyboard fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Manual Livestock ID Input</h5>
+        <p class="text-muted mb-0 small">
+          Enter the livestock ID or tag number manually if QR code scanning is not working.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="manualInputForm">
+        <div class="form-wrapper text-start mx-auto">
+          <!-- Livestock ID / Tag -->
+          <div class="col-md-12">
+            <label for="manualLivestockId" class="fw-semibold">Livestock ID / Tag Number <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control mt-1" 
+              id="manualLivestockId" 
+              placeholder="Enter livestock ID or tag number" 
+              autofocus 
+              required>
+          </div>
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-modern btn-ok" onclick="processManualInput()">
+            Search
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
+
 
 <!-- LIVESTOCK DETAILS & EDIT MODAL WITH OPTION BAR -->
 <div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
@@ -262,82 +277,729 @@
 </div>
 
 <!-- How to Use Modal -->
-<div class="modal fade" id="howToUseModal" tabindex="-1" role="dialog" aria-labelledby="howToUseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="howToUseModalLabel">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    How to Use QR Scanner
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row text-center">
-                    <div class="col-md-6 mb-4">
-                        <div class="p-3 border rounded shadow-sm h-100">
-                            <h6 class="fw-bold mb-2" style="color: #18375d;">
-                                <i class="fas fa-camera mr-2"></i>Camera Scan
-                            </h6>
-                            <p class="text-muted mb-0">Point your camera at a QR code to scan automatically.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="p-3 border rounded shadow-sm h-100">
-                            <h6 class="fw-bold mb-2" style="color: #18375d;">
-                                <i class="fas fa-upload mr-2"></i>Upload Image
-                            </h6>
-                            <p class="text-muted mb-0">Upload a QR code image file (JPG, PNG, GIF, BMP, WebP).</p>
-                        </div>
-                    </div>
-                </div>
+<div class="modal fade admin-modal" id="howToUseModal" tabindex="-1" role="dialog" aria-labelledby="howToUseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content smart-detail p-4">
 
-                <div class="row text-center">
-                    <div class="col-md-6 mb-4">
-                        <div class="p-3 border rounded shadow-sm h-100">
-                            <h6 class="fw-bold mb-2" style="color: #18375d;">
-                                <i class="fas fa-keyboard mr-2"></i>Manual Input
-                            </h6>
-                            <p class="text-muted mb-0">Click the keyboard icon (⌨️) to enter livestock ID manually.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="p-3 border rounded shadow-sm h-100">
-                            <h6 class="fw-bold mb-2" style="color: #18375d;">
-                                <i class="fas fa-eye mr-2"></i>View Details
-                            </h6>
-                            <p class="text-muted mb-0">Successfully scanned codes will display livestock information.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="alert alert-info shadow-sm mb-0">
-                    <h6 class="fw-bold" style="color: #18375d;">
-                        <i class="fas fa-lightbulb mr-2"></i>Tips for Better Scanning
-                    </h6>
-                    <ul class="mb-0 text-muted" style="font-size: 0.95rem;">
-                        <li>Ensure QR codes are clear and well-lit</li>
-                        <li>Hold the camera steady and at a proper distance</li>
-                        <li>If scanning fails, use manual input instead</li>
-                        <li>Supported formats: JPG, PNG, GIF, BMP, WebP (max 5MB)</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-action-edit" data-dismiss="modal">
-                    Got it!
-                </button>
-            </div>
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-info-circle fa-2x"></i>
         </div>
-    </div>
+        <h5 class="fw-bold mb-1">How to Use QR Scanner</h5>
+        <p class="text-muted mb-0 small text-center">
+          Learn the different ways to scan or input QR codes below.
+        </p>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="row gy-3 text-center">
+          <!-- Camera Scan -->
+          <div class="col-md-6">
+            <div class="info-card h-100">
+              <h6><i class="fas fa-camera mr-2"></i>Camera Scan</h6>
+              <p>Point your camera at a QR code to scan automatically.</p>
+            </div>
+          </div>
+
+          <!-- Upload Image -->
+          <div class="col-md-6">
+            <div class="info-card h-100">
+              <h6><i class="fas fa-upload mr-2"></i>Upload Image</h6>
+              <p>Upload a QR code image file (JPG, PNG, GIF, BMP, WebP).</p>
+            </div>
+          </div>
+
+         <!-- Manual Input -->
+<div class="col-md-6 mb-3">
+  <div class="info-card h-100">
+    <h6><i class="fas fa-keyboard mr-2"></i>Manual Input</h6>
+    <p>Click the keyboard icon (⌨️) to enter livestock ID manually.</p>
+  </div>
 </div>
+
+<!-- Tips for Better Scanning -->
+<div class="col-md-6 mb-3">
+  <div class="info-card h-100">
+    <h6><i class="fas fa-lightbulb mr-2"></i>Tips for Better Scanning</h6>
+    <ul class="mb-0 info-list">
+      <li>Ensure QR codes are clear and well-lit.</li>
+      <li>Hold the camera steady and at a proper distance.</li>
+      <li>If scanning fails, use manual input instead.</li>
+      <li>Supported formats: JPG, PNG, GIF, BMP, WebP (max 5MB).</li>
+    </ul>
+  </div>
+</div>
+
+
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer justify-content-center mt-4">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Got it</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 @endsection
 
 @push('styles')
 <style>
+    /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+    /* Adds clean spacing between info cards */
+.row.gy-3 > [class*='col-'] {
+  margin-bottom: 1rem;
+}
+ .info-card {
+  background: #ffffff;
+  border: 1px solid #e0e6ed;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.info-card h6 {
+  font-weight: 600;
+  color: #18375d;
+  margin-bottom: 0.5rem;
+}
+
+.info-card p {
+  color: #6c757d;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* Make list match paragraph style */
+.info-card .info-list {
+  color: #6c757d;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: left;
+  padding-left: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.info-card .info-list li {
+  margin-bottom: 0.3rem;
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 576px) {
+  .info-card {
+    padding: 1.25rem;
+    text-align: left;
+  }
+
+  .info-card h6 {
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+}
+
+    /* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#manualInputModal form {
+  text-align: left;
+}
+
+#manualInputModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#manualInputModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#manualInputModal .form-control,
+#manualInputModal select.form-control,
+#manualInputModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#manualInputModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#manualInputModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editLivestockModal form {
+  text-align: left;
+}
+
+#editLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#issueAlertModal form {
+  text-align: left;
+}
+
+#issueAlertModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#issueAlertModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#issueAlertModal .form-control,
+#issueAlertModal select.form-control,
+#issueAlertModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#issueAlertModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#issueAlertModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#addLivestockModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addLivestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #issueAlertModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+    /* SMART MODAL CSS */
+    .smart-modal {
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.smart-modal .icon-circle {
+  width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.smart-modal h5 {
+  color: #18375d;
+  font-weight: 600;
+}
+
+.smart-modal p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.btn-approve {
+  background: #387057;
+  color: #fff;
+  border: none;
+}
+.btn-approve:hover {
+  background: #fca700;
+}
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+}
+.btn-delete:hover {
+  background: #fca700;
+}
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+  border: none;
+}
+.btn-ok:hover {
+  background: #fca700;
+}
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 85vh; /* slightly taller */
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-dialog {
+        max-width: 100%;
+        margin: 0.75rem;
+    }
+
+    .smart-detail .modal-content {
+        border-radius: 14px;
+        min-height: 100vh; /* make modal longer on mobile */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .smart-detail .modal-body {
+        padding: 1rem 1.25rem;
+        max-height: 95vh; /* increased vertical space */
+        overflow-y: auto; /* allows scroll if content exceeds screen */
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.4rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+
+    .smart-detail .modal-footer {
+        padding-bottom: 1.25rem;
+        margin-top: auto;
+    }
+}
+
+
      /* Action buttons styling */
     .action-buttons {
         display: flex;

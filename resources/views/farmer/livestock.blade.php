@@ -4,9 +4,9 @@
 
 @section('content')
     <!-- Page Header -->
-    <div class="page-header fade-in">
+    <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
-            <i class="fas fa-horse" style="color: white; margin-right: 10px;"></i>
+            <i class="fas fa-horse"></i>
             Livestock Management
         </h1>
         <p>Manage your livestock inventory, health records, and productivity data</p>
@@ -80,7 +80,7 @@
         <div class="col-12">
             <!-- Livestock Table -->
             <div class="card shadow mb-4 fade-in">
-                <div class="card-header bg-primary text-white">
+                <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-list"></i>
                         Livestock Inventory
@@ -98,15 +98,15 @@
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
                             @if($farms->count() > 0)
-                                <button class="btn-action btn-action-edit" onclick="openAddLivestockModal()">
+                                <button class="btn-action btn-action-ok" onclick="openAddLivestockModal()">
                                     <i class="fas fa-plus mr-2"></i> Add Livestock
                                 </button>
                             @else
-                                <button class="btn-action btn-action-add" disabled title="Create a farm first">
+                                <button class="btn-action btn-action-ok" disabled title="Create a farm first">
                                     <i class="fas fa-plus"></i> Add Livestock
                                 </button>
                             @endif
-                            <button class="btn-action btn-action-print" onclick="printTable()">
+                            <button class="btn-action btn-action-edit" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshLivestockTable('livestockTable')">
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="livestockTable" width="100%" cellspacing="0" data-farm-count="{{ $farms->count() }}">
+                            <table class="table table-bordered table-hover" id="livestockTable" width="100%" cellspacing="0"data-farm-count="{{ $farms->count() }}">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
@@ -165,8 +165,8 @@
                                     </td>
                                     <td>{{ $registrationDate }}</td>
                                     <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-action btn-action-edit" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
+                                        <div class="btn-group">
+                                            <button class="btn-action btn-action-ok" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                                 <span>Edit</span>
                                             </button>
@@ -199,179 +199,181 @@
 
 <!-- Add/Edit Livestock Modal -->
 <div class="modal fade" id="livestockModal" tabindex="-1" role="dialog" aria-labelledby="livestockModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="livestockModalLabel">
-                    <i class="fas fa-plus"></i>
-                    Add New Livestock
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-form p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4 text-center">
+                <div class="icon-circle">
+                    <i class="fas fa-paw fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="livestockModalLabel">Add New Livestock</h5>
+                <p class="text-muted mb-0 small">
+                    Fill out the details below to register livestock information.
+                </p>
             </div>
+
+            <!-- Form -->
             <form id="livestockForm" method="POST" action="{{ route('farmer.livestock.store') }}">
                 @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="tag_number">Tag Number *</label>
-                                <input type="text" class="form-control" id="tag_number" name="tag_number" required>
-                            </div>
+                <div class="form-wrapper text-start mx-auto">
+
+                    <div class="row g-3">
+                        <!-- Tag Number -->
+                        <div class="col-md-6 mb-3">
+                            <label for="tag_number" class="fw-semibold">Tag Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control mt-1" id="tag_number" name="tag_number" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="name">Name *</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
+
+                        <!-- Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="fw-semibold">Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control mt-1" id="name" name="name" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="type">Type *</label>
-                                <select class="form-control" id="type" name="type" required>
-                                    <option value="">Select Type</option>
-                                    <option value="cow">Cow</option>
-                                    <option value="buffalo">Buffalo</option>
-                                    <option value="goat">Goat</option>
-                                    <option value="sheep">Sheep</option>
-                                </select>
-                            </div>
+
+                        <!-- Type -->
+                        <div class="col-md-6 mb-3">
+                            <label for="type" class="fw-semibold">Type <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="type" name="type" required>
+                                <option value="">Select Type</option>
+                                <option value="cow">Cow</option>
+                                <option value="buffalo">Buffalo</option>
+                                <option value="goat">Goat</option>
+                                <option value="sheep">Sheep</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="breed">Breed *</label>
-                                <select class="form-control" id="breed" name="breed" required>
-                                    <option value="">Select Breed</option>
-                                    <option value="holstein">Holstein</option>
-                                    <option value="jersey">Jersey</option>
-                                    <option value="guernsey">Guernsey</option>
-                                    <option value="ayrshire">Ayrshire</option>
-                                    <option value="brown_swiss">Brown Swiss</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
+
+                        <!-- Breed -->
+                        <div class="col-md-6 mb-3">
+                            <label for="breed" class="fw-semibold">Breed <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="breed" name="breed" required>
+                                <option value="">Select Breed</option>
+                                <option value="holstein">Holstein</option>
+                                <option value="jersey">Jersey</option>
+                                <option value="guernsey">Guernsey</option>
+                                <option value="ayrshire">Ayrshire</option>
+                                <option value="brown_swiss">Brown Swiss</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="birth_date">Date of Birth *</label>
-                                <input type="date" class="form-control" id="birth_date" name="birth_date" required>
-                            </div>
+
+                        <!-- Date of Birth -->
+                        <div class="col-md-6 mb-3">
+                            <label for="birth_date" class="fw-semibold">Date of Birth <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="birth_date" name="birth_date" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="gender">Gender *</label>
-                                <select class="form-control" id="gender" name="gender" required>
-                                    <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
+
+                        <!-- Gender -->
+                        <div class="col-md-6 mb-3">
+                            <label for="gender" class="fw-semibold">Gender <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="weight">Weight (kg)</label>
-                                <input type="number" class="form-control" id="weight" name="weight" min="0" step="0.1">
-                            </div>
+
+                        <!-- Weight -->
+                        <div class="col-md-6 mb-3">
+                            <label for="weight" class="fw-semibold">Weight (kg)</label>
+                            <input type="number" class="form-control mt-1" id="weight" name="weight" min="0" step="0.1">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="health_status">Health Status *</label>
-                                <select class="form-control" id="health_status" name="health_status" required>
-                                    <option value="healthy">Healthy</option>
-                                    <option value="sick">Sick</option>
-                                    <option value="recovering">Recovering</option>
-                                    <option value="under_treatment">Under Treatment</option>
-                                </select>
-                            </div>
+
+                        <!-- Health Status -->
+                        <div class="col-md-6 mb-3">
+                            <label for="health_status" class="fw-semibold">Health Status <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="health_status" name="health_status" required>
+                                <option value="healthy">Healthy</option>
+                                <option value="sick">Sick</option>
+                                <option value="recovering">Recovering</option>
+                                <option value="under_treatment">Under Treatment</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="status">Status *</label>
-                                <select class="form-control" id="status" name="status" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="fw-semibold">Status <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="status" name="status" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="registry_id">Registry ID</label>
-                                <input type="text" class="form-control" id="registry_id" name="registry_id">
-                            </div>
+
+                        <!-- Registry ID -->
+                        <div class="col-md-6 mb-3">
+                            <label for="registry_id" class="fw-semibold">Registry ID</label>
+                            <input type="text" class="form-control mt-1" id="registry_id" name="registry_id">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="natural_marks">Natural Marks</label>
-                                <input type="text" class="form-control" id="natural_marks" name="natural_marks">
-                            </div>
+
+                        <!-- Natural Marks -->
+                        <div class="col-md-6 mb-3">
+                            <label for="natural_marks" class="fw-semibold">Natural Marks</label>
+                            <input type="text" class="form-control mt-1" id="natural_marks" name="natural_marks">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="property_no">Property Number</label>
-                                <input type="text" class="form-control" id="property_no" name="property_no">
-                            </div>
+
+                        <!-- Property Number -->
+                        <div class="col-md-6 mb-3">
+                            <label for="property_no" class="fw-semibold">Property Number</label>
+                            <input type="text" class="form-control mt-1" id="property_no" name="property_no">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="acquisition_date">Acquisition Date</label>
-                                <input type="date" class="form-control" id="acquisition_date" name="acquisition_date">
-                            </div>
+
+                        <!-- Acquisition Date -->
+                        <div class="col-md-6 mb-3">
+                            <label for="acquisition_date" class="fw-semibold">Acquisition Date</label>
+                            <input type="date" class="form-control mt-1" id="acquisition_date" name="acquisition_date">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="acquisition_cost">Acquisition Cost (₱)</label>
-                                <input type="number" class="form-control" id="acquisition_cost" name="acquisition_cost" min="0" step="0.01">
-                            </div>
+
+                        <!-- Acquisition Cost -->
+                        <div class="col-md-6 mb-3">
+                            <label for="acquisition_cost" class="fw-semibold">Acquisition Cost (₱)</label>
+                            <input type="number" class="form-control mt-1" id="acquisition_cost" name="acquisition_cost" min="0" step="0.01">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="sire_id">Sire ID</label>
-                                <input type="text" class="form-control" id="sire_id" name="sire_id">
-                            </div>
+
+                        <!-- Sire ID + Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="sire_id" class="fw-semibold">Sire ID</label>
+                            <input type="text" class="form-control mt-1" id="sire_id" name="sire_id">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="sire_name">Sire Name</label>
-                                <input type="text" class="form-control" id="sire_name" name="sire_name">
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="sire_name" class="fw-semibold">Sire Name</label>
+                            <input type="text" class="form-control mt-1" id="sire_name" name="sire_name">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dam_id">Dam ID</label>
-                                <input type="text" class="form-control" id="dam_id" name="dam_id">
-                            </div>
+
+                        <!-- Dam ID + Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="dam_id" class="fw-semibold">Dam ID</label>
+                            <input type="text" class="form-control mt-1" id="dam_id" name="dam_id">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dam_name">Dam Name</label>
-                                <input type="text" class="form-control" id="dam_name" name="dam_name">
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dam_name" class="fw-semibold">Dam Name</label>
+                            <input type="text" class="form-control mt-1" id="dam_name" name="dam_name">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dispersal_from">Dispersal From</label>
-                                <input type="text" class="form-control" id="dispersal_from" name="dispersal_from">
-                            </div>
+
+                        <!-- Dispersal From -->
+                        <div class="col-md-6 mb-3">
+                            <label for="dispersal_from" class="fw-semibold">Dispersal From</label>
+                            <input type="text" class="form-control mt-1" id="dispersal_from" name="dispersal_from">
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="owned_by">Owned By</label>
-                                <input type="text" class="form-control" id="owned_by" name="owned_by">
-                            </div>
+
+                        <!-- Owned By -->
+                        <div class="col-md-6 mb-3">
+                            <label for="owned_by" class="fw-semibold">Owned By</label>
+                            <input type="text" class="form-control mt-1" id="owned_by" name="owned_by">
                         </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="remarks">Remarks</label>
-                                <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
-                            </div>
+
+                        <!-- Remarks -->
+                        <div class="col-12 mb-3">
+                            <label for="remarks" class="fw-semibold">Remarks</label>
+                            <textarea class="form-control mt-1" id="remarks" name="remarks" rows="3" style="resize: none;"></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Livestock
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">
+                        Save Livestock
                     </button>
                 </div>
             </form>
@@ -379,55 +381,67 @@
     </div>
 </div>
 
-<!-- Livestock Details Modal -->
-<div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
+
+<!-- Smart Detail Modal -->
+<div class="modal fade livestock-modal" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="livestockDetailsLabel">
-                    <i class="fas fa-eye"></i>
-                    Livestock Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+        <div class="modal-content smart-detail p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-eye fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Livestock Details</h5>
+                <p class="text-muted mb-0 small text-center">
+                    Below are the complete details of the selected livestock.
+                </p>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <div id="livestockDetailsContent" class="detail-wrapper">
+                    <!-- Dynamic details will be injected here -->
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer justify-content-center mt-4">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+                    Close
                 </button>
-            </div>
-            <div class="modal-body" id="livestockDetailsContent">
-                <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-info" onclick="printLivestockRecord()" id="printLivestockBtn">
+                <button type="button" class="btn-modern btn-edit" onclick="printLivestockRecord()" id="printLivestockBtn">
                     <i class="fas fa-print"></i> Print Record
                 </button>
-                <button type="button" class="btn btn-primary" onclick="editCurrentLivestock()">
+                <button type="button" class="btn-modern btn-ok" onclick="editCurrentLivestock()">
                     <i class="fas fa-edit"></i> Edit
                 </button>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Delete Task Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                Are you sure you want to delete this livestock? This action cannot be undone.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Yes, Delete
+            <!-- Title -->
+            <h5>Confirm Delete</h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to delete this livestock? This action <strong>cannot be undone</strong>.
+            </p>
+
+            <!-- Buttons -->
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
+                    Yes, Delete
                 </button>
             </div>
         </div>
@@ -551,6 +565,9 @@ $(document).ready(function() {
 
 
 // Refresh Admins Table
+
+
+// Refresh Admins Table
 function refreshLivestockTable() {
     const refreshBtn = document.querySelector('.btn-action-refresh');
     const originalText = refreshBtn.innerHTML;
@@ -565,17 +582,19 @@ function refreshLivestockTable() {
     }, 1000);
 }
 
+// Check notifications after reload
 $(document).ready(function() {
     if (sessionStorage.getItem('showRefreshNotificationLivestock') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationLivestock');
         setTimeout(() => {
-            showNotification('Data refreshed successfully!', 'success');
+            showNotification('Livestock data refreshed successfully!', 'success');
         }, 500);
     }
-    if (sessionStorage.getItem('showRefreshNotificationIssues') === 'true') {
-        sessionStorage.removeItem('showRefreshNotificationIssues');
+
+    if (sessionStorage.getItem('showRefreshNotificationAdmins') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAdmins');
         setTimeout(() => {
-            showNotification('Issues table refreshed successfully!', 'success');
+            showNotification('Active Farmers data refreshed successfully!', 'success');
         }, 500);
     }
 });
@@ -687,86 +706,65 @@ function loadLivestockDetails(livestockId) {
                 const updatedDate = livestock.updated_at ? new Date(livestock.updated_at).toLocaleDateString() : 'Not recorded';
                 
                 $('#livestockDetailsContent').html(`
-                    <!-- QR Code Section at the top -->
+                    <!-- Smart Detail Body Content -->
+                <div class="detail-wrapper">
+
+                    <!-- QR Code & Quick Info Section -->
                     <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0">
-                                        <i class="fas fa-qrcode"></i>
-                                        QR Code Status
-                                    </h6>
+                        <!-- QR Code Status -->
+                        <div class="col-md-6 mb-3">
+                            <div class="smart-card shadow-sm h-100">
+                                <div class="smart-card-header text-#18375d d-flex align-items-center">
+                                    <i class="fas fa-qrcode mr-2"></i>
+                                    <h6 class="mb-0 fw-bold">QR Code Status</h6>
                                 </div>
-                                <div class="card-body text-center">
+                                <div class="smart-card-body text-center p-3">
                                     <div id="qrCodeContainer" class="mb-3">
-                                        <p class="text-muted">Checking QR code status...</p>
+                                        <p class="text-muted mb-0">Checking QR code status...</p>
                                     </div>
-                                    <button type="button" class="btn btn-primary" onclick="checkQRCodeStatus('${livestock.id}')">
-                                        <i class="fas fa-search"></i> Check QR Code Status
+                                    <button type="button" class="btn-action btn-action-ok" onclick="checkQRCodeStatus('${livestock.id}')">
+                                        Check QR Code Status
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0">
-                                        <i class="fas fa-info-circle"></i>
-                                        Quick Info
-                                    </h6>
+
+                        <!-- Quick Info -->
+                        <div class="col-md-6 mb-3">
+                            <div class="smart-card shadow-sm h-100">
+                                <div class="smart-card-header  text-#18375d d-flex align-items-center">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <h6 class="mb-0 fw-bold">Quick Info</h6>
                                 </div>
-                                <div class="card-body">
+                                <div class="smart-card-body p-3">
                                     <div class="row">
-                                        <div class="col-6">
-                                            <small class="text-muted">Tag Number:</small>
-                                            <p class="font-weight-bold">${livestock.tag_number || 'N/A'}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Name:</small>
-                                            <p class="font-weight-bold">${livestock.name || 'N/A'}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Type:</small>
-                                            <p class="font-weight-bold">${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'N/A'}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Breed:</small>
-                                            <p class="font-weight-bold">${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Age:</small>
-                                            <p class="font-weight-bold">${age}</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Status:</small>
-                                            <p class="font-weight-bold"><span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'N/A'}</span></p>
-                                        </div>
+                                        <div class="col-6 mb-2"><small class="text-muted">Tag Number</small><p class="fw-bold mb-0">${livestock.tag_number || 'N/A'}</p></div>
+                                        <div class="col-6 mb-2"><small class="text-muted">Name</small><p class="fw-bold mb-0">${livestock.name || 'N/A'}</p></div>
+                                        <div class="col-6 mb-2"><small class="text-muted">Type</small><p class="fw-bold mb-0">${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'N/A'}</p></div>
+                                        <div class="col-6 mb-2"><small class="text-muted">Breed</small><p class="fw-bold mb-0">${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p></div>
+                                        <div class="col-6 mb-2"><small class="text-muted">Age</small><p class="fw-bold mb-0">${age}</p></div>
+                                        <div class="col-6 mb-2"><small class="text-muted">Status</small><p class="fw-bold mb-0"><span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'N/A'}</span></p></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Option Bar -->
-                    <ul class="nav nav-tabs mb-3" id="livestockTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab">Basic Info</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="production-tab" data-toggle="tab" href="#productionForm" role="tab">Production</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab">Health</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab">Breeding</a>
-                        </li>
+                    <!-- Navigation Tabs -->
+                    <ul class="nav nav-tabs smart-tabs mb-3" id="livestockTab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab">Basic Info</a></li>
+                        <li class="nav-item"><a class="nav-link" id="production-tab" data-toggle="tab" href="#productionForm" role="tab">Production</a></li>
+                        <li class="nav-item"><a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab">Health</a></li>
+                        <li class="nav-item"><a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab">Breeding</a></li>
                     </ul>
+
+                    <!-- Tabs Content -->
                     <div class="tab-content" id="livestockTabContent">
+
                         <!-- Basic Info Tab -->
                         <div class="tab-pane fade show active" id="basicForm" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
+                            <div class="smart-table table-responsive">
+                                <table class="table table-sm table-bordered align-middle mb-0">
                                     <tbody>
                                         <tr><th>Tag Number</th><td>${livestock.tag_number || 'Not assigned'}</td></tr>
                                         <tr><th>Name</th><td>${livestock.name || 'Not assigned'}</td></tr>
@@ -791,71 +789,59 @@ function loadLivestockDetails(livestockId) {
                                 </table>
                             </div>
                         </div>
-                        
+
                         <!-- Production Tab -->
                         <div class="tab-pane fade" id="productionForm" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Production Type</th>
-                                            <th>Quantity</th>
-                                            <th>Quality</th>
-                                            <th>Notes</th>
-                                        </tr>
+                            <div class="smart-table table-responsive">
+                                <table class="table table-sm table-bordered align-middle mb-0">
+                                    <thead class="thead-light">
+                                        <tr><th>Date</th><th>Production Type</th><th>Quantity</th><th>Quality</th><th>Notes</th></tr>
                                     </thead>
                                     <tbody id="productionRecordsTable">
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted">
+                                            <td colspan="5" class="text-center text-muted py-3">
                                                 <i class="fas fa-info-circle"></i>
-                                                No production records found. Production data will be displayed here when available.
+                                                No production records found.
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="text-right mt-3">
-                                <button class="btn btn-primary" onclick="addProductionRecord('${livestock.id}')">
+                                <button class="btn-action btn-action-ok" onclick="addProductionRecord('${livestock.id}')">
                                     <i class="fas fa-plus"></i> Add Production Record
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Health Tab -->
                         <div class="tab-pane fade" id="healthForm" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Health Status</th>
-                                            <th>Treatment</th>
-                                            <th>Veterinarian</th>
-                                            <th>Notes</th>
-                                        </tr>
+                            <div class="smart-table table-responsive">
+                                <table class="table table-sm table-bordered align-middle mb-0">
+                                    <thead class="thead-light">
+                                        <tr><th>Date</th><th>Health Status</th><th>Treatment</th><th>Veterinarian</th><th>Notes</th></tr>
                                     </thead>
                                     <tbody id="healthRecordsTable">
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted">
+                                            <td colspan="5" class="text-center text-muted py-3">
                                                 <i class="fas fa-info-circle"></i>
-                                                No health records found. Health data will be displayed here when available.
+                                                No health records found.
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="text-right mt-3">
-                                <button class="btn btn-primary" onclick="addHealthRecord('${livestock.id}')">
+                                <button class="btn-action btn-action-ok" onclick="addHealthRecord('${livestock.id}')">
                                     <i class="fas fa-plus"></i> Add Health Record
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Breeding Tab -->
                         <div class="tab-pane fade" id="breedingForm" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
+                            <div class="smart-table table-responsive">
+                                <table class="table table-sm table-bordered align-middle mb-0">
                                     <tbody>
                                         <tr><th>Sire ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
                                         <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
@@ -866,12 +852,15 @@ function loadLivestockDetails(livestockId) {
                                 </table>
                             </div>
                             <div class="text-right mt-3">
-                                <button class="btn btn-primary" onclick="addBreedingRecord('${livestock.id}')">
+                                <button class="btn-action btn-action-ok" onclick="addBreedingRecord('${livestock.id}')">
                                     <i class="fas fa-plus"></i> Add Breeding Record
                                 </button>
                             </div>
                         </div>
+
                     </div>
+                </div>
+
                 `);
                 
                 // Load production records
@@ -1016,27 +1005,28 @@ function checkQRCodeStatus(livestockId) {
                         <p class="text-muted small">QR Code for ${response.livestock_id}</p>
                         <p class="text-muted small">Generated by: ${response.generated_by}</p>
                         <p class="text-muted small">Generated on: ${generatedDate}</p>
-                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="downloadQRCode('${response.qr_code}', '${response.livestock_id}')">
-                            <i class="fas fa-download"></i> Download QR Code
+                        <button type="button" class="btn-action btn-action-ok" onclick="downloadQRCode('${response.qr_code}', '${response.livestock_id}')">
+                            Download QR Code
                         </button>
                     </div>
                 `;
-                showToast('QR Code is available for download!', 'success');
+                showToast('&nbsp;QR Code is available for download!', 'success');
             } else {
                 // QR code not generated yet
                 qrContainer.innerHTML = `
-                    <div class="text-center">
+                    <div class="text-center ">
                         <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
                         <h6 class="text-warning">QR Code Not Generated</h6>
                         <p class="text-muted">This livestock does not have a QR code yet.</p>
                         <p class="text-muted small">Please contact an administrator to generate the QR code.</p>
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Note:</strong> Only administrators can generate QR codes for livestock.
+                            <i class="fas fa-info-circle mr-2"></i>
+                           <strong>Note: </strong>&nbsp;Only administrators can generate QR codes for livestock.
                         </div>
                     </div>
+                    
                 `;
-                showToast('QR Code has not been generated yet. Contact an administrator.', 'warning');
+                showToast('&nbsp;QR Code has not been generated yet. Contact an administrator.', 'warning');
             }
         },
         error: function() {
@@ -1434,9 +1424,9 @@ function addBreedingRecord(livestockId) {
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="saveBreedingRecord(${livestockId})">
-                            <i class="fas fa-save"></i> Save Record
+                        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn-action btn-action-ok" onclick="saveBreedingRecord(${livestockId})">
+                            Save Record
                         </button>
                     </div>
                 </div>
@@ -1871,28 +1861,22 @@ function forcePaginationLeft() {
     console.log('Pagination positioning applied to livestock inventory');
 }
 
+
 function showNotification(message, type = 'info') {
-    // Create a simple alert instead of Bootstrap 5 toast for Bootstrap 4 compatibility
-    const alertClass = type === 'error' || type === 'danger' ? 'alert-danger' : type === 'success' ? 'alert-success' : 'alert-info';
-    const alert = `
-        <div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-            <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
             </button>
         </div>
-    `;
+    `);
     
-    // Add alert to page
-    const alertContainer = document.createElement('div');
-    alertContainer.innerHTML = alert;
-    document.body.appendChild(alertContainer);
+    $('body').append(notification);
     
-    // Auto-remove after 5 seconds
     setTimeout(() => {
-        if (alertContainer.parentNode) {
-            alertContainer.parentNode.removeChild(alertContainer);
-        }
+        notification.alert('close');
     }, 5000);
 }
 
@@ -1925,6 +1909,674 @@ function showToast(message, type = 'info') {
 
 @push('styles')
 <style>
+    .smart-card {
+  border-radius: 15px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+.smart-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+.smart-card-header {
+  border-radius: 15px 15px 0 0;
+  padding: 0.75rem 1rem;
+}
+.smart-card-body {
+  padding: 1.25rem;
+}
+/* Titles & Paragraphs */
+.smart-card h6 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+/* Titles & Paragraphs */
+.smart-card i{
+    color: #18375d;
+}
+.smart-tabs .nav-link {
+  border: none;
+  color: #555;
+  font-weight: 500;
+}
+.smart-tabs .nav-link.active {
+  border-bottom: 3px solid #28a745;
+  color: #28a745;
+}
+.smart-table th {
+  width: 40%;
+  background: #f8f9fa;
+  font-weight: 600;
+}
+.smart-table td {
+  background: #fff;
+}
+
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#userDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
+    /* Ensure table has enough space for actions column */
+    #livestockTable th:last-child,
+    #livestockTable td:last-child,
+    #activeAdminsTable th:last-child,
+    #activeAdminsTable td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
+    
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #livestockTable,
+    #activeAdminsTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+     #livestockTable th,
+    #livestockTable td,
+    #activeAdminsTable th,
+    #activeAdminsTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #livestockTable thead th,
+    #activeAdminsTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #livestockTable thead th.sorting,
+    #livestockTable thead th.sorting_asc,
+    #livestockTable thead th.sorting_desc,
+    #activeAdminsTable thead th.sorting,
+    #activeAdminsTable thead th.sorting_asc,
+    #activeAdminsTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #livestockTable thead th::after,
+    #activeAdminsTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #livestockTable thead th.sorting::after,
+    #livestockTable thead th.sorting_asc::after,
+    #livestockTable thead th.sorting_desc::after,
+    #activeAdminsTable thead th.sorting::after,
+    #activeAdminsTable thead th.sorting_asc::after,
+    #activeAdminsTable thead th.sorting_desc::after {
+        display: none;
+    }
+        /* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#livestockModal form {
+  text-align: left;
+}
+
+#livestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#livestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#livestockModal .form-control,
+#livestockModal select.form-control,
+#livestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#livestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#livestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editLivestockModal form {
+  text-align: left;
+}
+
+#editLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#issueAlertModal form {
+  text-align: left;
+}
+
+#issueAlertModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#issueAlertModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#issueAlertModal .form-control,
+#issueAlertModal select.form-control,
+#issueAlertModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#issueAlertModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#issueAlertModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-edit {
+  background: #387057;
+  color: #fff;
+}
+.btn-edit:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#livestockModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #livestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #issueAlertModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-edit,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+    /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}s
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
 /* Action buttons styling */
     .action-buttons {
         display: flex;

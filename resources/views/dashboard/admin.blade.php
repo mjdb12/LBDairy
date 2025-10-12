@@ -394,7 +394,7 @@
         padding: 2rem;
         background: white;
     }
-    confirmDeleteTaskModal .modal-body h6 {
+    #confirmDeleteTaskModal .modal-body h6 {
         color: #18375d !important;
         font-weight: 600 !important;
         border-bottom: 2px solid #e3e6f0;

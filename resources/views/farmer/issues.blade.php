@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Page Header -->
-    <div class="page-header fade-in">
+    <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
             <i class="fas fa-exclamation-triangle"></i>
             Issue Management
@@ -112,7 +112,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow fade-in">
-                <div class="card-header">
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-list"></i>
                         Issues Reported by Administrators
@@ -129,7 +129,7 @@
                             <input type="text" class="form-control" placeholder="Search issues..." id="issueSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-print" onclick="printTable()">
+                            <button class="btn-action btn-action-edit" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshIssuesTable('issuesTable')">
@@ -202,7 +202,7 @@
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-action btn-action-view" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
+                                            <button class="btn-action btn-action-ok" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View Details</span>
                                             </button>
@@ -235,7 +235,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow fade-in">
-                <div class="card-header">
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-bell"></i>
                         Livestock Alerts from Administrators
@@ -252,7 +252,7 @@
                             <input type="text" class="form-control" placeholder="Search alerts..." id="alertSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-print" onclick="printAlertsTable()">
+                            <button class="btn-action btn-action-edit" onclick="printAlertsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh-alerts" onclick="refreshAlertsTable('alertsTable')">
@@ -317,8 +317,8 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-action btn-action-view" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
+                                        <div class="btn-group">
+                                            <button class="btn-action btn-action-ok" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View Details</span>
                                             </button>
@@ -354,7 +354,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow fade-in">
-                <div class="card-header">
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-calendar-check"></i>
                         Scheduled Farm Inspections
@@ -371,7 +371,7 @@
                             <input type="text" class="form-control" placeholder="Search inspections..." id="inspectionSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-print" onclick="printInspectionsTable()">
+                            <button class="btn-action btn-action-edit" onclick="printInspectionsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh-inspection" onclick="refreshInspectionTable('inspectionsTable')">
@@ -432,8 +432,8 @@
                                     </td>
                                     <td>{{ Str::limit($inspection->notes, 50) }}</td>
                                     <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-action btn-action-oks" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
+                                        <div class="btn-group">
+                                            <button class="btn-action btn-action-ok" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>View
                                             </button>
                                             @if($inspection->status === 'scheduled')
@@ -462,53 +462,90 @@
             </div>
         </div>
     </div>
-s
-<!-- Issue Details Modal -->
-<div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+
+<!-- Issue Modal -->
+<div class="modal fade admin-modal" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Issue Details</h5>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected issue.</p>
+            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="issueDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
+        </div>
+      </div>
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Inspection Modal -->
+<div class="modal fade admin-modal" id="inspectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="inspectionDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Inspection Details</h5>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected issue.</p>
+            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="inspectionDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
+        </div>
+      </div>
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Delete Issue Confirmation Modal -->
+<div class="modal fade" id="completeInspectionModal" tabindex="-1" role="dialog" aria-labelledby="completeInspectionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="issueDetailsLabel">
-                    <i class="fas fa-info-circle"></i>
-                    Issue Details
+                <h5 class="modal-title" id="completeInspectionLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Mark as Complete
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" id="issueDetailsContent">
-                <!-- Content will be loaded dynamically -->
+            <div class="modal-body">
+                <p>Are you sure you want to mark this inpection complete? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Inspection Details Modal -->
-<div class="modal fade" id="inspectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="inspectionDetailsLabel" aria-hidden="true">
-   <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 900px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="inspectionDetailsLabel">
-                    <i class="fas fa-calendar-check mr-2"></i>
-                    Inspection Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-action btn-action-edit" id="completeInspectionBtn">
+                    <i class="fas fa-trash"></i> Mark as Complete
                 </button>
             </div>
-            <div class="modal-body" id="inspectionDetailsContent">
-                <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
-
 <!-- Bottom spacing to match farm analysis tab -->
 <div style="margin-bottom: 3rem;"></div>
 
@@ -760,7 +797,7 @@ function loadIssueDetails(issueId) {
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
-                                <div class="card-header bg-primary text-white">
+                                <div class="card-header text-white">
                                     <h6 class="mb-0"><i class="fas fa-info-circle"></i> Issue Information</h6>
                                 </div>
                                 <div class="card-body">
@@ -776,7 +813,7 @@ function loadIssueDetails(issueId) {
                         </div>
                         <div class="col-md-6">
                             <div class="card">
-                                <div class="card-header bg-info text-white">
+                                <div class="card-header text-white">
                                     <h6 class="mb-0"><i class="fas fa-paw"></i> Livestock Information</h6>
                                 </div>
                                 <div class="card-body">
@@ -1055,68 +1092,72 @@ function viewInspectionDetails(inspectionId) {
                 const inspection = response.inspection;
                 $('#inspectionDetailsContent').html(`
                     <div class="row">
-                        <!-- Inspection Information -->
-                        <div class="col-md-6 mb-4">
-                            <div class="card border-left shadow-sm h-100">
-                                <div class="card-body">
-                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                        <i class="fas fa-calendar-check mr-2"></i>Inspection Information
-                                    </h6>
-                                    <table class="table table-borderless mb-0">
-                                        <tr>
-                                            <td><strong>Date:</strong></td>
-                                            <td>${inspection.inspection_date}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Time:</strong></td>
-                                            <td>${inspection.inspection_time}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Status:</strong></td>
-                                            <td>
-                                                <span class="badge badge-${getInspectionStatusColor(inspection.status)} badge-pill">
-                                                    <i class="fas fa-${inspection.status === 'Completed' ? 'check-circle' : 'clock'} mr-1"></i>
-                                                    ${inspection.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Priority:</strong></td>
-                                            <td>
-                                                <span class="badge badge-${getInspectionPriorityColor(inspection.priority)} badge-pill">
-                                                    ${inspection.priority}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Scheduled By:</strong></td>
-                                            <td>${inspection.scheduled_by ? inspection.scheduled_by.name : 'Admin'}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Inspection Information -->
+    <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card border-left shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="mb-3  fw-semibold d-flex align-items-center" style="color: #18375d;">
+                    <i class="fas fa-calendar-check mr-2"></i>Inspection Information
+                </h6>
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0 small">
+                        <tbody>
+                            <tr>
+                                <td class="fw-semibold">Date:</td>
+                                <td>${inspection.inspection_date}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Time:</td>
+                                <td>${inspection.inspection_time}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Status:</td>
+                                <td>
+                                    <span class="badge badge-${getInspectionStatusColor(inspection.status)} badge-pill">
+                                        <i class="fas fa-${inspection.status === 'Completed' ? 'check-circle' : 'clock'} mr-1"></i>
+                                        ${inspection.status}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Priority:</td>
+                                <td>
+                                    <span class="badge badge-${getInspectionPriorityColor(inspection.priority)} badge-pill">
+                                        ${inspection.priority}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Scheduled By:</td>
+                                <td>${inspection.scheduled_by ? inspection.scheduled_by.name : 'Admin'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <!-- Notes & Findings -->
-                        <div class="col-md-6 mb-4">
-                            <div class="card border-left shadow-sm h-100">
-                                <div class="card-body">
-                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                        <i class="fas fa-file-alt mr-2"></i>Notes & Findings
-                                    </h6>
-                                    <div class="mb-3">
-                                        <strong>Notes:</strong>
-                                        <p class="mb-0">${inspection.notes || 'No notes provided.'}</p>
-                                    </div>
-                                    ${inspection.findings ? `
-                                    <div>
-                                        <strong>Findings:</strong>
-                                        <p class="mb-0">${inspection.findings}</p>
-                                    </div>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Notes & Findings -->
+    <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card border-left shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="mb-3 fw-semibold d-flex align-items-center" style="color: #18375d;">
+                    <i class="fas fa-file-alt mr-2"></i>Notes & Findings
+                </h6>
+                <div class="mb-3">
+                    <strong>Notes:</strong>
+                    <p class="mb-0">${inspection.notes || 'No notes provided.'}</p>
+                </div>
+                ${inspection.findings ? `
+                <div>
+                    <strong>Findings:</strong>
+                    <p class="mb-0">${inspection.findings}</p>
+                </div>` : ''}
+            </div>
+        </div>
+    </div>
+</div>
 
                 `);
                 $('#inspectionDetailsModal').modal('show');
@@ -1128,28 +1169,44 @@ function viewInspectionDetails(inspectionId) {
     });
 }
 
-function markInspectionComplete(inspectionId) {
-    if (confirm('Mark this inspection as complete?')) {
-        $.ajax({
-            url: `/farmer/inspections/${inspectionId}/complete`,
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    showToast('Inspection marked as complete', 'success');
-                    location.reload();
-                } else {
-                    showToast(response.message || 'Error completing inspection', 'error');
-                }
-            },
-            error: function() {
-                showToast('Error completing inspection', 'error');
-            }
-        });
-    }
+let currentInspectionId = null;
+
+// Function to open modal
+function openCompleteInspectionModal(inspectionId) {
+    currentInspectionId = inspectionId;
+    $('#completeInspectionModal').modal('show');
 }
+
+// Handle button click inside modal
+$('#completeInspectionBtn').on('click', function() {
+    if (currentInspectionId) {
+        markInspectionComplete(currentInspectionId);
+        $('#completeInspectionModal').modal('hide');
+    }
+});
+
+// Existing function
+function markInspectionComplete(inspectionId) {
+    $.ajax({
+        url: `/farmer/inspections/${inspectionId}/complete`,
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showToast('Inspection marked as complete', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showToast(response.message || 'Error completing inspection', 'error');
+            }
+        },
+        error: function() {
+            showToast('Error completing inspection', 'error');
+        }
+    });
+}
+
 
 function getInspectionStatusColor(status) {
     switch(status) {
@@ -1361,6 +1418,182 @@ function markAlertAsRead(alertId) {
 
 @push('styles')
 <style>
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#userDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
+            /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
     /* Action buttons styling */
     .action-buttons {
         display: flex;

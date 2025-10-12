@@ -3,107 +3,8 @@
 @section('title', 'LBDAIRY: Farmers - Livestock Analysis')
 
 @section('styles')
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css?v={{ time() }}&ver=4.0">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css?v={{ time() }}&ver=4.0">
 <style>
 /* Cache buster: {{ time() }} */
-/* COMPREHENSIVE STYLING TO MATCH STANDARDIZED FORMAT */
-
-/* Page Header Styling */
-.page-header {
-    background: #18375d;
-    color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-}
-
-.page-header h1 {
-    color: white;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.page-header p {
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0;
-}
-
-.page-header h1 i {
-    color: white !important;
-    margin-right: 10px;
-}
-
-/* Statistics Cards - Match Super Admin Style */
-.card.border-left-primary {
-    border-left: 4px solid #18375d !important;
-}
-
-.card {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.25);
-    transform: translateY(-2px);
-}
-
-.card-body {
-    padding: 1.25rem;
-}
-
-/* Icon styling for stat cards */
-.card-body .icon {
-    display: block !important;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    line-height: 60px;
-}
-
-.card-body .icon i {
-    color: #18375d !important;
-    display: inline-block !important;
-    opacity: 1;
-}
-
-/* Text styling for stat cards */
-.text-xs {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.text-gray-800 {
-    color: #5a5c69 !important;
-}
-
-/* Card header styling - Match Super Admin */
-.card-header {
-    padding: 1rem 1.5rem;
-    background-color: #18375d !important;
-    border-bottom: none !important;
-}
-
-.card-header h6 {
-    color: white !important;
-    margin: 0;
-    font-weight: 600;
-}
-
-.card-header h6 i {
-    color: white !important;
-}
-
-    .avatar-sm {
-        width: 2rem;
-        height: 2rem;
-    }
-    
     /* Table layout styling to match superadmin */
     /* Ensure the table container and scroll area are correctly styled */
     .table-responsive {
@@ -553,85 +454,6 @@
         }
     }
     
-    /* Robust action buttons styling to match active admins table */
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        min-width: 200px;
-    }
-    
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: 1px solid transparent;
-        border-radius: 0.375rem;
-        cursor: pointer;
-        transition: all 0.15s ease-in-out;
-        white-space: nowrap;
-    }
-    
-    }
-
-    .btn-action-print:hover {
-        background-color: #5a6268 !important;
-        border-color: #545b62 !important;
-        color: white !important;
-    }
-    
-    
-    .btn-action-refresh {
-        background-color: #fca700 !important;
-        border-color: #fca700 !important;
-        color: white !important;
-    }
-    
-    .btn-action-refresh:hover {
-        background-color: #e69500 !important;
-        border-color: #e69500 !important;
-        color: white !important;
-    }
-    
-    .btn-action-tools {
-        background-color: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-    }
-    
-    .btn-action-tools:hover {
-        background-color: #e2e6ea;
-        border-color: #cbd3da;
-        color: #495057;
-    }
-    
-    .btn-action-ok {
-        background-color: #fca700 !important;
-        border-color: #fca700 !important;
-        color: white !important;
-    }
-    
-    .btn-action-ok:hover {
-        background-color: #e69500 !important;
-        border-color: #e69500 !important;
-        color: white !important;
-    }
-    
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-edit:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
     
     /* Livestock ID link styling - EXACT MATCH from manage livestock with ENHANCED hover */
     table#livestockTable tbody tr td a.livestock-id-link,
@@ -1041,13 +863,12 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
     display: block !important;
     width: fit-content !important;
 }
-
 </style>
 @endsection
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header fade-in">
+<div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
     <h1>
         <i class="fas fa-chart-line"></i>
         Livestock Analysis Dashboard
@@ -1122,7 +943,7 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
 <div class="row mb-4">
     <div class="col-xl-8 col-lg-7 mb-3">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="m-0 font-weight-bold">
                     <i class="fas fa-chart-line"></i>
                     Performance Trends
@@ -1138,7 +959,7 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
 
     <div class="col-xl-4 col-lg-5 mb-3">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white py-3">
+            <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="m-0 font-weight-bold">
                     <i class="fas fa-chart-pie"></i>
                     Health Distribution
@@ -1166,7 +987,7 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
 
 <!-- Enhanced Livestock Analysis Table -->
 <div class="card shadow mb-4">
-    <div class="card-header bg-primary text-white py-3">
+    <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
         <h6 class="m-0 font-weight-bold">
             <i class="fas fa-list-alt"></i>
             Livestock Analysis Overview
@@ -1183,7 +1004,7 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
                 <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
             </div>
             <div class="d-flex flex-row align-items-center" style="gap: 20px;">
-                <button class="btn-action btn-action-print" onclick="printLivestockTable()">
+                <button class="btn-action btn-action-edit" onclick="printLivestockTable()">
                     <i class="fas fa-print"></i> Print
                 </button>
                 <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
@@ -1251,12 +1072,12 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
                             <span class="badge badge-{{ $statusClass }}">{{ $breedingStatus }}</span>
                         </td>
                         <td>
-                            <div class="action-buttons d-flex justify-content-center gap-2 flex-nowrap" style="min-width: 220px;">
-                                <button class="btn-action btn-action-ok flex-shrink-0" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
-                                    <i class="fas fa-chart-line"></i> <span class="d-none d-sm-inline">Analysis</span>
+                            <div class="btn-group">
+                                <button class="btn-action btn-action-edit" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
+                                    <i class="fas fa-chart-line"></i>Analysis</span>
                                 </button>
-                                <button class="btn-action btn-action-edit flex-shrink-0" onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')" title="History">
-                                    <i class="fas fa-history"></i> <span class="d-none d-sm-inline">History</span>
+                                <button class="btn-action btn-action-edit " onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')" title="History">
+                                    <i class="fas fa-history"></i>History</span>
                                 </button>
                             </div>
                         </td>
@@ -1280,32 +1101,40 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
 </div>
 
 <!-- Individual Livestock Analysis Modal -->
-<div class="modal fade" id="livestockAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="livestockAnalysisLabel" aria-hidden="true">
+<div class="modal fade admin-modal" id="livestockAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="livestockAnalysisLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="livestockAnalysisLabel">
-                    <i class="fas fa-chart-line"></i>
-                    Individual Livestock Analysis
-                </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line fa-2x "></i>
+                </div>
+                <h5 class="fw-bold mb-1">Individual Livestock Analysis </h5>
+                <p class="text-muted mb-0 small text-center">Below are the complete analysis of the selected livestock.</p>
             </div>
-            <div class="modal-body" id="livestockAnalysisContent">
-                <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-info" onclick="printLivestockAnalysis()">
-                    <i class="fas fa-print"></i> Print Analysis
-                </button>
-                <button type="button" class="btn btn-primary" onclick="exportLivestockAnalysis()">
-                    <i class="fas fa-download"></i> Export Data
-                </button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="livestockAnalysisContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-approves" onclick="printLivestockAnalysis()">
+                <i class="fas fa-print"></i> Print Analysis
+            </button>
+            <button type="button" class="btn-modern btn-ok" onclick="exportLivestockAnalysis()">
+                <i class="fas fa-download"></i> Export Data
+            </button>
+        </div>
+
     </div>
+  </div>
 </div>
 
 <!-- Livestock History Modal -->
@@ -1325,8 +1154,8 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
                 <!-- Content will be loaded dynamically -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-info" onclick="printLivestockHistory()">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-modern btn-approves" onclick="printLivestockHistory()">
                     <i class="fas fa-print"></i> Print History
                 </button>
             </div>
@@ -1338,7 +1167,358 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
 <div class="toast-container position-fixed bottom-0 right-0 p-3" style="z-index: 1050;">
 </div>
 @endsection
+@push('styles')
+<style>
+     /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
 
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 1.5rem;
+        max-height: 80vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-deletes {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-deletes:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-print {
+        background-color: #387057 ;
+        border-color: #387057 ;
+        color: white !important;
+    }
+    
+    .btn-action-print:hover {
+        background-color: #5a6268 !important;
+        border-color: #5a6268 !important;
+        color: white !important;
+    }
+    .btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+/* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+</style>
 @push('scripts')
 <!-- DataTables Core -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js?v={{ time() }}&ver=3.0"></script>
