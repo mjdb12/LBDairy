@@ -2733,6 +2733,11 @@ function showNotification(message, type) {
         // Load initial chart
         loadFarmPerformanceChart();
 
+        // Bind chart period change inside the same scope
+        $('#chartPeriod').on('change', function() {
+            loadFarmPerformanceChart();
+        });
+
         // Livestock Distribution Chart
         const livestockCtx = document.getElementById('livestockChart').getContext('2d');
     fetch("{{ url('superadmin/analysis/livestock-distribution') }}")
@@ -3396,10 +3401,7 @@ $(document).ready(function() {
             }).join('');
         }
 
-        // Chart period change handler
-        $('#chartPeriod').change(function() {
-            loadFarmPerformanceChart();
-        });
+        
     });
 </script>
 @endpush

@@ -110,7 +110,6 @@ class SuperAdminController extends Controller
                 \Log::info('Sending JSON response:', $response);
                 return response()->json($response);
             }
-
             return redirect()->back()->with('success', 'Profile updated successfully!');
             
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -272,10 +271,27 @@ class SuperAdminController extends Controller
         // Get audit log statistics
         $stats = $this->getAuditLogStats();
         
-        // Get all audit logs with user information
-        $auditLogs = AuditLog::with(['user'])
+        // Get latest audit logs with user information and enrich fields expected by the view
+        $rawLogs = AuditLog::with(['user'])
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->limit(100)
+            ->get();
+
+        $auditLogs = $rawLogs->map(function($log) {
+            // Derive module from action or fallback
+            $action = $log->action ?? '';
+            $module = 'system';
+            if (str_contains($action, 'user')) { $module = 'users'; }
+            elseif (str_contains($action, 'admin')) { $module = 'admins'; }
+            elseif (str_contains($action, 'farm')) { $module = 'farms'; }
+            elseif (str_contains($action, 'livestock')) { $module = 'livestock'; }
+            elseif (str_contains($action, 'profile')) { $module = 'profile'; }
+
+            $log->timestamp = optional($log->created_at)->format('M d, Y H:i:s');
+            $log->module = $log->module ?? $module;
+            $log->details = $log->details ?? ($log->description ?? null);
+            return $log;
+        });
 
         // Get security alerts (warning, danger, and critical events from last 7 days)
         $securityAlerts = AuditLog::with(['user'])
@@ -1377,181 +1393,15 @@ class SuperAdminController extends Controller
         }
     }
 
-    /**
-     * Analysis summary for superadmin dashboard (totals, monthly production, efficiency)
-     */
-    public function getAnalysisSummary()
-    {
-        try {
-            $startOfMonth = now()->startOfMonth();
-            $endDate = now();
+    
 
-            $monthlyProduction = (float) ProductionRecord::whereBetween('production_date', [$startOfMonth, $endDate])
-                ->sum('milk_quantity');
+    
 
-            $totalFarms = Farm::count();
-            $activeFarmsWithProduction = ProductionRecord::whereBetween('production_date', [$startOfMonth, $endDate])
-                ->distinct('farm_id')
-                ->count('farm_id');
-            $efficiency = $totalFarms > 0 ? round(($activeFarmsWithProduction / $totalFarms) * 100) : 0;
+    
 
-            return response()->json([
-                'success' => true,
-                'totals' => [
-                    'farms' => $totalFarms,
-                    'livestock' => Livestock::count(),
-                    'monthly_production_liters' => $monthlyProduction,
-                    'efficiency_percent' => $efficiency,
-                ]
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to load summary'], 500);
-        }
-    }
+    
 
-    /**
-     * Farm performance over time (sum production per day)
-     */
-    public function getFarmPerformanceData(Request $request)
-    {
-        try {
-            $days = (int) $request->get('days', 30);
-            if ($days < 1 || $days > 365) { $days = 30; }
-            $startDate = now()->subDays($days - 1)->startOfDay();
-            $endDate = now()->endOfDay();
-
-            $rows = ProductionRecord::selectRaw('production_date, SUM(milk_quantity) as liters')
-                ->whereBetween('production_date', [$startDate->toDateString(), $endDate->toDateString()])
-                ->groupBy('production_date')
-                ->orderBy('production_date')
-                ->get();
-
-            $labels = [];
-            $data = [];
-            $cursor = $startDate->copy();
-            $map = $rows->keyBy(function ($r) { return (string) $r->production_date; });
-            while ($cursor->lte($endDate)) {
-                $key = $cursor->toDateString();
-                $labels[] = $cursor->format('M d');
-                $data[] = (float) (($map[$key]->liters ?? 0));
-                $cursor->addDay();
-            }
-
-            return response()->json([
-                'success' => true,
-                'labels' => $labels,
-                'dataset' => [
-                    'label' => 'Production (L)',
-                    'data' => $data,
-                    'borderColor' => '#fca700',
-                    'backgroundColor' => 'rgba(252, 167, 0, 0.1)',
-                    'fill' => true,
-                    'tension' => 0.4,
-                ],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to load performance'], 500);
-        }
-    }
-
-    /**
-     * Livestock distribution by type
-     */
-    public function getLivestockDistributionData()
-    {
-        try {
-            $rows = Livestock::selectRaw('type, COUNT(*) as count')->groupBy('type')->get();
-            $labels = $rows->pluck('type');
-            $data = $rows->pluck('count')->map(fn($v) => (int) $v);
-            return response()->json([
-                'success' => true,
-                'labels' => $labels,
-                'data' => $data,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to load distribution'], 500);
-        }
-    }
-
-    /**
-     * Production trends (last 4 weeks totals)
-     */
-    public function getProductionTrendsData()
-    {
-        try {
-            $start = now()->subWeeks(3)->startOfWeek();
-            $rows = ProductionRecord::selectRaw("YEARWEEK(production_date, 3) as yw, SUM(milk_quantity) as liters")
-                ->where('production_date', '>=', $start->toDateString())
-                ->groupBy('yw')
-                ->orderBy('yw')
-                ->get();
-
-            $labels = [];
-            $data = [];
-            $cursor = $start->copy();
-            for ($i = 0; $i < 4; $i++) {
-                $labels[] = 'Week ' . $cursor->format('W');
-                $yw = $cursor->format('oW');
-                $match = $rows->first(function ($r) use ($cursor) {
-                    return $r->yw == (int) $cursor->format('oW');
-                });
-                $data[] = (float) ($match->liters ?? 0);
-                $cursor->addWeek();
-            }
-
-            return response()->json([
-                'success' => true,
-                'labels' => $labels,
-                'data' => $data,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to load trends'], 500);
-        }
-    }
-
-    /**
-     * Get top performing farms for analysis dashboard
-     */
-    public function getTopPerformingFarms()
-    {
-        try {
-            $farms = Farm::with(['owner', 'livestock', 'productionRecords'])
-                ->get()
-                ->map(function ($farm) {
-                    $livestockCount = $farm->livestock->count();
-                    $monthlyProduction = $farm->productionRecords
-                        ->where('production_date', '>=', now()->startOfMonth())
-                        ->where('production_date', '<=', now()->endOfMonth())
-                        ->sum('milk_quantity');
-                    $expectedProduction = $livestockCount * 25; // Assume 25L per livestock per month
-                    $efficiency = $expectedProduction > 0 ? round(($monthlyProduction / $expectedProduction) * 100, 1) : 0;
-                    $efficiency = min($efficiency, 100); // Cap at 100%
-
-                    return [
-                        'id' => $farm->id,
-                        'name' => $farm->name,
-                        'location' => $farm->location,
-                        'livestock_count' => $livestockCount,
-                        'monthly_production' => $monthlyProduction,
-                        'efficiency' => $efficiency,
-                        'owner_name' => $farm->owner ? ($farm->owner->name ?? trim(($farm->owner->first_name ?? '') . ' ' . ($farm->owner->last_name ?? ''))) : 'N/A'
-                    ];
-                })
-                ->sortByDesc('efficiency')
-                ->take(5)
-                ->values();
-
-            return response()->json([
-                'success' => true,
-                'farms' => $farms
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to load top performing farms'
-            ], 500);
-        }
-    }
+    
 
     /**
      * Create a farmer (Super Admin scope)
@@ -1930,6 +1780,184 @@ class SuperAdminController extends Controller
                 'success' => false,
                 'message' => 'Failed to delete farmer'
             ], 500);
+        }
+    }
+
+    // Analysis API: Summary KPIs for manage-analysis page
+    public function getAnalysisSummary()
+    {
+        try {
+            $totalFarms = \App\Models\Farm::count();
+            $totalLivestock = \App\Models\Livestock::count();
+            $monthStart = now()->startOfMonth();
+            $monthlyProduction = \App\Models\ProductionRecord::where(function($q) use ($monthStart) {
+                $q->whereDate('production_date', '>=', $monthStart)
+                  ->orWhereDate('created_at', '>=', $monthStart);
+            })->sum('milk_quantity') ?? 0;
+
+            $expected = max(1, $totalLivestock) * 15; // 15L per livestock baseline
+            $efficiency = $expected > 0 ? round(min(100, ($monthlyProduction / $expected) * 100)) : 0;
+
+            return response()->json([
+                'success' => true,
+                'totals' => [
+                    'farms' => $totalFarms,
+                    'livestock' => $totalLivestock,
+                    'monthly_production_liters' => round($monthlyProduction, 1),
+                    'efficiency_percent' => $efficiency,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load summary'], 500);
+        }
+    }
+
+    // Analysis API: Farm Performance Overview (by last N days)
+    public function getFarmPerformanceData(\Illuminate\Http\Request $request)
+    {
+        try {
+            $days = (int) $request->get('days', 30);
+            if ($days < 7) $days = 7;
+            if ($days > 365) $days = 365;
+
+            $start = now()->startOfDay()->subDays($days - 1);
+
+            $rows = \App\Models\ProductionRecord::selectRaw('DATE(COALESCE(production_date, created_at)) as d, SUM(milk_quantity) as total')
+                ->where(function($q) use ($start) {
+                    $q->whereDate('production_date', '>=', $start)
+                      ->orWhereDate('created_at', '>=', $start);
+                })
+                ->groupBy('d')
+                ->orderBy('d')
+                ->get();
+
+            $labels = [];
+            $data = [];
+            $cursor = $start->copy();
+            $map = $rows->keyBy('d');
+            for ($i = 0; $i < $days; $i++) {
+                $key = $cursor->format('Y-m-d');
+                $labels[] = $cursor->format('M d');
+                $data[] = (float) ($map[$key]->total ?? 0);
+                $cursor->addDay();
+            }
+
+            return response()->json([
+                'success' => true,
+                'labels' => $labels,
+                'dataset' => [
+                    'label' => 'Production (L)',
+                    'data' => $data,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load farm performance'], 500);
+        }
+    }
+
+    // Analysis API: Livestock distribution by type
+    public function getLivestockDistributionData()
+    {
+        try {
+            $rows = \App\Models\Livestock::selectRaw('COALESCE(type, "Unknown") as type, COUNT(*) as cnt')
+                ->groupBy('type')
+                ->orderByDesc('cnt')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'labels' => $rows->pluck('type'),
+                'data' => $rows->pluck('cnt')->map(fn($v) => (int) $v),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load livestock distribution'], 500);
+        }
+    }
+
+    // Analysis API: Production trends (monthly totals and related series)
+    public function getProductionTrendsData()
+    {
+        try {
+            $monthsBack = 12;
+            $start = now()->startOfMonth()->subMonths($monthsBack - 1);
+
+            $rows = \App\Models\ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, SUM(milk_quantity) as total")
+                ->where(function($q) use ($start) {
+                    $q->whereDate('production_date', '>=', $start)
+                      ->orWhereDate('created_at', '>=', $start);
+                })
+                ->groupBy('ym')
+                ->orderBy('ym')
+                ->get();
+
+            $labels = [];
+            $data = [];
+            $avgProduction = [];
+            $activeFarms = [];
+            $activeLivestock = [];
+
+            $map = $rows->keyBy('ym');
+            $cursor = $start->copy();
+            for ($i = 0; $i < $monthsBack; $i++) {
+                $ym = $cursor->format('Y-m');
+                $labels[] = $cursor->format('M');
+                $total = (float) ($map[$ym]->total ?? 0);
+                $data[] = round($total, 1);
+                $daysInMonth = (int) $cursor->daysInMonth;
+                $avgProduction[] = $daysInMonth > 0 ? round($total / $daysInMonth, 1) : 0;
+                $activeFarms[] = \App\Models\Farm::where('status', 'active')->count();
+                $activeLivestock[] = \App\Models\Livestock::where('status', 'active')->count();
+                $cursor->addMonth();
+            }
+
+            return response()->json([
+                'success' => true,
+                'labels' => $labels,
+                'data' => $data,
+                'avgProduction' => $avgProduction,
+                'activeFarms' => $activeFarms,
+                'activeLivestock' => $activeLivestock,
+                'summary' => [ 'total' => array_sum($data) ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load production trends'], 500);
+        }
+    }
+
+    // Analysis API: Top performing farms (current month)
+    public function getTopPerformingFarms()
+    {
+        try {
+            $monthStart = now()->startOfMonth();
+            $farms = \App\Models\Farm::with(['livestock' => function($q) { $q->select('id','farm_id'); }])
+                ->select('id','name','location','status','owner_id')
+                ->get()
+                ->map(function($farm) use ($monthStart) {
+                    $livestockCount = (int) ($farm->livestock ? $farm->livestock->count() : 0);
+                    $monthlyProduction = (float) \App\Models\ProductionRecord::where('farm_id', $farm->id)
+                        ->where(function($q) use ($monthStart) {
+                            $q->whereDate('production_date', '>=', $monthStart)
+                              ->orWhereDate('created_at', '>=', $monthStart);
+                        })
+                        ->sum('milk_quantity');
+                    $expected = max(1, $livestockCount) * 15;
+                    $performance = $expected > 0 ? min(100, ($monthlyProduction / $expected) * 100) : 0;
+                    return [
+                        'name' => $farm->name ?? 'Unnamed Farm',
+                        'location' => $farm->location ?? 'N/A',
+                        'livestock_count' => $livestockCount,
+                        'monthly_production' => round($monthlyProduction, 1),
+                        'performance_score' => (int) round($performance),
+                    ];
+                })
+                ->sortByDesc('performance_score')
+                ->take(5)
+                ->values()
+                ->all();
+
+            return response()->json(['success' => true, 'farms' => $farms]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load top farms'], 500);
         }
     }
 

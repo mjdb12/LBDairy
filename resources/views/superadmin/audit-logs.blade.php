@@ -2299,12 +2299,11 @@ function exportChart(chartType) {
 
 function printChart(chartType) {
     const canvas = document.getElementById(chartType + 'Chart');
-    const win = window.open();
-    win.document.write('<html><head><title>Chart</title></head><body>');
-    win.document.write('<img src="' + canvas.toDataURL() + '"/>');
-    win.document.write('</body></html>');
-    win.document.close();
-    win.print();
+    if (canvas && typeof window.printElement === 'function') {
+        window.printElement(canvas);
+    } else {
+        window.print();
+    }
 }
 
 // Security Alerts Functions

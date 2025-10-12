@@ -2596,84 +2596,65 @@ function exportPNG() {
 
 function printTable() {
     try {
-        // Get current table data without actions column
-        const tableData = usersTable.data().toArray();
-        
+        const tableData = (window.usersTable && $.fn.DataTable && $.fn.DataTable.isDataTable('#usersTable'))
+            ? usersTable.data().toArray()
+            : [];
         if (!tableData || tableData.length === 0) {
             showNotification('No data available to print', 'warning');
             return;
         }
-        
-        // Create print content directly in current page
-        const originalContent = document.body.innerHTML;
-        
+
         let printContent = `
             <div style="font-family: Arial, sans-serif; margin: 20px;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <h1 style="color: #18375d; margin-bottom: 5px;">SuperAdmin User Report</h1>
                     <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
                 </div>
-                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                <table border="1" style="border-collapse: collapse; width: 100%; border: 1px solid #000;">
                     <thead>
                         <tr>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">User ID</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Email</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Role</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Status</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Last Login</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">User ID</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Name</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Email</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Role</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Status</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Registration Date</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Last Login</th>
                         </tr>
                     </thead>
                     <tbody>`;
-        
-        // Add data rows (excluding Actions column)
+
         tableData.forEach(row => {
             printContent += '<tr>';
             for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
                 let cellText = '';
                 if (row[i]) {
-                    // Remove HTML tags and get clean text
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = row[i];
-                    cellText = tempDiv.textContent || tempDiv.innerText || '';
-                    // Clean up the text
-                    cellText = cellText.replace(/\s+/g, ' ').trim();
+                    cellText = (tempDiv.textContent || tempDiv.innerText || '').replace(/\s+/g, ' ').trim();
                 }
-                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
+                printContent += `<td style="border: 1px solid #000; padding: 8px; text-align: left;">${cellText}</td>`;
             }
             printContent += '</tr>';
         });
-        
+
         printContent += `
                     </tbody>
                 </table>
             </div>`;
-        
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
-        
+
+        // Use global same-tab print helper without altering the page
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else {
+            // Fallback to native print of current page
+            window.print();
+        }
     } catch (error) {
         console.error('Error in print function:', error);
         showNotification('Error generating print. Please try again.', 'danger');
-        
-        // Fallback to DataTables print
-        try {
-            usersTable.button('.buttons-print').trigger();
-        } catch (fallbackError) {
-            console.error('Fallback print also failed:', fallbackError);
-            showNotification('Print failed. Please try again.', 'danger');
-        }
     }
 }
 

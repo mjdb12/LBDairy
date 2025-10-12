@@ -1235,6 +1235,14 @@
             height: 300px;
             padding: 1rem;
         }
+
+        /* Print-only container: only when body has .print-element-only */
+        @media print {
+            body.print-element-only * { visibility: hidden !important; }
+            body.print-element-only #__print_area__,
+            body.print-element-only #__print_area__ * { visibility: visible !important; }
+            body.print-element-only #__print_area__ { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
+        }
     </style>
     
     @stack('styles')
@@ -1338,6 +1346,31 @@
             }
         }
         
+        // Global print helper: prints a specific element in the same tab
+        window.printElement = function(target) {
+            try {
+                const el = (typeof target === 'string') ? document.querySelector(target) : target;
+                const printArea = document.getElementById('__print_area__') || (function(){ const d=document.createElement('div'); d.id='__print_area__'; document.body.appendChild(d); return d; })();
+                printArea.innerHTML = '';
+                if (el && el.tagName && el.tagName.toLowerCase() === 'canvas') {
+                    const img = new Image();
+                    img.src = el.toDataURL('image/png');
+                    img.style.maxWidth = '100%';
+                    printArea.appendChild(img);
+                } else if (el) {
+                    printArea.appendChild(el.cloneNode(true));
+                }
+                document.body.classList.add('print-element-only');
+                window.print();
+                setTimeout(function(){
+                    printArea.innerHTML='';
+                    document.body.classList.remove('print-element-only');
+                }, 300);
+            } catch (e) {
+                window.print();
+            }
+        };
+
         $(document).ready(function() {
 
             
@@ -1419,6 +1452,42 @@
                 console.log('Sidebar scrollHeight:', $('.sidebar')[0].scrollHeight);
                 console.log('Sidebar clientHeight:', $('.sidebar')[0].clientHeight);
             }
+
+            // Keep page position when opening modals or clicking placeholder anchors
+            // Prevent hash anchors from jumping to top (except explicit scroll-to-top control)
+            $(document).on('click', 'a[href^="#"]:not(.scroll-to-top)', function(e) {
+                // Allow if it's a real hash navigation target and not a modal
+                const href = $(this).attr('href');
+                const $target = href && href.length > 1 ? $(href) : $();
+                const isModalTarget = $target.hasClass('modal');
+                if (href === '#' || isModalTarget || $(this).is('[data-toggle], [data-target]')) {
+                    e.preventDefault();
+                }
+            });
+
+            // Generic handler: anchors with data-target="#modalId" should open modal without navigation
+            $(document).on('click', 'a[data-target^="#"]', function(e) {
+                const target = $(this).attr('data-target');
+                if (target) {
+                    const $m = $(target);
+                    if ($m.hasClass('modal')) {
+                        e.preventDefault();
+                        $m.modal('show');
+                    }
+                }
+            });
+
+            // Lock and restore scroll position around modal show to avoid jump-to-top
+            var __PAGE_SCROLL_Y = 0;
+            $(document).on('show.bs.modal', '.modal', function() {
+                __PAGE_SCROLL_Y = $(window).scrollTop();
+            });
+            $(document).on('shown.bs.modal', '.modal', function() {
+                $(window).scrollTop(__PAGE_SCROLL_Y);
+            });
+            $(document).on('hide.bs.modal hidden.bs.modal', '.modal', function() {
+                $(window).scrollTop(__PAGE_SCROLL_Y);
+            });
 
             // Enforce numeric-only and 11-digit limit for contact/phone inputs globally
             function enforcePhoneRules($inputs) {
