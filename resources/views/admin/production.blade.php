@@ -5,7 +5,7 @@
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
-    <div class="page-header fade-in">
+    <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
             <i class="fas fa-industry"></i>
             Production Management

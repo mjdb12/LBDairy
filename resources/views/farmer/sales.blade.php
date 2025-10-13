@@ -355,7 +355,25 @@
 #activeFarmersTable thead th.sorting_desc::after {
     display: none;
 }
+/* Make table cells wrap instead of forcing them all inline */
+#salesTable td, 
+#salesTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
 
+/* Make sure action buttons don’t overflow */
+#salesTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#salesTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
     /* Action buttons styling */
     .action-buttons {
         display: flex;
@@ -592,10 +610,500 @@
         display: inline-block;      /* keep spacing consistent */
         margin-bottom: 0.5rem;      /* add spacing below */
     }
+    /* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+/* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#addLivestockDetailsModal form {
+  text-align: left;
+}
+
+#addLivestockDetailsModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#addLivestockDetailsModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#addLivestockDetailsModal .form-control,
+#addLivestockDetailsModal select.form-control,
+#addLivestockDetailsModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#addLivestockDetailsModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#addLivestockDetailsModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editLivestockModal form {
+  text-align: left;
+}
+
+#editLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#reportIssueModal form {
+  text-align: left;
+}
+
+#reportIssueModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#reportIssueModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#reportIssueModal .form-control,
+#reportIssueModal select.form-control,
+#reportIssueModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#reportIssueModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#reportIssueModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#reportIssueModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addLivestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #reportIssueModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#historyModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
 </style>
 @section('content')
 <!-- Page Header -->
-<div class="page-header fade-in">
+<div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
     <h1>
         <i class="fas fa-chart-line"></i>
         Sales Management
@@ -668,17 +1176,17 @@
 
         <!-- Sales Table -->
         <div class="card shadow mb-4 fade-in">
-            <div class="card-header bg-primary text-white">
+            <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="mb-0">
                     <i class="fas fa-list mr-2"></i> Sales Records
                 </h6>
             </div>
             <div class="card-body">
                 <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
-                        <button class="btn-action btn-action-edits" data-toggle="modal" data-target="#addLivestockDetailsModal">
+                        <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addLivestockDetailsModal">
                         <i class="fas fa-plus mr-1"></i> Add Sale
                         </button>
-                        <button class="btn-action btn-action-print " onclick="printProductivity()">
+                        <button class="btn-action btn-action-edits " onclick="printProductivity()">
                         <i class="fas fa-print mr-1"></i> Print
                         </button>
                         <button class="btn-action btn-action-refresh" onclick="refreshSalesTable('salesTable')">
@@ -687,14 +1195,14 @@
                         <button class="btn-action btn-action-history" data-toggle="modal" data-target="#historyModal">
                         <i class="fas fa-history mr-1"></i> History
                         </button>
-                        <button class="btn-action btn-action-import" onclick="document.getElementById('csvInput').click()">
-                        <i class="fas fa-file-import mr-1"></i> Import
-                        </button>
                         <div class="dropdown">
                             <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
                                 <i class="fas fa-tools"></i> Tools
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#" onclick="document.getElementById('csvInput').click()">
+                                    <i class="fas fa-history"></i> Import Table
+                                </a>
                                 <a class="dropdown-item" href="#" onclick="exportCSV()">
                                     <i class="fas fa-file-csv"></i> Download CSV
                                 </a>
@@ -739,8 +1247,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-action-view" onclick="viewSale('{{ $sale['id'] }}')" title="View Details">
+                                    <div class="btn-group">
+                                        <button class="btn-action btn-action-ok" onclick="viewSale('{{ $sale['id'] }}')" title="View Details">
                                             <i class="fas fa-eye"></i>
                                             <span>View</span>
                                         </button>
@@ -748,7 +1256,7 @@
                                             <i class="fas fa-edit"></i>
                                             <span>Edit</span>
                                         </button>
-                                        <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $sale['id'] }}')" title="Delete">
+                                        <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $sale['id'] }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
                                             <span>Delete</span>
                                         </button>
@@ -773,169 +1281,213 @@
             </div>
         </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteLabel">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
+<!-- Modern Approve Farmer Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-check-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this sale record? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Yes, Delete
-                </button>
-            </div>
+            <!-- Title -->
+            <h5>Confirm Delete </h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to <strong>delete</strong> this sale record?
+            </p>
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-delete" id="confirmDeleteBtn">
+                        Delete
+                    </button>
+                </div>
+            
         </div>
     </div>
 </div>
 
 <!-- ADD SALE DETAILS MODAL -->
-<div class="modal fade" id="addLivestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="addLivestockDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-plus-circle mr-2"></i>
-                    Add New Sale
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span>&times;</span>
-                </button>
+<div class="modal fade admin-modal" id="addLivestockDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-plus-circle fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Add New Sale</h5>
+                <p class="text-muted mb-0 small">
+                    Enter the details below to record a new sale transaction.
+                </p>
             </div>
-            <div class="modal-body">
-                <form id="addLivestockDetailsForm">
-                    <div class="form-group">
-                        <label for="add_farm_id">Select Farm <span class="text-danger">*</span></label>
-                        <select class="form-control" id="add_farm_id" name="farm_id" required>
-                            <option value="" disabled selected>Select Farm</option>
-                            @foreach($farms ?? [] as $farm)
-                                <option value="{{ $farm->id }}">{{ $farm->name }}</option>
-                            @endforeach
-                        </select>
+
+            <!-- Form -->
+            <form id="addLivestockDetailsForm" onsubmit="submitSale(event)">
+                @csrf
+
+                <div class="form-wrapper text-start mx-auto">
+                    <div class="row g-3">
+
+                        <!-- Farm -->
+                        <div class="col-md-12">
+                            <label for="add_farm_id" class="fw-semibold">Select Farm <span class="text-danger">*</span></label>
+                            <select class="form-control" id="add_farm_id" name="farm_id" required>
+                                <option value="" disabled selected>Select Farm</option>
+                                @foreach($farms ?? [] as $farm)
+                                    <option value="{{ $farm->id }}">{{ $farm->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Customer Info -->
+                        <div class="col-md-6">
+                            <label for="add_customer_name" class="fw-semibold">Customer Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="add_customer_name" name="customer_name" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="add_customer_phone" class="fw-semibold">Customer Phone</label>
+                            <input type="text" class="form-control" id="add_customer_phone" name="customer_phone">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="add_customer_email" class="fw-semibold">Customer Email</label>
+                            <input type="email" class="form-control" id="add_customer_email" name="customer_email">
+                        </div>
+
+                        <!-- Sale Details -->
+                        <div class="col-md-6">
+                            <label for="add_quantity" class="fw-semibold">Quantity (Liters) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="add_quantity" name="quantity" min="0" step="0.01" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="add_unit_price" class="fw-semibold">Unit Price (₱/Liter) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="add_unit_price" name="unit_price" min="0" step="0.01" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="add_sale_date" class="fw-semibold">Sale Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="add_sale_date" name="sale_date" required value="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <!-- Payment Details -->
+                        <div class="col-md-6">
+                            <label for="add_payment_method" class="fw-semibold">Payment Method <span class="text-danger">*</span></label>
+                            <select class="form-control" id="add_payment_method" name="payment_method" required>
+                                <option value="cash">Cash</option>
+                                <option value="bank_transfer">Bank Transfer</option>
+                                <option value="mobile_money">Mobile Money</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="add_payment_status" class="fw-semibold">Payment Status <span class="text-danger">*</span></label>
+                            <select class="form-control" id="add_payment_status" name="payment_status" required>
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                                <option value="partial">Partial</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="add_notes" class="fw-semibold">Notes</label>
+                            <textarea class="form-control mt-1" id="add_notes" name="notes" rows="4" placeholder="Additional notes about the sale..." style="resize: none;"></textarea>
+                        </div>
+
+                        <div id="formNotification" class="mt-2" style="display: none;"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="add_customer_name">Customer Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="add_customer_name" name="customer_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_customer_phone">Customer Phone <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="add_customer_phone" name="customer_phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="add_customer_email">Customer Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="add_customer_email" name="customer_email">
-                    </div>
-                    <div class="form-group">
-                        <label for="add_quantity">Quantity (Liters) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="add_quantity" name="quantity" min="0" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_unit_price">Unit Price (₱/Liter) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="add_unit_price" name="unit_price" min="0" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_sale_date">Sale Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="add_sale_date" name="sale_date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_payment_method">Payment Method <span class="text-danger">*</span></label>
-                        <select class="form-control" id="add_payment_method" name="payment_method">
-                            <option value="cash">Cash</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="mobile_money">Mobile Money</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_payment_status">Payment Status <span class="text-danger">*</span></label>
-                        <select class="form-control" id="add_payment_status" name="payment_status">
-                            <option value="pending">Pending</option>
-                            <option value="paid">Paid</option>
-                            <option value="partial">Partial</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="add_notes">Notes <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="add_notes" name="notes" rows="3" placeholder="Additional notes about the sale..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" form="addLivestockDetailsForm" class="btn-action btn-action-edits">
-                    Save Sale
-                </button>
-            </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok" title="Save Sale">
+                        Save Sale
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- History Modal -->
-<div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="historyModalLabel">
-                    <i class="fas fa-history mr-2"></i>
-                    Sales History
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="sortHistory" class="font-weight-bold">Sort By:</label>
-                        <select id="sortHistory" class="form-control form-control-sm">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="filterHistory" class="font-weight-bold">Filter By:</label>
-                        <select id="filterHistory" class="form-control form-control-sm">
-                            <option value="all">All</option>
-                            <option value="goat">Goat</option>
-                            <option value="cow">Cow</option>
-                            <option value="carabao">Carabao</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="activeFarmersTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Transactions</th>
-                                <th>Total Sales (₱)</th>
-                                <th>Average Sale (₱)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- Sales history will be dynamically populated here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn-action btn-action-ok" onclick="exportHistory()">
-                    Export History
-                </button>
-            </div>
+
+<!-- Smart Detail - Sales History Modal -->
+<div class="modal fade admin-modal" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content smart-detail p-4">
+
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle ">
+          <i class="fas fa-history fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Sales History</h5>
+        <p class="text-muted mb-0 small text-center">
+          Review, filter, and export livestock sales history below.
+        </p>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="sortHistory" class="fw-semibold">Sort By:</label>
+              <select id="sortHistory" class="form-control">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="filterHistory" class="fw-semibold">Filter By:</label>
+              <select id="filterHistory" class="form-control">
+                <option value="all">All</option>
+                <option value="goat">Goat</option>
+                <option value="cow">Cow</option>
+                <option value="carabao">Carabao</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive rounded shadow-sm">
+            <table class="table table-hover table-bordered align-middle mb-0">
+              <thead class="table-light text-center">
+                <tr>
+                  <th>Month</th>
+                  <th>Transactions</th>
+                  <th>Total Sales (₱)</th>
+                  <th>Average Sale (₱)</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <!-- Sales history dynamically inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer justify-content-center mt-4">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn-modern btn-ok" onclick="exportHistory()">
+          Export History
+        </button>
+      </div>
     </div>
+  </div>
 </div>
+
+
+
 @endsection
 
 @push('styles')
@@ -1489,7 +2041,7 @@ function refreshSalesTable() {
 $(document).ready(function() {
     if (sessionStorage.getItem('showRefreshNotificationSales') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationSales');
-        setTimeout(() => { showNotification('Data refreshed successfully!', 'success'); }, 400);
+        setTimeout(() => { showNotification('Sales data refreshed successfully!', 'success'); }, 400);
     }
 });
 
@@ -1506,21 +2058,21 @@ function exportHistory() {
     showNotification('History exported successfully!', 'success');
 }
 
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="close" data-dismiss="alert">
-            <span>&times;</span>
-        </button>
-    `;
+   function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
     
-    document.body.appendChild(notification);
+    $('body').append(notification);
     
     setTimeout(() => {
-        notification.remove();
+        notification.alert('close');
     }, 5000);
 }
 </script>

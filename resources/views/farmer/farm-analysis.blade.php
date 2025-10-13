@@ -326,20 +326,7 @@
                     <i class="fas fa-chart-pie"></i>
                     Livestock Distribution
                 </h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Chart Options:</div>
-                        <a class="dropdown-item" href="#">View Details</a>
-                        <a class="dropdown-item" href="#">Export Data</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Print Chart</a>
-                    </div>
-                </div>
+                
             </div>
             <div class="card-body">
                 <div class="chart-pie pt-4 pb-2">
