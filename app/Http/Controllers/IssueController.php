@@ -144,6 +144,13 @@ class IssueController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -165,9 +172,21 @@ class IssueController extends Controller
                 'reported_by' => $user->id,
             ]);
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Issue reported successfully!'
+                ]);
+            }
             return redirect()->route('admin.issues.index')
                 ->with('success', 'Issue reported successfully!');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to report issue. Please try again.'
+                ], 500);
+            }
             return redirect()->back()
                 ->with('error', 'Failed to report issue. Please try again.')
                 ->withInput();

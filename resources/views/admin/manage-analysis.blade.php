@@ -235,7 +235,7 @@
 
 <!-- Smart Detail Modal - Farmer Details -->
 <div class="modal fade" id="farmerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="farmerDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content smart-detail p-4">
 
             <!-- Icon + Header -->
@@ -1621,9 +1621,12 @@ function openDetailsModal(farmerId) {
 function viewFarmerDetails(farmerId) {
     console.log('viewFarmerDetails called with ID:', farmerId);
     
-    // Show loading state
+    // Show loading state without replacing modal structure
     const modal = $('#farmerDetailsModal');
-    modal.find('.modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading farmer details...</p></div>');
+    const contentWrap = modal.find('#farmerDetailsContent');
+    if (contentWrap && contentWrap.length) {
+        contentWrap.html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading farmer details...</p></div>');
+    }
     modal.modal('show');
     
     // Build the URL
@@ -1647,90 +1650,71 @@ function viewFarmerDetails(farmerId) {
             console.log('Farmer data:', farmer);
             console.log('Stats data:', stats);
             
-            // Restore the original modal body structure
-            modal.find('.modal-body').html(`
-
-            <!-- Personal & Farm Info -->
+            $('#farmerDetailsContent').html(`
             <div class="row">
-                <div class="col-md-6">
-                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-user-circle mr-2"></i>Personal Information</h6>
-                    <p class="text-left"><strong>Name:</strong> ${farmer.name || 'N/A'}</p>
-                    <p class="text-left"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
-                    <p class="text-left"><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
-                    <p class="text-left"><strong>Location:</strong> ${farmer.location || 'N/A'}</p>
-                    <p class="text-left"><strong>Farmer Code:</strong> ${farmer.code || 'N/A'}</p>
-                    <p class="text-left"><strong>Last Login:</strong> ${farmer.last_login ? new Date(farmer.last_login).toLocaleDateString() : 'N/A'}</p>
+                <div class="col-md-8 mb-3">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                            <div class="p-3 bg-light rounded text-center">
+                                <div class="small text-muted">Total Production</div>
+                                <div class="h5 mb-0">${(stats?.total_production ?? farmer.total_production ?? 0)} L</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                            <div class="p-3 bg-light rounded text-center">
+                                <div class="small text-muted">Avg Daily</div>
+                                <div class="h5 mb-0">${(stats?.avg_daily_production ?? farmer.avg_daily_production ?? 0)} L</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                            <div class="p-3 bg-light rounded text-center">
+                                <div class="small text-muted">Active Livestock</div>
+                                <div class="h5 mb-0">${(stats?.active_livestock ?? farmer.active_livestock ?? 0)}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3 mb-3">
+                            <div class="p-3 bg-light rounded text-center">
+                                <div class="small text-muted">Efficiency</div>
+                                <div class="h5 mb-0">${(stats?.efficiency ?? farmer.efficiency ?? 0)}%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height:260px;">
+                        <canvas id="farmerProdTrend"></canvas>
+                    </div>
                 </div>
-
-                <div class="col-md-6">
-                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-tractor mr-2"></i>Farm Information</h6>
-                    <p class="text-left"><strong>Farm Name:</strong> ${farmer.farm_name || 'N/A'}</p>
-                    <p class="text-left"><strong>Farm Address:</strong> ${farmer.farm_address || 'N/A'}</p>
-                    <p class="text-left"><strong>Total Farms:</strong> ${farmer.total_farms || '0'}</p>
-                    <p class="text-left"><strong>Active Farms:</strong> ${farmer.active_farms || '0'}</p>
-                    <p class="text-left"><strong>Status:</strong> 
-                        <span class="badge badge-${farmer.status === 'approved' ? 'success' : (farmer.status === 'pending' ? 'warning' : 'danger')}">
-                            ${farmer.status || 'N/A'}
-                        </span>
-                    </p>
-                    <p class="text-left"><strong>Member Since:</strong> ${farmer.member_since ? new Date(farmer.member_since).toLocaleDateString() : 'N/A'}</p>
+                <div class="col-md-4 mb-3">
+                    <div class="p-3 bg-light rounded h-100">
+                        <h6 class="mb-2" style="color:#18375d; font-weight:600;"><i class="fas fa-user-circle mr-2"></i>Profile</h6>
+                        <p class="mb-1"><strong>Name:</strong> ${farmer.name || 'N/A'}</p>
+                        <p class="mb-1"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
+                        <p class="mb-1"><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
+                        <p class="mb-1"><strong>Location:</strong> ${farmer.location || 'N/A'}</p>
+                        <p class="mb-1"><strong>Status:</strong> <span class="badge badge-${farmer.status === 'approved' ? 'success' : (farmer.status === 'pending' ? 'warning' : 'danger')}">${farmer.status || 'N/A'}</span></p>
+                        <hr>
+                        <h6 class="mb-2" style="color:#18375d; font-weight:600;"><i class="fas fa-lightbulb mr-2 text-warning"></i>Analysis</h6>
+                        <div id="analysisSummaryText" class="small text-muted">Loading analysis...</div>
+                    </div>
                 </div>
             </div>
-
-
             <div class="row">
                 <div class="col-md-6">
-                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-paw mr-2"></i>Livestock Statistics</h6>
-                    <p class="text-left"><strong>Total Livestock:</strong> ${farmer.total_livestock || '0'}</p>
-                    <p class="text-left"><strong>Active Livestock:</strong> ${farmer.active_livestock || '0'}</p>
-                    <p class="text-left"><strong>Inactive Livestock:</strong> ${farmer.inactive_livestock || '0'}</p>
-                    <p class="text-left"><strong>Livestock by Type:</strong></p>
-                    <ul id="livestockTypeList" class="mt-1 list-unstyled text-muted small">
-                        ${farmer.livestock_types ? farmer.livestock_types.map(type => `<li>${type}</li>`).join('') : '<li>N/A</li>'}
-                    </ul>
+                    <h6 class="mb-3" style="color:#18375d; font-weight:600;"><i class="fas fa-paw mr-2"></i>Livestock</h6>
+                    <p class="mb-1"><strong>Total:</strong> ${stats?.total_livestock ?? farmer.total_livestock ?? '0'}</p>
+                    <p class="mb-1"><strong>Active:</strong> ${stats?.active_livestock ?? farmer.active_livestock ?? '0'}</p>
+                    <p class="mb-1"><strong>Inactive:</strong> ${stats?.inactive_livestock ?? farmer.inactive_livestock ?? '0'}</p>
+                    <div class="mt-2"><strong>Types:</strong>
+                        <ul id="livestockTypeList" class="mt-1 list-unstyled text-muted small">${farmer.livestock_types ? farmer.livestock_types.map(type => `<li>${type}</li>`).join('') : '<li>N/A</li>'}</ul>
+                    </div>
                 </div>
-
                 <div class="col-md-6">
-                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-chart-line mr-2"></i>Production Statistics</h6>
-                    <p class="text-left"><strong>Total Production:</strong> ${farmer.total_production || '0'}</p>
-                    <p class="text-left"><strong>Average Daily Production:</strong> ${farmer.avg_daily_production || '0'}</p>
-                    <p class="text-left"><strong>Recent Production (30 days):</strong> ${farmer.recent_production || '0'}</p>
+                    <h6 class="mb-3" style="color:#18375d; font-weight:600;"><i class="fas fa-chart-line mr-2"></i>Production Stats</h6>
+                    <p class="mb-1"><strong>Recent (30 days):</strong> ${stats?.recent_production ?? farmer.recent_production ?? '0'} L</p>
+                    <p class="mb-1"><strong>Peak Day:</strong> ${stats?.peak_day ?? 'N/A'}</p>
+                    <p class="mb-1"><strong>Peak Output:</strong> ${stats?.peak_output ?? '0'} L</p>
                 </div>
             </div>
-
-
             `);
-            
-            // Helper function to safely set text content
-            function setTextContent(elementId, value) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    element.textContent = value || 'N/A';
-                } else {
-                    console.warn(`Element with ID '${elementId}' not found`);
-                }
-            }
-            
-            // Personal Information
-            setTextContent('modalFarmerName', farmer.name);
-            setTextContent('modalFarmerEmail', farmer.email);
-            setTextContent('modalFarmerPhone', farmer.phone);
-            setTextContent('modalFarmerLocation', farmer.location);
-            setTextContent('modalFarmerCode', farmer.farmer_code);
-            setTextContent('modalLastLogin', farmer.last_login_at || 'Never');
-            
-            // Farm Information
-            setTextContent('modalFarmName', farmer.farm_name);
-            setTextContent('modalFarmAddress', farmer.farm_address);
-            setTextContent('modalTotalFarms', stats.total_farms || '0');
-            setTextContent('modalActiveFarms', stats.active_farms || '0');
-            setTextContent('modalFarmerStatus', farmer.status || 'active');
-            setTextContent('modalMemberSince', farmer.created_at);
-            
-            // Livestock Statistics
-            setTextContent('modalTotalLivestock', stats.total_livestock || '0');
-            setTextContent('modalActiveLivestock', stats.active_livestock || '0');
-            setTextContent('modalInactiveLivestock', stats.inactive_livestock || '0');
             
             // Livestock by Type
             const livestockTypeList = document.getElementById('livestockTypeList');
@@ -1751,28 +1735,47 @@ function viewFarmerDetails(farmerId) {
                 console.warn('Element with ID "livestockTypeList" not found');
             }
             
-            // Production Statistics
-            setTextContent('modalTotalProduction', (stats.total_production || '0') + 'L');
-            setTextContent('modalAvgDailyProduction', (stats.avg_daily_production || '0') + 'L');
-            setTextContent('modalRecentProduction', (stats.recent_production || '0') + 'L');
+            // Build trend chart
+            try {
+                const trendLabels = (data.chartData && data.chartData.labels) || (stats.trend && stats.trend.labels) || [];
+                const trendValues = (data.chartData && data.chartData.data) || (stats.trend && stats.trend.values) || [];
+                const ctxTrend = document.getElementById('farmerProdTrend').getContext('2d');
+                new Chart(ctxTrend, {
+                    type: 'line',
+                    data: {
+                        labels: trendLabels,
+                        datasets: [{
+                            label: 'Milk Production (L)',
+                            data: trendValues,
+                            backgroundColor: 'rgba(24, 55, 93, 0.1)',
+                            borderColor: '#18375d',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, position: 'top' } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+
+                const vals = Array.isArray(trendValues) ? trendValues.filter(v => typeof v === 'number') : [];
+                const last = vals.length ? vals[vals.length - 1] : 0;
+                const avg = vals.length ? (vals.reduce((a,b)=>a+b,0) / vals.length) : 0;
+                const prevAvg = vals.length > 6 ? (vals.slice(0, Math.max(1, vals.length - 6)).reduce((a,b)=>a+b,0) / Math.max(1, vals.length - 6)) : avg;
+                const delta = prevAvg ? ((avg - prevAvg) / prevAvg) * 100 : 0;
+                const summary = `Current average is ${avg.toFixed(1)}L/day (last point: ${last.toFixed ? last.toFixed(1) : last}L). ${delta >= 0 ? 'Up' : 'Down'} ${Math.abs(delta).toFixed(1)}% vs prior period.`;
+                const summaryEl = document.getElementById('analysisSummaryText');
+                if (summaryEl) summaryEl.textContent = summary;
+            } catch (e) {
+                console.warn('Trend chart build failed:', e);
+            }
             
             console.log('Modal populated successfully');
-            
-            // Verify all elements were found and populated
-            const requiredElements = [
-                'modalFarmerName', 'modalFarmerEmail', 'modalFarmerPhone', 'modalFarmerLocation',
-                'modalFarmerCode', 'modalLastLogin', 'modalFarmName', 'modalFarmAddress',
-                'modalTotalFarms', 'modalActiveFarms', 'modalFarmerStatus', 'modalMemberSince',
-                'modalTotalLivestock', 'modalActiveLivestock', 'modalInactiveLivestock',
-                'modalTotalProduction', 'modalAvgDailyProduction', 'modalRecentProduction'
-            ];
-            
-            const missingElements = requiredElements.filter(id => !document.getElementById(id));
-            if (missingElements.length > 0) {
-                console.warn('Missing elements:', missingElements);
-            } else {
-                console.log('All elements found and populated successfully');
-            }
             
         } else {
             console.error('API returned error:', data.message);

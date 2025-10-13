@@ -2786,26 +2786,26 @@ function showNotification(message, type) {
                 
                 // Create enhanced chart with multiple datasets
                 new Chart(productionCtx, {
-                    type: 'bar',
+                    type: 'line',
                     data: {
                         labels: payload.labels,
                         datasets: [
                             {
                                 label: 'Total Production (L)',
-                                backgroundColor: 'rgba(252, 167, 0, 0.8)',
                                 data: payload.data,
-                                borderRadius: 8,
-                                borderSkipped: false,
+                                borderColor: '#fca700',
+                                backgroundColor: 'rgba(252, 167, 0, 0.15)',
+                                fill: true,
+                                tension: 0.4,
                                 yAxisID: 'y'
                             },
                             {
                                 label: 'Active Farms',
-                                type: 'line',
-                                backgroundColor: 'rgba(252, 167, 0, 0.2)',
-                                borderColor: 'rgba(252, 167, 0, 1)',
+                                data: payload.activeFarms || [],
+                                borderColor: '#387057',
+                                backgroundColor: 'rgba(56, 112, 87, 0.15)',
                                 borderWidth: 3,
                                 fill: false,
-                                data: payload.activeFarms || [],
                                 yAxisID: 'y1',
                                 tension: 0.4
                             }
@@ -2909,23 +2909,24 @@ function showNotification(message, type) {
             });
             
             new Chart(productionCtx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: months,
                     datasets: [
                         {
                             label: 'Total Production (L)',
-                            backgroundColor: 'rgba(252, 167, 0, 0.8)',
                             data: productionValues,
-                            borderRadius: 8,
-                            borderSkipped: false,
+                            borderColor: '#fca700',
+                            backgroundColor: 'rgba(252, 167, 0, 0.15)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
                             yAxisID: 'y'
                         },
                         {
                             label: 'Active Farms',
-                            type: 'line',
-                            backgroundColor: 'rgba(252, 167, 0, 0.2)',
-                            borderColor: 'rgba(252, 167, 0, 1)',
+                            backgroundColor: 'rgba(56, 112, 87, 0.15)',
+                            borderColor: '#387057',
                             borderWidth: 3,
                             fill: false,
                             data: activeFarmsValues,

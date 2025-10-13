@@ -173,10 +173,9 @@
                 <tbody>
                     @forelse($auditLogs as $log)
                     <tr>
-                        <td><code class="small">LOG{{ str_pad($log->id, 3, '0', STR_PAD_LEFT) }}</code></td>
+                        <td>LOG{{ str_pad($log->id, 3, '0', STR_PAD_LEFT) }}</td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset('img/ronaldo.png') }}" class="rounded-circle mr-2" width="32" height="32" alt="User">
                                 <span class="font-weight-bold">{{ $log->user->name ?? 'System' }}</span>
                             </div>
                         </td>

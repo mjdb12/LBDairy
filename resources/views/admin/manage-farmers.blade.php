@@ -1531,7 +1531,7 @@
     </div>
 </div>
 
-<!-- Modern Approve Farmer Modal -->
+<!-- Deactivate Farmer Modal -->
 <div class="modal fade" id="deactivateModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content smart-modal text-center p-4">
@@ -1547,9 +1547,9 @@
             </p>
 
             <!-- Form -->
-            <form onsubmit="submitApproval(event)">
+            <form onsubmit="submitDeactivation(event)">
                 @csrf
-                <input type="hidden" id="farmerIdHiddenApprove">
+                <input type="hidden" id="deactivateFarmerIdHidden">
 
                 <!-- Buttons -->
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
@@ -2170,27 +2170,25 @@ function submitRejection(event) {
 }
 
 function deactivateFarmer(farmerId) {
-    // Store the farmer ID temporarily
-    $('#deactivateModal').data('farmer-id', farmerId);
-    // Show the confirmation modal
+    $('#deactivateFarmerIdHidden').val(farmerId);
     $('#deactivateModal').modal('show');
 }
 
-// When the admin confirms deactivation
-$('#confirmRejectBtn').off('click').on('click', function () {
-    const farmerId = $('#rejectionModal').data('farmer-id');
-
-    if (!farmerId) return;
-
+function submitDeactivation(event) {
+    event.preventDefault();
+    const farmerId = $('#deactivateFarmerIdHidden').val();
+    if (!farmerId) {
+        showNotification('Missing farmer ID for deactivation', 'danger');
+        return;
+    }
     $.ajax({
-        url: `{{ route("admin.farmers.deactivate", ":id") }}`.replace(':id', farmerId),
+        url: `{{ route('admin.farmers.deactivate', ':id') }}`.replace(':id', farmerId),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        success: function (response) {
-            $('#rejectionModal').modal('hide');
-
+        success: function(response) {
+            $('#deactivateModal').modal('hide');
             if (response.success) {
                 loadActiveFarmers();
                 updateStats();
@@ -2199,12 +2197,12 @@ $('#confirmRejectBtn').off('click').on('click', function () {
                 showNotification(response.message || 'Error deactivating farmer', 'danger');
             }
         },
-        error: function () {
-            $('#rejectionModal').modal('hide');
+        error: function() {
+            $('#deactivateModal').modal('hide');
             showNotification('Error deactivating farmer', 'danger');
         }
     });
-});
+}
 
 
 

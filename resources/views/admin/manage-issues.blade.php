@@ -209,7 +209,7 @@
             </div>
 
             <!-- Form -->
-            <form id="reportIssueForm" onsubmit="submitIssue(event)">
+            <form id="reportIssueForm">
                 @csrf
                 <input type="hidden" id="selectedLivestockId" name="livestock_id">
 

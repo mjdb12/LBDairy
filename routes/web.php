@@ -263,6 +263,16 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::delete('/farms/{id}', [App\Http\Controllers\FarmController::class, 'destroy'])->name('farms.destroy');
         Route::post('/farms/import', [App\Http\Controllers\FarmController::class, 'import'])->name('farms.import');
         Route::get('/farms/export', [App\Http\Controllers\FarmController::class, 'export'])->name('farms.export');
+
+        // Farmers management AJAX endpoints (used by manage-farmers view)
+        Route::get('/farmers/pending', [App\Http\Controllers\AdminController::class, 'getPendingFarmers'])->name('farmers.pending');
+        Route::get('/farmers/active', [App\Http\Controllers\AdminController::class, 'getActiveFarmers'])->name('farmers.active');
+        Route::get('/farmers/stats', [App\Http\Controllers\AdminController::class, 'getFarmerStats'])->name('farmers.stats');
+        Route::post('/farmers/{id}/approve', [App\Http\Controllers\AdminController::class, 'approveFarmer'])->name('farmers.approve');
+        Route::post('/farmers/{id}/reject', [App\Http\Controllers\AdminController::class, 'rejectFarmer'])->name('farmers.reject');
+        Route::post('/farmers/{id}/deactivate', [App\Http\Controllers\AdminController::class, 'deactivateFarmer'])->name('farmers.deactivate');
+        Route::post('/farmers/contact', [App\Http\Controllers\AdminController::class, 'contactFarmer'])->name('farmers.contact');
+        Route::get('/farmers/{id}', [App\Http\Controllers\AdminController::class, 'showFarmer'])->name('farmers.show');
         
         // Livestock management routes
         Route::get('/manage-livestock', [App\Http\Controllers\LivestockController::class, 'index'])->name('livestock.index');

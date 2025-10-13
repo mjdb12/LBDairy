@@ -313,17 +313,12 @@ function initializeDataTables() {
             {
                 data: null,
                 render: function(data) {
-                    const initials = `${(data.first_name||'').charAt(0)}${(data.last_name||'').charAt(0)}`.toUpperCase();
-                    const img = data.profile_image ? `<img src="/storage/${data.profile_image}" class="rounded-circle" width="40" height="40" alt="Profile">` : `<div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><span class="text-white font-weight-bold">${initials}</span></div>`;
                     const name = `${data.first_name||''} ${data.last_name||''}`.trim();
                     const username = data.username ? `@${data.username}` : '';
                     return `
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm mr-3">${img}</div>
-                            <div>
-                                <div class="font-weight-bold">${name}</div>
-                                <small class="text-muted">${username}</small>
-                            </div>
+                        <div>
+                            <div class="font-weight-bold">${name}</div>
+                            <small class="text-muted">${username}</small>
                         </div>`;
                 }
             },
