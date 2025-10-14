@@ -1149,7 +1149,7 @@ SMART FORM - Enhanced Version
         <div class="modal-content smart-form text-center p-4">
             
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-wrappers mb-3">
+                <div class="icon-wrapper mb-3">
                     <i class="fas fa-key fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Change Password</h5>

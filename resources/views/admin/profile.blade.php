@@ -806,17 +806,14 @@ SMART FORM - Enhanced Version
 
 /* Header Icon */
 .smart-form .icon-wrapper {
-  background: #eef3f8;
-  color: #18375d;
-  border-radius: 50%;
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin: 0 auto 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+ width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Titles & Paragraphs */
@@ -1278,7 +1275,7 @@ SMART FORM - Enhanced Version
             
             
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-circle mb-3">
+                <div class="icon-wrapper mb-3">
                     <i class="fas fa-user-edit fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Edit Profile</h5>
@@ -1411,8 +1408,8 @@ SMART FORM - Enhanced Version
         <div class="modal-content smart-form text-center p-4">
             
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-circle mb-3">
-                    <i class="fas fa-key"></i>
+                <div class="icon-wrapper mb-3">
+                    <i class="fas fa-key fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Change Password</h5>
                 <p class="text-muted mb-0 small">

@@ -68,27 +68,28 @@
         </div>
     </div>
 
-    <!-- Alerts Section -->
-    @if($criticalAlerts > 0)
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="fas fa-exclamation-triangle"></i>
-        <strong>Critical Alerts!</strong> You have {{ $criticalAlerts }} critical alerts that require immediate attention.
+@if($criticalAlerts > 0)
+    <div class="alert alert-danger alert-dismissible fade show refresh-notification" role="alert">
+        <i class="fas fa-times-circle "></i>&nbsp;
+        You have&nbsp;<strong>{{ $criticalAlerts }}</strong>&nbsp;critical alerts that require immediate attention.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span>&nbsp;&times;&nbsp;</span>
         </button>
     </div>
-    @endif
+@endif
 
-    @if($activeAlerts > 0)
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <i class="fas fa-clock"></i>
-        <strong>Active Alerts:</strong> You have {{ $activeAlerts }} active alerts awaiting your response.
+@if($activeAlerts > 0)
+    <div class="alert alert-warning alert-dismissible fade show refresh-notification" role="alert">
+        <i class="fas fa-exclamation-triangle "></i>&nbsp;
+        You have&nbsp;<strong>{{ $activeAlerts }}</strong>&nbsp;active alerts awaiting your response.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span>&nbsp;&times;&nbsp;</span>
         </button>
     </div>
-    @endif
+@endif
 
+
+  
     <!-- Main Content -->
      <div class="card shadow mb-4 fade-in">
         <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
@@ -152,61 +153,95 @@
                 </div>
     </div>
 
-<!-- Alert Details Modal -->
-<div class="modal fade" id="alertDetailsModal" tabindex="-1" role="dialog" aria-labelledby="alertDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="alertDetailsLabel">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    Alert Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="alertDetailsModal" tabindex="-1" role="dialog" aria-labelledby="alertDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Alert Details </h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected alert.</p>
             </div>
-            <div class="modal-body" id="alertDetailsContent">
-                <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="alertDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
     </div>
+  </div>
 </div>
 
 <!-- Status Update Modal -->
-<div class="modal fade" id="statusUpdateModal" tabindex="-1" role="dialog" aria-labelledby="statusUpdateLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="statusUpdateLabel">
-                    <i class="fas fa-edit mr-2"></i>
-                    Update Alert Status
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<div class="modal fade admin-modal" id="statusUpdateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-edit fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Update Alert Status</h5>
+                <p class="text-muted mb-0 small">
+                    Add your response and update the current alert status.
+                </p>
             </div>
+
+            <!-- Form -->
             <form id="statusUpdateForm" method="POST">
                 @csrf
                 @method('PATCH')
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="resolution_notes">Response Notes <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="resolution_notes" name="resolution_notes" rows="3" placeholder="Add your response or resolution notes for the farmer"></textarea>
+
+                <div class="form-wrapper text-start mx-auto">
+                    
+                    <!-- Status Selection -->
+                    <div class="col-md-12 mt-3">
+                        <label for="status" class="fw-semibold">
+                            New Status <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control mt-1" id="status" name="status" required>
+                            <option value="">Select Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                    <!-- Response Notes -->
+                    <div class="col-md-12">
+                        <label for="resolution_notes" class="fw-semibold">
+                            Response Notes <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control mt-1" id="resolution_notes" name="resolution_notes" rows="4" required placeholder="Add your response or resolution notes for the farmer..." style="resize: none;"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-ok">
-                        <i class="fas fa-save"></i> Update Status
+
+                <!-- Footer Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">
+                        Update Status
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 
 @endsection
 
@@ -654,91 +689,88 @@ function viewAlertDetails(alertId) {
 }
 
 function loadAlertDetails(alertId) {
-    
     $.ajax({
         url: `/admin/farmer-alerts/${alertId}`,
         method: 'GET',
         success: function(response) {
             if (response.success) {
                 const alert = response.alert;
-                const createdDate = new Date(alert.alert_date).toLocaleString();
-                const resolvedDate = alert.resolved_at ? new Date(alert.resolved_at).toLocaleString() : null;
+
                 $('#alertDetailsContent').html(`
                     <div class="row">
+                        <!-- 🔹 Alert Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0">Alert Information</h6>
-                                </div>
-                                <div class="card-body alert-info-card">
-                                    <p><span class="label">Topic:</span> ${alert.topic}</p>
-                                    <p><span class="label">Status:</span> 
-                                        <span class=label${alert.status_badge_class}">${alert.status}</span>
-                                    </p>
-                                    <p><span class="label">Severity:</span> 
-                                        <span class="label${alert.severity_badge_class}">${alert.severity}</span>
-                                    </p>
-                                    <p><span class="label">Created:</span> ${new Date(alert.alert_date).toLocaleString()}</p>
-                                        ${alert.resolved_at ? `
-                                    <p><span class="label">Resolved:</span> ${new Date(alert.resolved_at).toLocaleString()}</p>
-                                        ` : ''}
-                                </div>
-
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Alert Information</h6>
+                            <p class="text-left"><strong>Topic:</strong> ${alert.topic || 'N/A'}</p>
+                            <p class="text-left"><strong>Status:</strong> 
+                                <span class="badge badge-${alert.status_badge_class || 'secondary'}">
+                                    ${alert.status || 'N/A'}
+                                </span>
+                            </p>
+                            <p class="text-left"><strong>Severity:</strong> 
+                                <span class="badge badge-${alert.severity_badge_class || 'secondary'}">
+                                    ${alert.severity || 'N/A'}
+                                </span>
+                            </p>
+                            <p class="text-left"><strong>Created:</strong> 
+                                ${alert.alert_date ? new Date(alert.alert_date).toLocaleString() : 'N/A'}
+                            </p>
+                            ${alert.resolved_at ? `
+                            <p class="text-left"><strong>Resolved:</strong> 
+                                ${new Date(alert.resolved_at).toLocaleString()}
+                            </p>` : ''}
                         </div>
+
+                        <!-- 🔹 Farmer Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0">Farmer Information</h6>
-                                </div>
-                                <div class="card-body farmer-info">
-                                    <p><span class="label">Name:</span> ${alert.issued_by ? alert.issued_by.name : 'N/A'}</p>
-                                    <p><span class="label">Email:</span> ${alert.issued_by ? alert.issued_by.email : 'N/A'}</p>
-                                    <p><span class="label">Phone:</span> ${alert.issued_by ? alert.issued_by.phone : 'N/A'}</p>
-                                    <p><span class="label">Farm:</span> ${alert.livestock && alert.livestock.farm ? alert.livestock.farm.name : 'N/A'}</p>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Farmer Information</h6>
+                            <p class="text-left"><strong>Name:</strong> ${alert.issued_by ? alert.issued_by.name : 'N/A'}</p>
+                            <p class="text-left"><strong>Email:</strong> ${alert.issued_by ? alert.issued_by.email : 'N/A'}</p>
+                            <p class="text-left"><strong>Phone:</strong> ${alert.issued_by ? alert.issued_by.phone : 'N/A'}</p>
+                            <p class="text-left"><strong>Farm:</strong> 
+                                ${alert.livestock && alert.livestock.farm ? alert.livestock.farm.name : 'N/A'}
+                            </p>
                         </div>
                     </div>
+
                     <div class="row mt-3">
-                        <!-- Livestock Information -->
+                        <!-- 🔹 Livestock Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-warning text-white">
-                                    <h6 class="mb-0">Livestock Information</h6>
-                                </div>
-                                <div class="card-body livestock-info-card">
-                                    <p><span class="label">ID:</span> ${alert.livestock ? alert.livestock.livestock_id : 'N/A'}</p>
-                                    <p><span class="label">Type:</span> ${alert.livestock ? alert.livestock.type : 'N/A'}</p>
-                                    <p><span class="label">Breed:</span> ${alert.livestock ? alert.livestock.breed : 'N/A'}</p>
-                                    <p><span class="label">Age:</span> ${alert.livestock ? alert.livestock.age + ' years' : 'N/A'}</p>
-                                    <p><span class="label">Health Status:</span> ${alert.livestock ? alert.livestock.health_status : 'N/A'}</p>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Livestock Information</h6>
+                            <p class="text-left"><strong>ID:</strong> ${alert.livestock ? alert.livestock.livestock_id : 'N/A'}</p>
+                            <p class="text-left"><strong>Type:</strong> ${alert.livestock ? alert.livestock.type : 'N/A'}</p>
+                            <p class="text-left"><strong>Breed:</strong> ${alert.livestock ? alert.livestock.breed : 'N/A'}</p>
+                            <p class="text-left"><strong>Age:</strong> 
+                                ${alert.livestock && alert.livestock.age ? alert.livestock.age + ' years' : 'N/A'}
+                            </p>
+                            <p class="text-left"><strong>Health Status:</strong> 
+                                ${alert.livestock ? alert.livestock.health_status : 'N/A'}
+                            </p>
                         </div>
 
-                        <!-- Alert Details -->
+                        <!-- 🔹 Alert Details -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-success text-white">
-                                    <h6 class="mb-0">Alert Details</h6>
-                                </div>
-                                <div class="card-body alert-details-card">
-                                    <p><span class="label">Description:</span> ${alert.description}</p>
-                                    ${alert.resolution_notes ? `<p><span class="label">Resolution Notes: </span> ${alert.resolution_notes}</p>` : ''}
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Alert Details</h6>
+                            <p class="text-left"><strong>Description:</strong> ${alert.description || 'No description provided.'}</p>
+                            ${alert.resolution_notes ? `
+                            <p class="text-left"><strong>Resolution Notes:</strong> ${alert.resolution_notes}</p>
+                            ` : ''}
                         </div>
                     </div>
-
                 `);
+
+                $('#alertDetailsModal').modal('show');
+            } else {
+                showNotification('Error loading alert details', 'danger');
             }
         },
         error: function() {
-            showToast('Error loading alert details', 'error');
+            showNotification('Error loading alert details', 'danger');
         }
     });
 }
+
+
 
 function markAsResolved(alertId) {
     currentAlertId = alertId;
@@ -827,11 +859,520 @@ function showNotification(message, type) {
         notification.alert('close');
     }, 5000);
 }
+
+
 </script>
 @endpush
 
 @push('styles')
 <style>
+    /* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#statusUpdateModal form {
+  text-align: left;
+}
+
+#statusUpdateModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#statusUpdateModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#statusUpdateModal .form-control,
+#statusUpdateModal select.form-control,
+#statusUpdateModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#statusUpdateModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#statusUpdateModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editLivestockModal form {
+  text-align: left;
+}
+
+#editLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#issueAlertModal form {
+  text-align: left;
+}
+
+#issueAlertModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#issueAlertModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#issueAlertModal .form-control,
+#issueAlertModal select.form-control,
+#issueAlertModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#issueAlertModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#issueAlertModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#addLivestockModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addLivestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #issueAlertModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+    /* User Details Modal Styling */
+    #alertDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #alertDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #alertDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #alertDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #alertDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #alertDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #alertDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    /* Style all labels inside form Modal */
+    #alertDetailsModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 0.5rem;
+        max-height: 95vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
