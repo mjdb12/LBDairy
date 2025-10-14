@@ -587,15 +587,7 @@
     }
     
     /* Table layout styling to match user directory */
-    
-    /* Ensure table has enough space for actions column */
-    #pendingAdminsTable th:last-child,
-    #pendingAdminsTable td:last-child,
-    #activeAdminsTable th:last-child,
-    #activeAdminsTable td:last-child {
-        min-width: 200px;
-        width: auto;
-    }
+
     
     /* Table responsiveness and spacing */
     .table-responsive {
@@ -623,13 +615,6 @@
         right: 0;
     }
     
-    #pendingAdminsTable,
-    #activeAdminsTable {
-        width: 100% !important;
-        min-width: 1280px;
-        border-collapse: collapse;
-    }
-    
     /* Ensure consistent table styling */
     .table {
         margin-bottom: 0;
@@ -643,68 +628,95 @@
         background-color: rgba(0,0,0,.075);
     }
     
-     #pendingAdminsTable th,
-    #pendingAdminsTable td,
-    #activeAdminsTable th,
-    #activeAdminsTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #pendingAdminsTable thead th,
-    #activeAdminsTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: center;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #pendingAdminsTable thead th.sorting,
-    #pendingAdminsTable thead th.sorting_asc,
-    #pendingAdminsTable thead th.sorting_desc,
-    #activeAdminsTable thead th.sorting,
-    #activeAdminsTable thead th.sorting_asc,
-    #activeAdminsTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #pendingAdminsTable thead th::after,
-    #activeAdminsTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #pendingAdminsTable thead th.sorting::after,
-    #pendingAdminsTable thead th.sorting_asc::after,
-    #pendingAdminsTable thead th.sorting_desc::after,
-    #activeAdminsTable thead th.sorting::after,
-    #activeAdminsTable thead th.sorting_asc::after,
-    #activeAdminsTable thead th.sorting_desc::after {
-        display: none;
-    }
+       /* Apply consistent styling for Pending Farmers and Active Farmers tables */
+#pendingAdminsTable th,
+#pendingAdminsTable td,
+#activeFarmersTable th,
+#activeFarmersTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#pendingAdminsTable thead th,
+#activeFarmersTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#pendingAdminsTable thead th.sorting,
+#pendingAdminsTable thead th.sorting_asc,
+#pendingAdminsTable thead th.sorting_desc,
+#activeFarmersTable thead th.sorting,
+#activeFarmersTable thead th.sorting_asc,
+#activeFarmersTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#pendingAdminsTable thead th::after,
+#activeFarmersTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#pendingAdminsTable thead th.sorting::after,
+#pendingAdminsTable thead th.sorting_asc::after,
+#pendingAdminsTable thead th.sorting_desc::after,
+#activeFarmersTable thead th.sorting::after,
+#activeFarmersTable thead th.sorting_asc::after,
+#activeFarmersTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* Allow table to scroll horizontally if too wide */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Make table cells wrap instead of forcing them all inline */
+#pendingAdminsTable td, 
+#pendingAdminsTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#pendingAdminsTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#pendingAdminsTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
     #addAdminModal .modal-content {
         border: none;
         border-radius: 12px;
@@ -1371,6 +1383,68 @@
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
+#pendingAdminsTable th,
+    #pendingAdminsTable td {
+        vertical-align: middle;
+        padding: 0.75rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    /* Ensure Registration Date column has enough space */
+    #pendingAdminsTable th:nth-child(6),
+    #pendingAdminsTable td:nth-child(6) {
+        min-width: 220px !important;
+        width: 220px !important;
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: initial;
+    }
+    
+    /* Ensure all table headers have consistent styling */
+    #pendingAdminsTable thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    /* Fix DataTables sorting button overlap */
+    #pendingAdminsTable thead th.sorting,
+    #pendingAdminsTable thead th.sorting_asc,
+    #pendingAdminsTable thead th.sorting_desc {
+        padding-right: 2rem !important;
+    }
+    
+    /* Ensure proper spacing for sort indicators */
+    #pendingAdminsTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
+    /* Remove default DataTables sort indicators to prevent overlap */
+    #pendingAdminsTable thead th.sorting::after,
+    #pendingAdminsTable thead th.sorting_asc::after,
+    #pendingAdminsTable thead th.sorting_desc::after {
+        display: none;
+    }
 </style>
 @endpush
 

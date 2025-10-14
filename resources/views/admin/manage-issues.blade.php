@@ -278,138 +278,358 @@
 </div>
 
 
-
-<!-- Issue Details Modal -->
-<div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="issueDetailsLabel">
-                    <i class="fas fa-eye mr-2"></i>
-                    Issue Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-eye fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Issue Details </h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected issue.</p>
             </div>
-            <div class="modal-body" id="issueDetailsContent">
-                <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="issueDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
     </div>
+  </div>
 </div>
 
 <!-- Edit Issue Modal -->
-<div class="modal fade" id="editIssueModal" tabindex="-1" role="dialog" aria-labelledby="editIssueLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editIssueLabel">
-                    <i class="fas fa-edit mr-2"></i>
-                    Edit Issue
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<div class="modal fade smart-form-modal" id="editIssueModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle mb-3">
+                    <i class="fas fa-edit fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Edit Issue</h5>
+                <p class="text-muted mb-0 small">
+                    Update issue details below and click <strong>Update Issue</strong> to save changes.
+                </p>
             </div>
+
+            <!-- Form -->
             <form id="editIssueForm">
                 @csrf
                 @method('PUT')
-                <div class="modal-body">
-                    <input type="hidden" id="editIssueId" name="issue_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Issue Type <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editIssueType" name="issue_type" required>
-                                    <option value="">Select Issue Type</option>
-                                    <option value="Health">Health</option>
-                                    <option value="Production">Production</option>
-                                    <option value="Behavioral">Behavioral</option>
-                                    <option value="Environmental">Environmental</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
+                <input type="hidden" id="editIssueId" name="issue_id">
+
+                <div class="form-wrapper text-start mx-auto">
+                    <div class="row g-3">
+                        
+                        <!-- Issue Type -->
+                        <div class="col-md-6 ">
+                            <label class="fw-semibold">Issue Type <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editIssueType" name="issue_type" required>
+                                <option value="">Select Issue Type</option>
+                                <option value="Health">Health</option>
+                                <option value="Production">Production</option>
+                                <option value="Behavioral">Behavioral</option>
+                                <option value="Environmental">Environmental</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Priority <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editPriority" name="priority" required>
-                                    <option value="">Select Priority</option>
-                                    <option value="Low">Low</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="High">High</option>
-                                    <option value="Urgent">Urgent</option>
-                                </select>
-                            </div>
+
+                        <!-- Priority -->
+                        <div class="col-md-6 ">
+                            <label class="fw-semibold">Priority <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editPriority" name="priority" required>
+                                <option value="">Select Priority</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Status <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editStatus" name="status" required>
-                                    <option value="Pending">Pending</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Resolved">Resolved</option>
-                                    <option value="Closed">Closed</option>
-                                </select>
-                            </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 ">
+                            <label class="fw-semibold">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" id="editStatus" name="status" required>
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Resolved">Resolved</option>
+                                <option value="Closed">Closed</option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="editDescription" name="description" rows="3" required placeholder="Describe the issue in detail..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Notes (Optional)</label>
-                        <textarea class="form-control" id="editNotes" name="notes" rows="2" placeholder="Additional notes..."></textarea>
+
+                        <!-- Date Reported -->
+                        <div class="col-md-6 ">
+                            <label class="fw-semibold">Date Reported <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="editDateReported" name="date_reported" required>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12">
+                            <label class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="editDescription" name="description" rows="4" required placeholder="Describe the issue in detail..." style="resize: none;"></textarea>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-md-12">
+                            <label class="fw-semibold">Notes (Optional)</label>
+                            <textarea class="form-control mt-1" id="editNotes" name="notes" rows="3" placeholder="Additional notes..." style="resize: none;"></textarea>
+                        </div>
+
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-action btn-action-edit-issue">
-                        <i class="fas fa-save"></i> Update Issue
-                    </button>
+
+                <!-- Footer -->
+                <div class="modal-footer justify-content-center mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">Update Issue</button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
 
-<!-- Delete Issue Confirmation Modal -->
-<div class="modal fade" id="deleteIssueConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteIssueConfirmationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteIssueConfirmationLabel">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
+<!-- Modern Delete Confirmation Modal -->
+<div class="modal fade" id="deleteIssueConfirmationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content smart-modal text-center p-4">
+
+      <!-- Icon -->
+      <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this issue? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-delete-issue" id="confirmDeleteIssueBtn">
-                    <i class="fas fa-trash"></i> Delete Issue
-                </button>
-            </div>
-        </div>
+
+      <!-- Title -->
+      <h5>Confirm Delete</h5>
+
+      <!-- Description -->
+      <p class="text-muted mb-4 px-3">
+        Are you sure you want to delete this issue? This action <strong>cannot be undone</strong>.
+      </p>
+
+      <!-- Buttons -->
+      <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-modern btn-delete" id="confirmDeleteIssueBtn">
+          Yes, Delete
+        </button>
+      </div>
+
     </div>
+  </div>
 </div>
 
 @endsection
 
 @push('styles')
 <style>
+    /* User Details Modal Styling */
+    #issueDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #issueDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #issueDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #issueDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #issueDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #issueDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #issueDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    /* Style all labels inside form Modal */
+    #issueDetailsModal .form-group label {
+        font-weight: 600;           /* make labels bold */
+        color: #18375d;             /* Bootstrap primary blue */
+        display: inline-block;      /* keep spacing consistent */
+        margin-bottom: 0.5rem;      /* add spacing below */
+    }
+
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 0.5rem;
+        max-height: 95vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
     /* ============================
    SMART FORM - Enhanced Version
    ============================ */
@@ -512,16 +732,16 @@
 }
 
 
-#editLivestockModal form {
+#editIssueModal form {
   text-align: left;
 }
 
-#editLivestockModal .form-group {
+#editIssueModal .form-group {
   width: 100%;
   margin-bottom: 1.2rem;
 }
 
-#editLivestockModal label {
+#editIssueModal label {
   font-weight: 600;            /* make labels bold */
   color: #18375d;              /* consistent primary blue */
   display: inline-block;
@@ -529,9 +749,9 @@
 }
 
 /* Unified input + select + textarea styles */
-#editLivestockModal .form-control,
-#editLivestockModal select.form-control,
-#editLivestockModal textarea.form-control {
+#editIssueModal .form-control,
+#editIssueModal select.form-control,
+#editIssueModal textarea.form-control {
   border-radius: 12px;
   border: 1px solid #d1d5db;
   padding: 12px 15px;          /* consistent padding */
@@ -547,13 +767,13 @@
 }
 
 /* Keep textarea resizable but visually aligned */
-#editLivestockModal textarea.form-control {
+#editIssueModal textarea.form-control {
   min-height: 100px;
   height: auto;                /* flexible height for textarea */
 }
 
 /* Focus state */
-#editLivestockModal .form-control:focus {
+#editIssueModal .form-control:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
@@ -711,7 +931,7 @@
     font-size: 14px;
   }
 
-  #editLivestockModal .form-control {
+  #editIssueModal .form-control {
     font-size: 14px;
   }
    #reportIssueModal .form-control {
@@ -2037,31 +2257,48 @@ $(document).ready(function() {
                     
                     const detailsHtml = `
                         <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Issue Information</h6>
-                                <p><strong>Issue Type:</strong> <span class="issue-type-${issue.issue_type.toLowerCase()}">${issue.issue_type}</span></p>
-                                <p><strong>Priority:</strong> <span class="badge badge-${getPriorityBadgeClass(issue.priority)}">${issue.priority}</span></p>
-                                <p><strong>Status:</strong> <span class="badge badge-${getStatusBadgeClass(issue.status)}">${issue.status}</span></p>
-                                <p><strong>Date Reported:</strong> ${issue.date_reported}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Livestock Information</h6>
-                                <p><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
-                                <p><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
-                                <p><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
-                                <p><strong>Farm:</strong> ${farm ? farm.name : 'N/A'}</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Description</h6>
-                                <p>${issue.description}</p>
-                                ${issue.notes ? `
-                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Notes</h6>
-                                    <p>${issue.notes}</p>
-                                ` : ''}
-                            </div>
-                        </div>
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Issue Information</h6>
+        <p class="text-left"><strong>Issue Type:</strong> 
+            <span class="issue-type-${issue.issue_type ? issue.issue_type.toLowerCase() : 'default'}">
+                ${issue.issue_type || 'N/A'}
+            </span>
+        </p>
+        <p class="text-left"><strong>Priority:</strong> 
+            <span class="badge badge-${getPriorityBadgeClass(issue.priority)}">
+                ${issue.priority || 'N/A'}
+            </span>
+        </p>
+        <p class="text-left"><strong>Status:</strong> 
+            <span class="badge badge-${getStatusBadgeClass(issue.status)}">
+                ${issue.status || 'N/A'}
+            </span>
+        </p>
+        <p class="text-left"><strong>Date Reported:</strong> 
+            ${issue.date_reported ? new Date(issue.date_reported).toLocaleDateString() : 'N/A'}
+        </p>
+    </div>
+
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Livestock Information</h6>
+        <p class="text-left"><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
+        <p class="text-left"><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
+        <p class="text-left"><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
+        <p class="text-left"><strong>Farm:</strong> ${farm && farm.name ? farm.name : 'N/A'}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Description</h6>
+        <p class="text-left">${issue.description || 'No description provided.'}</p>
+        ${issue.notes ? `
+            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Notes</h6>
+            <p class="text-left">${issue.notes}</p>
+        ` : ''}
+    </div>
+</div>
+
                     `;
                     
                     $('#issueDetailsContent').html(detailsHtml);

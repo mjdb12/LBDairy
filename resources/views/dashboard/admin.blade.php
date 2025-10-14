@@ -1,13 +1,6 @@
 @extends('layouts.app')
 @push('styles')
 <style>
-.dashboard-card {
-    transition: transform 0.2s ease-in-out;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-2px);
-}
 
 .stat-card {
     border-radius: 10px;
@@ -27,7 +20,7 @@
     opacity: 1;
 }
 
-/* User Details Modal Styling */
+    /* User Details Modal Styling */
     #taskModal .modal-content {
         border: none;
         border-radius: 12px;
@@ -77,166 +70,247 @@
         margin-bottom: 0.5rem;      /* add spacing below */
     }
 
-    /* Ensure input fields are interactive */
-    #taskModal input[type="text"],
-    #taskModal input[type="date"],
-    #taskModal textarea,
-    #taskModal select {
-        pointer-events: auto !important;
-        user-select: text !important;
-        -webkit-user-select: text !important;
-        -moz-user-select: text !important;
-        -ms-user-select: text !important;
-    }
+.dashboard-card {
+    transition: transform 0.2s ease-in-out;
+    background: #fff !important;
+}
 
-/* Apply consistent buttons */
-/* Action buttons styling */
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        min-width: 200px;
-    }
-    
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        border-radius: 0.25rem;
-        text-decoration: none;
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: all 0.15s ease-in-out;
-        white-space: nowrap;
-    }
+/* Recent System Activity Table Badge Colors */
+html body .card .table .badge-danger,
+html body .card .table .badge-warning,
+html body .card .table .badge-info,
+.card .table .badge-danger,
+.card .table .badge-warning,
+.card .table .badge-info {
+    background-color: #fca700 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
 
-     .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+html body .card .table .badge-success,
+.card .table .badge-success {
+    background-color: #387057 !important;
+    color: #fff !important;
+    border-radius: 0.35rem !important;
+    border: none !important;
+}
 
-     .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    .btn-action-edit:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-edit-profile {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-        .btn-action-edit-profile:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+/* Custom Green Button for New Task - NO GLASS EFFECTS */
+html body .card .card-header #addTaskBtn.btn-primary,
+html body #addTaskBtn.btn-primary,
+#addTaskBtn.btn-primary,
+#addTaskBtn,
+#addTaskBtn.btn {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    border: 2px solid #387057 !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
 
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-        .btn-action-edit:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-view-livestock, .btn-action-report-livestock {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    
-    .btn-action-view-livestock:hover, .btn-action-report-livestock:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
+html body .card .card-header #addTaskBtn.btn-primary:hover,
+html body .card .card-header #addTaskBtn.btn-primary:focus,
+html body #addTaskBtn.btn-primary:hover,
+html body #addTaskBtn.btn-primary:focus,
+#addTaskBtn.btn-primary:hover,
+#addTaskBtn.btn-primary:focus,
+#addTaskBtn:hover,
+#addTaskBtn:focus,
+#addTaskBtn.btn:hover,
+#addTaskBtn.btn:focus {
+    background-color: #2d5a47 !important;
+    background: #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    border: 2px solid #2d5a47 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
 
-    /* Header action buttons styling to match Edit/Delete buttons */
-    .btn-action-add {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+/* NEW: Complete override for no-glass-effect class */
+.no-glass-effect,
+.no-glass-effect.btn,
+.no-glass-effect.btn-primary,
+.no-glass-effect.btn-sm {
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
+    background: #387057 !important;
+    background-color: #387057 !important;
+    border: 2px solid #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+    transition: all 0.2s ease;
+}
 
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-print {
-        background-color: #6c757d !important;
-        border-color: #6c757d !important;
-        color: white !important;
-    }
-    
-    .btn-action-print:hover {
-        background-color: #5a6268 !important;
-        border-color: #5a6268 !important;
-        color: white !important;
-    }
-    
-    .btn-action-cancel {
-        background-color: #6c757d ;
-        border-color: #6c757d ;
-        color: white ;
-    }
-    
-    .btn-action-refresh-, .btn-action-refresh- {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-refresh-:hover, .btn-action-refresh-:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
+.no-glass-effect:hover,
+.no-glass-effect.btn:hover,
+.no-glass-effect.btn-primary:hover,
+.no-glass-effect.btn-sm:hover {
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
+    background: #2d5a47 !important;
+    background-color: #2d5a47 !important;
+    border: 2px solid #2d5a47 !important;
+    border-color: #2d5a47 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
 
-    .btn-action-tools {
-        background-color: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-    }
-    
-    .btn-action-tools:hover {
-        background-color: #e2e6ea;
-        border-color: #cbd3da;
-        color: #495057;
-    }
+/* COMPLETELY CUSTOM BUTTON - NO BOOTSTRAP INHERITANCE */
+.custom-task-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #387057;
+    color: #fff;
+    border: 2px solid #387057;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-width: 80px;
+    height: 36px;
+    box-shadow: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    opacity: 1;
+    text-shadow: none;
+    background-image: none;
+    font-family: inherit;
+    line-height: 1.5;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.custom-task-btn:hover,
+.custom-task-btn:focus {
+    background-color: #2d5a47;
+    border-color: #2d5a47;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    opacity: 1;
+    text-shadow: none;
+    background-image: none;
+    text-decoration: none;
+}
+
+.custom-task-btn:active {
+    transform: translateY(0);
+}
+
+.custom-task-btn:focus {
+    outline: 0;
+}
+
+/* Fix Status column alignment in Recent System Activity table */
+.card .table th:last-child,
+.card .table td:last-child {
+    text-align: left !important;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Force override any blue styling on stat cards */
+.card.stat-card,
+.card.dashboard-card {
+    background: #fff !important;
+    background-color: #fff !important;
+}
+
+.card.stat-card .card-body,
+.card.dashboard-card .card-body {
+    background: #fff !important;
+    background-color: #fff !important;
+    color: inherit !important;
+}
+
+.stat-card {
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff !important;
+}
+
+.stat-card .card-body {
+    padding: 1.5rem;
+    background: #fff !important;
+}
+
+.stat-card .icon {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card:hover .icon {
+    opacity: 1;
+}
+
+/* Force text colors to be correct */
+.text-primary {
+    color: #18375d !important;
+}
+
+.text-success {
+    color: #1cc88a !important;
+}
+
+.text-info {
+    color: #36b9cc !important;
+}
+
+.text-warning {
+    color: #f6c23e !important;
+}
+
+.text-danger {
+    color: #e74a3b !important;
+}
+
+.text-secondary {
+    color: #858796 !important;
+}
+
+/* Ensure no blue backgrounds anywhere in stat cards */
+.card.stat-card *,
+.card.dashboard-card * {
+    background-color: transparent !important;
+}
+
+.card.stat-card,
+.card.dashboard-card {
+    background-color: #fff !important;
+}
 
 .table-responsive {
     border-radius: 8px;
@@ -255,10 +329,6 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-.font-size-4 {
-    font-size: 0.6em;
 }
 
 /* Task Board Styling */
@@ -345,6 +415,7 @@
     font-size: 0.875rem;
     line-height: 1.4;
 }
+
 
 /* Priority badge styling */
 .badge {
@@ -1217,17 +1288,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     <small class="text-muted">${escapeHtml(task.description || '')}</small>
                 </div>
             </div>
-
             <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-4">
-                    <i class="far fa-clock"></i> ${formatDue(task.due_date)}
-                </span>
+                <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
                 <div class="btn-group">
                     <button class="btn-action btn-action-ok edit-task" title="Edit Task">
-                        <i class="fas fa-edit"></i> <span>Edit</span>
+                        <i class="fas fa-edit"></i>
+                        <span>Edit</span>
                     </button>
                     <button class="btn-action btn-action-deletes delete-task" title="Delete Task">
-                        <i class="fas fa-trash"></i> <span>Delete</span>
+                        <i class="fas fa-trash"></i>
+                        <span>Delete</span>
                     </button>
                 </div>
             </div>
