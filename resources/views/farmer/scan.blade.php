@@ -108,173 +108,204 @@
 </div>
 
 
-<!-- LIVESTOCK DETAILS & EDIT MODAL WITH OPTION BAR -->
-<div class="modal fade" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-paw"></i>
-                    Livestock Details: <span id="detailLivestockId"></span>
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Option Bar -->
-                <ul class="nav nav-tabs mb-3" id="livestockTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab" aria-controls="basicForm" aria-selected="true">
-                            <i class="fas fa-info-circle"></i> Basic Info
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab" aria-controls="growthForm" aria-selected="false">
-                            <i class="fas fa-chart-line"></i> Growth
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="milk-tab" data-toggle="tab" href="#milkForm" role="tab" aria-controls="milkForm" aria-selected="false">
-                            <i class="fas fa-tint"></i> Milk
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab" aria-controls="breedingForm" aria-selected="false">
-                            <i class="fas fa-heart"></i> Breeding
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab" aria-controls="healthForm" aria-selected="false">
-                            <i class="fas fa-heartbeat"></i> Health
-                        </a>
-                    </li>
-                </ul>
-                
-                <div class="tab-content" id="livestockTabContent">
-                    <!-- Basic Info (Read-only) -->
-                    <div class="tab-pane fade show active" id="basicForm" role="tabpanel" aria-labelledby="basic-tab">
-                        <form id="basicDetailsForm">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <tr><th>Owned By</th><td><input type="text" class="form-control" id="ownedBy" readonly></td></tr>
-                                        <tr><th>Dispersal From</th><td><input type="text" class="form-control" id="dispersalFrom" readonly></td></tr>
-                                        <tr><th>Registry ID</th><td><input type="text" class="form-control" id="registryId" readonly></td></tr>
-                                        <tr><th>Tag ID</th><td><input type="text" class="form-control" id="tagId" readonly></td></tr>
-                                        <tr><th>Name</th><td><input type="text" class="form-control" id="livestockName" readonly></td></tr>
-                                        <tr><th>Date of Birth</th><td><input type="date" class="form-control" id="dob" readonly></td></tr>
-                                        <tr><th>Sex</th><td><input type="text" class="form-control" id="sex" readonly></td></tr>
-                                        <tr><th>Breed</th><td><input type="text" class="form-control" id="breed" readonly></td></tr>
-                                        <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="sireId" readonly></td></tr>
-                                        <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="damId" readonly></td></tr>
-                                        <tr><th>Sire Name</th><td><input type="text" class="form-control" id="sireName" readonly></td></tr>
-                                        <tr><th>Dam Name</th><td><input type="text" class="form-control" id="damName" readonly></td></tr>
-                                        <tr><th>Sire Breed</th><td><input type="text" class="form-control" id="sireBreed" readonly></td></tr>
-                                        <tr><th>Dam Breed</th><td><input type="text" class="form-control" id="damBreed" readonly></td></tr>
-                                        <tr><th>Natural Marks</th><td><input type="text" class="form-control" id="naturalMarks" readonly></td></tr>
-                                        <tr><th>Property No.</th><td><input type="text" class="form-control" id="propertyNo" readonly></td></tr>
-                                        <tr><th>Date Acquired</th><td><input type="date" class="form-control" id="acquisitionDate" readonly></td></tr>
-                                        <tr><th>Acquisition Cost</th><td><input type="number" class="form-control" id="acquisitionCost" readonly></td></tr>
-                                        <tr><th>Source</th><td><input type="text" class="form-control" id="source" readonly></td></tr>
-                                        <tr><th>Remarks</th><td><textarea class="form-control" id="remarks" readonly></textarea></td></tr>
-                                        <tr><th>Cooperator</th><td><input type="text" class="form-control" id="cooperator" readonly></td></tr>
-                                        <tr><th>Date Released</th><td><input type="date" class="form-control" id="releasedDate" readonly></td></tr>
-                                        <tr><th>Cooperative</th><td><input type="text" class="form-control" id="cooperative" readonly></td></tr>
-                                        <tr><th>Address</th><td><input type="text" class="form-control" id="address" readonly></td></tr>
-                                        <tr><th>Contact No.</th><td><input type="text" class="form-control" id="contactNo" readonly></td></tr>
-                                        <tr><th>In-Charge</th><td><input type="text" class="form-control" id="inCharge" readonly></td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <!-- Growth (Editable) -->
-                    <div class="tab-pane fade" id="growthForm" role="tabpanel" aria-labelledby="growth-tab">
-                        <form id="growthDetailsForm">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <tr><th>Date</th><td><input type="date" class="form-control" id="growthDate"></td></tr>
-                                        <tr><th>Weight (kg)</th><td><input type="number" class="form-control" id="weight"></td></tr>
-                                        <tr><th>Height (cm)</th><td><input type="number" class="form-control" id="height"></td></tr>
-                                        <tr><th>Heart Girth (cm)</th><td><input type="number" step="0.1" class="form-control" id="heartGirthCm" required></td></tr>
-                                        <tr><th>Body Length (cm)</th><td><input type="number" step="0.1" class="form-control" id="bodyLengthCm" required></td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-dark-green">
-                                    <i class="fas fa-save"></i> Save Record
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+<!-- SMART DETAIL MODAL - Livestock Details -->
+<div class="modal fade admin" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content smart-detail p-4">
 
-                    <!-- Milk (Editable) -->
-                    <div class="tab-pane fade" id="milkForm" role="tabpanel" aria-labelledby="milk-tab">
-                        <form id="milkDetailsForm">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <tr><th>Date of Calving</th><td><input type="date" class="form-control" id="calvingDate" required></td></tr>
-                                        <tr><th>Calf ID Number</th><td><input type="text" class="form-control" id="calfIdNumber" required></td></tr>
-                                        <tr><th>Sex</th><td><select class="form-control" id="calfSex" required><option value="" disabled selected>Select Sex</option><option value="Male">Male</option><option value="Female">Female</option></select></td></tr>
-                                        <tr><th>Breed</th><td><input type="text" class="form-control" id="calfBreed" required></td></tr>
-                                        <tr><th>Sire ID Number</th><td><input type="text" class="form-control" id="sireIdNumber" required></td></tr>
-                                        <tr><th>Milk Production (liters)</th><td><input type="number" step="0.01" class="form-control" id="milkProduction" required></td></tr>
-                                        <tr><th>Days in Milk</th><td><input type="number" class="form-control" id="daysInMilk" required></td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-dark-green">
-                                    <i class="fas fa-save"></i> Save Record
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <!-- Breeding Form -->
-                    <div class="tab-pane fade" id="breedingForm" role="tabpanel" aria-labelledby="breeding-tab">
-                        <form id="breedingDetailsForm">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <tr><th>Breeding Date</th><td><input type="date" class="form-control" id="breedingDate" value="2023-04-15" readonly></td></tr>
-                                        <tr><th>Breeding Type</th><td><select class="form-control" id="breedingType" readonly><option value="Natural" selected>Natural</option><option value="Artificial Insemination">Artificial Insemination</option></select></td></tr>
-                                        <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="breedingSireId" value="SR123" readonly></td></tr>
-                                        <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="breedingDamId" value="DR456" readonly></td></tr>
-                                        <tr><th>Pregnancy Check Date</th><td><input type="date" class="form-control" id="pregnancyCheckDate" value="2023-05-01" readonly></td></tr>
-                                        <tr><th>Pregnancy Result</th><td><select class="form-control" id="pregnancyResult" readonly><option value="Positive" selected>Positive</option><option value="Negative">Negative</option><option value="Unknown">Unknown</option></select></td></tr>
-                                        <tr><th>Remarks</th><td><textarea class="form-control" id="breedingRemarks" readonly>Healthy pregnancy confirmed.</textarea></td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Health Form -->
-                    <div class="tab-pane fade" id="healthForm" role="tabpanel" aria-labelledby="health-tab">
-                        <form id="healthDetailsForm">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <tr><th>Date</th><td><input type="date" class="form-control" id="healthDate" value="2023-04-20" readonly></td></tr>
-                                        <tr><th>Health Status</th><td><input type="text" class="form-control" id="healthStatus" value="Good" readonly></td></tr>
-                                        <tr><th>Treatment</th><td><input type="text" class="form-control" id="treatment" value="Routine check-up" readonly></td></tr>
-                                        <tr><th>Remarks</th><td><textarea class="form-control" id="healthRemarks" readonly>No issues found during the check-up.</textarea></td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+      <!-- Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-paw fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Livestock Details</h5>
+        <span id="detailLivestockId"></span>
+        <p class="text-muted small mb-0">Below are the detailed records of the selected livestock.</p>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <!-- OPTION BAR / NAV TABS -->
+        <ul class="nav nav-tabs mb-3" id="livestockTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab" aria-controls="basicForm" aria-selected="true">
+              <i class="fas fa-info-circle"></i> Basic Info
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab" aria-controls="growthForm" aria-selected="false">
+              <i class="fas fa-chart-line"></i> Growth
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="milk-tab" data-toggle="tab" href="#milkForm" role="tab" aria-controls="milkForm" aria-selected="false">
+              <i class="fas fa-tint"></i> Milk
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab" aria-controls="breedingForm" aria-selected="false">
+              <i class="fas fa-heart"></i> Breeding
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab" aria-controls="healthForm" aria-selected="false">
+              <i class="fas fa-heartbeat"></i> Health
+            </a>
+          </li>
+        </ul>
+
+        <!-- TAB CONTENT -->
+        <div class="tab-content" id="livestockTabContent">
+
+          <!-- BASIC INFO TAB (READ-ONLY) -->
+          <div class="tab-pane fade show active" id="basicForm" role="tabpanel" aria-labelledby="basic-tab">
+            <form id="basicDetailsForm">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr><th>Owned By</th><td><input type="text" class="form-control" id="ownedBy" readonly></td></tr>
+                    <tr><th>Dispersal From</th><td><input type="text" class="form-control" id="dispersalFrom" readonly></td></tr>
+                    <tr><th>Registry ID</th><td><input type="text" class="form-control" id="registryId" readonly></td></tr>
+                    <tr><th>Tag ID</th><td><input type="text" class="form-control" id="tagId" readonly></td></tr>
+                    <tr><th>Name</th><td><input type="text" class="form-control" id="livestockName" readonly></td></tr>
+                    <tr><th>Date of Birth</th><td><input type="date" class="form-control" id="dob" readonly></td></tr>
+                    <tr><th>Sex</th><td><input type="text" class="form-control" id="sex" readonly></td></tr>
+                    <tr><th>Breed</th><td><input type="text" class="form-control" id="breed" readonly></td></tr>
+                    <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="sireId" readonly></td></tr>
+                    <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="damId" readonly></td></tr>
+                    <tr><th>Sire Name</th><td><input type="text" class="form-control" id="sireName" readonly></td></tr>
+                    <tr><th>Dam Name</th><td><input type="text" class="form-control" id="damName" readonly></td></tr>
+                    <tr><th>Sire Breed</th><td><input type="text" class="form-control" id="sireBreed" readonly></td></tr>
+                    <tr><th>Dam Breed</th><td><input type="text" class="form-control" id="damBreed" readonly></td></tr>
+                    <tr><th>Natural Marks</th><td><input type="text" class="form-control" id="naturalMarks" readonly></td></tr>
+                    <tr><th>Property No.</th><td><input type="text" class="form-control" id="propertyNo" readonly></td></tr>
+                    <tr><th>Date Acquired</th><td><input type="date" class="form-control" id="acquisitionDate" readonly></td></tr>
+                    <tr><th>Acquisition Cost</th><td><input type="number" class="form-control" id="acquisitionCost" readonly></td></tr>
+                    <tr><th>Source</th><td><input type="text" class="form-control" id="source" readonly></td></tr>
+                    <tr><th>Remarks</th><td><textarea class="form-control" id="remarks" readonly></textarea></td></tr>
+                    <tr><th>Cooperator</th><td><input type="text" class="form-control" id="cooperator" readonly></td></tr>
+                    <tr><th>Date Released</th><td><input type="date" class="form-control" id="releasedDate" readonly></td></tr>
+                    <tr><th>Cooperative</th><td><input type="text" class="form-control" id="cooperative" readonly></td></tr>
+                    <tr><th>Address</th><td><input type="text" class="form-control" id="address" readonly></td></tr>
+                    <tr><th>Contact No.</th><td><input type="text" class="form-control" id="contactNo" readonly></td></tr>
+                    <tr><th>In-Charge</th><td><input type="text" class="form-control" id="inCharge" readonly></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+
+          <!-- GROWTH TAB (EDITABLE) -->
+          <div class="tab-pane fade" id="growthForm" role="tabpanel" aria-labelledby="growth-tab">
+            <form id="growthDetailsForm">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr><th>Date</th><td><input type="date" class="form-control" id="growthDate"></td></tr>
+                    <tr><th>Weight (kg)</th><td><input type="number" class="form-control" id="weight"></td></tr>
+                    <tr><th>Height (cm)</th><td><input type="number" class="form-control" id="height"></td></tr>
+                    <tr><th>Heart Girth (cm)</th><td><input type="number" step="0.1" class="form-control" id="heartGirthCm" required></td></tr>
+                    <tr><th>Body Length (cm)</th><td><input type="number" step="0.1" class="form-control" id="bodyLengthCm" required></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn-action btn-action-ok btn-sm">
+                  <i class="fas fa-save"></i> Save Record
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- MILK TAB (EDITABLE) -->
+          <div class="tab-pane fade" id="milkForm" role="tabpanel" aria-labelledby="milk-tab">
+            <form id="milkDetailsForm">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr><th>Date of Calving</th><td><input type="date" class="form-control" id="calvingDate" required></td></tr>
+                    <tr><th>Calf ID Number</th><td><input type="text" class="form-control" id="calfIdNumber" required></td></tr>
+                    <tr><th>Sex</th><td>
+                      <select class="form-control" id="calfSex" required>
+                        <option value="" disabled selected>Select Sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>
+                    </td></tr>
+                    <tr><th>Breed</th><td><input type="text" class="form-control" id="calfBreed" required></td></tr>
+                    <tr><th>Sire ID Number</th><td><input type="text" class="form-control" id="sireIdNumber" required></td></tr>
+                    <tr><th>Milk Production (liters)</th><td><input type="number" step="0.01" class="form-control" id="milkProduction" required></td></tr>
+                    <tr><th>Days in Milk</th><td><input type="number" class="form-control" id="daysInMilk" required></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn-action btn-action-ok btn-sm">
+                  <i class="fas fa-save"></i> Save Record
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- BREEDING TAB -->
+          <div class="tab-pane fade" id="breedingForm" role="tabpanel" aria-labelledby="breeding-tab">
+            <form id="breedingDetailsForm">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr><th>Breeding Date</th><td><input type="date" class="form-control" id="breedingDate" value="2023-04-15" readonly></td></tr>
+                    <tr><th>Breeding Type</th><td>
+                      <select class="form-control" id="breedingType" readonly>
+                        <option value="Natural" selected>Natural</option>
+                        <option value="Artificial Insemination">Artificial Insemination</option>
+                      </select>
+                    </td></tr>
+                    <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="breedingSireId" value="SR123" readonly></td></tr>
+                    <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="breedingDamId" value="DR456" readonly></td></tr>
+                    <tr><th>Pregnancy Check Date</th><td><input type="date" class="form-control" id="pregnancyCheckDate" value="2023-05-01" readonly></td></tr>
+                    <tr><th>Pregnancy Result</th><td>
+                      <select class="form-control" id="pregnancyResult" readonly>
+                        <option value="Positive" selected>Positive</option>
+                        <option value="Negative">Negative</option>
+                        <option value="Unknown">Unknown</option>
+                      </select>
+                    </td></tr>
+                    <tr><th>Remarks</th><td><textarea class="form-control" id="breedingRemarks" readonly>Healthy pregnancy confirmed.</textarea></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+
+          <!-- HEALTH TAB -->
+          <div class="tab-pane fade" id="healthForm" role="tabpanel" aria-labelledby="health-tab">
+            <form id="healthDetailsForm">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr><th>Date</th><td><input type="date" class="form-control" id="healthDate" value="2023-04-20" readonly></td></tr>
+                    <tr><th>Health Status</th><td><input type="text" class="form-control" id="healthStatus" value="Good" readonly></td></tr>
+                    <tr><th>Treatment</th><td><input type="text" class="form-control" id="treatment" value="Routine check-up" readonly></td></tr>
+                    <tr><th>Remarks</th><td><textarea class="form-control" id="healthRemarks" readonly>No issues found during the check-up.</textarea></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+
+        </div> <!-- END TAB CONTENT -->
+      </div> <!-- END MODAL BODY -->
+        <!-- Footer -->
+        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Got it</button>
+        </div>
+
     </div>
+  </div>
 </div>
+
+
 
 <!-- How to Use Modal -->
 <div class="modal fade admin-modal" id="howToUseModal" tabindex="-1" role="dialog" aria-labelledby="howToUseModalLabel" aria-hidden="true">
@@ -349,6 +380,613 @@
 
 @push('styles')
 <style>
+    /* ============================
+   SMART DETAIL MODAL (Livestock)
+   ============================ */
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+/* General Modal Styling */
+.smart-detail {
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.smart-detail::-webkit-scrollbar {
+  width: 8px;
+}
+.smart-detail::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+}
+
+/* Make Modal Taller and Better Layout */
+.modal-dialog.modal-xl {
+  max-width: 1200px;
+}
+
+.modal-content.smart-detail {
+  padding: 2rem 2.5rem;
+}
+
+/* Header Icon Circle */
+.icon-circle {
+  width: 65px;
+  height: 65px;
+  background: #18375d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(24, 55, 93, 0.2);
+  margin-bottom: 1rem;
+}
+
+
+/* Table Styling */
+.table {
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+
+.table th {
+  width: 30%;
+  background-color: #f8fafc;
+  color: #18375d;
+  vertical-align: middle;
+  font-weight: 600;
+  padding: 0.75rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.table td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Input Fields */
+.smart-detail .form-control,
+.smart-detail select,
+.smart-detail textarea {
+  border-radius: 8px;
+  border: 1px solid #d5d9e0;
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.smart-detail .form-control:focus,
+.smart-detailm select:focus,
+.smart-detail textarea:focus {
+  border-color: #18375d;
+  box-shadow: 0 0 0 0.15rem rgba(24, 55, 93, 0.25);
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .modal-dialog.modal-xl {
+    max-width: 95%;
+  }
+  .smart-form {
+    padding: 1.5rem;
+  }
+  .table th {
+    width: 40%;
+  }
+}
+
+    /* ============================
+   SMART FORM - Enhanced Version
+   ============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#livestockDetailsModal form {
+  text-align: left;
+}
+
+#livestockDetailsModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#livestockDetailsModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#livestockDetailsModal .form-control,
+#livestockDetailsModal select.form-control,
+#livestockDetailsModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#livestockDetailsModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#livestockDetailsModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editLivestockModal form {
+  text-align: left;
+}
+
+#editLivestockModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editLivestockModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editLivestockModal .form-control,
+#editLivestockModal select.form-control,
+#editLivestockModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editLivestockModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editLivestockModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#issueAlertModal form {
+  text-align: left;
+}
+
+#issueAlertModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#issueAlertModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#issueAlertModal .form-control,
+#issueAlertModal select.form-control,
+#issueAlertModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#issueAlertModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#issueAlertModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#livestockDetailsModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #livestockDetailsModal .form-control {
+    font-size: 14px;
+  }
+
+  #editLivestockModal .form-control {
+    font-size: 14px;
+  }
+   #issueAlertModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 0.5rem;
+        max-height: 95vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
+
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;

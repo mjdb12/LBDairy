@@ -786,16 +786,16 @@
 }
 
 
-#editLivestockModal form {
+#supplierLedgerEntryForm form {
   text-align: left;
 }
 
-#editLivestockModal .form-group {
+#supplierLedgerEntryForm .form-group {
   width: 100%;
   margin-bottom: 1.2rem;
 }
 
-#editLivestockModal label {
+#supplierLedgerEntryForm label {
   font-weight: 600;            /* make labels bold */
   color: #18375d;              /* consistent primary blue */
   display: inline-block;
@@ -803,9 +803,9 @@
 }
 
 /* Unified input + select + textarea styles */
-#editLivestockModal .form-control,
-#editLivestockModal select.form-control,
-#editLivestockModal textarea.form-control {
+#supplierLedgerEntryForm .form-control,
+#supplierLedgerEntryForm select.form-control,
+#supplierLedgerEntryForm textarea.form-control {
   border-radius: 12px;
   border: 1px solid #d1d5db;
   padding: 12px 15px;          /* consistent padding */
@@ -821,13 +821,13 @@
 }
 
 /* Keep textarea resizable but visually aligned */
-#editLivestockModal textarea.form-control {
+#supplierLedgerEntryForm textarea.form-control {
   min-height: 100px;
   height: auto;                /* flexible height for textarea */
 }
 
 /* Focus state */
-#editLivestockModal .form-control:focus {
+#supplierLedgerEntryForm .form-control:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
@@ -985,7 +985,7 @@
     font-size: 14px;
   }
 
-  #editLivestockModal .form-control {
+  #supplierLedgerEntryForm .form-control {
     font-size: 14px;
   }
    #reportIssueModal .form-control {
@@ -2075,7 +2075,7 @@
 
 <!-- SUPPLIER LEDGER MODAL -->
 <div class="modal fade admin-modal" id="supplierLedgerModal" tabindex="-1" role="dialog" aria-labelledby="supplierLedgerLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content smart-detail p-4">
 
             <!-- Header -->
@@ -2084,7 +2084,9 @@
                     <i class="fas fa-book fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Supplier Ledger</h5>
-                <p class="text-muted small mb-0">View, manage, and record all supplier transactions and balances.</p>
+                <p class="text-muted small mb-0">
+                    View, manage, and record all supplier transactions and balances.
+                </p>
             </div>
 
             <!-- Body -->
@@ -2097,7 +2099,6 @@
                             <div class="icon-circle-sm d-flex align-items-center justify-content-center me-3">
                                 <i class="fas fa-user fa-lg text-primary"></i>
                             </div>
-
                             <div class="flex-grow-1">
                                 <h6 class="fw-bold mb-1" id="ledgerSupplierName">Supplier Name</h6>
                                 <div class="row small mb-2">
@@ -2137,57 +2138,68 @@
                         </table>
                     </div>
 
-                    <!-- Add Entry Form -->
-                    <form id="supplierLedgerEntryForm" class="smart-form mt-3 border rounded-4 p-3" style="display:none;">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold mb-0"><i class="fas fa-plus-circle me-2 text-primary"></i> Add New Ledger Entry</h6>
-                            <button type="button" class="btn-modern btn-cancel btn-sm" onclick="hideAddSupplierLedgerEntryForm()">Cancel</button>
+                    <!-- Add Entry Form (Modern Pattern) -->
+                    <div id="supplierLedgerEntryForm" class="smart-form text-center p-4 mt-4" style="display: none;">
+                        <!-- Icon + Header -->
+                        <div class="d-flex flex-column align-items-center mb-4">
+                            <div class="icon-circle">
+                                <i class="fas fa-plus-circle fa-2x"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1">Add New Ledger Entry</h5>
+                            <p class="text-muted mb-0 small">
+                                Fill out the details below to record a new supplier transaction.
+                            </p>
                         </div>
 
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <label for="purchaseDate" class="form-label fw-semibold">Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="purchaseDate" required>
+                        <!-- Form Fields -->
+                        <form id="addLedgerEntryFormInner">
+                            <div class="row g-3 text-start">
+                                <div class="col-md-6">
+                                    <label for="purchaseDate" class="fw-semibold">Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="purchaseDate" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="purchaseType" class="fw-semibold">Type <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="purchaseType" required>
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="Feed">Feed</option>
+                                        <option value="Medicine">Medicine</option>
+                                        <option value="Equipment">Equipment</option>
+                                        <option value="Livestock">Livestock</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="payableAmount" class="fw-semibold">Payable (₱)</label>
+                                    <input type="number" class="form-control" id="payableAmount" min="0" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="paidAmount" class="fw-semibold">Paid (₱)</label>
+                                    <input type="number" class="form-control" id="paidAmount" min="0" required>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label for="paymentStatus" class="fw-semibold">Status</label>
+                                    <select class="form-control" id="paymentStatus" required>
+                                        <option value="Unpaid">Unpaid</option>
+                                        <option value="Partial">Partial</option>
+                                        <option value="Paid">Paid</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label for="purchaseType" class="form-label fw-semibold">Type <span class="text-danger">*</span></label>
-                                <select class="form-control" id="purchaseType" required>
-                                    <option value="" disabled selected>Select</option>
-                                    <option value="Feed">Feed</option>
-                                    <option value="Medicine">Medicine</option>
-                                    <option value="Equipment">Equipment</option>
-                                    <option value="Livestock">Livestock</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label for="payableAmount" class="form-label fw-semibold">Payable (₱)</label>
-                                <input type="number" class="form-control" id="payableAmount" min="0" required>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label for="paidAmount" class="form-label fw-semibold">Paid (₱)</label>
-                                <input type="number" class="form-control" id="paidAmount" min="0" required>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label for="paymentStatus" class="form-label fw-semibold">Status</label>
-                                <select class="form-control" id="paymentStatus" required>
-                                    <option value="Unpaid">Unpaid</option>
-                                    <option value="Partial">Partial</option>
-                                    <option value="Paid">Paid</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-12 text-end mt-3">
-                                <button type="submit" class="btn-modern btn-ok btn-sm">
+                            <!-- Footer Buttons -->
+                            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                                <button type="button" class="btn-modern btn-cancel" onclick="hideAddSupplierLedgerEntryForm()">Cancel</button>
+                                <button type="submit" class="btn-modern btn-ok">
                                     <i class="fas fa-save me-1"></i> Save Entry
                                 </button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -2199,6 +2211,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 <!-- Delete Confirmation Modal -->
@@ -2360,7 +2374,7 @@
       <!-- Icon + Header -->
       <div class="d-flex flex-column align-items-center mb-4">
         <div class="icon-circle">
-          <i class="fas fa-info-circle fa-2x text-primary"></i>
+          <i class="fas fa-info-circle fa-2x "></i>
         </div>
         <h5 class="fw-bold mb-1">Supplier Details</h5>
         <p class="text-muted mb-0 small text-center">Below are the complete details of the selected supplier.</p>

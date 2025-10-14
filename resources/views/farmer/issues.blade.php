@@ -201,7 +201,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="action-buttons">
+                                        <div class="btn-group">
                                             <button class="btn-action btn-action-ok" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View Details</span>
@@ -322,7 +322,7 @@
                                                 <i class="fas fa-eye"></i>
                                                 <span>View Details</span>
                                             </button>
-                                            <button class="btn-action btn-action-approve" onclick="markAlertAsRead('{{ $alert->id }}')" title="Mark as Read">
+                                            <button class="btn-action btn-action-edit" onclick="markAlertAsRead('{{ $alert->id }}')" title="Mark as Read">
                                                 <i class="fas fa-check"></i>
                                                 <span>Mark as Read</span>
                                             </button>
@@ -795,53 +795,40 @@ function loadIssueDetails(issueId) {
                 const issue = response.issue;
                 $('#issueDetailsContent').html(`
                     <div class="row">
+                        <!-- Issue Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header text-white">
-                                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Issue Information</h6>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>Type:</strong></td><td><span class="issue-type-badge issue-${issue.issue_type.toLowerCase()}">${issue.issue_type}</span></td></tr>
-                                        <tr><td><strong>Status:</strong></td><td><span class="badge badge-${getStatusColor(issue.status)}">${issue.status}</span></td></tr>
-                                        <tr><td><strong>Priority:</strong></td><td><span class="badge badge-${getPriorityColor(issue.priority)}">${issue.priority}</span></td></tr>
-                                        <tr><td><strong>Reported:</strong></td><td>${issue.date_reported}</td></tr>
-                                        <tr><td><strong>Reported By:</strong></td><td><span class="badge badge-primary">${issue.reported_by ? issue.reported_by.name : 'Admin'}</span></td></tr>
-                                    </table>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Issue Information</h6>
+                            <p><strong>Type:</strong> <span class="issue-type-badge issue-${issue.issue_type.toLowerCase()}">${issue.issue_type}</span></p>
+                            <p><strong>Status:</strong> <span class="badge badge-${getStatusColor(issue.status)}">${issue.status}</span></p>
+                            <p><strong>Priority:</strong> <span class="badge badge-${getPriorityColor(issue.priority)}">${issue.priority}</span></p>
+                            <p><strong>Reported:</strong> ${issue.date_reported}</p>
+                            <p><strong>Reported By:</strong> <span class="badge badge-primary">${issue.reported_by ? issue.reported_by.name : 'Admin'}</span></p>
                         </div>
+
+                        <!-- Livestock Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header text-white">
-                                    <h6 class="mb-0"><i class="fas fa-paw"></i> Livestock Information</h6>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>ID:</strong></td><td>${issue.livestock ? issue.livestock.livestock_id : 'N/A'}</td></tr>
-                                        <tr><td><strong>Type:</strong></td><td>${issue.livestock ? issue.livestock.type : 'N/A'}</td></tr>
-                                        <tr><td><strong>Breed:</strong></td><td>${issue.livestock ? issue.livestock.breed : 'N/A'}</td></tr>
-                                        <tr><td><strong>Age:</strong></td><td>${issue.livestock ? issue.livestock.age + ' years' : 'N/A'}</td></tr>
-                                        <tr><td><strong>Health Status:</strong></td><td>${issue.livestock ? issue.livestock.health_status : 'N/A'}</td></tr>
-                                    </table>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Livestock Information</h6>
+                            <p><strong>ID:</strong> ${issue.livestock ? issue.livestock.livestock_id : 'N/A'}</p>
+                            <p><strong>Type:</strong> ${issue.livestock ? issue.livestock.type : 'N/A'}</p>
+                            <p><strong>Breed:</strong> ${issue.livestock ? issue.livestock.breed : 'N/A'}</p>
+                            <p><strong>Age:</strong> ${issue.livestock ? issue.livestock.age + ' years' : 'N/A'}</p>
+                            <p><strong>Health Status:</strong> ${issue.livestock ? issue.livestock.health_status : 'N/A'}</p>
                         </div>
                     </div>
+
                     <div class="row mt-3">
+                        <!-- Issue Details -->
                         <div class="col-12">
-                            <div class="card">
-                                <div class="card-header bg-warning text-white">
-                                    <h6 class="mb-0"><i class="fas fa-file-alt"></i> Issue Details</h6>
-                                </div>
-                                <div class="card-body">
-                                    <h6>Description:</h6>
-                                    <p>${issue.description}</p>
-                                    ${issue.notes ? `<h6>Additional Notes:</h6><p>${issue.notes}</p>` : ''}
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Issue Details</h6>
+                            <p><strong>Description:</strong></p>
+                            <p>${issue.description}</p>
+                            ${issue.notes ? `
+                                <p><strong>Additional Notes:</strong></p>
+                                <p>${issue.notes}</p>
+                            ` : ''}
                         </div>
                     </div>
+
                 `);
             }
         },
@@ -1092,72 +1079,39 @@ function viewInspectionDetails(inspectionId) {
                 const inspection = response.inspection;
                 $('#inspectionDetailsContent').html(`
                     <div class="row">
-    <!-- Inspection Information -->
-    <div class="col-lg-6 col-md-12 mb-4">
-        <div class="card border-left shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="mb-3  fw-semibold d-flex align-items-center" style="color: #18375d;">
-                    <i class="fas fa-calendar-check mr-2"></i>Inspection Information
-                </h6>
-                <div class="table-responsive">
-                    <table class="table table-borderless mb-0 small">
-                        <tbody>
-                            <tr>
-                                <td class="fw-semibold">Date:</td>
-                                <td>${inspection.inspection_date}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Time:</td>
-                                <td>${inspection.inspection_time}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Status:</td>
-                                <td>
-                                    <span class="badge badge-${getInspectionStatusColor(inspection.status)} badge-pill">
-                                        <i class="fas fa-${inspection.status === 'Completed' ? 'check-circle' : 'clock'} mr-1"></i>
-                                        ${inspection.status}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Priority:</td>
-                                <td>
-                                    <span class="badge badge-${getInspectionPriorityColor(inspection.priority)} badge-pill">
-                                        ${inspection.priority}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Scheduled By:</td>
-                                <td>${inspection.scheduled_by ? inspection.scheduled_by.name : 'Admin'}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+            <i class="fas fa-calendar-check mr-2"></i>Inspection Information
+        </h6>
+        <p><strong>Date:</strong> ${inspection.inspection_date}</p>
+        <p><strong>Time:</strong> ${inspection.inspection_time}</p>
+        <p>
+            <strong>Status:</strong>
+            <span class="badge badge-${getInspectionStatusColor(inspection.status)}">
+                <i class="fas fa-${inspection.status === 'Completed' ? 'check-circle' : 'clock'} mr-1"></i>
+                ${inspection.status}
+            </span>
+        </p>
+        <p>
+            <strong>Priority:</strong>
+            <span class="badge badge-${getInspectionPriorityColor(inspection.priority)}">
+                ${inspection.priority}
+            </span>
+        </p>
+        <p><strong>Scheduled By:</strong> ${inspection.scheduled_by ? inspection.scheduled_by.name : 'Admin'}</p>
     </div>
 
-    <!-- Notes & Findings -->
-    <div class="col-lg-6 col-md-12 mb-4">
-        <div class="card border-left shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="mb-3 fw-semibold d-flex align-items-center" style="color: #18375d;">
-                    <i class="fas fa-file-alt mr-2"></i>Notes & Findings
-                </h6>
-                <div class="mb-3">
-                    <strong>Notes:</strong>
-                    <p class="mb-0">${inspection.notes || 'No notes provided.'}</p>
-                </div>
-                ${inspection.findings ? `
-                <div>
-                    <strong>Findings:</strong>
-                    <p class="mb-0">${inspection.findings}</p>
-                </div>` : ''}
-            </div>
-        </div>
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+            <i class="fas fa-file-alt mr-2"></i>Notes & Findings
+        </h6>
+        <p><strong>Notes:</strong> ${inspection.notes || 'No notes provided.'}</p>
+        ${inspection.findings ? `
+        <p><strong>Findings:</strong> ${inspection.findings}</p>
+        ` : ''}
     </div>
 </div>
+
 
                 `);
                 $('#inspectionDetailsModal').modal('show');
@@ -1418,6 +1372,89 @@ function markAlertAsRead(alertId) {
 
 @push('styles')
 <style>
+    
+    /* User Details Modal Styling */
+    #inspectionDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #inspectionDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #inspectionDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #inspectionDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #inspectionDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #inspectionDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #inspectionDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    /* User Details Modal Styling */
+    #issueDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #issueDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #issueDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #issueDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #issueDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #issueDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #issueDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
     /* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
     border-radius: 1.5rem;
@@ -1458,19 +1495,17 @@ function markAlertAsRead(alertId) {
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 1.75rem 2rem;
+    padding: 1rem 1.25rem; /* smaller padding for compact layout */
     border-radius: 1rem;
-    max-height: 70vh; /* ensures content scrolls on smaller screens */
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+    max-height: none; /* allow detail-wrapper to expand naturally */
+    overflow-y: visible; /* remove scroll restriction so it can grow */
 }
 
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
     border-radius: 1rem;
-    padding: 1.5rem;
+    padding: 1rem;
     font-size: 0.95rem;
 }
 
@@ -2117,6 +2152,30 @@ function markAlertAsRead(alertId) {
 }
 
 /* COMPLETE TABLE STYLING TO MATCH SUPERADMIN FARMS - EXACT COPY */
+/* Allow table to scroll horizontally if too wide */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Make table cells wrap instead of forcing them all inline */
+#alertsTable td, 
+#alertsTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#alertsTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#alertsTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
 
 /* Table hover effects */
 .table-hover tbody tr:hover {

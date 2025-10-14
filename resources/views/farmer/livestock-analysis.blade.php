@@ -90,38 +90,7 @@
         margin-bottom: 0;
         table-layout: fixed !important;
     }
-    
-    /* Ensure proper column alignment */
-    #livestockTable th,
-    #livestockTable td {
-        box-sizing: border-box !important;
-    }
-    
-    #livestockTable colgroup col:nth-child(1) { width: 100px !important; }
-    #livestockTable colgroup col:nth-child(2) { width: 150px !important; }
-    #livestockTable colgroup col:nth-child(3) { width: 120px !important; }
-    #livestockTable colgroup col:nth-child(4) { width: 120px !important; }
-    #livestockTable colgroup col:nth-child(5) { width: 120px !important; }
-    #livestockTable colgroup col:nth-child(6) { width: 150px !important; }
-    #livestockTable colgroup col:nth-child(7) { width: 140px !important; }
-    #livestockTable colgroup col:nth-child(8) { width: 650px !important; }
-    
-    #livestockTable th:nth-child(1),
-    #livestockTable td:nth-child(1) { width: 100px !important; min-width: 100px !important; max-width: 100px !important; }
-    #livestockTable th:nth-child(2),
-    #livestockTable td:nth-child(2) { width: 150px !important; min-width: 150px !important; max-width: 150px !important; }
-    #livestockTable th:nth-child(3),
-    #livestockTable td:nth-child(3) { width: 120px !important; min-width: 120px !important; max-width: 120px !important; }
-    #livestockTable th:nth-child(4),
-    #livestockTable td:nth-child(4) { width: 120px !important; min-width: 120px !important; max-width: 120px !important; }
-    #livestockTable th:nth-child(5),
-    #livestockTable td:nth-child(5) { width: 120px !important; min-width: 120px !important; max-width: 120px !important; }
-    #livestockTable th:nth-child(6),
-    #livestockTable td:nth-child(6) { width: 150px !important; min-width: 150px !important; max-width: 150px !important; }
-    #livestockTable th:nth-child(7),
-    #livestockTable td:nth-child(7) { width: 140px !important; min-width: 140px !important; max-width: 140px !important; }
-    #livestockTable th:nth-child(8),
-    #livestockTable td:nth-child(8) { width: 650px !important; min-width: 650px !important; max-width: 650px !important; }
+
     
     /* Ensure DataTables scroll body has proper overflow */
     .dataTables_scrollBody {
@@ -158,185 +127,7 @@
         background-color: rgba(0,0,0,.075);
     }
     
-    #livestockTable th,
-    #livestockTable td {
-        vertical-align: middle !important;
-        padding: 0.75rem !important;
-        text-align: center !important;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ultra-specific center alignment for ALL table content */
-    #livestockTable tbody td,
-    #livestockTable thead th {
-        text-align: center !important;
-        vertical-align: middle !important;
-    }
-    
-    /* Force center alignment for all nested elements */
-    #livestockTable th *,
-    #livestockTable td *,
-    #livestockTable tbody tr td *,
-    #livestockTable thead tr th * {
-        text-align: center !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        display: block !important;
-    }
-    
-    /* Center align action buttons container */
-    #livestockTable .action-buttons {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
-        width: 100% !important;
-    }
-    
-    /* Center align badges and other elements */
-    #livestockTable .badge {
-        display: block !important;
-        margin: 0 auto !important;
-        text-align: center !important;
-        width: fit-content !important;
-    }
-    
-    /* Center align user ID links */
-    #livestockTable .user-id-link {
-        text-align: center !important;
-        display: block !important;
-        margin: 0 auto !important;
-    }
-    
-    /* Center align avatar and content in name column */
-    #livestockTable .d-flex {
-        justify-content: center !important;
-        align-items: center !important;
-        margin: 0 auto !important;
-        width: 100% !important;
-    }
-    
-    /* Force center alignment on specific content types */
-    #livestockTable td span,
-    #livestockTable td div,
-    #livestockTable td a {
-        text-align: center !important;
-        margin: 0 auto !important;
-        display: block !important;
-    }
-    
-    /* Override any left alignment */
-    #livestockTable * {
-        text-align: center !important;
-    }
-    
-    /* ULTRA-AGGRESSIVE fix for name column alignment */
-    #livestockTable tbody tr td:nth-child(2),
-    #livestockTable tbody tr td:nth-child(2) *,
-    #livestockTable tbody tr td:nth-child(2) span,
-    #livestockTable tbody tr td:nth-child(2) div,
-    #livestockTable tbody tr td:nth-child(2) a,
-    #livestockTable tbody tr td:nth-child(2) p {
-        text-align: center !important;
-        justify-content: center !important;
-        align-items: center !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        float: none !important;
-        display: block !important;
-        width: 100% !important;
-    }
-    
-    /* Force center alignment on name column content with highest specificity */
-    table#livestockTable tbody tr td:nth-child(2),
-    table#livestockTable tbody tr td:nth-child(2) * {
-        text-align: center !important;
-        margin: 0 auto !important;
-        justify-content: center !important;
-        align-items: center !important;
-        float: none !important;
-    }
-    
-    /* Override any DataTables or Bootstrap alignment */
-    .dataTables_wrapper #livestockTable tbody tr td:nth-child(2),
-    .dataTables_wrapper #livestockTable tbody tr td:nth-child(2) * {
-        text-align: center !important;
-    }
-    
-    /* Table headers styling - Black Bold without background */
-    #livestockTable thead th {
-        border-top: none !important;
-        font-weight: bold !important;
-        color: #000000 !important;
-        background-color: transparent !important;
-        padding: 1rem 0.75rem !important;
-        font-size: 0.85rem !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
-        text-align: center !important;
-        vertical-align: middle !important;
-        border-color: #e3e6f0 !important;
-    }
-    
-    /* Table body cells - matching Inventory Table */
-    #livestockTable tbody td {
-        vertical-align: middle !important;
-        border-color: #e3e6f0 !important;
-        padding: 1rem 0.75rem !important;
-        text-align: center !important;
-    }
-    
-    /* Table row hover effects - matching Inventory Table */
-    #livestockTable tbody tr {
-        transition: all 0.2s ease !important;
-    }
-    
-    #livestockTable tbody tr:hover {
-        background-color: rgba(78, 115, 223, 0.05) !important;
-        transform: scale(1.001) !important;
-    }
-    
-    /* Main table styling - matching Inventory Table */
-    #livestockTable {
-        margin-bottom: 0 !important;
-        background-color: white !important;
-    }
-    
-    /* Ensure table has proper white background and borders */
-    #livestockTable,
-    #livestockTable thead,
-    #livestockTable tbody,
-    #livestockTable tr,
-    #livestockTable th,
-    #livestockTable td {
-        background-color: white !important;
-        border-color: #e3e6f0 !important;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #livestockTable thead th.sorting,
-    #livestockTable thead th.sorting_asc,
-    #livestockTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #livestockTable thead th.sorting::after,
-    #livestockTable thead th.sorting_asc::after,
-    #livestockTable thead th.sorting_desc::after {
-        display: none;
-    }
-    
-    /* Ensure table has enough space for actions column */
-    #livestockTable th:last-child,
-    #livestockTable td:last-child {
-        min-width: 220px;
-        width: 220px;
-        text-align: center;
-        vertical-align: middle;
-    }
+   
     
     /* Badge styling - matching Inventory Table */
     #livestockTable .badge {
@@ -454,45 +245,7 @@
         }
     }
     
-    
-    /* Livestock ID link styling - EXACT MATCH from manage livestock with ENHANCED hover */
-    table#livestockTable tbody tr td a.livestock-id-link,
-    .table-responsive table#livestockTable tbody tr td a.livestock-id-link,
-    .dataTables_wrapper table#livestockTable tbody tr td a.livestock-id-link,
-    body .table-responsive table#livestockTable tbody tr td a.livestock-id-link {
-        color: #18375d !important;
-        text-decoration: none !important;
-        font-weight: 600 !important;
-        cursor: pointer !important;
-        transition: all 0.2s ease !important;
-        padding: 0.25rem 0.5rem !important;
-        border-radius: 0.25rem !important;
-        background-color: rgba(24, 55, 93, 0.1) !important;
-        border: 1px solid rgba(24, 55, 93, 0.2) !important;
-        display: inline-block !important;
-        margin: 0 auto !important;
-        text-align: center !important;
-    }
-    
-    table#livestockTable tbody tr td a.livestock-id-link:hover,
-    .table-responsive table#livestockTable tbody tr td a.livestock-id-link:hover,
-    .dataTables_wrapper table#livestockTable tbody tr td a.livestock-id-link:hover,
-    body .table-responsive table#livestockTable tbody tr td a.livestock-id-link:hover {
-        color: #fff !important;
-        background-color: #18375d !important;
-        border-color: #18375d !important;
-        text-decoration: none !important;
-    }
-    
-    table#livestockTable tbody tr td a.livestock-id-link:active,
-    .table-responsive table#livestockTable tbody tr td a.livestock-id-link:active,
-    .dataTables_wrapper table#livestockTable tbody tr td a.livestock-id-link:active,
-    body .table-responsive table#livestockTable tbody tr td a.livestock-id-link:active {
-        color: #fff !important;
-        background-color: #122a4e !important;
-        border-color: #122a4e !important;
-    }
-    
+
     /* Custom styles for our specific DataTables info and pagination containers */
     .dataTables_customInfo,
     .dataTables_customPagination {
@@ -748,120 +501,93 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* FORCE CENTER ALIGNMENT - ONLY FOR LIVESTOCK TABLE */
+ /* Apply consistent styling for Pending Farmers and Active Farmers tables */
+#livestockTable th,
 #livestockTable td,
+#livestockTable th,
+#livestockTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#livestockTable thead th,
+#activeFarmersTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#pendilivestockTablengFarmersTable thead th.sorting,
+#livestockTable thead th.sorting_asc,
+#livestockTable thead th.sorting_desc,
+#activeFarmersTable thead th.sorting,
+#activeFarmersTable thead th.sorting_asc,
+#activeFarmersTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#livestockTable thead th::after,
+#activeFarmersTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#livestockTable thead th.sorting::after,
+#livestockTable thead th.sorting_asc::after,
+#livestockTable thead th.sorting_desc::after,
+#activeFarmersTable thead th.sorting::after,
+#activeFarmersTable thead th.sorting_asc::after,
+#activeFarmersTable thead th.sorting_desc::after {
+    display: none;
+}
+
+/* Allow table to scroll horizontally if too wide */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Make table cells wrap instead of forcing them all inline */
+#livestockTable td, 
 #livestockTable th {
-    text-align: center !important;
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
 }
 
-.dataTables_wrapper #livestockTable td,
-.dataTables_wrapper #livestockTable th {
-    text-align: center !important;
+/* Make sure action buttons don’t overflow */
+#livestockTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
 }
 
-/* Override Bootstrap and DataTables for livestock table only */
-.table-responsive #livestockTable td,
-.table-responsive #livestockTable th {
-    text-align: center !important;
-}
-
-/* ULTRA-AGGRESSIVE CENTER ALIGNMENT FOR ALL CONTENT */
-#livestockTable * {
-    text-align: center !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-/* Force center alignment on all nested elements with maximum specificity */
-table#livestockTable tbody tr td *,
-table#livestockTable thead tr th *,
-.table-responsive table#livestockTable tbody tr td *,
-.table-responsive table#livestockTable thead tr th *,
-.dataTables_wrapper table#livestockTable tbody tr td *,
-.dataTables_wrapper table#livestockTable thead tr th * {
-    text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    justify-content: center !important;
-    align-items: center !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-/* Special handling for flex containers */
-#livestockTable .d-flex,
-#livestockTable .d-flex * {
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-    margin: 0 auto !important;
-}
-
-/* Force center alignment on badges and spans */
-#livestockTable .badge,
-#livestockTable span,
-#livestockTable div,
-#livestockTable a {
-    text-align: center !important;
-    margin: 0 auto !important;
-    display: block !important;
-    width: fit-content !important;
-}
-
-/* Override any Bootstrap flex utilities */
-#livestockTable .d-flex.align-items-center {
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-    width: 100% !important;
-}
-
-/* Force center alignment on avatar containers */
-#livestockTable .avatar-sm {
-    margin: 0 auto !important;
-    display: block !important;
-}
-
-/* Center align action buttons with flex */
-#livestockTable .action-buttons {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-    width: 100% !important;
-    gap: 0.5rem !important;
-}
-
-#livestockTable .action-buttons * {
-    text-align: center !important;
-    margin: 0 !important;
-}
-
-/* Override any text-left or text-start classes */
-#livestockTable .text-left,
-#livestockTable .text-start {
-    text-align: center !important;
-}
-
-/* Force center alignment with highest CSS specificity */
-body .table-responsive #livestockTable td,
-body .table-responsive #livestockTable th,
-body .dataTables_wrapper .table-responsive #livestockTable td,
-body .dataTables_wrapper .table-responsive #livestockTable th {
-    text-align: center !important;
-    vertical-align: middle !important;
-}
-
-/* Force all child elements to center */
-body .table-responsive #livestockTable td > *,
-body .table-responsive #livestockTable th > *,
-body .dataTables_wrapper .table-responsive #livestockTable td > *,
-body .dataTables_wrapper .table-responsive #livestockTable th > * {
-    text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    display: block !important;
-    width: fit-content !important;
+#livestockTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
 }
 </style>
 @endsection
@@ -1029,7 +755,7 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-bordered" id="livestockTable" cellspacing="0" style="width: 1750px; min-width: 1750px; margin-bottom: 0; background-color: white;">
+            <table class="table table-bordered table-hover" id="livestockTable" cellspacing="0" style="width: 1750px; min-width: 1750px; margin-bottom: 0; background-color: white;">
                 <thead class="thead-light">
                     <tr>
                         <th>Livestock ID</th>
@@ -1138,30 +864,38 @@ body .dataTables_wrapper .table-responsive #livestockTable th > * {
 </div>
 
 <!-- Livestock History Modal -->
-<div class="modal fade" id="livestockHistoryModal" tabindex="-1" role="dialog" aria-labelledby="livestockHistoryLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="livestockHistoryLabel">
-                    <i class="fas fa-history"></i>
-                    Livestock History
-                </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="livestockHistoryContent">
-                <!-- Content will be loaded dynamically -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
-                <button type="button" class="btn-modern btn-approves" onclick="printLivestockHistory()">
-                    <i class="fas fa-print"></i> Print History
-                </button>
-            </div>
+<div class="modal fade admin-modal" id="livestockHistoryModal" tabindex="-1" role="dialog" aria-labelledby="livestockHistoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content smart-detail p-4">
+
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-history fa-2x"></i>
         </div>
+        <h5 class="fw-bold mb-1">Livestock History</h5>
+        <p class="text-muted mb-0 small text-center">Below is the complete history record of the selected livestock.</p>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div id="livestockHistoryContent" class="detail-wrapper">
+          <!-- Dynamic content injected here -->
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer justify-content-center mt-4">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        <button type="button" class="btn-modern btn-approves" onclick="printLivestockHistory()">
+          <i class="fas fa-print"></i> Print History
+        </button>
+      </div>
+
     </div>
+  </div>
 </div>
+
 
 <!-- Toast Container -->
 <div class="toast-container position-fixed bottom-0 right-0 p-3" style="z-index: 1050;">
