@@ -733,7 +733,7 @@
                 <button class="btn-action btn-action-edit" onclick="printLivestockTable()">
                     <i class="fas fa-print"></i> Print
                 </button>
-                <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
+                <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
                 <div class="dropdown">
@@ -756,7 +756,7 @@
         </div>
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="livestockTable" cellspacing="0" style="width: 1750px; min-width: 1750px; margin-bottom: 0; background-color: white;">
-                <thead class="thead-light">
+                <thead >
                     <tr>
                         <th>Livestock ID</th>
                         <th>Name</th>
@@ -1084,7 +1084,16 @@
         border-color: #fca700;
         color: white;
     }
-    
+    .btn-action-refresh {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-refresh:hover {
+    background-color: #e69500 !important;
+    border-color: #e69500 !important;
+    color: white !important;
+}
     .btn-action-ok {
         background-color: #18375d;
         border-color: #18375d;
@@ -1926,9 +1935,45 @@ function printLivestockTable() {
     }
 }
 
+// Refresh Pending Farmers Table
 function refreshLivestockData() {
-    // Refresh the livestock data
-    location.reload();
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for farmers
+    sessionStorage.setItem('showRefreshNotificationAlerts', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationAlerts') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationAlerts');
+        setTimeout(() => {
+            showNotification('Livestock data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
 }
 
 function showToast(message, type = 'info') {

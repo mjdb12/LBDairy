@@ -76,37 +76,41 @@
     </div>
 
 
-    <!-- Alerts Section -->
-    @if($urgentIssues > 0)
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="fas fa-exclamation-triangle"></i>
-        <strong>Urgent Issues Detected!</strong> You have {{ $urgentIssues }} urgent issues that require immediate attention.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    @endif
+ <!-- Alerts Section -->
+@if($urgentIssues > 0)
+<div class="alert alert-danger alert-dismissible fade show refresh-notification" role="alert">
+    <i class="fas fa-times-circle"></i>
+    <strong>Urgent Issues Detected!</strong>
+    You have {{ $urgentIssues }} urgent issues that require immediate attention.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
 
-    @if($pendingIssues > 0)
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <i class="fas fa-clock"></i>
-        <strong>Pending Issues:</strong> You have {{ $pendingIssues }} issues awaiting resolution.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    @endif
+@if($pendingIssues > 0)
+<div class="alert alert-warning alert-dismissible fade show refresh-notification" role="alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Pending Issues:</strong>
+    You have {{ $pendingIssues }} issues awaiting resolution.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
 
-    <!-- Livestock Alerts Section -->
-    @if($livestockAlerts && $livestockAlerts->count() > 0)
-    <div class="alert alert-livestock-notification alert-dismissible fade show" role="alert">
-        <i class="fas fa-bell"></i>
-        <strong>New Livestock Alerts:</strong> You have {{ $livestockAlerts->count() }} new alerts from administrators about your livestock.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    @endif
+<!-- Livestock Alerts Section -->
+@if($livestockAlerts && $livestockAlerts->count() > 0)
+<div class="alert alert-info alert-dismissible fade show refresh-notification" role="alert">
+    <i class="fas fa-bell"></i>
+    <strong>New Livestock Alerts:</strong>
+    You have {{ $livestockAlerts->count() }} new alerts from administrators about your livestock.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
 
     <!-- Main Content -->
     <div class="row">
@@ -129,7 +133,7 @@
                             <input type="text" class="form-control" placeholder="Search issues..." id="issueSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-print" onclick="printTable()">
+                            <button class="btn-action btn-action-edit" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshIssuesTable('issuesTable')">
@@ -154,8 +158,8 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="issuesTable" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                        <table class="table table-bordered " id="issuesTable" width="100%" cellspacing="0">
+                            <thead >
                                 <tr>
                                     <th>Livestock ID</th>
                                     <th>Animal Type</th>
@@ -252,7 +256,7 @@
                             <input type="text" class="form-control" placeholder="Search alerts..." id="alertSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-print" onclick="printAlertsTable()">
+                            <button class="btn-action btn-action-edit" onclick="printAlertsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh-alerts" onclick="refreshAlertsTable('alertsTable')">
@@ -278,7 +282,7 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                            <thead >
                                 <tr>
                                     <th>Livestock ID</th>
                                     <th>Animal Type</th>
@@ -371,7 +375,7 @@
                             <input type="text" class="form-control" placeholder="Search inspections..." id="inspectionSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-print" onclick="printInspectionsTable()">
+                            <button class="btn-action btn-action-edit" onclick="printInspectionsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh-inspection" onclick="refreshInspectionTable('inspectionsTable')">
@@ -397,7 +401,7 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="inspectionsTable" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                            <thead >
                                 <tr>
                                     <th>Inspection Date</th>
                                     <th>Time</th>
@@ -491,7 +495,34 @@
     </div>
   </div>
 </div>
+<!-- Issue Modal -->
+<div class="modal fade admin-modal" id="alertDetailsModal" tabindex="-1" role="dialog" aria-labelledby="alertDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
 
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Alert Details</h5>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected issue.</p>
+            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="alertDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
+        </div>
+      </div>
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+  </div>
+</div>
 <!-- Inspection Modal -->
 <div class="modal fade admin-modal" id="inspectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="inspectionDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -546,6 +577,7 @@
         </div>
     </div>
 </div>
+
 <!-- Bottom spacing to match farm analysis tab -->
 <div style="margin-bottom: 3rem;"></div>
 
@@ -780,21 +812,21 @@ $(document).ready(function() {
     if (sessionStorage.getItem('showRefreshNotificationIssues') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationIssues');
         setTimeout(() => {
-            showNotification('Data refreshed successfully!');
+            showNotification('Issues data refreshed successfully!');
         }, 500);
     }
 
     if (sessionStorage.getItem('showRefreshNotificationAlerts') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationAlerts');
         setTimeout(() => {
-            showNotification('Data refreshed successfully!', 'success');
+            showNotification('Alerts data refreshed successfully!', 'success');
         }, 500);
     }
 
     if (sessionStorage.getItem('showRefreshNotificationInspection') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationInspection');
         setTimeout(() => {
-            showNotification('Data refreshed successfully!', 'success');
+            showNotification('Inspection data refreshed successfully!', 'success');
         }, 500);
     }
 });
@@ -983,12 +1015,12 @@ function printTable() {
 
 function showToast(message, type = 'info') {
     const toast = `
-        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} text-white">
-                <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body">${message}</div>
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
         </div>
     `;
     
@@ -1276,69 +1308,89 @@ function exportAlertsToPNG() {
     }
 }
 
-// Alert related functions
 function viewAlertDetails(alertId) {
+    currentAlertId = alertId;
+
     $.ajax({
         url: `/farmer/issue-alerts/${alertId}`,
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             if (response.success) {
                 const alert = response.alert;
-                $('#issueDetailsContent').html(`
+
+                $('#alertDetailsContent').html(`
                     <div class="row">
+                        <!-- Alert Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-warning text-white">
-                                    <h6 class="mb-0"><i class="fas fa-bell"></i> Alert Information</h6>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>Topic:</strong></td><td><span class="alert-topic-badge alert-${alert.topic.toLowerCase()}">${alert.topic}</span></td></tr>
-                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${getSeverityColor(alert.severity)}">${alert.severity}</span></td></tr>
-                                        <tr><td><strong>Alert Date:</strong></td><td>${alert.alert_date}</td></tr>
-                                        <tr><td><strong>Issued By:</strong></td><td><span class="badge badge-primary">${alert.issued_by ? alert.issued_by.name : 'Admin'}</span></td></tr>
-                                    </table>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                Alert Information
+                            </h6>
+                            <p><strong>Topic:</strong> 
+                                <span class="alert-topic-badge alert-${alert.topic ? alert.topic.toLowerCase() : 'default'}">
+                                    ${alert.topic || 'N/A'}
+                                </span>
+                            </p>
+                            <p><strong>Severity:</strong> 
+                                <span class="badge badge-${getSeverityColor(alert.severity)}">
+                                    ${alert.severity || 'N/A'}
+                                </span>
+                            </p>
+                            <p><strong>Status:</strong> 
+                                <span class="badge badge-${getStatusColor(alert.status)}">
+                                    ${alert.status || 'N/A'}
+                                </span>
+                            </p>
+                            <p><strong>Alert Date:</strong> 
+                                ${alert.alert_date ? new Date(alert.alert_date).toLocaleString() : 'N/A'}
+                            </p>
+                            <p><strong>Issued By:</strong> 
+                                <span class="badge badge-primary">
+                                    ${alert.issued_by ? alert.issued_by.name : 'Admin'}
+                                </span>
+                            </p>
                         </div>
+
+                        <!-- Livestock Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0"><i class="fas fa-paw"></i> Livestock Information</h6>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>Tag Number:</strong></td><td>${alert.livestock ? alert.livestock.tag_number : 'N/A'}</td></tr>
-                                        <tr><td><strong>Type:</strong></td><td>${alert.livestock ? alert.livestock.type : 'N/A'}</td></tr>
-                                        <tr><td><strong>Breed:</strong></td><td>${alert.livestock ? alert.livestock.breed : 'N/A'}</td></tr>
-                                        <tr><td><strong>Health Status:</strong></td><td>${alert.livestock ? alert.livestock.health_status : 'N/A'}</td></tr>
-                                    </table>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                Livestock Information
+                            </h6>
+                            <p><strong>Tag Number:</strong> ${alert.livestock ? alert.livestock.tag_number : 'N/A'}</p>
+                            <p><strong>Type:</strong> ${alert.livestock ? alert.livestock.type : 'N/A'}</p>
+                            <p><strong>Breed:</strong> ${alert.livestock ? alert.livestock.breed : 'N/A'}</p>
+                            <p><strong>Health Status:</strong> ${alert.livestock ? alert.livestock.health_status : 'N/A'}</p>
+                            <p><strong>Farm:</strong> ${alert.livestock && alert.livestock.farm ? alert.livestock.farm.name : 'N/A'}</p>
                         </div>
                     </div>
+
+                    <!-- Alert Details -->
                     <div class="row mt-3">
                         <div class="col-12">
-                            <div class="card">
-                                <div class="card-header bg-danger text-white">
-                                    <h6 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Alert Details</h6>
-                                </div>
-                                <div class="card-body">
-                                    <h6>Description:</h6>
-                                    <p>${alert.description}</p>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                Alert Details
+                            </h6>
+                            <p><strong>Description:</strong></p>
+                            <p>${alert.description || 'No description provided.'}</p>
+                            
+                            ${alert.resolution_notes ? `
+                                <p><strong>Resolution Notes:</strong></p>
+                                <p>${alert.resolution_notes}</p>
+                            ` : ''}
                         </div>
                     </div>
                 `);
-                $('#issueDetailsModal').modal('show');
+
+                $('#alertDetailsModal').modal('show');
+            } else {
+                showToast('Failed to load alert details', 'error');
             }
         },
-        error: function() {
+        error: function () {
             showToast('Error loading alert details', 'error');
         }
     });
 }
+
 
 function markAlertAsRead(alertId) {
     $.ajax({
@@ -1349,7 +1401,7 @@ function markAlertAsRead(alertId) {
         },
         success: function(response) {
             if (response.success) {
-                showToast('Alert marked as read', 'success');
+                showNotification('Alert marked as read', 'success');
                 // Remove the alert row from the table
                 $(`button[onclick="markAlertAsRead('${alertId}')"]`).closest('tr').fadeOut();
             } else {
@@ -1361,12 +1413,94 @@ function markAlertAsRead(alertId) {
         }
     });
 }
+
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
+}
+
 </script>
 @endpush
 
 @push('styles')
 <style>
+    /* User Details Modal Styling */
+    #alertDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
     
+    #alertDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #alertDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #alertDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #alertDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #alertDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #alertDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
+    /* User Details Modal Styling */
+    #issueDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #issueDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #issueDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #issueDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
     /* User Details Modal Styling */
     #inspectionDetailsModal .modal-content {
         border: none;

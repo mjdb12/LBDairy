@@ -491,6 +491,295 @@
         border-color: #cbd3da;
         color: #495057;
     }
+    /* ===== DATATABLE STYLES ===== */
+.dataTables_length {
+    margin-bottom: 1rem;
+}
+
+.dataTables_length select {
+    min-width: 80px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    margin: 0 0.5rem;
+}
+
+.dataTables_length label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_info {
+    padding-top: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_paginate {
+    margin-top: 1rem;
+}
+
+.dataTables_paginate .paginate_button {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: var(--light-color);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.dataTables_paginate .paginate_button.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    background-color: var(--light-color);
+    border-color: var(--border-color);
+}
+
+.dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_filter input {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    transition: var(--transition-fast);
+}
+
+.dataTables_filter input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    outline: 0;
+}
+
+/* Table-responsive wrapper positioning */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    /* Table-responsive wrapper positioning - match active admins spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+    
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+    
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
+    
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+    /* Custom styles for farmer management */
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
+    
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #usersTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
 /* CRITICAL FIX FOR DROPDOWN TEXT CUTTING */
     .farmer-modal select.form-control,
     .modal.farmer-modal select.form-control,
@@ -1100,6 +1389,47 @@
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
+/* User Details Modal Styling */
+    #saleDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #saleDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #saleDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #saleDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #saleDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #saleDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #saleDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
 </style>
 @section('content')
 <!-- Page Header -->
@@ -1220,7 +1550,7 @@
 <br>
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="salesTable" width="100%" cellspacing="0">
-                        <thead class="thead-light">
+                        <thead >
                             <tr>
                                 <th>Sale ID</th>
                                 <th>Date</th>
@@ -1318,7 +1648,7 @@
                 <div class="icon-circle">
                     <i class="fas fa-plus-circle fa-2x"></i>
                 </div>
-                <h5 class="fw-bold mb-1">Add New Sale</h5>
+                <h5 class="fw-bold mb-1">Sale Entry</h5>
                 <p class="text-muted mb-0 small">
                     Enter the details below to record a new sale transaction.
                 </p>
@@ -1414,6 +1744,36 @@
     </div>
 </div>
 
+<!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="saleDetailsModal" tabindex="-1" role="dialog" aria-labelledby="saleDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-eye fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Sale Details </h5>
+                <p class="text-muted mb-0 small">Below are the complete details of the selected entry.</p>
+            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="saleDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
+        </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- Smart Detail - Sales History Modal -->
 <div class="modal fade admin-modal" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel" aria-hidden="true">
@@ -1672,60 +2032,66 @@ function submitSale() {
 }
 
 function viewSale(saleId) {
-    // Load and display sale details
     $.ajax({
         url: `/farmer/sales/${saleId}`,
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             if (response.success) {
                 const sale = response.sale;
-                const modalHtml = `
-                    <div class="modal fade" id="viewSaleModal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        <i class="fas fa-eye"></i>
-                                        Sale Details
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal">
-                                        <span>&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h6>Sale Information</h6>
-                                            <p><strong>Sale ID:</strong> ${sale.sale_id}</p>
-                                            <p><strong>Date:</strong> ${sale.sale_date}</p>
-                                            <p><strong>Customer:</strong> ${sale.customer_name}</p>
-                                            <p><strong>Quantity:</strong> ${sale.quantity} L</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6>Financial Details</h6>
-                                            <p><strong>Unit Price:</strong> ₱${sale.unit_price}</p>
-                                            <p><strong>Total Amount:</strong> ₱${sale.amount}</p>
-                                            <p><strong>Payment Status:</strong> <span class="badge badge-${sale.payment_status === 'paid' ? 'success' : 'warning'}">${sale.payment_status}</span></p>
-                                            <p><strong>Payment Method:</strong> ${sale.payment_method}</p>
-                                        </div>
-                                    </div>
-                                    ${sale.notes ? `<div class="row mt-3"><div class="col-12"><h6>Notes</h6><p>${sale.notes}</p></div></div>` : ''}
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
+
+                $('#saleDetailsContent').html(`
+                    <div class="row">
+                        <!-- Sale Information -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                Sale Information
+                            </h6>
+                            <p><strong>Sale ID:</strong> ${sale.sale_id || 'N/A'}</p>
+                            <p><strong>Date:</strong> ${sale.sale_date ? new Date(sale.sale_date).toLocaleDateString() : 'N/A'}</p>
+                            <p><strong>Customer:</strong> ${sale.customer_name || 'N/A'}</p>
+                            <p><strong>Quantity:</strong> ${sale.quantity ? sale.quantity + ' L' : 'N/A'}</p>
+                        </div>
+
+                        <!-- Financial Details -->
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                Financial Details
+                            </h6>
+                            <p><strong>Unit Price:</strong> ₱${sale.unit_price ? sale.unit_price.toFixed(2) : '0.00'}</p>
+                            <p><strong>Total Amount:</strong> ₱${sale.amount ? sale.amount.toFixed(2) : '0.00'}</p>
+                            <p><strong>Payment Status:</strong> 
+                                <span class="badge badge-${sale.payment_status === 'paid' ? 'success' : sale.payment_status === 'pending' ? 'warning' : 'secondary'}">
+                                    ${sale.payment_status ? sale.payment_status.charAt(0).toUpperCase() + sale.payment_status.slice(1) : 'N/A'}
+                                </span>
+                            </p>
+                            <p><strong>Payment Method:</strong> ${sale.payment_method || 'N/A'}</p>
                         </div>
                     </div>
-                `;
-                
-                $('#viewSaleModal').remove();
-                $('body').append(modalHtml);
-                $('#viewSaleModal').modal('show');
+
+                    <!-- Notes Section -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                Additional Details
+                            </h6>
+                            <p><strong>Description:</strong></p>
+                            <p>${sale.description || 'No description provided.'}</p>
+
+                            ${sale.notes ? `
+                                <p><strong>Notes:</strong></p>
+                                <p>${sale.notes}</p>
+                            ` : ''}
+                        </div>
+                    </div>
+                `);
+
+                $('#saleDetailsModal').modal('show');
+            } else {
+                showToast('Failed to load sale details', 'error');
             }
         },
-        error: function() {
-            showNotification('Failed to load sale details.', 'danger');
+        error: function () {
+            showToast('Error loading sale details', 'error');
         }
     });
 }

@@ -1572,8 +1572,6 @@
     </div>
 
 <!-- 1. Client Directory -->
-<div class="row">
-    <div class="col-12">
         <div class="card shadow mb-4 fade-in">
             <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="m-0 font-weight-bold">Client Directory</h6>
@@ -1597,7 +1595,7 @@
                             <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addClientModal">
                             <i class="fas fa-plus mr-1"></i> Add Client
                             </button>
-                            <button class="btn-action btn-action-print" onclick="printClientsTable()">
+                            <button class="btn-action btn-action-edit" onclick="printClientsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshClientsTable()">
@@ -1682,8 +1680,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 <!-- VIEW CLIENT MODAL -->
 <div class="modal fade admin-modal" id="clientDetailsModal" tabindex="-1" aria-hidden="true">

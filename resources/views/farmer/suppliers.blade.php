@@ -1008,16 +1008,23 @@
     transition: all 0.3s ease-in-out;
 }
 
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1030,35 +1037,46 @@
 
 .smart-detail p {
     color: #6b7280;
-    font-size: 0.96rem;
+    font-size: 1rem;
     margin-bottom: 1.8rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
 }
 
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 1.75rem 2rem;
+    padding: 3rem 3.5rem; /* more spacious layout */
     border-radius: 1rem;
-    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    max-height: 120vh; /* taller for longer content */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
 }
 
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    font-size: 0.95rem;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
 }
 
+/* Detail Rows */
 .smart-detail .detail-row {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border-bottom: 1px dashed #ddd;
-    padding: 0.5rem 0;
+    padding: 0.6rem 0;
 }
 
 .smart-detail .detail-row:last-child {
@@ -1076,12 +1094,354 @@
 }
 
 /* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 105vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 0.5rem;
+        max-height: 120vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
+
+
+/* Footer */
 #historyModal .modal-footer {
     text-align: center;
     border-top: 1px solid #e5e7eb;
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
+
+/* ===== DATATABLE STYLES ===== */
+.dataTables_length {
+    margin-bottom: 1rem;
+}
+
+.dataTables_length select {
+    min-width: 80px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    margin: 0 0.5rem;
+}
+
+.dataTables_length label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_info {
+    padding-top: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_paginate {
+    margin-top: 1rem;
+}
+
+.dataTables_paginate .paginate_button {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: var(--light-color);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.dataTables_paginate .paginate_button.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    background-color: var(--light-color);
+    border-color: var(--border-color);
+}
+
+.dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_filter input {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    transition: var(--transition-fast);
+}
+
+.dataTables_filter input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    outline: 0;
+}
+
+/* Table-responsive wrapper positioning */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    /* Table-responsive wrapper positioning - match active admins spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+    }
+    
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+    
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+    }
+    
+    
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+    /* Custom styles for farmer management */
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
+    
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #usersTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
    /* Action buttons styling */
     .action-buttons {
         display: flex;
@@ -1896,7 +2256,47 @@
     font-size: 0.85rem;
     padding: 0.35rem 0.75rem;
 }
-
+/* User Details Modal Styling */
+    #supplierDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #supplierDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #supplierDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #supplierDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #supplierDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #supplierDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #supplierDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
 </style>
 @endpush
 @section('content')
@@ -1972,8 +2372,6 @@
     </div>
 
 
-<div class="row">
-    <div class="col-12">
         <div class="card shadow">
             <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="m-0 font-weight-bold">
@@ -1994,7 +2392,7 @@
                     <button class="btn-action btn-action-ok" id="addSupplierBtn" title="Add Supplier" data-toggle="modal" data-target="#addLivestockDetailsModal">
                         <i class="fas fa-plus"></i> Add Supplier
                     </button>
-                    <button class="btn-action btn-action-print" title="Print" onclick="printSuppliersTable('suppliersTable')">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printSuppliersTable('suppliersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshSuppliersTable('suppliersTable')">
@@ -2040,13 +2438,13 @@
                                 <td><span class="status-badge {{ $supplier['status_badge'] }}">{{ $supplier['status_label'] }}</span></td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn-action btn-action-ok" onclick="viewLedger('{{ $supplier['name'] }}')" title="View Ledger">
-                                            <i class="fas fa-book"></i>
-                                            <span>Ledger</span>
-                                        </button>
-                                        <button class="btn-action btn-action-edit" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
+                                        <button class="btn-action btn-action-ok" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
                                             <i class="fas fa-eye"></i>
                                             <span>View</span>
+                                        </button>
+                                        <button class="btn-action btn-action-edit" onclick="viewLedger('{{ $supplier['name'] }}')" title="View Ledger">
+                                            <i class="fas fa-book"></i>
+                                            <span>Ledger</span>
                                         </button>
                                         <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $supplier['name'] }}','{{ $supplier['expense_type'] }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
@@ -2070,8 +2468,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 <!-- SUPPLIER LEDGER MODAL -->
 <div class="modal fade admin-modal" id="supplierLedgerModal" tabindex="-1" role="dialog" aria-labelledby="supplierLedgerLabel" aria-hidden="true">
@@ -2464,6 +2860,9 @@ $(document).ready(function() {
         if (suppliersDT) suppliersDT.search(this.value).draw();
     });
 });
+function hideAddSupplierLedgerEntryForm() {
+    $('#addLedgerEntryFormInner').modal('hide');
+}
 
 // Add Supplier form submission -> add a new row to the DataTable
 $(document).ready(function(){
@@ -2567,35 +2966,44 @@ function viewLedger(supplierName) {
     $('#supplierLedgerModal').modal('show');
 }
 
-function viewDetails(supplierName) {
+function viewDetails(supplier) {
     const modalBody = document.querySelector('#supplierDetailsModal .modal-body');
+    const { name, status, totalTransactions, totalSpent, lastTransaction, paymentStatus } = supplier;
 
     modalBody.innerHTML = `
-      <div class="row gy-3">
-        <!-- Supplier Information -->
-        <div class="col-md-6">
-          <div class="smart-card p-3 rounded-3 shadow-sm border">
-            <h6 class="section-title mb-3">Supplier Information</h6>
-            <p><strong>Name:</strong> <span class="text-dark">${supplierName}</span></p>
-            <p><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
-            <p><strong>Total Transactions:</strong> ${Math.floor(Math.random() * 20) + 5}</p>
-            <p><strong>Total Spent:</strong> ₱${(Math.random() * 50000 + 10000).toLocaleString()}</p>
-          </div>
-        </div>
+        <div class="row">
+    <!-- Supplier Information -->
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Supplier Information</h6>
+        <p class="text-left"><strong>Name:</strong> ${name || 'N/A'}</p>
+        <p class="text-left"><strong>Status:</strong> 
+            <span class="badge badge-${status === 'Active' ? 'success' : 'secondary'}">
+                ${status || 'N/A'}
+            </span>
+        </p>
+        <p class="text-left"><strong>Total Transactions:</strong> ${totalTransactions || 0}</p>
+        <p class="text-left"><strong>Total Spent:</strong> ₱${totalSpent ? totalSpent.toLocaleString() : '0.00'}</p>
+    </div>
 
-        <!-- Recent Activity -->
-        <div class="col-md-6">
-          <div class="smart-card p-3 rounded-3 shadow-sm border">
-            <h6 class="section-title mb-3">Recent Activity</h6>
-            <p><strong>Last Transaction:</strong> ${new Date().toLocaleDateString()}</p>
-            <p><strong>Payment Status:</strong> <span class="text-success fw-medium">Good Standing</span></p>
-          </div>
-        </div>
-      </div>
+    <!-- Recent Activity -->
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Recent Activity</h6>
+        <p class="text-left"><strong>Last Transaction:</strong> 
+            ${lastTransaction ? new Date(lastTransaction).toLocaleDateString() : 'N/A'}
+        </p>
+        <p class="text-left"><strong>Payment Status:</strong> 
+            <span class="badge badge-${paymentStatus === 'Good Standing' ? 'success' : 'warning'}">
+                ${paymentStatus || 'N/A'}
+            </span>
+        </p>
+    </div>
+</div>
+
     `;
 
     $('#supplierDetailsModal').modal('show');
 }
+
 
 // Track supplier pending deletion
 let supplierToDelete = null;

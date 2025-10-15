@@ -75,124 +75,119 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="row">
-        <div class="col-12">
             <!-- Livestock Table -->
-            <div class="card shadow mb-4 fade-in">
-                <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
-                    <h6 class="mb-0">
-                        <i class="fas fa-list"></i>
-                        Livestock Inventory
-                    </h6>
+    <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
+        <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
+            <h6 class="mb-0">
+                <i class="fas fa-list"></i>
+                Livestock Inventory
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="search-controls mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
                 </div>
-                <div class="card-body">
-                    <div class="search-controls mb-3">
-                        <div class="input-group" style="max-width: 300px;">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
+                <div class="d-flex flex-column flex-sm-row align-items-center">
+                    @if($farms->count() > 0)
+                        <button class="btn-action btn-action-ok" onclick="openAddLivestockModal()">
+                            <i class="fas fa-plus mr-2"></i> Add Livestock
+                        </button>
+                    @else
+                        <button class="btn-action btn-action-ok" disabled title="Create a farm first">
+                            <i class="fas fa-plus"></i> Add Livestock
+                        </button>
+                    @endif
+                    <button class="btn-action btn-action-print" onclick="printTable()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn-action btn-action-refresh" onclick="refreshLivestockTable('livestockTable')">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                            <i class="fas fa-tools"></i> Tools
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="exportToCSV()">
+                                <i class="fas fa-file-csv"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportToPNG()">
+                                <i class="fas fa-image"></i> Download PNG
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="exportToPDF()">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="livestockTable">
+                    <thead>
+                        <tr>
+                            <th>Livestock ID</th>
+                            <th>Type</th>
+                            <th>Breed</th>
+                            <th>Age</th>
+                            <th>Weight (kg)</th>
+                            <th>Health Status</th>
+                            <th>Registration Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($livestock as $animal)
+                        @php
+                            $age = $animal->birth_date ? \Carbon\Carbon::parse($animal->birth_date)->age : 'N/A';
+                            $registrationDate = $animal->created_at ? $animal->created_at->format('M d, Y') : 'N/A';
+                        @endphp
+                        <tr>
+                            <td>
+                                <a href="#" class="livestock-id-link" onclick="openLivestockDetails('{{ $animal->id }}')">{{ $animal->tag_number }}</a>
+                            </td>
+                            <td>{{ ucfirst($animal->type) }}</td>
+                            <td>{{ ucfirst(str_replace('_', ' ', $animal->breed)) }}</td>
+                            <td>{{ $age }}</td>
+                            <td>{{ $animal->weight ? $animal->weight . ' kg' : 'N/A' }}</td>
+                            <td>
+                                <span class="badge badge-{{ $animal->health_status === 'healthy' ? 'success' : ($animal->health_status === 'sick' ? 'danger' : 'warning') }}">
+                                    {{ ucfirst(str_replace('_', ' ', $animal->health_status)) }}
                                 </span>
-                            </div>
-                            <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
-                        </div>
-                        <div class="d-flex flex-column flex-sm-row align-items-center">
-                            @if($farms->count() > 0)
-                                <button class="btn-action btn-action-ok" onclick="openAddLivestockModal()">
-                                    <i class="fas fa-plus mr-2"></i> Add Livestock
-                                </button>
-                            @else
-                                <button class="btn-action btn-action-ok" disabled title="Create a farm first">
-                                    <i class="fas fa-plus"></i> Add Livestock
-                                </button>
-                            @endif
-                            <button class="btn-action btn-action-print" onclick="printTable()">
-                                <i class="fas fa-print"></i> Print
-                            </button>
-                            <button class="btn-action btn-action-refresh" onclick="refreshLivestockTable('livestockTable')">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                            <div class="dropdown">
-                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                                    <i class="fas fa-tools"></i> Tools
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#" onclick="exportToCSV()">
-                                        <i class="fas fa-file-csv"></i> Download CSV
-                                    </a>
-                                    <a class="dropdown-item" href="#" onclick="exportToPNG()">
-                                        <i class="fas fa-image"></i> Download PNG
-                                    </a>
-                                    <a class="dropdown-item" href="#" onclick="exportToPDF()">
-                                        <i class="fas fa-file-pdf"></i> Download PDF
-                                    </a>
+                            </td>
+                            <td>{{ $registrationDate }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn-action btn-action-ok" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Edit</span>
+                                    </button>
+                                    <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
+                                    </button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                            <table class="table table-bordered table-hover" id="livestockTable" width="100%" cellspacing="0"data-farm-count="{{ $farms->count() }}">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Livestock ID</th>
-                                    <th>Type</th>
-                                    <th>Breed</th>
-                                    <th>Age</th>
-                                    <th>Weight (kg)</th>
-                                    <th>Health Status</th>
-                                    <th>Registration Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($livestock as $animal)
-                                @php
-                                    $age = $animal->birth_date ? \Carbon\Carbon::parse($animal->birth_date)->age : 'N/A';
-                                    $registrationDate = $animal->created_at ? $animal->created_at->format('M d, Y') : 'N/A';
-                                @endphp
-                                <tr>
-                                    <td>
-                                        <a href="#" class="livestock-id-link" onclick="openLivestockDetails('{{ $animal->id }}')">{{ $animal->tag_number }}</a>
-                                    </td>
-                                    <td>{{ ucfirst($animal->type) }}</td>
-                                    <td>{{ ucfirst(str_replace('_', ' ', $animal->breed)) }}</td>
-                                    <td>{{ $age }}</td>
-                                    <td>{{ $animal->weight ? $animal->weight . ' kg' : 'N/A' }}</td>
-                                    <td>
-                                        <span class="badge badge-{{ $animal->health_status === 'healthy' ? 'success' : ($animal->health_status === 'sick' ? 'danger' : 'warning') }}">
-                                            {{ ucfirst(str_replace('_', ' ', $animal->health_status)) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $registrationDate }}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn-action btn-action-ok" onclick="openEditLivestockModal('{{ $animal->id }}')" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                                <span>Edit</span>
-                                            </button>
-                                            <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                                <span>Delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td class="text-center text-muted">N/A</td>
-                                    <td class="text-center text-muted">N/A</td>
-                                    <td class="text-center text-muted">N/A</td>
-                                    <td class="text-center text-muted">N/A</td>
-                                    <td class="text-center text-muted">N/A</td>
-                                    <td class="text-center text-muted">N/A</td>
-                                    <td class="text-center text-muted">No livestock records found</td>
-                                    <td class="text-center text-muted">N/A</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">N/A</td>
+                            <td class="text-center text-muted">No livestock records found</td>
+                            <td class="text-center text-muted">N/A</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -492,16 +487,6 @@ $(document).ready(function() {
                 autoWidth: false,
                 scrollX: true,
                 order: [[0, 'asc']],
-                columnDefs: [
-                    { width: '120px', targets: 0 }, // Livestock ID
-                    { width: '100px', targets: 1 }, // Type
-                    { width: '120px', targets: 2 }, // Breed
-                    { width: '80px', targets: 3 }, // Age
-                    { width: '100px', targets: 4 }, // Weight
-                    { width: '120px', targets: 5 }, // Health Status
-                    { width: '130px', targets: 6 }, // Registration Date
-                    { width: '220px', targets: 7, className: 'text-left', orderable: false, searchable: false } // Actions
-                ],
                 buttons: [
                     {
                         extend: 'csvHtml5',
@@ -1649,50 +1634,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Function to force pagination positioning to the left - Match SuperAdmin User Directory
-function forcePaginationLeft() {
-    console.log('Forcing pagination to left - livestock inventory...');
-    
-    // Force wrapper layout
-    $('.dataTables_wrapper .row').css({
-        'display': 'block',
-        'width': '100%',
-        'margin': '0',
-        'padding': '0'
-    });
-    
-    $('.dataTables_wrapper .row > div').css({
-        'width': '100%',
-        'float': 'left',
-        'clear': 'both',
-        'padding': '0',
-        'margin': '0'
-    });
-    
-    // Force pagination and info to left
-    $('.dataTables_wrapper .dataTables_paginate').css({
-        'text-align': 'left',
-        'float': 'left',
-        'clear': 'both',
-        'display': 'block',
-        'width': 'auto',
-        'margin-right': '1rem',
-        'margin-top': '1rem'
-    });
-    
-    $('.dataTables_wrapper .dataTables_info').css({
-        'text-align': 'left',
-        'float': 'left',
-        'clear': 'both',
-        'display': 'block',
-        'width': 'auto',
-        'margin-right': '1rem',
-        'margin-top': '1rem'
-    });
-    
-    
-    console.log('Pagination positioning applied to livestock inventory');
-}
+
 
 
 function showNotification(message, type = 'info') {
@@ -1870,123 +1812,93 @@ function showToast(message, type = 'info') {
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
-    /* Ensure table has enough space for actions column */
-    #livestockTable th:last-child,
-    #livestockTable td:last-child,
-    #activeAdminsTable th:last-child,
-    #activeAdminsTable td:last-child {
-        min-width: 200px;
-        width: auto;
-    }
-    
-    /* Table responsiveness and spacing */
-    .table-responsive {
-        overflow-x: auto;
-        min-width: 100%;
-        position: relative;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    /* Ensure DataTables controls are properly positioned */
-    .table-responsive + .dataTables_wrapper,
-    .table-responsive .dataTables_wrapper {
-        width: 100%;
-        position: relative;
-    }
-    
-    /* Fix pagination positioning for wide tables */
-    .table-responsive .dataTables_wrapper .dataTables_paginate {
-        position: relative;
-        width: 100%;
-        text-align: left;
-        margin: 1rem 0;
-        left: 0;
-        right: 0;
-    }
-    
-    #livestockTable,
-    #activeAdminsTable {
-        width: 100% !important;
-        min-width: 1280px;
-        border-collapse: collapse;
-    }
-    
-    /* Ensure consistent table styling */
-    .table {
-        margin-bottom: 0;
-    }
-    
-    .table-bordered {
-        border: 1px solid #dee2e6;
-    }
-    
-    .table-hover tbody tr:hover {
-        background-color: rgba(0,0,0,.075);
-    }
-    
-     #livestockTable th,
-    #livestockTable td,
-    #activeAdminsTable th,
-    #activeAdminsTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
-    }
-    
-    /* Ensure all table headers have consistent styling */
-    #livestockTable thead th,
-    #activeAdminsTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: center;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #livestockTable thead th.sorting,
-    #livestockTable thead th.sorting_asc,
-    #livestockTable thead th.sorting_desc,
-    #activeAdminsTable thead th.sorting,
-    #activeAdminsTable thead th.sorting_asc,
-    #activeAdminsTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #livestockTable thead th::after,
-    #activeAdminsTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #livestockTable thead th.sorting::after,
-    #livestockTable thead th.sorting_asc::after,
-    #livestockTable thead th.sorting_desc::after,
-    #activeAdminsTable thead th.sorting::after,
-    #activeAdminsTable thead th.sorting_asc::after,
-    #activeAdminsTable thead th.sorting_desc::after {
-        display: none;
-    }
+
+/* ============================
+   TABLE LAYOUT
+============================ */
+    /* Apply consistent styling for Farmers, Livestock, and Issues tables */
+#livestockTable th,
+#livestockTable td,
+#issuesTable th,
+#issuesTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#livestockTable thead th,
+#issuesTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#livestockTable thead th.sorting,
+#livestockTable thead th.sorting_asc,
+#livestockTable thead th.sorting_desc,
+#issuesTable thead th.sorting,
+#issuesTable thead th.sorting_asc,
+#issuesTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#livestockTable thead th::after,
+#issuesTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#livestockTable thead th.sorting::after,
+#livestockTable thead th.sorting_asc::after,
+#livestockTable thead th.sorting_desc::after,
+#issuesTable thead th.sorting::after,
+#issuesTable thead th.sorting_asc::after,
+#issuesTable thead th.sorting_desc::after {
+    display: none;
+}
+/* Make table cells wrap instead of forcing them all inline */
+#livestockTable td, 
+#issuesTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#livestockTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#livestockTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
+
         /* ============================
    SMART FORM - Enhanced Version
    ============================ */
@@ -2679,16 +2591,14 @@ function showToast(message, type = 'info') {
 
 /* Force delete button to be red */
 .btn-action-delete,
-.action-buttons .btn-action-delete,
-#livestockTable .btn-action-delete {
+.action-buttons .btn-action-delete{
     background-color: #c82333 !important;
     border-color: #c82333 !important;
     color: white !important;
 }
 
 .btn-action-delete:hover,
-.action-buttons .btn-action-delete:hover,
-#livestockTable .btn-action-delete:hover {
+.action-buttons .btn-action-delete:hover {
     background-color: #a71e2a !important;
     border-color: #a71e2a !important;
     color: white !important;
@@ -2771,89 +2681,78 @@ function showToast(message, type = 'info') {
 }
 
 
-/* Enhanced Table Styling - Matching Super Admin Style */
-#livestockTable {
-    width: 100% !important;
-    min-width: 1280px;
-    border-collapse: collapse;
-}
 
-.table {
-    margin-bottom: 0;
-}
-
-.table-bordered {
-    border: 1px solid #dee2e6;
-}
-
-.table-hover tbody tr:hover {
-    background-color: rgba(0,0,0,.075);
-}
-
-#livestockTable th,
-#livestockTable td {
-    vertical-align: middle;
-    padding: 0.75rem;
-    text-align: center;
-    border: 1px solid #dee2e6;
-    white-space: nowrap;
-    overflow: visible;
-}
-
-/* Ensure Actions column has enough space and proper alignment */
-#livestockTable th:last-child,
-#livestockTable td:last-child {
-    min-width: 180px !important;
-    width: 180px !important;
-    text-align: left !important;
-    white-space: nowrap;
-    overflow: visible;
-    text-overflow: initial;
-}
-
-/* Ensure all table headers have consistent styling - Super Admin Style */
-#livestockTable thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    font-weight: bold;
-    color: #495057;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 1rem 0.75rem;
-    text-align: left;
-    vertical-align: middle;
-    position: relative;
-    white-space: nowrap;
-}
-
-/* Fix DataTables sorting button overlap */
-#livestockTable thead th.sorting,
-#livestockTable thead th.sorting_asc,
-#livestockTable thead th.sorting_desc {
-    padding-right: 2rem !important;
-}
-
-/* Ensure proper spacing for sort indicators */
-#livestockTable thead th::after {
-    content: '';
-    position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-}
-
-/* Remove default DataTables sort indicators to prevent overlap */
-#livestockTable thead th.sorting::after,
-#livestockTable thead th.sorting_asc::after,
-#livestockTable thead th.sorting_desc::after {
-    display: none;
-}
-
+/* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
+    
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #usersTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
 /* Table responsiveness and spacing - Super Admin Style */
 .table-responsive {
     overflow-x: auto;
@@ -2879,7 +2778,6 @@ function showToast(message, type = 'info') {
     left: 0;
     right: 0;
 }
-
 
 /* Hide only DataTables search and length controls - show pagination and info */
 .dataTables_wrapper .dataTables_length,
@@ -2936,7 +2834,6 @@ function showToast(message, type = 'info') {
     color: #495057;
     font-size: 0.875rem;
 }
-
 
 /* Ensure pagination container is properly positioned - Match SuperAdmin */
 .dataTables_wrapper {
