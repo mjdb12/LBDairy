@@ -99,7 +99,7 @@
                             <button class="btn-action btn-action-ok" onclick="openCreateAlertModal()">
                                 <i class="fas fa-plus"></i>Add Alert
                             </button>
-                            <button class="btn-action btn-action-print" onclick="printTable()">
+                            <button class="btn-action btn-action-edit" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshAlertsTable('alertsTable')">
@@ -125,7 +125,7 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                            <thead>
                                 <tr>
                                     <th>Livestock ID</th>
                                     <th>Topic</th>
@@ -156,7 +156,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="action-buttons">
+                                        <div class="btn-group">
                                             <button class="btn-action btn-action-view" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
@@ -477,10 +477,27 @@ $(document).ready(function() {
     if (sessionStorage.getItem('showRefreshNotificationAlerts') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationAlerts');
         setTimeout(() => {
-            showNotification('Data refreshed successfully!', 'success');
+            showNotification('Alerts data refreshed successfully!', 'success');
         }, 500);
     }
 });
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
+}
 
 // Print handler for My Alerts table - triggers DataTables print button
 function printTable() {
@@ -1651,6 +1668,200 @@ function showNotification(message, type = 'info') {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+/* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+    /* Custom styles for farmer management */
+    
+    .card-header .btn-group {
+        margin-left: 0.5rem;
+    }
+    
+    .card-header .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column !important;
+        }
+        
+        .card-header .btn-group {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .card-header .input-group {
+            margin-bottom: 0.5rem;
+            max-width: 100% !important;
+        }
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 0.375em 0.75em;
+    }
+    
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    /* Status badges */
+    .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-approved {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-active {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    /* Table-responsive wrapper positioning */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    /* ===== DATATABLE STYLES ===== */
+.dataTables_length {
+    margin-bottom: 1rem;
+}
+
+.dataTables_length select {
+    min-width: 80px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    margin: 0 0.5rem;
+}
+
+.dataTables_length label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_info {
+    padding-top: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.dataTables_paginate {
+    margin-top: 1rem;
+}
+
+.dataTables_paginate .paginate_button {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.125rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: var(--light-color);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.dataTables_paginate .paginate_button.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    background-color: var(--light-color);
+    border-color: var(--border-color);
+}
+
+.dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_filter input {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    transition: var(--transition-fast);
+}
+
+.dataTables_filter input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    outline: 0;
 }
 </style>
 @endpush

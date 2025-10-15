@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header fade-in">
+<div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
     <h1>
         <i class="fas fa-boxes"></i>
         Inventory Management
@@ -19,7 +19,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
                             Total Items</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalItems }}</div>
                     </div>
@@ -32,11 +32,11 @@
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2 fade-in">
+        <div class="card border-left-primary shadow h-100 py-2 fade-in">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
                             In Stock</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $inStock }}</div>
                     </div>
@@ -49,11 +49,11 @@
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2 fade-in">
+        <div class="card border-left-primary shadow h-100 py-2 fade-in">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">
                             Low Stock</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $lowStock }}</div>
                     </div>
@@ -66,11 +66,11 @@
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2 fade-in">
+        <div class="card border-left-primary shadow h-100 py-2 fade-in">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
                             Out of Stock</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $outOfStock }}</div>
                     </div>
@@ -85,34 +85,35 @@
 
 <!-- Inventory List -->
 <div class="card shadow mb-4 fade-in">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Inventory Items</h6>
+    <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+        <h6 class="m-0 font-weight-bold ">Inventory Items</h6>
     </div>
     <div class="card-body">
-        <!-- Search (left) + Actions (right) -->
         <div class="search-controls mb-3">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
-                <div class="input-group" style="max-width: 380px;">
+                <div class="input-group" style="max-width: 300px;">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
                     </div>
                     <input type="text" id="inventorySearch" class="form-control" placeholder="Search inventory...">
                 </div>
                 <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
-                    <button id="btnAddItem" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addItemModal">
-                        <i class="fas fa-plus"></i> Add Item
+                    <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addItemModal">
+                    <i class="fas fa-plus mr-1"></i> Add Item
                     </button>
-                    <button id="btnInventoryHistory" type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventoryHistoryModal">
-                        <i class="fas fa-history"></i> History
-                    </button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="printInventory()">
+                    <button class="btn-action btn-action-edit" onclick="printInventory()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button type="button" class="btn btn-warning btn-sm" onclick="refreshInventory()">
+                    <button class="btn-action btn-action-refresh" onclick="refreshInventory()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
+                    <button id="btnInventoryHistory" type="button" class="btn-action btn-action-history" data-toggle="modal" data-target="#inventoryHistoryModal">
+                        <i class="fas fa-history"></i> History
+                    </button>
                     <div class="dropdown">
-                        <button class="btn btn-light btn-sm" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -151,8 +152,8 @@
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->quantity_text }}</td>
                         <td>
-                            <div class="action-buttons">
-                                <button type="button" class="btn-action btn-action-view" data-id="{{ $item->id }}" title="View">
+                            <div class="btn-group">
+                                <button type="button" class="btn-action btn-action-ok" data-id="{{ $item->id }}" title="View">
                                     <i class="fas fa-eye"></i>
                                     <span>View</span>
                                 </button>
@@ -160,7 +161,7 @@
                                     <i class="fas fa-edit"></i>
                                     <span>Edit</span>
                                 </button>
-                                <button type="button" class="btn-action btn-action-delete" data-id="{{ $item->id }}" title="Delete">
+                                <button type="button" class="btn-action btn-action-deletes" data-id="{{ $item->id }}" title="Delete">
                                     <i class="fas fa-trash"></i>
                                     <span>Delete</span>
                                 </button>
@@ -183,34 +184,36 @@
     </div>
 </div>
 
-
-
-<!-- Confirm Delete Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteLabel"><i class="fas fa-trash mr-2"></i>Delete Inventory Item</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modern Approve Farmer Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-modal text-center p-4">
+            <!-- Icon -->
+            <div class="icon-wrapper mx-auto mb-4 text-danger">
+                <i class="fas fa-check-circle fa-2x"></i>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete <strong id="confirmDeleteItemName"></strong> (<span id="confirmDeleteItemCode"></span>)?</p>
-                <p class="mb-0 text-muted">This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Delete</button>
-            </div>
+            <!-- Title -->
+            <h5>Confirm Delete </h5>
+            <!-- Description -->
+            <p class="text-muted mb-4 px-3">
+                Are you sure you want to <strong>delete</strong> this inventory record?
+            </p>
+                <!-- Buttons -->
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-delete" id="confirmDeleteBtn">
+                        Delete
+                    </button>
+                </div>
+            
         </div>
     </div>
-    </div>
+</div>
 
 <!-- Low Stock Alerts -->
 <div class="card shadow mb-4 fade-in">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
+    <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+        <h6 class="m-0 font-weight-bold">
             <i class="fas fa-exclamation-triangle"></i>
             Low Stock Alerts
         </h6>
@@ -237,187 +240,213 @@
     </div>
 </div>
 
-<!-- Add Item Modal -->
-<div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addItemModalLabel">
-                    <i class="fas fa-plus"></i>
-                    Add New Inventory Item
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="addItemForm">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemName">Item Name *</label>
-                                <input type="text" class="form-control" id="itemName" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemCategory">Category *</label>
-                                <select class="form-control" id="itemCategory" required>
-                                    <option value="">Select Category</option>
-                                    <option value="feed">Feed</option>
-                                    <option value="medicine">Medicine</option>
-                                    <option value="equipment">Equipment</option>
-                                    <option value="tools">Tools</option>
-                                    <option value="others">Others</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemQuantity">Quantity *</label>
-                                <input type="number" class="form-control" id="itemQuantity" required min="0">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemUnit">Unit *</label>
-                                <select class="form-control" id="itemUnit" required>
-                                    <option value="">Select Unit</option>
-                                    <option value="kg">Kilograms (kg)</option>
-                                    <option value="g">Grams (g)</option>
-                                    <option value="l">Liters (L)</option>
-                                    <option value="ml">Milliliters (ml)</option>
-                                    <option value="pcs">Pieces (pcs)</option>
-                                    <option value="packs">Packs</option>
-                                    <option value="units">Units</option>
-                                    <option value="bales">Bales</option>
-                                    <option value="vials">Vials</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemPrice">Unit Price (₱)</label>
-                                <input type="number" class="form-control" id="itemPrice" step="0.01" min="0">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemSupplier">Supplier</label>
-                                <input type="text" class="form-control" id="itemSupplier">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="itemDescription">Description</label>
-                                <textarea class="form-control" id="itemDescription" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemMinStock">Minimum Stock Level</label>
-                                <input type="number" class="form-control" id="itemMinStock" min="0">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="itemLocation">Storage Location</label>
-                                <input type="text" class="form-control" id="itemLocation">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Item
-                    </button>
-                </div>
-            </form>
+<!-- Smart Form - Add Inventory Item Modal -->
+<div class="modal fade admin-modal" id="addItemModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-plus-circle fa-2x"></i>
         </div>
-    </div>
-</div>
-<!-- Inventory Details Modal -->
-<div class="modal fade" id="inventoryDetailsModal" tabindex="-1" role="dialog" aria-labelledby="inventoryDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="inventoryDetailsLabel">
-                    <i class="fas fa-info-circle"></i>
-                    Item Details
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <h5 class="fw-bold mb-1">Inventory Entry</h5>
+        <p class="text-muted mb-0 small">
+          Enter the item details below to record a new inventory entry.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="addItemForm" onsubmit="submitItem(event)">
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3">
+
+            <!-- Item Name -->
+            <div class="col-md-6">
+              <label for="itemName" class="fw-semibold">Item Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="itemName" name="item_name" required>
             </div>
-            <div class="modal-body" id="inventoryDetailsContent"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="beginEditCurrentItem()">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
+
+            <!-- Category -->
+            <div class="col-md-6">
+              <label for="itemCategory" class="fw-semibold">Category <span class="text-danger">*</span></label>
+              <select class="form-control" id="itemCategory" name="item_category" required>
+                <option value="" disabled selected>Select Category</option>
+                <option value="feed">Feed</option>
+                <option value="medicine">Medicine</option>
+                <option value="equipment">Equipment</option>
+                <option value="tools">Tools</option>
+                <option value="others">Others</option>
+              </select>
             </div>
+
+            <!-- Quantity -->
+            <div class="col-md-6">
+              <label for="itemQuantity" class="fw-semibold">Quantity <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="itemQuantity" name="item_quantity" min="0" required>
+            </div>
+
+            <!-- Unit -->
+            <div class="col-md-6">
+              <label for="itemUnit" class="fw-semibold">Unit <span class="text-danger">*</span></label>
+              <select class="form-control" id="itemUnit" name="item_unit" required>
+                <option value="" disabled selected>Select Unit</option>
+                <option value="kg">Kilograms (kg)</option>
+                <option value="g">Grams (g)</option>
+                <option value="l">Liters (L)</option>
+                <option value="ml">Milliliters (ml)</option>
+                <option value="pcs">Pieces (pcs)</option>
+                <option value="packs">Packs</option>
+                <option value="units">Units</option>
+                <option value="bales">Bales</option>
+                <option value="vials">Vials</option>
+              </select>
+            </div>
+
+            <!-- Price -->
+            <div class="col-md-6">
+              <label for="itemPrice" class="fw-semibold">Unit Price (₱)</label>
+              <input type="number" class="form-control" id="itemPrice" name="item_price" step="0.01" min="0">
+            </div>
+
+            <!-- Supplier -->
+            <div class="col-md-6">
+              <label for="itemSupplier" class="fw-semibold">Supplier</label>
+              <input type="text" class="form-control" id="itemSupplier" name="item_supplier">
+            </div>
+
+            <!-- Min Stock -->
+            <div class="col-md-6">
+              <label for="itemMinStock" class="fw-semibold">Minimum Stock Level</label>
+              <input type="number" class="form-control" id="itemMinStock" name="item_min_stock" min="0">
+            </div>
+
+            <!-- Location -->
+            <div class="col-md-6">
+              <label for="itemLocation" class="fw-semibold">Storage Location</label>
+              <input type="text" class="form-control" id="itemLocation" name="item_location">
+            </div>
+
+            <!-- Description -->
+            <div class="col-md-12">
+              <label for="itemDescription" class="fw-semibold">Description</label>
+              <textarea class="form-control mt-1" id="itemDescription" name="item_description" rows="3" placeholder="Enter item details..." style="resize: none;"></textarea>
+            </div>
+
+            <div id="formNotification" class="mt-2" style="display: none;"></div>
+          </div>
         </div>
+
+        <!-- Footer Buttons -->
+        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-ok" title="Save Item">
+            Save Item
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
-<!-- Inventory History Modal -->
-<div class="modal fade" id="inventoryHistoryModal" tabindex="-1" role="dialog" aria-labelledby="inventoryHistoryLabel" aria-hidden="true">
+    <!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="inventoryDetailsModal" tabindex="-1" role="dialog"  aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="inventoryHistoryLabel">
-                    <i class="fas fa-history"></i>
-                    Inventory History (Quarterly)
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="inventoryYear" class="font-weight-bold">Year:</label>
-                        <select id="inventoryYear" class="form-control form-control-sm" onchange="loadInventoryHistory()">
-                            @php($currentYear = (int)date('Y'))
-                            @for($y = $currentYear; $y >= $currentYear - 5; $y--)
-                                <option value="{{ $y }}">{{ $y }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="col-md-6 d-flex align-items-end">
-                        <div class="text-muted small">Showing quarterly aggregates</div>
-                    </div>
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-info-circle fa-2x "></i>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="inventoryHistoryQuarterTable">
-                        <thead>
-                            <tr>
-                                <th>Quarter</th>
-                                <th>Items</th>
-                                <th>Total Cost (₱)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventoryHistoryTableBody"></tbody>
-                    </table>
-                </div>
+                <h5 class="fw-bold mb-1">Item Details </h5>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected entry.</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="exportInventoryHistory()">
-                    <i class="fas fa-download"></i> Export History
-                </button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="inventoryDetailsContent" class="detail-wrapper">
+          <!-- Dynamic details injected here -->
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-ok" onclick="beginEditCurrentItem()">
+                Edit
+            </button>
+        </div>
+
     </div>
+  </div>
+</div>
+
+<!-- Smart Detail - Inventory History Modal -->
+<div class="modal fade admin-modal" id="inventoryHistoryModal" tabindex="-1" role="dialog" aria-labelledby="inventoryHistoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content smart-detail p-4">
+
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-boxes fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-1">Inventory History (Quarterly)</h5>
+        <p class="text-muted mb-0 small text-center">
+          View, compare, and export quarterly inventory performance data.
+        </p>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="inventoryYear" class="fw-semibold">Year:</label>
+              <select id="inventoryYear" class="form-control" onchange="loadInventoryHistory()">
+                @php($currentYear = (int)date('Y'))
+                @for($y = $currentYear; $y >= $currentYear - 5; $y--)
+                  <option value="{{ $y }}">{{ $y }}</option>
+                @endfor
+              </select>
+            </div>
+
+            <div class="col-md-6 d-flex align-items-end">
+              <div class="text-muted small">Showing quarterly aggregates</div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive rounded shadow-sm">
+            <table class="table table-hover table-bordered align-middle mb-0">
+              <thead class="table-light text-center">
+                <tr>
+                  <th>Quarter</th>
+                  <th>Total Items</th>
+                  <th>Total Cost (₱)</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryHistoryTableBody">
+                <!-- Quarterly inventory data dynamically loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer justify-content-center mt-4">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn-modern btn-ok" onclick="exportInventoryHistory()">
+          Export History
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 @endsection
@@ -426,7 +455,792 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 <style>
+    /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+/* 🌟 Page Header Styling */
+.page {
+    background-color: #18375d;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.6s ease-in-out;
+}
 
+/* Hover lift effect for interactivity */
+.page:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* 🧭 Header Title */
+.page h1 {
+    color: #18375d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Icon style */
+.page i {
+    color: #18375d; /* Bootstrap primary color */
+}
+
+/* 💬 Subtitle text */
+.page p {
+    color: #18375d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Base Card Style */
+.card {
+    background-color: #ffffff !important;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Section (Header inside card-body) */
+.card-body:first-of-type {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+}
+
+/* Title (h6) */
+.card-body:first-of-type h6 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #18375d !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Second Card Body (Main Content) */
+.card-body:last-of-type {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+/* ============================
+SMART FORM - Enhanced Version
+============================ */
+.smart-form {
+  border: none;
+  border-radius: 22px; /* slightly more rounded */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 3rem 3.5rem; /* bigger spacing */
+  transition: all 0.3s ease;
+  max-width: 900px; /* slightly wider form container */
+  margin: 2rem auto;
+}
+
+.smart-form:hover {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+}
+
+/* Header Icon */
+.smart-form .icon-circle {
+  width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-form h5 {
+  color: #18375d;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.smart-form p {
+  color: #6b7280;
+  font-size: 0.96rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* Form Container */
+.smart-form .form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#addItemModal form {
+  text-align: left;
+}
+
+#addItemModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#addItemModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#addItemModal .form-control,
+#addItemModal select.form-control,
+#addItemModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#addItemModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#addItemModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#editIssueModal form {
+  text-align: left;
+}
+
+#editIssueModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#editIssueModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#editIssueModal .form-control,
+#editIssueModal select.form-control,
+#editIssueModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#editIssueModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#editIssueModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#reportIssueModal form {
+  text-align: left;
+}
+
+#reportIssueModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#reportIssueModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#reportIssueModal .form-control,
+#reportIssueModal select.form-control,
+#reportIssueModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#reportIssueModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#reportIssueModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* ============================
+   CRITICAL FIX FOR DROPDOWN TEXT CUTTING
+   ============================ */
+.admin-modal select.form-control,
+.modal.admin-modal select.form-control,
+.admin-modal .modal-body select.form-control {
+  min-width: 250px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 15px !important;  /* match input padding */
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  font-size: 15px !important;     /* match input font */
+  line-height: 1.5 !important;
+  height: 46px !important;        /* same height as input */
+  background-color: #fff !important;
+}
+
+/* Ensure columns don't constrain dropdowns */
+.admin-modal .col-md-6 {
+  min-width: 280px !important;
+  overflow: visible !important;
+}
+
+/* Prevent modal body from clipping dropdowns */
+.admin-modal .modal-body {
+  overflow: visible !important;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-approve,
+.btn-delete,
+.btn-ok {
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-approves {
+  background: #387057;
+  color: #fff;
+}
+.btn-approves:hover {
+  background: #fca700;
+  color: #fff;
+}
+.btn-cancel {
+  background: #387057;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+.btn-ok {
+  background: #18375d;
+  color: #fff;
+}
+.btn-ok:hover {
+  background: #fca700;
+  color: #fff;
+}
+
+/* ============================
+   FOOTER & ALIGNMENT
+   ============================ */
+#reportIssueModal .modal-footer {
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+@media (max-width: 768px) {
+  .smart-form {
+    padding: 1.5rem;
+  }
+
+  .smart-form .form-wrapper {
+    max-width: 100%;
+  }
+
+  #addLivestockModal .form-control {
+    font-size: 14px;
+  }
+
+  #editIssueModal .form-control {
+    font-size: 14px;
+  }
+   #reportIssueModal .form-control {
+    font-size: 14px;
+  }
+
+  .btn-ok,
+  .btn-delete,
+  .btn-approves {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Center alignment for header section */
+.smart-detail .modal-header,
+.smart-detail .modal-footer {
+    text-align: center;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+    text-align: left; /* ensures proper centering */
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 3rem 3.5rem; /* more spacious layout */
+    border-radius: 1rem;
+    max-height: 88vh; /* taller for longer content */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Wider modal container */
+.smart-detail .modal-dialog {
+    max-width: 92%; /* slightly wider modal */
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 2.25rem; /* more inner padding */
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* Detail Rows */
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.6rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 992px) {
+    .smart-detail .modal-dialog {
+        max-width: 95%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 2rem;
+        max-height: 82vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .smart-detail p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .smart-detail .modal-body {
+        padding: 0.5rem;
+        max-height: 95vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    .smart-detail .detail-row {
+        flex-direction: column;
+        text-align: left;
+        gap: 0.3rem;
+    }
+
+    .smart-detail .detail-value {
+        text-align: left;
+    }
+}
+
+/* Action buttons styling */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 200px;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+    }
+    
+    .btn-action-edit {
+        background-color: #387057;
+        border-color: #387057;
+        color: white;
+    }
+    
+    .btn-action-edit:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+
+    .btn-action-refresh {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-refresh:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    .btn-action-history {
+        background-color: #5a6268;
+        border-color: #5a6268;
+        color: white;
+    }
+    
+    .btn-action-history:hover {
+        background-color: #e69500;
+        border-color: #e69500;
+        color: white;
+    }
+
+    .btn-action-ok {
+        background-color: #18375d;
+        border-color: #18375d;
+        color: white;
+    }
+    
+    .btn-action-ok:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+    .btn-action-delete {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-action-delete:hover {
+        background-color: #fca700;
+        border-color: #fca700;
+        color: white;
+    }
+    
+/* ============================
+   TABLE LAYOUT
+============================ */
+    /* Apply consistent styling for Farmers, Livestock, and Issues tables */
+#dataTable th,
+#dataTable td,
+#issuesTable th,
+#issuesTable td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Ensure all table headers have consistent styling */
+#dataTable thead th,
+#issuesTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Fix DataTables sorting button overlap */
+#dataTable thead th.sorting,
+#dataTable thead th.sorting_asc,
+#dataTable thead th.sorting_desc,
+#issuesTable thead th.sorting,
+#issuesTable thead th.sorting_asc,
+#issuesTable thead th.sorting_desc {
+    padding-right: 2rem !important;
+}
+
+/* Ensure proper spacing for sort indicators */
+#dataTable thead th::after,
+#issuesTable thead th::after {
+    content: '';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* Remove default DataTables sort indicators to prevent overlap */
+#dataTable thead th.sorting::after,
+#dataTable thead th.sorting_asc::after,
+#dataTable thead th.sorting_desc::after,
+#issuesTable thead th.sorting::after,
+#issuesTable thead th.sorting_asc::after,
+#issuesTable thead th.sorting_desc::after {
+    display: none;
+}
+/* Make table cells wrap instead of forcing them all inline */
+#dataTable td, 
+#dataTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#dataTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#dataTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
 
 .fade-in {
     animation: fadeIn 0.5s ease-in;
@@ -725,6 +1539,47 @@
         padding: 0.3rem 0.6rem;
     }
 }
+/* User Details Modal Styling */
+    #inventoryDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #inventoryDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #inventoryDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #inventoryDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #inventoryDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #inventoryDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #inventoryDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
 </style>
 @endpush
 
@@ -834,7 +1689,7 @@ $(document).ready(function(){
         try { loadInventoryHistory(); } catch(err){ console.error('loadInventoryHistory error:', err); }
     });
 
-    $(document).on('click', '.btn-action-view', function(e){
+    $(document).on('click', '.btn-action-ok', function(e){
         e.preventDefault();
         const id = $(this).data('id');
         if (typeof id !== 'undefined') viewItem(id);
@@ -847,7 +1702,7 @@ $(document).ready(function(){
     });
 
     // Delete button -> open confirm modal
-    $(document).on('click', '.btn-action-delete', function(e){
+    $(document).on('click', '.btn-action-deletes', function(e){
         e.preventDefault();
         const id = $(this).data('id');
         if (typeof id === 'undefined') return;
@@ -895,22 +1750,31 @@ function viewItem(id){
             CURRENT_ITEM = resp.item;
             const item = resp.item;
             $('#inventoryDetailsContent').html(`
-                <div class="row">
-                    <div class="col-md-6">
-                        <table class="table table-borderless">
-                            <tr><td><strong>Code:</strong></td><td>${item.code || ''}</td></tr>
-                            <tr><td><strong>Name:</strong></td><td>${item.name || ''}</td></tr>
-                            <tr><td><strong>Category:</strong></td><td>${item.category || ''}</td></tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <table class="table table-borderless">
-                            <tr><td><strong>Date:</strong></td><td>${item.date || ''}</td></tr>
-                            <tr><td><strong>Quantity:</strong></td><td>${item.quantity_text || ''}</td></tr>
-                            <tr><td><strong>Farm ID:</strong></td><td>${item.farm_id || ''}</td></tr>
-                        </table>
-                    </div>
-                </div>
+                <div class="row text-left">
+    <!-- Item Information -->
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Item Information</h6>
+        <p><strong>Code:</strong> ${item.code || 'N/A'}</p>
+        <p><strong>Name:</strong> ${item.name || 'N/A'}</p>
+        <p><strong>Category:</strong> ${item.category || 'N/A'}</p>
+        <p><strong>Date:</strong> ${item.date || 'N/A'}</p>
+    </div>
+
+    <!-- Additional Details -->
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
+        <p><strong>Quantity:</strong> ${item.quantity_text || 'N/A'}</p>
+        <p><strong>Farm ID:</strong> ${item.farm_id || 'N/A'}</p>
+        <p><strong>Status:</strong> 
+            <span class="badge badge-${item.status === 'available' ? 'success' : item.status === 'low stock' ? 'warning' : 'secondary'}">
+                ${item.status || 'N/A'}
+            </span>
+        </p>
+        <p><strong>Last Updated:</strong> ${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'N/A'}</p>
+    </div>
+</div>
+
+                
             `);
             $('#inventoryDetailsModal').modal('show');
         } else {
@@ -964,11 +1828,47 @@ function printInventory(){
     catch(e){ console.error('printInventory error:', e); window.print(); }
 }
 
-function refreshInventory(){
-    const btn = document.querySelector('.btn.btn-warning.btn-sm');
-    if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
-    sessionStorage.setItem('showRefreshNotificationInventory','true');
-    setTimeout(()=>location.reload(), 800);
+// Refresh Admins Table
+function refreshInventory() {
+    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+
+    // Use unique flag for admins
+    sessionStorage.setItem('showRefreshNotificationInventory', 'true');
+
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Check notifications after reload
+$(document).ready(function() {
+    if (sessionStorage.getItem('showRefreshNotificationInventory') === 'true') {
+        sessionStorage.removeItem('showRefreshNotificationInventory');
+        setTimeout(() => {
+            showNotification('Iventory data refreshed successfully!', 'success');
+        }, 500);
+    }
+});
+
+ function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
 }
 
 function exportInventoryCSV(){
@@ -1039,7 +1939,7 @@ function upsertInventoryRow(item){
         htmlEscape(item.category || ''),
         htmlEscape(item.name || ''),
         htmlEscape(item.quantity_text || ''),
-        `\n            <div class="action-buttons">\n                <button type="button" class="btn-action btn-action-view" data-id="${item.id}" title="View">\n                    <i class="fas fa-eye"></i><span>View</span>\n                </button>\n                <button type="button" class="btn-action btn-action-edit" data-id="${item.id}" title="Edit">\n                    <i class="fas fa-edit"></i><span>Edit</span>\n                </button>\n                <button type="button" class="btn-action btn-action-delete" data-id="${item.id}" title="Delete">\n                    <i class="fas fa-trash"></i><span>Delete</span>\n                </button>\n            </div>\n        `
+        `\n            <div class="action-buttons">\n                <button type="button" class="btn-action btn-action-ok" data-id="${item.id}" title="View">\n                    <i class="fas fa-eye"></i><span>View</span>\n                </button>\n                <button type="button" class="btn-action btn-action-edit" data-id="${item.id}" title="Edit">\n                    <i class="fas fa-edit"></i><span>Edit</span>\n                </button>\n                <button type="button" class="btn-action btn-action-deletes" data-id="${item.id}" title="Delete">\n                    <i class="fas fa-trash"></i><span>Delete</span>\n                </button>\n            </div>\n        `
     ];
     const $row = $(`tr[data-item-id="${item.id}"]`);
     if (inventoryDT){
@@ -1071,10 +1971,10 @@ function upsertInventoryRow(item){
                     <td>${htmlEscape(item.name || '')}</td>
                     <td>${htmlEscape(item.quantity_text || '')}</td>
                     <td>
-                        <div class="action-buttons">
-                            <button type="button" class="btn-action btn-action-view" data-id="${item.id}" title="View"><i class="fas fa-eye"></i><span>View</span></button>
+                        <div class="btn-group">
+                            <button type="button" class="btn-action btn-action-ok" data-id="${item.id}" title="View"><i class="fas fa-eye"></i><span>View</span></button>
                             <button type="button" class="btn-action btn-action-edit" data-id="${item.id}" title="Edit"><i class="fas fa-edit"></i><span>Edit</span></button>
-                            <button type="button" class="btn-action btn-action-delete" data-id="${item.id}" title="Delete"><i class="fas fa-trash"></i><span>Delete</span></button>
+                            <button type="button" class="btn-action btn-action-deletes" data-id="${item.id}" title="Delete"><i class="fas fa-trash"></i><span>Delete</span></button>
                         </div>
                     </td>`;
                 tbody.prepend(tr);
