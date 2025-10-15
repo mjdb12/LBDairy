@@ -12,14 +12,7 @@
     <p>Manage and monitor your farm operations</p>
 </div>
 
-<!-- Add Farm Button -->
-<div class="row mb-4">
-    <div class="col-12">
-        <button class="btn-action btn-action-ok" onclick="openAddFarmModal()">
-            <i class="fas fa-plus"></i> Add New Farm
-        </button>
-    </div>
-</div>
+ 
 
 <div class="row">
     @forelse($farms as $farm)
@@ -63,10 +56,7 @@
                 </div>
                 @endif
 
-                <div class="d-flex justify-content-between">
-                    <a href="{{ route('farmer.farm-details', $farm->id) }}" class="btn-action btn-action-ok">
-                        <i class="fas fa-eye"></i> View Details
-                    </a>
+                <div class="d-flex justify-content-end">
                     <a href="{{ route('farmer.farm-analysis') }}" class="btn-action btn-action-edit">
                         <i class="fas fa-chart-line"></i> Analysis
                     </a>
@@ -131,143 +121,7 @@
     </div>
 </div>
 @endif
-<!-- Add Farm Modal -->
-<div class="modal fade admin-modal" id="addFarmModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content smart-form text-center p-4">
-
-      <!-- Icon + Header -->
-      <div class="d-flex flex-column align-items-center mb-4">
-        <div class="icon-circle">
-          <i class="fas fa-tractor fa-2x"></i>
-        </div>
-        <h5 class="fw-bold mb-1" id="addFarmModalLabel">Add New Farm</h5>
-        <p class="text-muted mb-0 small">
-          Fill out the form below to register a new farm in the system.
-        </p>
-      </div>
-
-      <!-- Form -->
-      <form id="addFarmForm" method="POST" action="{{ route('farmer.farms.store') }}">
-        @csrf
-        <div class="form-wrapper text-start mx-auto">
-
-          <div class="row g-3">
-            <!-- Farm Name -->
-            <div class="col-md-6">
-              <label for="name" class="fw-semibold">Farm Name <span class="text-danger">*</span></label>
-              <input type="text" class="form-control mt-1" id="name" name="name" placeholder="Enter farm name" required>
-            </div>
-
-            <!-- Status -->
-            <div class="col-md-6">
-              <label for="status" class="fw-semibold">Status <span class="text-danger">*</span></label>
-              <select class="form-control mt-1" id="status" name="status" required>
-                <option value="">Select Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-
-            <!-- Location -->
-            <div class="col-md-6">
-              <label for="location" class="fw-semibold">Location <span class="text-danger">*</span></label>
-              <input type="text" class="form-control mt-1" id="location" name="location" placeholder="Enter farm location" required>
-            </div>
-
-            <!-- Size -->
-            <div class="col-md-6">
-              <label for="size" class="fw-semibold">Size (hectares)</label>
-              <input type="number" class="form-control mt-1" id="size" name="size" min="0" step="0.01" placeholder="Enter size">
-            </div>
-
-            <!-- Description -->
-            <div class="col-md-12">
-              <label for="description" class="fw-semibold">Description</label>
-              <textarea class="form-control mt-1" id="description" name="description" rows="3" placeholder="Add optional details about your farm..." style="resize: none;"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer Buttons -->
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
-          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-modern btn-ok">
-            Create Farm
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 @endsection
-
-@push('scripts')
-<script>
-function openAddFarmModal() {
-    $('#addFarmModal').modal('show');
-}
-
-// Handle form submission
-$('#addFarmForm').on('submit', function(e) {
-    e.preventDefault();
-    
-    $.ajax({
-        url: $(this).attr('action'),
-        method: 'POST',
-        data: $(this).serialize(),
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            if (response.success) {
-                showToast('Farm created successfully!', 'success');
-                $('#addFarmModal').modal('hide');
-                location.reload();
-            } else {
-                showToast(response.message || 'Error creating farm', 'error');
-            }
-        },
-        error: function(xhr) {
-            if (xhr.status === 422) {
-                const errors = xhr.responseJSON.errors;
-                Object.keys(errors).forEach(field => {
-                    showToast(errors[field][0], 'error');
-                });
-            } else {
-                showToast('Error creating farm', 'error');
-            }
-        }
-    });
-});
-
-function showToast(message, type = 'info') {
-    // Create a simple alert instead of Bootstrap 5 toast for Bootstrap 4 compatibility
-    const alertClass = type === 'error' ? 'alert-danger' : type === 'success' ? 'alert-success' : 'alert-info';
-    const alert = `
-        <div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-            <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    `;
-    
-    // Add alert to page
-    const alertContainer = document.createElement('div');
-    alertContainer.innerHTML = alert;
-    document.body.appendChild(alertContainer);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (alertContainer.parentNode) {
-            alertContainer.parentNode.removeChild(alertContainer);
-        }
-    }, 5000);
-}
-</script>
-@endpush
 
 @push('styles')
 <style>

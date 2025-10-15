@@ -1991,10 +1991,10 @@
                     <input type="text" id="supplierSearch" class="form-control" placeholder="Search suppliers...">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-ok" id="supplierSearch" title="Add Supplier" data-toggle="modal" data-target="#addLivestockDetailsModal">
+                    <button class="btn-action btn-action-ok" id="addSupplierBtn" title="Add Supplier" data-toggle="modal" data-target="#addLivestockDetailsModal">
                         <i class="fas fa-plus"></i> Add Supplier
                     </button>
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printSuppliersTable('suppliersTable')">
+                    <button class="btn-action btn-action-print" title="Print" onclick="printSuppliersTable('suppliersTable')">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshSuppliersTable('suppliersTable')">
@@ -2032,7 +2032,7 @@
                         </thead>
                         <tbody id="suppliersTableBody">
                             @forelse($suppliersData as $supplier)
-                            <tr>
+                            <tr data-expense-type="{{ $supplier['expense_type'] }}">
                                 <td>{{ $supplier['supplier_id'] }}</td>
                                 <td>{{ $supplier['name'] }}</td>
                                 <td>{{ $supplier['address'] }}</td>
@@ -2048,7 +2048,7 @@
                                             <i class="fas fa-eye"></i>
                                             <span>View</span>
                                         </button>
-                                        <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $supplier['name'] }}')" title="Delete">
+                                        <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $supplier['name'] }}','{{ $supplier['expense_type'] }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
                                             <span>Delete</span>
                                         </button>
@@ -2226,10 +2226,10 @@
             </div>
 
             <!-- Title -->
-            <h5>Confirm Delete</h5>
+            <h5 id="confirmDeleteTitle">Confirm Delete</h5>
 
             <!-- Description -->
-            <p class="text-muted mb-4 px-3">
+            <p id="confirmDeleteDesc" class="text-muted mb-4 px-3">
                 Are you sure you want to delete this entry? This action <strong>cannot be undone</strong>.
             </p>
 
@@ -2412,6 +2412,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 let suppliersDT = null;
+const CSRF_TOKEN = "{{ csrf_token() }}";
 // Initialize DataTable
 $(document).ready(function() {
     const commonConfig = {
@@ -2422,10 +2423,12 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
-            { extend: 'csvHtml5', title: 'Farmer_Suppliers_Report', className: 'd-none' },
-            { extend: 'pdfHtml5', title: 'Farmer_Suppliers_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
-            { extend: 'print', title: 'Farmer Suppliers Report', className: 'd-none' }
+            { extend: 'csvHtml5', title: 'Farmer_Suppliers_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'pdfHtml5', title: 'Farmer_Suppliers_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'print', title: 'Farmer Suppliers Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } }
         ],
         language: {
             search: "",
@@ -2594,10 +2597,77 @@ function viewDetails(supplierName) {
     $('#supplierDetailsModal').modal('show');
 }
 
+// Track supplier pending deletion
+let supplierToDelete = null;
+let supplierExpenseTypeToDelete = null;
+
 // Confirm Delete function
-function confirmDelete(supplierName) {
-    // Update modal message
+function confirmDelete(supplierName, expenseType) {
+    supplierToDelete = supplierName;
+    supplierExpenseTypeToDelete = expenseType || null;
+    const btn = document.getElementById('confirmDeleteBtn');
+    if (btn) {
+        btn.onclick = function(){ deleteSupplier(); };
+    }
     $('#confirmDeleteModal').modal('show');
+}
+
+function getSupplierRowByName(name){
+    const rows = document.querySelectorAll('#suppliersTable tbody tr');
+    for (const tr of rows){
+        const tds = tr.querySelectorAll('td');
+        const n = tds[1] ? (tds[1].innerText||'').trim() : '';
+        if (n === name) return tr;
+    }
+    return null;
+}
+
+function deleteSupplier(){
+    try {
+        const btn = document.getElementById('confirmDeleteBtn');
+        if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...'; }
+        if (!supplierToDelete) { $('#confirmDeleteModal').modal('hide'); return; }
+        const tr = getSupplierRowByName(supplierToDelete);
+
+        // If we have an expense type, also delete from backend
+        if (supplierExpenseTypeToDelete) {
+            fetch(`/farmer/suppliers/${encodeURIComponent(supplierExpenseTypeToDelete)}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF_TOKEN,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            }).then(async (r)=>{
+                let data = null; try { data = await r.json(); } catch(_){}
+                if (!r.ok || !data || data.success !== true){
+                    throw new Error((data && data.message) || `HTTP ${r.status}`);
+                }
+                if (tr && suppliersDT){ suppliersDT.row(tr).remove().draw(false); }
+                $('#confirmDeleteModal').modal('hide');
+                showNotification(`Supplier deleted. Removed ${data.deleted_count||0} related expenses.`, 'success');
+            }).catch(err=>{
+                console.error('deleteSupplier backend error:', err);
+                showNotification('Failed to delete supplier from server','error');
+            }).finally(()=>{
+                if (btn){ btn.disabled = false; btn.innerHTML = 'Yes, Delete'; }
+                supplierToDelete = null; supplierExpenseTypeToDelete = null;
+            });
+        } else {
+            // Frontend-only removal
+            if (tr && suppliersDT){ suppliersDT.row(tr).remove().draw(false); }
+            $('#confirmDeleteModal').modal('hide');
+            showNotification('Supplier removed from the list.', 'success');
+            if (btn){ btn.disabled = false; btn.innerHTML = 'Yes, Delete'; }
+            supplierToDelete = null; supplierExpenseTypeToDelete = null;
+        }
+    } catch(e){
+        console.error('deleteSupplier error:', e);
+        showNotification('Failed to remove supplier','error');
+        const btn = document.getElementById('confirmDeleteBtn');
+        if (btn){ btn.disabled = false; btn.innerHTML = 'Yes, Delete'; }
+        supplierToDelete = null; supplierExpenseTypeToDelete = null;
+    }
 }
 
 // Show Add Entry Form
@@ -2644,35 +2714,18 @@ $(document).ready(function(){
 
 // CSV export (exclude Actions column)
 function exportCSV(){
-    if (!suppliersDT) return showNotification('Table not ready','error');
-    const rows = suppliersDT.data().toArray();
-    const headers = ['Supplier ID','Name','Address','Contact','Status'];
-    const csv = [headers.join(',')];
-    rows.forEach(r=>{
-        const arr=[]; for(let i=0;i<r.length-1;i++){ // exclude Actions
-            const tmp=document.createElement('div'); tmp.innerHTML=r[i];
-            let t=tmp.textContent||tmp.innerText||''; t=t.replace(/\s+/g,' ').trim();
-            if(t.includes(',')||t.includes('"')||t.includes('\n')) t='"'+t.replace(/"/g,'""')+'"';
-            arr.push(t);
-        }
-        csv.push(arr.join(','));
-    });
-    const blob=new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8;'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`Farmer_SuppliersReport_${Date.now()}.csv`; a.click();
+    try {
+        if (suppliersDT) { suppliersDT.button('.buttons-csv').trigger(); }
+        else { showNotification('Table not ready','error'); }
+    } catch(e) { console.error('CSV export error:', e); showNotification('Error generating CSV','error'); }
 }
 
 // PDF export via jsPDF
 function exportPDF(){
-    try{
-        if (!suppliersDT) return showNotification('Table not ready','error');
-        const rows = suppliersDT.data().toArray();
-        const data = rows.map(r=>[r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'']);
-        const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape','mm','a4');
-        doc.setFontSize(18); doc.text('Farmer Suppliers Report',14,22);
-        doc.setFontSize(12); doc.text(`Generated on: ${new Date().toLocaleDateString()}`,14,32);
-        doc.autoTable({ head: [['Supplier ID','Name','Address','Contact','Status']], body: data, startY:40, styles:{fontSize:8, cellPadding:2}, headStyles:{ fillColor:[24,55,93], textColor:255, fontStyle:'bold' }, alternateRowStyles:{ fillColor:[245,245,245] } });
-        doc.save(`Farmer_SuppliersReport_${Date.now()}.pdf`);
-    }catch(e){ console.error('PDF export error:', e); showNotification('Error generating PDF','error'); }
+    try {
+        if (suppliersDT) { suppliersDT.button('.buttons-pdf').trigger(); }
+        else { showNotification('Table not ready','error'); }
+    } catch(e) { console.error('PDF export error:', e); showNotification('Error generating PDF','error'); }
 }
 
 // PNG export via html2canvas

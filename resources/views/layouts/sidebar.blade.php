@@ -51,13 +51,6 @@
                 </a>
             </li>
 
-            <li class="nav-item {{ isCurrentRoute('farmer.farms') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.farms') }}" data-toggle="tooltip" data-placement="right" data-original-title="My Farms">
-                    <i class="fas fa-fw fa-university"></i>
-                    <span>My Farms</span>
-                </a>
-            </li>
-
             <li class="nav-item {{ isCurrentRoute('farmer.livestock') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.livestock') }}" data-toggle="tooltip" data-placement="right" data-original-title="Manage Livestock">
                     <i class="fa fa-list"></i>

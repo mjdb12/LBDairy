@@ -106,7 +106,7 @@
                                     <i class="fas fa-plus"></i> Add Livestock
                                 </button>
                             @endif
-                            <button class="btn-action btn-action-edit" onclick="printTable()">
+                            <button class="btn-action btn-action-print" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshLivestockTable('livestockTable')">
@@ -456,6 +456,11 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
+<!-- DataTables Buttons (CSV, PDF, Print) -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
 <!-- Required libraries for PDF/Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
@@ -484,6 +489,8 @@ $(document).ready(function() {
                 ordering: true,
                 lengthChange: false,
                 pageLength: 10,
+                autoWidth: false,
+                scrollX: true,
                 order: [[0, 'asc']],
                 columnDefs: [
                     { width: '120px', targets: 0 }, // Livestock ID
@@ -493,25 +500,37 @@ $(document).ready(function() {
                     { width: '100px', targets: 4 }, // Weight
                     { width: '120px', targets: 5 }, // Health Status
                     { width: '130px', targets: 6 }, // Registration Date
-                    { width: '180px', targets: 7, className: 'text-left', orderable: false, searchable: false } // Actions
+                    { width: '220px', targets: 7, className: 'text-left', orderable: false, searchable: false } // Actions
                 ],
                 buttons: [
                     {
                         extend: 'csvHtml5',
                         title: 'Livestock_Report',
-                        className: 'd-none'
+                        className: 'd-none',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6],
+                            modifier: { page: 'all' }
+                        }
                     },
                     {
                         extend: 'pdfHtml5',
                         title: 'Livestock_Report',
                         orientation: 'landscape',
                         pageSize: 'Letter',
-                        className: 'd-none'
+                        className: 'd-none',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6],
+                            modifier: { page: 'all' }
+                        }
                     },
                     {
                         extend: 'print',
                         title: 'Livestock Report',
-                        className: 'd-none'
+                        className: 'd-none',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6],
+                            modifier: { page: 'all' }
+                        }
                     }
                 ],
                 language: {
@@ -1477,227 +1496,41 @@ function saveBreedingRecord(livestockId) {
 
 function exportToCSV() {
     try {
-        // Check if DataTable is initialized
         if (!livestockTable) {
             showNotification('Table not initialized. Please refresh the page.', 'danger');
             return;
         }
-        
-        // Get current table data without actions column
-        const tableData = livestockTable.data().toArray();
-        const csvData = [];
-        
-        // Add headers (excluding Actions column) - Match admin styling
-        const headers = ['Livestock ID', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Registration Date'];
-        csvData.push(headers.join(','));
-        
-        // Add data rows (excluding Actions column)
-        tableData.forEach(row => {
-            // Extract text content from each cell, excluding the last column (Actions)
-            const rowData = [];
-            for (let i = 0; i < row.length - 1; i++) {
-                let cellText = '';
-                if (row[i]) {
-                    // Remove HTML tags and get clean text
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = row[i];
-                    cellText = tempDiv.textContent || tempDiv.innerText || '';
-                    // Clean up the text (remove extra spaces, newlines)
-                    cellText = cellText.replace(/\s+/g, ' ').trim();
-                }
-                // Escape commas and quotes for CSV
-                if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
-                    cellText = '"' + cellText.replace(/"/g, '""') + '"';
-                }
-                rowData.push(cellText);
-            }
-            csvData.push(rowData.join(','));
-        });
-        
-        // Create and download CSV file
-        const csvContent = csvData.join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `Farmer_LivestockReport_${downloadCounter}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        // Increment download counter
-        downloadCounter++;
-        
-        showNotification('CSV exported successfully!', 'success');
+        livestockTable.button('.buttons-csv').trigger();
     } catch (error) {
-        console.error('Error generating CSV:', error);
-        showNotification('Error generating CSV. Please try again.', 'danger');
+        console.error('CSV export error:', error);
+        showNotification('Error exporting CSV. Please try again.', 'danger');
     }
 }
 
 function exportToPDF() {
     try {
-        // Check if DataTable is initialized
         if (!livestockTable) {
             showNotification('Table not initialized. Please refresh the page.', 'danger');
             return;
         }
-        
-        // Check if jsPDF is available - use same pattern as admin/superadmin
-        if (typeof window.jspdf === 'undefined') {
-            console.warn('jsPDF not available, falling back to DataTables PDF export');
-            // Fallback to DataTables PDF export
-            livestockTable.button('.buttons-pdf').trigger();
-            return;
-        }
-        
-        // Get table data
-        const tableData = livestockTable.data().toArray();
-        const pdfData = [];
-        
-        const headers = ['Livestock ID', 'Type', 'Breed', 'Age', 'Weight', 'Health Status', 'Registration Date'];
-        
-        tableData.forEach(row => {
-            const rowData = [];
-            for (let i = 0; i < row.length - 1; i++) { // Exclude Actions column
-                let cellText = '';
-                if (row[i]) {
-                    // Remove HTML tags and get clean text
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = row[i];
-                    cellText = tempDiv.textContent || tempDiv.innerText || '';
-                    // Clean up the text (remove extra spaces, newlines)
-                    cellText = cellText.replace(/\s+/g, ' ').trim();
-                }
-                rowData.push(cellText);
-            }
-            pdfData.push(rowData);
-        });
-        
-        // Create PDF using jsPDF - match admin/superadmin pattern exactly
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('landscape', 'mm', 'a4');
-        
-        // Add title - match admin/superadmin styling
-        doc.setFontSize(18);
-        doc.text('Farmer Livestock Report', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        
-        // Add table - match admin/superadmin styling
-        doc.autoTable({
-            head: [headers],
-            body: pdfData,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] }
-        });
-        
-        // Save the PDF
-        doc.save(`Farmer_LivestockReport_${downloadCounter}.pdf`);
-        
-        // Increment download counter
-        downloadCounter++;
-        
-        showNotification('PDF exported successfully!', 'success');
-        
+        livestockTable.button('.buttons-pdf').trigger();
     } catch (error) {
-        console.error('Error generating PDF:', error);
-        showNotification('Error generating PDF. Falling back to DataTables export.', 'warning');
-        
-        // Fallback to DataTables PDF export
-        try {
-            livestockTable.button('.buttons-pdf').trigger();
-        } catch (fallbackError) {
-            console.error('Fallback PDF export also failed:', fallbackError);
-            showNotification('PDF export failed. Please try again.', 'danger');
-        }
+        console.error('PDF export error:', error);
+        showNotification('Error exporting PDF. Please try again.', 'danger');
     }
 }
 
 function printTable() {
     try {
-        // Get current table data without actions column
-        const tableData = livestockTable.data().toArray();
-        
-        if (!tableData || tableData.length === 0) {
-            showNotification('No data available to print', 'warning');
+        if (!livestockTable) {
+            showNotification('Table not initialized. Please refresh the page.', 'danger');
             return;
         }
-        
-        // Create print content directly in current page
-        const originalContent = document.body.innerHTML;
-        
-        let printContent = `
-            <div style="font-family: Arial, sans-serif; margin: 20px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <h1 style="color: #18375d; margin-bottom: 5px;">Farmer Livestock Report</h1>
-                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
-                </div>
-                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
-                    <thead>
-                        <tr>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Livestock ID</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Type</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Breed</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Age</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Weight (kg)</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Health Status</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Registration Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-        
-        // Add data rows (excluding Actions column)
-        tableData.forEach(row => {
-            printContent += '<tr>';
-            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
-                let cellText = '';
-                if (row[i]) {
-                    // Remove HTML tags and get clean text
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = row[i];
-                    cellText = tempDiv.textContent || tempDiv.innerText || '';
-                    // Clean up the text
-                    cellText = cellText.replace(/\s+/g, ' ').trim();
-                }
-                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
-            }
-            printContent += '</tr>';
-        });
-        
-        printContent += `
-                    </tbody>
-                </table>
-            </div>`;
-        
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
-        
+        livestockTable.button('.buttons-print').trigger();
     } catch (error) {
-        console.error('Error in print function:', error);
-        showNotification('Error generating print. Please try again.', 'danger');
-        
-        // Fallback to simple print
-        try {
-            window.print();
-        } catch (fallbackError) {
-            console.error('Fallback print also failed:', fallbackError);
-            showNotification('Print failed. Please try again.', 'danger');
-        }
+        console.error('Print error:', error);
+        showNotification('Error printing table. Please try again.', 'danger');
+        try { window.print(); } catch (_) {}
     }
 }
 

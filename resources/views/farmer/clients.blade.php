@@ -1587,12 +1587,17 @@
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
                             </div>
                             <input type="text" id="clientSearch" class="form-control" placeholder="Search clients...">
+                            <div class="input-group-append">
+                                <button type="button" class="btn-action btn-action-tools" onclick="triggerClientSearch()">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
                         </div>
                         <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
                             <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addClientModal">
                             <i class="fas fa-plus mr-1"></i> Add Client
                             </button>
-                            <button class="btn-action btn-action-edits" onclick="printClientsTable()">
+                            <button class="btn-action btn-action-print" onclick="printClientsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshClientsTable()">
@@ -1632,7 +1637,7 @@
                         </thead>
                         <tbody>
                             @forelse($clientsData as $client)
-                            <tr>
+                            <tr data-client-name="{{ $client['name'] }}">
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
@@ -1676,6 +1681,83 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW CLIENT MODAL -->
+<div class="modal fade admin-modal" id="clientDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle"><i class="fas fa-user fa-2x"></i></div>
+                <h5 class="fw-bold mb-1">Client Details</h5>
+            </div>
+            <div class="modal-body">
+                <div id="clientDetailsContainer" class="detail-wrapper"></div>
+            </div>
+            <div class="modal-footer justify-content-center mt-4">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<!-- EDIT CLIENT MODAL -->
+<div class="modal fade admin-modal" id="editClientModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content smart-form text-center p-4">
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle"><i class="fas fa-user-edit fa-2x"></i></div>
+                <h5 class="fw-bold mb-1">Edit Client</h5>
+            </div>
+            <form id="editClientForm">
+                <div class="form-wrapper text-start mx-auto">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="edit_clientName" class="fw-semibold">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_clientName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_clientType" class="fw-semibold">Client Type <span class="text-danger">*</span></label>
+                            <select class="form-control" id="edit_clientType" required>
+                                <option value="retail">Retail</option>
+                                <option value="wholesale">Wholesale</option>
+                                <option value="business">Business</option>
+                                <option value="market">Market</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_clientPhone" class="fw-semibold">Phone Number <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="edit_clientPhone" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_clientEmail" class="fw-semibold">Email Address</label>
+                            <input type="email" class="form-control" id="edit_clientEmail">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_clientAddress" class="fw-semibold">Address <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="edit_clientAddress" rows="3" style="resize: none;"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_clientStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" id="edit_clientStatus" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="edit_clientNotes" class="fw-semibold">Notes</label>
+                            <textarea class="form-control mt-1" id="edit_clientNotes" rows="3" style="resize: none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-modern btn-ok">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -1938,10 +2020,12 @@ document.addEventListener('DOMContentLoaded', function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
-            { extend: 'csvHtml5', title: 'Farmer_Clients_Report', className: 'd-none' },
-            { extend: 'pdfHtml5', title: 'Farmer_Clients_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
-            { extend: 'print', title: 'Farmer Clients Report', className: 'd-none' }
+            { extend: 'csvHtml5', title: 'Farmer_Clients_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'pdfHtml5', title: 'Farmer_Clients_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'print', title: 'Farmer Clients Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } }
         ],
         language: {
             search: "",
@@ -2016,7 +2100,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <button class="btn btn-sm btn-outline-info" onclick="editClient('${name.replace(/'/g, "&#39;")}')">Edit</button>`;
 
         if (clientsDT) {
-            clientsDT.row.add([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false);
+            const rowNode = clientsDT.row.add([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false).node();
+            if (rowNode) { rowNode.setAttribute('data-client-name', name); }
         }
 
         // Update Chart counts
@@ -2033,96 +2118,184 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#addClientModal').modal('hide');
         this.reset();
     });
-});
 
-// Print using DataTables button
-function printClientsTable(){
-    try { if (clientsDT) clientsDT.button('.buttons-print').trigger(); else window.print(); }
-    catch(e){ console.error('printClientsTable error:', e); window.print(); }
-}
-
-function refreshClientsTable(){
-    const btn = document.querySelector('.btn-action-refresh');
-    if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
-    sessionStorage.setItem('showRefreshNotificationClients','true');
-    setTimeout(()=>location.reload(), 800);
-}
-
-// After reload, show notification
-$(document).ready(function(){
-    if (sessionStorage.getItem('showRefreshNotificationClients') === 'true'){
-        sessionStorage.removeItem('showRefreshNotificationClients');
-        setTimeout(()=>showNotification('Client data refreshed successfully!','success'), 400);
+    // Trigger search from button (global)
+    window.triggerClientSearch = function(){
+        const q = document.getElementById('clientSearch') ? document.getElementById('clientSearch').value : '';
+        if (clientsDT) clientsDT.search(q).draw();
     }
-});
 
-   function showNotification(message, type) {
-    const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
-            ${message}
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
-        </div>
-    `);
-    
-    $('body').append(notification);
-    
-    setTimeout(() => {
-        notification.alert('close');
-    }, 5000);
-}
+    // Print using DataTables button (global)
+    window.printClientsTable = function(){
+        try { if (clientsDT) clientsDT.button('.buttons-print').trigger(); else window.print(); }
+        catch(e){ console.error('printClientsTable error:', e); window.print(); }
+    }
 
-function exportClientsCSV(){
-    if (!clientsDT) return showNotification('Table not ready', 'error');
-    const rows = clientsDT.data().toArray();
-    const headers = ['Client Name','Contact','Type','Status','Total Orders'];
-    const csv = [headers.join(',')];
-    rows.forEach(r=>{
-        const arr = [];
-        for (let i=0;i<r.length-1;i++){
-            let t=''; const tmp=document.createElement('div'); tmp.innerHTML=r[i]; t=tmp.textContent||tmp.innerText||''; t=t.replace(/\s+/g,' ').trim(); if (t.includes(',')||t.includes('"')||t.includes('\n')) t='"'+t.replace(/"/g,'""')+'"'; arr.push(t);
+    // Refresh table (global)
+    window.refreshClientsTable = function(){
+        const btn = document.querySelector('.btn-action-refresh');
+        if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
+        sessionStorage.setItem('showRefreshNotificationClients','true');
+        setTimeout(()=>location.reload(), 800);
+    }
+
+    // After reload, show notification
+    $(document).ready(function(){
+        if (sessionStorage.getItem('showRefreshNotificationClients') === 'true'){
+            sessionStorage.removeItem('showRefreshNotificationClients');
+            setTimeout(()=>showNotification('Client data refreshed successfully!','success'), 400);
         }
-        csv.push(arr.join(','));
     });
-    const blob=new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8;'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`Farmer_ClientsReport_${Date.now()}.csv`; a.click();
-}
 
-function exportClientsPDF(){
-    try{
-        if (!clientsDT) return showNotification('Table not ready','error');
-        const rows = clientsDT.data().toArray();
-        const data = rows.map(r=>[r[0]||'',r[1]||'',r[2]||'',r[3]||'',r[4]||'']);
-        const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape','mm','a4');
-        doc.setFontSize(18); doc.text('Farmer Clients Report',14,22);
-        doc.setFontSize(12); doc.text(`Generated on: ${new Date().toLocaleDateString()}`,14,32);
-        doc.autoTable({ head: [['Client Name','Contact','Type','Status','Total Orders']], body: data, startY: 40, styles:{fontSize:8, cellPadding:2}, headStyles:{ fillColor:[24,55,93], textColor:255, fontStyle:'bold' }, alternateRowStyles:{ fillColor:[245,245,245] } });
-        doc.save(`Farmer_ClientsReport_${Date.now()}.pdf`);
-    }catch(e){ console.error('PDF export error:', e); showNotification('Error generating PDF','error'); }
-}
+    function showNotification(message, type) {
+        const notification = $(`
+            <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        setTimeout(() => {
+            notification.alert('close');
+        }, 5000);
+    }
 
-function exportClientsPNG(){
-    const tbl = document.getElementById('dataTable'); if (!tbl) return;
-    const clone = tbl.cloneNode(true);
-    const headRow = clone.querySelector('thead tr'); if (headRow) headRow.lastElementChild && headRow.lastElementChild.remove();
-    clone.querySelectorAll('tbody tr').forEach(tr=>{ tr.lastElementChild && tr.lastElementChild.remove(); });
-    clone.style.position='absolute'; clone.style.left='-9999px'; document.body.appendChild(clone);
-    html2canvas(clone,{scale:2, backgroundColor:'#ffffff', width:clone.offsetWidth, height:clone.offsetHeight}).then(canvas=>{
-        const a=document.createElement('a'); a.download=`Farmer_ClientsReport_${Date.now()}.png`; a.href=canvas.toDataURL('image/png'); a.click(); document.body.removeChild(clone);
-    }).catch(err=>{ console.error('PNG export error:', err); document.body.contains(clone)&&document.body.removeChild(clone); showNotification('Error generating PNG','error'); });
-}
+    // Export CSV (global)
+    window.exportClientsCSV = function(){
+        try {
+            if (clientsDT) { clientsDT.button('.buttons-csv').trigger(); }
+            else { showNotification('Table not ready', 'error'); }
+        } catch(e) { console.error('CSV export error:', e); showNotification('Error generating CSV','error'); }
+    }
 
-function showNotification(message, type){
-    const t = document.createElement('div');
-    t.className = `alert alert-${type==='error'?'danger':type} alert-dismissible fade show position-fixed`;
-    t.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    t.innerHTML = `${message}<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>`;
-    document.body.appendChild(t); setTimeout(()=>t.remove(), 5000);
-}
+    // Export PDF (global)
+    window.exportClientsPDF = function(){
+        try {
+            if (clientsDT) { clientsDT.button('.buttons-pdf').trigger(); }
+            else { showNotification('Table not ready','error'); }
+        } catch(e) { console.error('PDF export error:', e); showNotification('Error generating PDF','error'); }
+    }
 
-function viewClient(name){ showNotification(`View client: ${name}`,'info'); }
-function editClient(name){ showNotification(`Edit client: ${name}`,'info'); }
+    // Export PNG (global)
+    window.exportClientsPNG = function(){
+        const tbl = document.getElementById('dataTable'); if (!tbl) return;
+        const clone = tbl.cloneNode(true);
+        const headRow = clone.querySelector('thead tr'); if (headRow) headRow.lastElementChild && headRow.lastElementChild.remove();
+        clone.querySelectorAll('tbody tr').forEach(tr=>{ tr.lastElementChild && tr.lastElementChild.remove(); });
+        clone.style.position='absolute'; clone.style.left='-9999px'; document.body.appendChild(clone);
+        html2canvas(clone,{scale:2, backgroundColor:'#ffffff', width:clone.offsetWidth, height:clone.offsetHeight}).then(canvas=>{
+            const a=document.createElement('a'); a.download=`Farmer_ClientsReport_${Date.now()}.png`; a.href=canvas.toDataURL('image/png'); a.click(); document.body.removeChild(clone);
+        }).catch(err=>{ console.error('PNG export error:', err); document.body.contains(clone)&&document.body.removeChild(clone); showNotification('Error generating PNG','error'); });
+    }
+
+    // Helpers (remain inner scope)
+    function getClientRowByName(name){
+        const rows = document.querySelectorAll('#dataTable tbody tr');
+        for (const tr of rows){ if ((tr.getAttribute('data-client-name')||'').trim() === name) return tr; }
+        return null;
+    }
+
+    function parseClientRow(tr){
+        const tds = tr ? tr.querySelectorAll('td') : [];
+        const name = (tr && tr.getAttribute('data-client-name')) || '';
+        const contactText = tds[1] ? tds[1].innerText.trim() : '';
+        const [phoneLine, emailLine] = contactText.split('\n');
+        const type = tds[2] ? tds[2].innerText.trim() : '';
+        const status = tds[3] ? tds[3].innerText.trim() : '';
+        const totalOrders = tds[4] ? tds[4].innerText.trim() : '';
+        return { name, phone: (phoneLine||'').trim(), email: (emailLine||'').trim(), type, status, totalOrders };
+    }
+
+    // View client (global)
+    window.viewClient = function(name){
+        const tr = getClientRowByName(name);
+        const data = parseClientRow(tr);
+        const container = document.getElementById('clientDetailsContainer');
+        if (!container){ return; }
+        container.innerHTML = `
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <div class="smart-card p-3 rounded-3 shadow-sm border">
+                        <h6 class="section-title mb-3">Client Information</h6>
+                        <p><strong>Name:</strong> <span class="text-dark">${data.name || 'N/A'}</span></p>
+                        <p><strong>Type:</strong> <span class="text-dark">${data.type || 'N/A'}</span></p>
+                        <p><strong>Status:</strong> <span class="text-dark">${data.status || 'N/A'}</span></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="smart-card p-3 rounded-3 shadow-sm border">
+                        <h6 class="section-title mb-3">Contact</h6>
+                        <p><strong>Phone:</strong> <span class="text-dark">${data.phone || 'N/A'}</span></p>
+                        <p><strong>Email:</strong> <span class="text-dark">${data.email || 'N/A'}</span></p>
+                        <p><strong>Total Orders:</strong> <span class="text-dark">${data.totalOrders || '0'}</span></p>
+                    </div>
+                </div>
+            </div>`;
+        $('#clientDetailsModal').modal('show');
+    }
+
+    let editingClientOriginalName = null;
+    // Edit client (global)
+    window.editClient = function(name){
+        const tr = getClientRowByName(name);
+        const data = parseClientRow(tr);
+        editingClientOriginalName = data.name;
+        document.getElementById('edit_clientName').value = data.name || '';
+        // Map back to select values by label
+        const typeMap = { 'Retail':'retail', 'Wholesale':'wholesale', 'Business':'business', 'Market':'market' };
+        document.getElementById('edit_clientType').value = typeMap[data.type] || 'retail';
+        document.getElementById('edit_clientPhone').value = data.phone || '';
+        document.getElementById('edit_clientEmail').value = (data.email||'').replace(/^Email:\\s*/,'');
+        document.getElementById('edit_clientAddress').value = '';
+        const statusMap = { 'Active':'active', 'Inactive':'inactive', 'Pending':'pending' };
+        document.getElementById('edit_clientStatus').value = statusMap[data.status] || 'active';
+        document.getElementById('edit_clientNotes').value = '';
+        $('#editClientModal').modal('show');
+    }
+
+    // Edit form submission: update the table row (frontend only)
+    $(document).ready(function(){
+        $('#editClientForm').on('submit', function(e){
+            e.preventDefault();
+            if (!clientsDT) { $('#editClientModal').modal('hide'); return; }
+            const name = $('#edit_clientName').val().trim();
+            const typeVal = $('#edit_clientType').val();
+            const phone = $('#edit_clientPhone').val().trim();
+            const email = $('#edit_clientEmail').val().trim();
+            const statusVal = $('#edit_clientStatus').val();
+            const typeLabelMap = { retail: 'Retail', wholesale: 'Wholesale', business: 'Business', market: 'Market' };
+            const typeBadgeMap = { retail: 'badge badge-success', wholesale: 'badge badge-info', business: 'badge badge-warning', market: 'badge badge-secondary' };
+            const statusLabelMap = { active: 'Active', inactive: 'Inactive', pending: 'Pending' };
+            const statusBadgeMap = { active: 'badge badge-success', inactive: 'badge badge-secondary', pending: 'badge badge-warning' };
+
+            const tr = getClientRowByName(editingClientOriginalName || name);
+            if (!tr) { $('#editClientModal').modal('hide'); return; }
+            const nameCell = `
+                <div class="d-flex align-items-center">
+                    <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
+                    <div>
+                        <div class="font-weight-bold">${name}</div>
+                        <small class="text-muted">${typeLabelMap[typeVal]||'N/A'}</small>
+                    </div>
+                </div>`;
+            const contactCell = `<div>${phone||'N/A'}</div><small class="text-muted">${email||'N/A'}</small>`;
+            const typeCell = `<span class="${typeBadgeMap[typeVal]||'badge badge-secondary'}">${typeLabelMap[typeVal]||'N/A'}</span>`;
+            const statusCell = `<span class="${statusBadgeMap[statusVal]||'badge badge-secondary'}">${statusLabelMap[statusVal]||'N/A'}</span>`;
+            const totalOrdersCell = clientsDT.row(tr).data()[4] || '0';
+            const actionCell = clientsDT.row(tr).data()[5] || '';
+            clientsDT.row(tr).data([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false);
+            tr.setAttribute('data-client-name', name);
+            $('#editClientModal').modal('hide');
+            showNotification('Client updated successfully!', 'success');
+        });
+    });
+
+    // No-op to avoid inline handler error (logic handled by addEventListener above)
+    window.submitClient = function(e){ if (e) e.preventDefault(); }
 </script>
 @endpush

@@ -1186,7 +1186,7 @@
                         <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addLivestockDetailsModal">
                         <i class="fas fa-plus mr-1"></i> Add Sale
                         </button>
-                        <button class="btn-action btn-action-edits " onclick="printProductivity()">
+                        <button class="btn-action btn-action-print" onclick="printProductivity()">
                         <i class="fas fa-print mr-1"></i> Print
                         </button>
                         <button class="btn-action btn-action-refresh" onclick="refreshSalesTable('salesTable')">
@@ -1574,10 +1574,12 @@ $(document).ready(function () {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
-            { extend: 'csvHtml5', title: 'Farmer_Sales_Report', className: 'd-none' },
-            { extend: 'pdfHtml5', title: 'Farmer_Sales_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
-            { extend: 'print', title: 'Farmer Sales Report', className: 'd-none' }
+            { extend: 'csvHtml5', title: 'Farmer_Sales_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } } },
+            { extend: 'pdfHtml5', title: 'Farmer_Sales_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } } },
+            { extend: 'print', title: 'Farmer Sales Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } } }
         ],
         language: {
             search: "",
@@ -1610,59 +1612,62 @@ $(document).ready(function () {
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
 
-    // Form submission
+    // Form submission (create or update)
     document.getElementById('addLivestockDetailsForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        addNewSale();
+        submitSale();
     });
 });
 
+let editSaleId = null;
 
-
-function addNewSale() {
+function submitSale() {
     const formData = new FormData(document.getElementById('addLivestockDetailsForm'));
-    
-    // Validate required fields
+
     if (!formData.get('farm_id') || !formData.get('customer_name') || !formData.get('quantity') || !formData.get('unit_price') || !formData.get('sale_date')) {
-        showNotification('Please fill in all required fields', 'error');
+        showNotification('Please fill in all required fields', 'danger');
         return;
     }
-    
-    // Send AJAX request
-    fetch('{{ route("farmer.sales.store") }}', {
-        method: 'POST',
+
+    const payload = {
+        farm_id: formData.get('farm_id'),
+        customer_name: formData.get('customer_name'),
+        customer_phone: formData.get('customer_phone'),
+        customer_email: formData.get('customer_email'),
+        quantity: formData.get('quantity'),
+        unit_price: formData.get('unit_price'),
+        sale_date: formData.get('sale_date'),
+        payment_method: formData.get('payment_method'),
+        payment_status: formData.get('payment_status'),
+        notes: formData.get('notes')
+    };
+
+    const url = editSaleId ? `/farmer/sales/${editSaleId}` : '{{ route("farmer.sales.store") }}';
+    const method = editSaleId ? 'PUT' : 'POST';
+
+    fetch(url, {
+        method,
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            farm_id: formData.get('farm_id'),
-            customer_name: formData.get('customer_name'),
-            customer_phone: formData.get('customer_phone'),
-            customer_email: formData.get('customer_email'),
-            quantity: formData.get('quantity'),
-            unit_price: formData.get('unit_price'),
-            sale_date: formData.get('sale_date'),
-            payment_method: formData.get('payment_method'),
-            payment_status: formData.get('payment_status'),
-            notes: formData.get('notes')
-        })
+        body: JSON.stringify(payload)
     })
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
         if (data.success) {
             showNotification(data.message, 'success');
             $('#addLivestockDetailsModal').modal('hide');
             document.getElementById('addLivestockDetailsForm').reset();
-            // Reload the page to refresh the data
+            editSaleId = null;
             location.reload();
         } else {
-            showNotification(data.message, 'error');
+            showNotification(data.message || 'Failed to save sale', 'danger');
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotification('An error occurred while saving the sale record', 'error');
+    .catch(err => {
+        console.error('submitSale error:', err);
+        showNotification('An error occurred while saving the sale record', 'danger');
     });
 }
 
@@ -1736,21 +1741,17 @@ function editSale(saleId) {
                 
                 // Populate the add sale modal with existing data
                 $('#addLivestockDetailsModal').modal('show');
-                $('#customer_name').val(sale.customer_name);
-                $('#customer_phone').val(sale.customer_phone);
-                $('#customer_email').val(sale.customer_email);
-                $('#quantity').val(sale.quantity);
-                $('#unit_price').val(sale.unit_price);
-                $('#sale_date').val(sale.sale_date);
-                $('#payment_method').val(sale.payment_method);
-                $('#payment_status').val(sale.payment_status);
-                $('#notes').val(sale.notes);
-                
-                // Change form action to update
-                $('#addLivestockDetailsForm').attr('action', `/farmer/sales/${saleId}`);
-                $('#addLivestockDetailsForm').attr('method', 'PUT');
-                $('#addLivestockDetailsModalLabel').html('<i class="fas fa-edit"></i> Edit Sale Record');
-                $('#saveSaleBtn').html('<i class="fas fa-save"></i> Update Sale');
+                $('#add_farm_id').val(sale.farm_id);
+                $('#add_customer_name').val(sale.customer_name);
+                $('#add_customer_phone').val(sale.customer_phone);
+                $('#add_customer_email').val(sale.customer_email);
+                $('#add_quantity').val(sale.quantity);
+                $('#add_unit_price').val(sale.unit_price);
+                $('#add_sale_date').val(sale.sale_date);
+                $('#add_payment_method').val(sale.payment_method);
+                $('#add_payment_status').val(sale.payment_status);
+                $('#add_notes').val(sale.notes);
+                editSaleId = saleId;
             }
         },
         error: function() {
@@ -1848,110 +1849,13 @@ function updateStats() {
 }
 
 function exportCSV() {
-    // Get current table data without actions column
-    const tableData = salesDT ? salesDT.data().toArray() : [];
-    const csvData = [];
-    
-    // Add headers (excluding Actions column)
-    const headers = ['Sale ID', 'Date', 'Customer', 'Quantity (L)', 'Unit Price (₱)', 'Total Amount (₱)', 'Status'];
-    csvData.push(headers.join(','));
-    
-    // Add data rows (excluding Actions column)
-    tableData.forEach(row => {
-        // Extract text content from each cell, excluding the last column (Actions)
-        const rowData = [];
-        for (let i = 0; i < row.length - 1; i++) {
-            let cellText = '';
-            if (row[i]) {
-                // Remove HTML tags and get clean text
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = row[i];
-                cellText = tempDiv.textContent || tempDiv.innerText || '';
-                // Clean up the text (remove extra spaces, newlines)
-                cellText = cellText.replace(/\s+/g, ' ').trim();
-            }
-            // Escape commas and quotes for CSV
-            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
-                cellText = '"' + cellText.replace(/"/g, '""') + '"';
-            }
-            rowData.push(cellText);
-        }
-        csvData.push(rowData.join(','));
-    });
-    
-    // Create and download CSV file
-    const csvContent = csvData.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `Farmer_SalesReport_${downloadCounter}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Increment download counter
-    downloadCounter++;
-    
-    showNotification('CSV exported successfully!', 'success');
+    try {
+        if (salesDT) salesDT.button('.buttons-csv').trigger();
+    } catch (e) { console.error('exportCSV error:', e); }
 }
 
 function exportPDF() {
-    try {
-        // Force custom PDF generation to match superadmin styling
-        // Don't fall back to DataTables PDF export as it has different styling
-        
-        const tableData = salesDT ? salesDT.data().toArray() : [];
-        const pdfData = [];
-        
-        const headers = ['Sale ID', 'Date', 'Customer', 'Quantity (L)', 'Unit Price (₱)', 'Total Amount (₱)', 'Status'];
-        
-        tableData.forEach(row => {
-            const rowData = [
-                row[0] || '', // Sale ID
-                row[1] || '', // Date
-                row[2] || '', // Customer
-                row[3] || '', // Quantity (L)
-                row[4] || '', // Unit Price (₱)
-                row[5] || '', // Total Amount (₱)
-                row[6] || ''  // Status
-            ];
-            pdfData.push(rowData);
-        });
-        
-        // Create PDF using jsPDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('landscape', 'mm', 'a4');
-        
-        // Set title
-        doc.setFontSize(18);
-        doc.text('Farmer Sales Report', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        
-        // Create table
-        doc.autoTable({
-            head: [headers],
-            body: pdfData,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] }
-        });
-        
-        // Save the PDF
-        doc.save(`Farmer_SalesReport_${downloadCounter}.pdf`);
-        
-        // Increment download counter
-        downloadCounter++;
-        
-        showNotification('PDF exported successfully!', 'success');
-        
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        showNotification('Error generating PDF. Please try again.', 'error');
-    }
+    try { if (salesDT) salesDT.button('.buttons-pdf').trigger(); } catch (e) { console.error('exportPDF error:', e); }
 }
 
 function exportPNG() {
@@ -2054,8 +1958,38 @@ function importCSV(event) {
 }
 
 function exportHistory() {
-    // Export history data
-    showNotification('History exported successfully!', 'success');
+    try {
+        const rows = Array.from(document.querySelectorAll('#historyTableBody tr'));
+        if (rows.length === 0) {
+            showNotification('No history data to export', 'warning');
+            return;
+        }
+        const headers = ['Month', 'Transactions', 'Total Sales (₱)', 'Average Sale (₱)'];
+        const csv = [headers.join(',')];
+        rows.forEach(tr => {
+            const cols = Array.from(tr.querySelectorAll('td')).map(td => {
+                let text = (td.textContent || '').trim();
+                if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+                    text = '"' + text.replace(/"/g, '""') + '"';
+                }
+                return text;
+            });
+            if (cols.length) csv.push(cols.join(','));
+        });
+        const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'Farmer_Sales_History.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showNotification('History exported successfully!', 'success');
+    } catch (e) {
+        console.error('exportHistory error:', e);
+        showNotification('Failed to export history', 'danger');
+    }
 }
 
    function showNotification(message, type) {

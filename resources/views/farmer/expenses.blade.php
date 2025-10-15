@@ -149,7 +149,7 @@
                     <button class="btn-action btn-action-ok" id="supplierSearch" title="Add Expenses" onclick="openAddExpenseModal()">
                         <i class="fas fa-plus"></i> Add Expense
                     </button>
-                    <button class="btn-action btn-action-edits" title="Print" onclick="printExpenses()">
+                    <button class="btn-action btn-action-print" title="Print" onclick="printExpenses()">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshExpenses()">
@@ -191,7 +191,7 @@
                             </thead>
                             <tbody>
                                 @forelse($expensesData as $expense)
-                                <tr>
+                                <tr data-expense-id="{{ $expense['id'] }}">
                                     <td>
                                         <span class="badge badge-primary">{{ $expense['expense_id'] }}</span>
                                     </td>
@@ -255,7 +255,7 @@
                 <div class="icon-circle  mb-3">
                     <i class="fas fa-wallet fa-2x"></i>
                 </div>
-                <h5 class="fw-bold mb-1">Add New Expense</h5>
+                <h5 id="expenseModalLabel" class="fw-bold mb-1">Add New Expense</h5>
                 <p class="text-muted mb-0 small">
                     Fill out the details below to record a new farm expense.
                 </p>
@@ -497,6 +497,7 @@
 <script>
 let currentExpenseId = null;
 let expensesDT = null;
+const CSRF_TOKEN = "{{ csrf_token() }}";
 
 $(document).ready(function() {
     // Initialize DataTable for Expenses
@@ -508,10 +509,12 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
-            { extend: 'csvHtml5', title: 'Farmer_Expenses_Report', className: 'd-none' },
-            { extend: 'pdfHtml5', title: 'Farmer_Expenses_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
-            { extend: 'print', title: 'Farmer Expenses Report', className: 'd-none' }
+            { extend: 'csvHtml5', title: 'Farmer_Expenses_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
+            { extend: 'pdfHtml5', title: 'Farmer_Expenses_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
+            { extend: 'print', title: 'Farmer Expenses Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } }
         ],
         language: { search: "", emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>' }
     };
@@ -531,6 +534,57 @@ $(document).ready(function() {
                     { width: '200px', targets: 6, orderable: false }
                 ]
             });
+
+// Helpers
+function htmlEscape(s){
+    return (s==null? '': String(s)).replace(/[&<>"']/g, function(c){
+        return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+}
+
+function truncateText(s, n){
+    s = s || '';
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+}
+
+function getExpenseRowById(id){
+    return document.querySelector(`#expensesTable tbody tr[data-expense-id="${id}"]`);
+}
+
+function buildExpenseRowCells(exp){
+    const idBadge = `<span class="badge badge-primary">${htmlEscape(exp.expense_id || ('EXP'+String(exp.id).padStart(3,'0')))}</span>`;
+    const date = htmlEscape(exp.expense_date || '');
+    const name = `<div class="d-flex align-items-center"><i class="fas fa-receipt text-primary mr-2"></i>${htmlEscape(exp.description || exp.expense_name || '')}</div>`;
+    const amount = `<strong>₱${Number(exp.amount||0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>`;
+    const status = `<span class="badge badge-${(exp.payment_status||'Paid')==='Paid'?'success':'warning'}">${htmlEscape(exp.payment_status || 'Paid')}</span>`;
+    const method = htmlEscape(exp.payment_method || 'Cash');
+    const actions = `
+        <div class="btn-group">
+            <button class="btn-action btn-action-ok" onclick="viewExpenseDetails('${exp.id}')" title="View Details"><i class="fas fa-eye"></i><span>View</span></button>
+            <button class="btn-action btn-action-edits" onclick="openEditExpenseModal('${exp.id}')" title="Edit Expense"><i class="fas fa-edit"></i><span>Edit</span></button>
+            <button class="btn-action btn-action-deletes" onclick="confirmDelete('${exp.id}')" title="Delete Expense"><i class="fas fa-trash"></i><span>Delete</span></button>
+        </div>`;
+    return [idBadge, date, name, amount, status, method, actions];
+}
+
+function upsertExpenseRow(exp){
+    try {
+        const cells = buildExpenseRowCells(exp);
+        const tr = getExpenseRowById(exp.id);
+        if (expensesDT){
+            if (tr){ expensesDT.row(tr).data(cells).draw(false); }
+            else {
+                const node = expensesDT.row.add(cells).draw(false).node();
+                if (node) node.setAttribute('data-expense-id', exp.id);
+            }
+        }
+    } catch(e){ console.error('upsertExpenseRow error:', e); }
+}
+
+function fetchExpenseAndUpsert(id){
+    return $.ajax({ url: `/farmer/expenses/${id}`, method: 'GET', dataType: 'json' })
+        .done(function(resp){ if (resp && resp.success && resp.expense) upsertExpenseRow(resp.expense); });
+}
         } catch (e) { console.error('Failed to initialize Expenses DataTable:', e); }
     }
 
@@ -546,7 +600,7 @@ $(document).ready(function() {
         try { loadExpensesHistory(); } catch(e){ console.error('loadExpensesHistory error:', e); }
     });
 
-    // Handle form submission
+    // Handle form submission (AJAX)
     $('#expenseForm').on('submit', function(e) {
         e.preventDefault();
         submitExpenseForm();
@@ -603,6 +657,9 @@ function openAddExpenseModal() {
     $('#expenseForm')[0].reset();
     $('#expenseForm').attr('action', '{{ route("farmer.expenses.store") }}');
     $('#expenseForm').attr('method', 'POST');
+    // Remove _method if present
+    const methodInput = $('#expenseForm').find('input[name="_method"]');
+    if (methodInput.length) methodInput.remove();
     $('#expense_date').val('{{ date("Y-m-d") }}');
     $('#expenseModal').modal('show');
 }
@@ -688,33 +745,39 @@ function loadExpenseDetails(expenseId) {
 }
 
 function submitExpenseForm() {
-    const formData = new FormData($('#expenseForm')[0]);
-    
-    $.ajax({
-        url: $('#expenseForm').attr('action'),
-        method: $('#expenseForm').attr('method'),
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            if (response.success) {
-                showToast(response.message, 'success');
-                $('#expenseModal').modal('hide');
-                location.reload();
-            } else {
-                showToast(response.message || 'Error saving expense', 'error');
+    const formEl = $('#expenseForm')[0];
+    const formData = new FormData(formEl);
+    const url = $('#expenseForm').attr('action');
+    const method = $('#expenseForm').attr('method');
+    const submitBtn = $('#expenseForm .btn-ok').get(0);
+    if (submitBtn){ submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+    fetch(url, {
+        method: method || 'POST',
+        headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+        body: formData
+    }).then(async (r)=>{
+        let data = null; try { data = await r.json(); } catch(_){}
+        if (!r.ok || !data){ throw new Error('Request failed'); }
+        if (data.success){
+            const id = (data.expense && data.expense.id) ? data.expense.id : null;
+            if (id){
+                // Fetch normalized expense then upsert row
+                await fetchExpenseAndUpsert(id);
             }
-        },
-        error: function(xhr) {
-            if (xhr.status === 422) {
-                const errors = xhr.responseJSON.errors;
-                Object.keys(errors).forEach(field => {
-                    showToast(errors[field][0], 'error');
-                });
-            } else {
-                showToast('Error saving expense', 'error');
-            }
+            $('#expenseModal').modal('hide');
+            showToast(data.message || 'Expense saved', 'success');
+            formEl.reset();
+            $('#expense_date').val('{{ date('Y-m-d') }}');
+        } else {
+            showToast(data.message || 'Error saving expense', 'error');
         }
+    }).catch(async (err)=>{
+        // Try parse validation errors
+        console.error('submitExpenseForm error:', err);
+        showToast('Error saving expense', 'error');
+    }).finally(()=>{
+        if (submitBtn){ submitBtn.disabled = false; submitBtn.innerHTML = 'Save Expense'; }
     });
 }
 
@@ -733,21 +796,18 @@ function deleteExpense(expenseId) {
     $.ajax({
         url: `/farmer/expenses/${expenseId}`,
         method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            if (response.success) {
-                showToast(response.message, 'success');
-                $('#confirmDeleteModal').modal('hide');
-                location.reload();
-            } else {
-                showToast(response.message || 'Error deleting expense', 'error');
-            }
-        },
-        error: function() {
-            showToast('Error deleting expense', 'error');
+        headers: { 'X-CSRF-TOKEN': CSRF_TOKEN },
+    }).done(function(response){
+        if (response && response.success){
+            const tr = getExpenseRowById(expenseId);
+            if (tr && expensesDT){ expensesDT.row(tr).remove().draw(false); }
+            $('#confirmDeleteModal').modal('hide');
+            showToast(response.message || 'Expense deleted successfully!', 'success');
+        } else {
+            showToast((response && response.message) || 'Error deleting expense', 'error');
         }
+    }).fail(function(){
+        showToast('Error deleting expense', 'error');
     });
 }
 
@@ -788,63 +848,13 @@ function loadExpensesHistory() {
 }
 
 function exportCSV(){
-    try {
-        if (!expensesDT) return showToast('Table is not ready.', 'error');
-        const rows = expensesDT.data().toArray();
-        const headers = ['Expense ID','Date','Expense Name','Amount','Payment Status','Payment Method'];
-        const csv = [headers.join(',')];
-        rows.forEach(r => {
-            const arr = [];
-            for (let i = 0; i < r.length - 1; i++) { // exclude Actions
-                const tmp = document.createElement('div'); tmp.innerHTML = r[i];
-                let t = tmp.textContent || tmp.innerText || '';
-                t = t.replace(/\s+/g, ' ').trim();
-                if (t.includes(',') || t.includes('"') || t.includes('\n')) t = '"' + t.replace(/"/g, '""') + '"';
-                arr.push(t);
-            }
-            csv.push(arr.join(','));
-        });
-        const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Farmer_ExpensesReport_${Date.now()}.csv`; a.click();
-        showToast('CSV exported successfully!', 'success');
-    } catch(e){ console.error('CSV export error:', e); showToast('Error generating CSV.', 'error'); }
+    try { if (expensesDT) expensesDT.button('.buttons-csv').trigger(); else showToast('Table is not ready.', 'error'); }
+    catch(e){ console.error('CSV export error:', e); showToast('Error generating CSV.', 'error'); }
 }
 
 function exportPDF() {
-    try {
-        if (!expensesDT) return showToast('Table is not ready.', 'error');
-        const rows = expensesDT.data().toArray();
-        const data = rows.map(r => [r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'', r[5]||'']);
-        const headers = ['Expense ID','Date','Expense Name','Amount','Payment Status','Payment Method'];
-        // Create PDF using jsPDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('landscape', 'mm', 'a4');
-        
-        // Set title
-        doc.setFontSize(18);
-        doc.text('Farmer Expenses Report', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        
-        // Create table
-        doc.autoTable({
-            head: [headers],
-            body: data,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] }
-        });
-        
-        // Save the PDF
-        doc.save(`Farmer_ExpensesReport_${Date.now()}.pdf`);
-        
-        showToast('PDF exported successfully!', 'success');
-        
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        showToast('Error generating PDF. Please try again.', 'error');
-    }
+    try { if (expensesDT) expensesDT.button('.buttons-pdf').trigger(); else showToast('Table is not ready.', 'error'); }
+    catch (error) { console.error('Error generating PDF:', error); showToast('Error generating PDF. Please try again.', 'error'); }
 }
 
 function exportPNG() {
@@ -914,7 +924,7 @@ function printExpenses() {
 }
 
 function refreshExpenses(){
-    const btn = document.querySelector('.btn.btn-warning.btn-sm');
+    const btn = document.querySelector('.btn-action-refresh');
     if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
     sessionStorage.setItem('showRefreshNotificationExpenses','true');
     setTimeout(()=>location.reload(), 800);

@@ -144,7 +144,7 @@
                 </thead>
                 <tbody>
                     @forelse($inventory as $item)
-                    <tr>
+                    <tr data-item-id="{{ $item->id }}">
                         <td>{{ $item->code }}</td>
                         <td>{{ optional($item->date)->format('Y-m-d') }}</td>
                         <td>{{ $item->category }}</td>
@@ -159,6 +159,10 @@
                                 <button type="button" class="btn-action btn-action-edit" data-id="{{ $item->id }}" title="Edit">
                                     <i class="fas fa-edit"></i>
                                     <span>Edit</span>
+                                </button>
+                                <button type="button" class="btn-action btn-action-delete" data-id="{{ $item->id }}" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Delete</span>
                                 </button>
                             </div>
                         </td>
@@ -180,6 +184,28 @@
 </div>
 
 
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel"><i class="fas fa-trash mr-2"></i>Delete Inventory Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="confirmDeleteItemName"></strong> (<span id="confirmDeleteItemCode"></span>)?</p>
+                <p class="mb-0 text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+    </div>
 
 <!-- Low Stock Alerts -->
 <div class="card shadow mb-4 fade-in">
@@ -729,10 +755,12 @@ $(document).ready(function(){
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
-            { extend: 'csvHtml5', title: 'Farmer_Inventory', className: 'd-none' },
-            { extend: 'pdfHtml5', title: 'Farmer_Inventory', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
-            { extend: 'print', title: 'Farmer Inventory', className: 'd-none' }
+            { extend: 'csvHtml5', title: 'Farmer_Inventory', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'pdfHtml5', title: 'Farmer_Inventory', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'print', title: 'Farmer Inventory', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } }
         ],
         language: { search: "", emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>' }
     };
@@ -777,10 +805,15 @@ $(document).ready(function(){
             headers: { 'X-CSRF-TOKEN': token },
             data: payload,
             success: function(resp){
-                if (resp && resp.success){
+                if (resp && resp.success && resp.item){
+                    upsertInventoryRow(resp.item);
                     $('#addItemModal').modal('hide');
                     showToast(isEdit ? 'Inventory item updated.' : 'Inventory item added.', 'success');
-                    setTimeout(() => location.reload(), 600);
+                    // Reset form for next add
+                    if (!isEdit){
+                        $('#addItemForm')[0].reset();
+                    }
+                    CURRENT_ITEM_ID = null;
                 } else {
                     showToast('Failed to save item.', 'error');
                 }
@@ -811,6 +844,47 @@ $(document).ready(function(){
         e.preventDefault();
         const id = $(this).data('id');
         if (typeof id !== 'undefined') editItem(id);
+    });
+
+    // Delete button -> open confirm modal
+    $(document).on('click', '.btn-action-delete', function(e){
+        e.preventDefault();
+        const id = $(this).data('id');
+        if (typeof id === 'undefined') return;
+        CURRENT_ITEM_ID = Number(id);
+        $.get(`/farmer/inventory/${CURRENT_ITEM_ID}`, function(resp){
+            if (resp && resp.success && resp.item){
+                $('#confirmDeleteItemName').text(resp.item.name || '');
+                $('#confirmDeleteItemCode').text(resp.item.code || '');
+                $('#confirmDeleteModal').modal('show');
+            } else {
+                showToast('Item not found', 'error');
+            }
+        }).fail(function(){ showToast('Failed to load item.', 'error'); });
+    });
+
+    // Confirm delete
+    $('#confirmDeleteBtn').on('click', function(){
+        if (!CURRENT_ITEM_ID) return;
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        $.ajax({
+            url: `/farmer/inventory/${CURRENT_ITEM_ID}`,
+            type: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': token },
+            success: function(resp){
+                if (resp && resp.success){
+                    const $row = $(`tr[data-item-id="${CURRENT_ITEM_ID}"]`);
+                    if (inventoryDT && $row.length){ inventoryDT.row($row).remove().draw(false); }
+                    else { $row.remove(); }
+                    showToast('Inventory item deleted.', 'success');
+                    $('#confirmDeleteModal').modal('hide');
+                    CURRENT_ITEM_ID = null;
+                } else {
+                    showToast('Failed to delete item.', 'error');
+                }
+            },
+            error: function(){ showToast('Failed to delete item.', 'error'); }
+        });
     });
 });
 
@@ -898,44 +972,13 @@ function refreshInventory(){
 }
 
 function exportInventoryCSV(){
-    try {
-        if (!inventoryDT) return showToast('Table is not ready.', 'error');
-        const rows = inventoryDT.data().toArray();
-        const headers = ['Item Name','Category','Quantity','Unit','Status'];
-        const csv = [headers.join(',')];
-        rows.forEach(r => {
-            const arr = [];
-            for (let i = 0; i < r.length - 1; i++) {
-                const tmp = document.createElement('div'); tmp.innerHTML = r[i];
-                let t = tmp.textContent || tmp.innerText || '';
-                t = t.replace(/\s+/g, ' ').trim();
-                if (t.includes(',') || t.includes('"') || t.includes('\n')) t = '"' + t.replace(/"/g, '""') + '"';
-                arr.push(t);
-            }
-            csv.push(arr.join(','));
-        });
-        const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Farmer_Inventory_${Date.now()}.csv`; a.click();
-        showToast('CSV exported successfully!', 'success');
-    } catch(e){ console.error('CSV export error:', e); showToast('Error generating CSV.', 'error'); }
+    try { if (inventoryDT) inventoryDT.button('.buttons-csv').trigger(); else showToast('Table is not ready.', 'error'); }
+    catch(e){ console.error('CSV export error:', e); showToast('Error generating CSV.', 'error'); }
 }
 
 function exportInventoryPDF(){
-    try {
-        if (!inventoryDT) return showToast('Table is not ready.', 'error');
-        const rows = inventoryDT.data().toArray();
-        const data = rows.map(r => [r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'']);
-        const headers = ['Item Name','Category','Quantity','Unit','Status'];
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('landscape', 'mm', 'a4');
-        doc.setFontSize(18);
-        doc.text('Farmer Inventory', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        doc.autoTable({ head: [headers], body: data, startY: 40, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [24,55,93], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245,245,245] } });
-        doc.save(`Farmer_Inventory_${Date.now()}.pdf`);
-        showToast('PDF exported successfully!', 'success');
-    } catch(e){ console.error('PDF export error:', e); showToast('Error generating PDF.', 'error'); }
+    try { if (inventoryDT) inventoryDT.button('.buttons-pdf').trigger(); else showToast('Table is not ready.', 'error'); }
+    catch(e){ console.error('PDF export error:', e); showToast('Error generating PDF.', 'error'); }
 }
 
 function exportInventoryPNG(){
@@ -986,6 +1029,64 @@ function exportInventoryHistory(){
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Inventory_Quarterly_${year}.csv`; a.click();
         showToast('Quarterly history exported successfully!', 'success');
     } catch(e) { console.error('exportInventoryHistory error:', e); showToast('Failed to export history.', 'error'); }
+}
+
+// Helpers: upsert row into DataTable and HTML escape
+function upsertInventoryRow(item){
+    const data = [
+        htmlEscape(item.code || ''),
+        htmlEscape(item.date || ''),
+        htmlEscape(item.category || ''),
+        htmlEscape(item.name || ''),
+        htmlEscape(item.quantity_text || ''),
+        `\n            <div class="action-buttons">\n                <button type="button" class="btn-action btn-action-view" data-id="${item.id}" title="View">\n                    <i class="fas fa-eye"></i><span>View</span>\n                </button>\n                <button type="button" class="btn-action btn-action-edit" data-id="${item.id}" title="Edit">\n                    <i class="fas fa-edit"></i><span>Edit</span>\n                </button>\n                <button type="button" class="btn-action btn-action-delete" data-id="${item.id}" title="Delete">\n                    <i class="fas fa-trash"></i><span>Delete</span>\n                </button>\n            </div>\n        `
+    ];
+    const $row = $(`tr[data-item-id="${item.id}"]`);
+    if (inventoryDT){
+        if ($row.length){
+            inventoryDT.row($row).data(data).draw(false);
+        } else {
+            const node = inventoryDT.row.add(data).draw(false).node();
+            $(node).setAttribute?.('data-item-id', item.id);
+            $(node).attr('data-item-id', item.id);
+        }
+    } else {
+        // Fallback when DataTables is unavailable
+        if ($row.length){
+            const cells = $row.find('td');
+            $(cells[0]).text(item.code || '');
+            $(cells[1]).text(item.date || '');
+            $(cells[2]).text(item.category || '');
+            $(cells[3]).text(item.name || '');
+            $(cells[4]).text(item.quantity_text || '');
+        } else {
+            const tbody = document.querySelector('#dataTable tbody');
+            if (tbody){
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-item-id', item.id);
+                tr.innerHTML = `
+                    <td>${htmlEscape(item.code || '')}</td>
+                    <td>${htmlEscape(item.date || '')}</td>
+                    <td>${htmlEscape(item.category || '')}</td>
+                    <td>${htmlEscape(item.name || '')}</td>
+                    <td>${htmlEscape(item.quantity_text || '')}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button type="button" class="btn-action btn-action-view" data-id="${item.id}" title="View"><i class="fas fa-eye"></i><span>View</span></button>
+                            <button type="button" class="btn-action btn-action-edit" data-id="${item.id}" title="Edit"><i class="fas fa-edit"></i><span>Edit</span></button>
+                            <button type="button" class="btn-action btn-action-delete" data-id="${item.id}" title="Delete"><i class="fas fa-trash"></i><span>Delete</span></button>
+                        </div>
+                    </td>`;
+                tbody.prepend(tr);
+            }
+        }
+    }
+}
+
+function htmlEscape(s){
+    return (s==null? '': String(s)).replace(/[&<>"']/g, function(c){
+        return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
 }
 
 function showToast(message, type = 'info'){

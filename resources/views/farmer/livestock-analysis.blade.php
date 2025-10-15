@@ -890,6 +890,9 @@
         <button type="button" class="btn-modern btn-approves" onclick="printLivestockHistory()">
           <i class="fas fa-print"></i> Print History
         </button>
+        <button type="button" class="btn-modern btn-ok" onclick="exportLivestockHistory()">
+          <i class="fas fa-download"></i> Export History
+        </button>
       </div>
 
     </div>
@@ -1266,6 +1269,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js?v={{ time() }}&ver=3.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js?v={{ time() }}&ver=3.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v={{ time() }}&ver=3.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js?v={{ time() }}&ver=3.0"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js?v={{ time() }}&ver=3.0"></script>
 <script>
@@ -1281,23 +1286,28 @@ document.addEventListener('DOMContentLoaded', function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
             {
                 extend: 'csvHtml5',
                 title: 'Livestock_Analysis_Report',
-                className: 'd-none'
+                className: 'd-none',
+                exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } }
             },
             {
                 extend: 'pdfHtml5',
                 title: 'Livestock_Analysis_Report',
                 orientation: 'landscape',
                 pageSize: 'Letter',
-                className: 'd-none'
+                className: 'd-none',
+                exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } }
             },
             {
                 extend: 'print',
                 title: 'Livestock Analysis Report',
-                className: 'd-none'
+                className: 'd-none',
+                exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } }
             }
         ],
         language: {
@@ -1521,9 +1531,62 @@ function printLivestockAnalysis() {
     printWindow.print();
 }
 
+function exportLivestockHistory() {
+    try {
+        const container = document.getElementById('livestockHistoryContent');
+        if (!container || !container.innerHTML.trim()) {
+            showToast('No history data to export', 'warning');
+            return;
+        }
+        const JsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF ? window.jsPDF.jsPDF : null);
+        if (!JsPDFCtor) {
+            showToast('PDF library unavailable. Please try again.', 'danger');
+            return;
+        }
+        const doc = new JsPDFCtor('p', 'pt', 'a4');
+        const margin = 36;
+        doc.html(container, {
+            x: margin,
+            y: margin,
+            html2canvas: { scale: 0.8, useCORS: true, backgroundColor: '#ffffff' },
+            callback: function (docInstance) {
+                docInstance.save('Livestock_History.pdf');
+                showToast('History exported as PDF', 'success');
+            }
+        });
+    } catch (e) {
+        console.error('exportLivestockHistory error:', e);
+        showToast('Failed to export history', 'danger');
+    }
+}
+
 function exportLivestockAnalysis() {
-    // Implementation for exporting individual livestock analysis
-    showToast('Export functionality will be implemented soon', 'info');
+    try {
+        const container = document.getElementById('livestockAnalysisContent');
+        if (!container || !container.innerHTML.trim()) {
+            showToast('No analysis data to export', 'warning');
+            return;
+        }
+        const JsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF ? window.jsPDF.jsPDF : null);
+        if (!JsPDFCtor) {
+            showToast('PDF library unavailable. Please try again.', 'danger');
+            return;
+        }
+        const doc = new JsPDFCtor('p', 'pt', 'a4');
+        const margin = 36; // 0.5 inch
+        doc.html(container, {
+            x: margin,
+            y: margin,
+            html2canvas: { scale: 0.8, useCORS: true, backgroundColor: '#ffffff' },
+            callback: function (docInstance) {
+                docInstance.save('Livestock_Analysis.pdf');
+                showToast('Analysis exported as PDF', 'success');
+            }
+        });
+    } catch (e) {
+        console.error('exportLivestockAnalysis error:', e);
+        showToast('Failed to export analysis', 'danger');
+    }
 }
 
 // Function to force pagination positioning to the left - ENHANCED VERSION (from Super Admin)
@@ -1737,54 +1800,12 @@ function printLivestockHistory() {
 function exportCSV(tableId) {
     if (tableId === 'livestockTable') {
         try {
-            // Get current table data without actions column
             const table = $('#livestockTable').DataTable();
-            const tableData = table.data().toArray();
-            
-            if (!tableData || tableData.length === 0) {
-                showToast('No data available to export', 'warning');
-                return;
-            }
-            
-            // Create CSV content manually
-            let csvContent = "data:text/csv;charset=utf-8,";
-            
-            // Add headers (excluding Actions column)
-            const headers = ['Livestock ID', 'Name', 'Breed', 'Age (months)', 'Health Score', 'Avg. Production (L/day)', 'Breeding Status'];
-            csvContent += headers.join(',') + '\n';
-            
-            // Add data rows (excluding Actions column)
-            tableData.forEach(row => {
-                const csvRow = [];
-                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
-                    let cellText = '';
-                    if (row[i]) {
-                        // Remove HTML tags and get clean text
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = row[i];
-                        cellText = tempDiv.textContent || tempDiv.innerText || '';
-                        // Clean up the text and escape quotes
-                        cellText = cellText.replace(/\s+/g, ' ').trim().replace(/"/g, '""');
-                    }
-                    csvRow.push('"' + cellText + '"');
-                }
-                csvContent += csvRow.join(',') + '\n';
-            });
-            
-            // Create download link
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Livestock_Analysis_Report.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast('CSV export completed successfully', 'success');
-            
+            table.button('.buttons-csv').trigger();
+            showToast('CSV export started', 'success');
         } catch (error) {
-            console.error('Error exporting CSV:', error);
-            showToast('Error exporting CSV. Please try again.', 'danger');
+            console.error('Error triggering CSV export:', error);
+            showToast('CSV export unavailable', 'danger');
         }
     }
 }
@@ -1792,87 +1813,12 @@ function exportCSV(tableId) {
 function exportPDF(tableId) {
     if (tableId === 'livestockTable') {
         try {
-            // Get current table data without actions column
             const table = $('#livestockTable').DataTable();
-            const tableData = table.data().toArray();
-            
-            if (!tableData || tableData.length === 0) {
-                showToast('No data available to export', 'warning');
-                return;
-            }
-            
-            // Check if jsPDF is available
-            if (typeof window.jsPDF === 'undefined') {
-                console.warn('jsPDF not available, falling back to DataTables PDF export');
-                const table = $('#livestockTable').DataTable();
-                table.button('.buttons-pdf').trigger();
-                return;
-            }
-            
-            const { jsPDF } = window.jsPDF;
-            const doc = new jsPDF('landscape');
-            
-            // Add title
-            doc.setFontSize(18);
-            doc.setFont(undefined, 'bold');
-            doc.text('Livestock Analysis Report', 148, 20, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.setFont(undefined, 'normal');
-            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 148, 30, { align: 'center' });
-            
-            // Prepare table data
-            const headers = ['Livestock ID', 'Name', 'Breed', 'Age (months)', 'Health Score', 'Avg. Production (L/day)', 'Breeding Status'];
-            const pdfData = [];
-            
-            tableData.forEach(row => {
-                const pdfRow = [];
-                for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
-                    let cellText = '';
-                    if (row[i]) {
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = row[i];
-                        cellText = tempDiv.textContent || tempDiv.innerText || '';
-                        cellText = cellText.replace(/\s+/g, ' ').trim();
-                    }
-                    pdfRow.push(cellText);
-                }
-                pdfData.push(pdfRow);
-            });
-            
-            // Add table
-            doc.autoTable({
-                head: [headers],
-                body: pdfData,
-                startY: 40,
-                styles: { fontSize: 8, cellPadding: 2 },
-                headStyles: { fillColor: [24, 55, 93], textColor: 255 },
-                columnStyles: {
-                    0: { cellWidth: 25 }, // Livestock ID
-                    1: { cellWidth: 35 }, // Name
-                    2: { cellWidth: 25 }, // Breed  
-                    3: { cellWidth: 25 }, // Age
-                    4: { cellWidth: 25 }, // Health Score
-                    5: { cellWidth: 35 }, // Avg. Production
-                    6: { cellWidth: 30 }  // Breeding Status
-                }
-            });
-            
-            // Save the PDF
-            doc.save(`Livestock_Analysis_Report.pdf`);
-            showToast('PDF export completed successfully', 'success');
-            
+            table.button('.buttons-pdf').trigger();
+            showToast('PDF export started', 'success');
         } catch (error) {
-            console.error('Error exporting PDF:', error);
-            showToast('Error exporting PDF. Please try again.', 'danger');
-            
-            // Fallback to DataTables PDF export
-            try {
-                const table = $('#livestockTable').DataTable();
-                table.button('.buttons-pdf').trigger();
-            } catch (fallbackError) {
-                console.error('Fallback PDF export also failed:', fallbackError);
-            }
+            console.error('Error triggering PDF export:', error);
+            showToast('PDF export unavailable', 'danger');
         }
     }
 }
@@ -1972,86 +1918,11 @@ function exportPNG(tableId) {
 
 function printLivestockTable() {
     try {
-        // Get current table data without actions column
         const table = $('#livestockTable').DataTable();
-        const tableData = table.data().toArray();
-        
-        if (!tableData || tableData.length === 0) {
-            showToast('No data available to print', 'warning');
-            return;
-        }
-        
-        // Create print content directly in current page
-        const originalContent = document.body.innerHTML;
-        
-        let printContent = `
-            <div style="font-family: Arial, sans-serif; margin: 20px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <h1 style="color: #18375d; margin-bottom: 5px;">Livestock Analysis Report</h1>
-                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
-                </div>
-                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
-                    <thead>
-                        <tr>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Livestock ID</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Name</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Breed</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Age (months)</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Health Score</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Avg. Production (L/day)</th>
-                            <th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">Breeding Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-        
-        // Add data rows (excluding Actions column)
-        tableData.forEach(row => {
-            printContent += '<tr>';
-            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
-                let cellText = '';
-                if (row[i]) {
-                    // Remove HTML tags and get clean text
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = row[i];
-                    cellText = tempDiv.textContent || tempDiv.innerText || '';
-                    // Clean up the text
-                    cellText = cellText.replace(/\s+/g, ' ').trim();
-                }
-                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
-            }
-            printContent += '</tr>';
-        });
-        
-        printContent += `
-                    </tbody>
-                </table>
-            </div>`;
-        
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
-        
+        table.button('.buttons-print').trigger();
     } catch (error) {
-        console.error('Error in print function:', error);
-        showToast('Error generating print. Please try again.', 'danger');
-        
-        // Fallback to DataTables print
-        try {
-            const table = $('#livestockTable').DataTable();
-            table.button('.buttons-print').trigger();
-        } catch (fallbackError) {
-            console.error('Fallback print also failed:', fallbackError);
-            showToast('Print failed. Please try again.', 'danger');
-        }
+        console.error('Error triggering print:', error);
+        showToast('Print unavailable', 'danger');
     }
 }
 

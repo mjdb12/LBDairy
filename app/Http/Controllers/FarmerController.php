@@ -642,7 +642,7 @@ class FarmerController extends Controller
         // Mock data for growth records (you can replace with actual data when available)
         $growthRecords = collect([
             [
-                'date' => $livestock->birth_date ? $livestock->birth_date->format('Y-m-d') : 'N/A',
+                'date' => $livestock->birth_date ? \Carbon\Carbon::parse($livestock->birth_date)->format('Y-m-d') : 'N/A',
                 'weight' => $livestock->weight ?? 'N/A',
                 'height' => 'N/A',
                 'heart_girth' => 'N/A',
@@ -877,7 +877,7 @@ class FarmerController extends Controller
             ->map(function ($record) {
                 return [
                     'id' => $record->id,
-                    'production_date' => $record->production_date->format('M d, Y'),
+                    'production_date' => optional($record->production_date)->format('M d, Y'),
                     'livestock_name' => $record->livestock ? $record->livestock->name : 'Unknown',
                     'livestock_tag' => $record->livestock ? $record->livestock->tag_number : 'N/A',
                     'milk_quantity' => $record->milk_quantity,
@@ -887,13 +887,7 @@ class FarmerController extends Controller
                 ];
             });
 
-        // Get livestock list for dropdown
-        $livestockList = Livestock::whereIn('farm_id', $farmIds)
-            ->where('status', 'active')
-            ->orderBy('name')
-            ->get();
-
-        // Production statistics for charts
+        // Build stats for charts
         $productionStats = [
             'monthly_trend' => ProductionRecord::whereIn('farm_id', $farmIds)
                 ->selectRaw("DATE_FORMAT(production_date, '%Y-%m') as month, SUM(milk_quantity) as total_production")
@@ -907,7 +901,6 @@ class FarmerController extends Controller
                         'production' => $item->total_production
                     ];
                 }),
-            
             'quality_distribution' => ProductionRecord::whereIn('farm_id', $farmIds)
                 ->selectRaw('milk_quality_score, COUNT(*) as count')
                 ->whereNotNull('milk_quality_score')
@@ -920,7 +913,6 @@ class FarmerController extends Controller
                         'count' => $item->count
                     ];
                 }),
-            
             'top_producers' => ProductionRecord::whereIn('farm_id', $farmIds)
                 ->with('livestock')
                 ->selectRaw('livestock_id, SUM(milk_quantity) as total_production')
@@ -933,7 +925,7 @@ class FarmerController extends Controller
                         'livestock_name' => $item->livestock ? $item->livestock->name : 'Unknown',
                         'total_production' => $item->total_production
                     ];
-                })
+                }),
         ];
 
         return view('farmer.production', compact(
@@ -988,6 +980,23 @@ class FarmerController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
+            if ($request->ajax() || $request->wantsJson()) {
+                $productionRecord->load('livestock');
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Production record added successfully!',
+                    'record' => [
+                        'id' => $productionRecord->id,
+                        'production_date' => $productionRecord->production_date ? \Carbon\Carbon::parse($productionRecord->production_date)->format('Y-m-d') : null,
+                        'livestock_id' => $productionRecord->livestock_id,
+                        'livestock_name' => $productionRecord->livestock ? $productionRecord->livestock->name : null,
+                        'livestock_tag' => $productionRecord->livestock ? $productionRecord->livestock->tag_number : null,
+                        'milk_quantity' => $productionRecord->milk_quantity,
+                        'milk_quality_score' => $productionRecord->milk_quality_score,
+                        'notes' => $productionRecord->notes,
+                    ]
+                ]);
+            }
             return redirect()->route('farmer.production')->with('success', 'Production record added successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to create production record: ' . $e->getMessage())->withInput();
@@ -1047,6 +1056,23 @@ class FarmerController extends Controller
             'notes' => $request->notes,
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            $productionRecord->load('livestock');
+            return response()->json([
+                'success' => true,
+                'message' => 'Production record updated successfully!',
+                'record' => [
+                    'id' => $productionRecord->id,
+                    'production_date' => $productionRecord->production_date ? \Carbon\Carbon::parse($productionRecord->production_date)->format('Y-m-d') : null,
+                    'livestock_id' => $productionRecord->livestock_id,
+                    'livestock_name' => $productionRecord->livestock ? $productionRecord->livestock->name : null,
+                    'livestock_tag' => $productionRecord->livestock ? $productionRecord->livestock->tag_number : null,
+                    'milk_quantity' => $productionRecord->milk_quantity,
+                    'milk_quality_score' => $productionRecord->milk_quality_score,
+                    'notes' => $productionRecord->notes,
+                ]
+            ]);
+        }
         return redirect()->route('farmer.production')->with('success', 'Production record updated successfully!');
     }
 
@@ -1233,11 +1259,11 @@ class FarmerController extends Controller
             return [
                 'id' => $expense->id,
                 'expense_id' => 'EXP' . str_pad($expense->id, 3, '0', STR_PAD_LEFT),
-                'expense_date' => $expense->expense_date->format('M d, Y'),
+                'expense_date' => optional($expense->expense_date)->format('M d, Y'),
                 'expense_name' => $expense->description,
                 'category' => ucfirst($expense->expense_type),
                 'amount' => $expense->amount,
-                'payment_status' => 'Paid', // Since we don't have payment_status, assume all are paid
+                'payment_status' => 'Paid',
                 'payment_method' => $expense->payment_method ?? 'Cash',
                 'farm_name' => $expense->farm ? $expense->farm->name : 'Unknown',
                 'notes' => $expense->notes
@@ -1258,7 +1284,6 @@ class FarmerController extends Controller
                         'expenses' => $item->total_expenses
                     ];
                 }),
-            
             'category_distribution' => \App\Models\Expense::whereIn('farm_id', $farmIds)
                 ->selectRaw('expense_type, SUM(amount) as total_amount')
                 ->groupBy('expense_type')
@@ -1270,7 +1295,6 @@ class FarmerController extends Controller
                         'amount' => $item->total_amount
                     ];
                 }),
-            
             'payment_method_distribution' => \App\Models\Expense::whereIn('farm_id', $farmIds)
                 ->selectRaw('payment_method, COUNT(*) as count')
                 ->whereNotNull('payment_method')
@@ -1281,7 +1305,7 @@ class FarmerController extends Controller
                         'method' => $item->payment_method,
                         'count' => $item->count
                     ];
-                })
+                }),
         ];
 
         return view('farmer.expenses', compact(
@@ -2545,6 +2569,113 @@ class FarmerController extends Controller
     }
 
     /**
+     * Show a sale record (JSON) owned by current farmer.
+     */
+    public function showSale($id)
+    {
+        $user = Auth::user();
+        $sale = Sale::whereHas('farm', function($q) use ($user) { $q->where('owner_id', $user->id); })
+            ->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'sale' => [
+                'id' => $sale->id,
+                'sale_id' => 'SALE-' . str_pad((string)$sale->id, 5, '0', STR_PAD_LEFT),
+                'sale_date' => $sale->sale_date ? \Carbon\Carbon::parse($sale->sale_date)->format('Y-m-d') : null,
+                'customer_name' => $sale->customer_name,
+                'customer_phone' => $sale->customer_phone,
+                'customer_email' => $sale->customer_email,
+                'quantity' => (float) $sale->quantity,
+                'unit_price' => (float) $sale->unit_price,
+                'amount' => (float) $sale->total_amount,
+                'payment_status' => $sale->payment_status,
+                'payment_method' => $sale->payment_method,
+                'notes' => $sale->notes,
+                'farm_id' => $sale->farm_id,
+            ]
+        ]);
+    }
+
+    /**
+     * Edit endpoint: return sale data for editing (JSON)
+     */
+    public function editSale($id)
+    {
+        $user = Auth::user();
+        $sale = Sale::whereHas('farm', function($q) use ($user) { $q->where('owner_id', $user->id); })
+            ->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'sale' => $sale
+        ]);
+    }
+
+    /**
+     * Update a sale record owned by current farmer.
+     */
+    public function updateSale(Request $request, $id)
+    {
+        $request->validate([
+            'farm_id' => 'required|exists:farms,id',
+            'customer_name' => 'required|string|max:255',
+            'customer_phone' => 'nullable|string|max:20',
+            'customer_email' => 'nullable|email|max:255',
+            'quantity' => 'required|numeric|min:0',
+            'unit_price' => 'required|numeric|min:0',
+            'sale_date' => 'required|date',
+            'payment_method' => 'nullable|string',
+            'payment_status' => 'nullable|in:pending,paid,partial',
+            'notes' => 'nullable|string'
+        ]);
+
+        $user = Auth::user();
+        $sale = Sale::whereHas('farm', function($q) use ($user) { $q->where('owner_id', $user->id); })
+            ->findOrFail($id);
+
+        // Verify the destination farm belongs to the user as well (allow farm change)
+        $farm = Farm::where('owner_id', $user->id)->findOrFail($request->farm_id);
+
+        try {
+            $totalAmount = $request->quantity * $request->unit_price;
+
+            $sale->update([
+                'farm_id' => $request->farm_id,
+                'customer_name' => $request->customer_name,
+                'customer_phone' => $request->customer_phone,
+                'customer_email' => $request->customer_email,
+                'quantity' => $request->quantity,
+                'unit_price' => $request->unit_price,
+                'total_amount' => $totalAmount,
+                'payment_status' => $request->payment_status ?? $sale->payment_status,
+                'payment_method' => $request->payment_method ?? $sale->payment_method,
+                'sale_date' => $request->sale_date,
+                'notes' => $request->notes,
+            ]);
+
+            AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'sale_updated',
+                'description' => "Sale record #{$sale->id} updated",
+                'severity' => 'info',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sale record updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update sale record: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Delete a sale record.
      */
     public function deleteSale(Request $request, $id)
@@ -2822,6 +2953,54 @@ class FarmerController extends Controller
     }
 
     /**
+     * Delete a supplier by expense type for the current farmer (destructive).
+     * This removes all Expense rows that match the given expense type
+     * across the current farmer's farms.
+     */
+    public function deleteSupplier(Request $request, $expenseType)
+    {
+        try {
+            $user = Auth::user();
+            $farmIds = Farm::where('owner_id', $user->id)->pluck('id');
+
+            if ($farmIds->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No farm found for current user.'
+                ], 422);
+            }
+
+            $deleted = 0;
+            DB::transaction(function () use ($farmIds, $expenseType, $user, &$deleted) {
+                $deleted = Expense::whereIn('farm_id', $farmIds)
+                    ->where('expense_type', $expenseType)
+                    ->delete();
+
+                AuditLog::create([
+                    'user_id' => $user->id,
+                    'action' => 'supplier_deleted',
+                    'description' => "Deleted supplier by expense type: {$expenseType} ({$deleted} expenses removed)",
+                    'severity' => 'warning',
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            });
+
+            return response()->json([
+                'success' => true,
+                'deleted_count' => $deleted,
+                'message' => 'Supplier deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Delete supplier error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete supplier.'
+            ], 500);
+        }
+    }
+
+    /**
      * Show inspection details.
      */
     public function showInspection($id)
@@ -2902,7 +3081,7 @@ class FarmerController extends Controller
                 ->orderBy('production_date')
                 ->get()
                 ->groupBy(function($record) {
-                    return $record->production_date->format('Y-m');
+                    return \Carbon\Carbon::parse($record->production_date)->format('Y-m');
                 })
                 ->map(function($group) {
                     return $group->avg('milk_quantity');
@@ -2914,7 +3093,7 @@ class FarmerController extends Controller
                 ->orderBy('production_date')
                 ->get()
                 ->groupBy(function($record) {
-                    return $record->production_date->format('Y-m');
+                    return \Carbon\Carbon::parse($record->production_date)->format('Y-m');
                 })
                 ->map(function($group) {
                     return $group->avg('milk_quantity') * 0.1; // Simplified weight calculation

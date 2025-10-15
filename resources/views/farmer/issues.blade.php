@@ -129,7 +129,7 @@
                             <input type="text" class="form-control" placeholder="Search issues..." id="issueSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-edit" onclick="printTable()">
+                            <button class="btn-action btn-action-print" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshIssuesTable('issuesTable')">
@@ -252,7 +252,7 @@
                             <input type="text" class="form-control" placeholder="Search alerts..." id="alertSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-edit" onclick="printAlertsTable()">
+                            <button class="btn-action btn-action-print" onclick="printAlertsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh-alerts" onclick="refreshAlertsTable('alertsTable')">
@@ -371,7 +371,7 @@
                             <input type="text" class="form-control" placeholder="Search inspections..." id="inspectionSearch">
                         </div>
                         <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-edit" onclick="printInspectionsTable()">
+                            <button class="btn-action btn-action-print" onclick="printInspectionsTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh-inspection" onclick="refreshInspectionTable('inspectionsTable')">
@@ -412,9 +412,9 @@
                                 @forelse($scheduledInspections ?? [] as $inspection)
                                 <tr>
                                     <td>
-                                        <strong>{{ $inspection->inspection_date ? $inspection->inspection_date->format('M d, Y') : 'N/A' }}</strong>
+                                        <strong>{{ $inspection->inspection_date ? \Carbon\Carbon::parse($inspection->inspection_date)->format('M d, Y') : 'N/A' }}</strong>
                                     </td>
-                                    <td>{{ $inspection->inspection_time ? $inspection->inspection_time->format('h:i A') : 'N/A' }}</td>
+                                    <td>{{ $inspection->inspection_time ? \Carbon\Carbon::parse($inspection->inspection_time)->format('h:i A') : 'N/A' }}</td>
                                     <td>
                                         <span class="badge badge-{{ $inspection->priority === 'urgent' ? 'danger' : ($inspection->priority === 'high' ? 'warning' : ($inspection->priority === 'medium' ? 'info' : 'success')) }}">
                                             {{ ucfirst($inspection->priority) }}
@@ -552,8 +552,10 @@
 @endsection
 
 @push('scripts')
-<!-- DataTables Core -->
+<!-- DataTables CSS and Core -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
@@ -582,6 +584,8 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -631,6 +635,11 @@ $(document).ready(function() {
                         { width: '120px', targets: 7 }, // Status
                         { width: '140px', targets: 8 }, // Reported By
                         { width: '180px', targets: 9, orderable: false } // Actions
+                    ],
+                    buttons: [
+                        { extend: 'csvHtml5', title: 'Farmer_Issues_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7,8], modifier: { page: 'all' } } },
+                        { extend: 'pdfHtml5', title: 'Farmer_Issues_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7,8], modifier: { page: 'all' } } },
+                        { extend: 'print', title: 'Farmer Issues Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7,8], modifier: { page: 'all' } } }
                     ]
                 });
                 console.log('Issues DataTable initialized successfully');
@@ -651,6 +660,11 @@ $(document).ready(function() {
             alertsTable.DataTable({
                 ...commonConfig,
                 order: [[6, 'desc']], // Sort by alert date
+                buttons: [
+                    { extend: 'csvHtml5', title: 'Farmer_Alerts_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7], modifier: { page: 'all' } } },
+                    { extend: 'pdfHtml5', title: 'Farmer_Alerts_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7], modifier: { page: 'all' } } },
+                    { extend: 'print', title: 'Farmer Alerts Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7], modifier: { page: 'all' } } }
+                ],
                 columnDefs: [
                     { width: '100px', targets: 0 }, // Livestock ID
                     { width: '120px', targets: 1 }, // Animal Type
@@ -675,6 +689,11 @@ $(document).ready(function() {
             inspectionsTable.DataTable({
                 ...commonConfig,
                 order: [[0, 'asc']], // Sort by inspection date
+                buttons: [
+                    { extend: 'csvHtml5', title: 'Farmer_Inspections_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
+                    { extend: 'pdfHtml5', title: 'Farmer_Inspections_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
+                    { extend: 'print', title: 'Farmer Inspections Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } }
+                ],
                 columnDefs: [
                     { width: '140px', targets: 0 }, // Inspection Date
                     { width: '120px', targets: 1 }, // Time
@@ -871,111 +890,22 @@ function getPriorityColor(priority) {
 
 
 function exportToCSV() {
-    // Get current table data without actions column
-    const table = $('#issuesTable').DataTable();
-    const tableData = table.data().toArray();
-    const csvData = [];
-    
-    // Add headers (excluding Actions column)
-    const headers = ['Issue ID', 'Livestock ID', 'Type', 'Description', 'Severity', 'Status', 'Date Reported'];
-    csvData.push(headers.join(','));
-    
-    // Add data rows (excluding Actions column)
-    tableData.forEach(row => {
-        // Extract text content from each cell, excluding the last column (Actions)
-        const rowData = [];
-        for (let i = 0; i < row.length - 1; i++) {
-            let cellText = '';
-            if (row[i]) {
-                // Remove HTML tags and get clean text
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = row[i];
-                cellText = tempDiv.textContent || tempDiv.innerText || '';
-                // Clean up the text (remove extra spaces, newlines)
-                cellText = cellText.replace(/\s+/g, ' ').trim();
-            }
-            // Escape commas and quotes for CSV
-            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
-                cellText = '"' + cellText.replace(/"/g, '""') + '"';
-            }
-            rowData.push(cellText);
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#issuesTable')) {
+            $('#issuesTable').DataTable().button('.buttons-csv').trigger();
         }
-        csvData.push(rowData.join(','));
-    });
-    
-    // Create and download CSV file
-    const csvContent = csvData.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `Farmer_IssuesReport_${downloadCounter}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Increment download counter
-    downloadCounter++;
-    
-    showToast('CSV exported successfully!', 'success');
+    } catch (e) {
+        console.error('exportToCSV error:', e);
+    }
 }
 
 function exportToPDF() {
     try {
-        // Force custom PDF generation to match superadmin styling
-        // Don't fall back to DataTables PDF export as it has different styling
-        
-        const table = $('#issuesTable').DataTable();
-        const tableData = table.data().toArray();
-        const pdfData = [];
-        
-        const headers = ['Issue ID', 'Livestock ID', 'Type', 'Description', 'Severity', 'Status', 'Date Reported'];
-        
-        tableData.forEach(row => {
-            const rowData = [
-                row[0] || '', // Issue ID
-                row[1] || '', // Livestock ID
-                row[2] || '', // Type
-                row[3] || '', // Description
-                row[4] || '', // Severity
-                row[5] || '', // Status
-                row[6] || ''  // Date Reported
-            ];
-            pdfData.push(rowData);
-        });
-        
-        // Create PDF using jsPDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('landscape', 'mm', 'a4');
-        
-        // Set title
-        doc.setFontSize(18);
-        doc.text('Farmer Issues Report', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        
-        // Create table
-        doc.autoTable({
-            head: [headers],
-            body: pdfData,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] }
-        });
-        
-        // Save the PDF
-        doc.save(`Farmer_IssuesReport_${downloadCounter}.pdf`);
-        
-        // Increment download counter
-        downloadCounter++;
-        
-        showToast('PDF exported successfully!', 'success');
-        
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        showToast('Error generating PDF. Please try again.', 'error');
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#issuesTable')) {
+            $('#issuesTable').DataTable().button('.buttons-pdf').trigger();
+        }
+    } catch (e) {
+        console.error('exportToPDF error:', e);
     }
 }
 
@@ -1039,7 +969,16 @@ function exportToPNG() {
 }
 
 function printTable() {
-    window.print();
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#issuesTable')) {
+            $('#issuesTable').DataTable().button('.buttons-print').trigger();
+        } else {
+            window.print();
+        }
+    } catch (e) {
+        console.error('printTable error:', e);
+        window.print();
+    }
 }
 
 function showToast(message, type = 'info') {
@@ -1184,25 +1123,23 @@ function getInspectionPriorityColor(priority) {
 
 // Export functions for inspections
 function exportInspectionsToCSV() {
-    const table = $('#inspectionsTable').DataTable();
-    const data = table.data().toArray();
-    
-    let csv = 'Inspection Date,Time,Priority,Status,Scheduled By,Notes\n';
-    data.forEach(row => {
-        csv += `${row[0]},${row[1]},${row[2]},${row[3]},${row[4]},${row[5]}\n`;
-    });
-    
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'scheduled_inspections.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#inspectionsTable')) {
+            $('#inspectionsTable').DataTable().button('.buttons-csv').trigger();
+        }
+    } catch (e) {
+        console.error('exportInspectionsToCSV error:', e);
+    }
 }
 
 function exportInspectionsToPDF() {
-    showToast('PDF export feature coming soon!', 'info');
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#inspectionsTable')) {
+            $('#inspectionsTable').DataTable().button('.buttons-pdf').trigger();
+        }
+    } catch (e) {
+        console.error('exportInspectionsToPDF error:', e);
+    }
 }
 
 function exportInspectionsToPNG() {
@@ -1265,7 +1202,16 @@ function exportInspectionsToPNG() {
 }
 
 function printInspectionsTable() {
-    window.print();
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#inspectionsTable')) {
+            $('#inspectionsTable').DataTable().button('.buttons-print').trigger();
+        } else {
+            window.print();
+        }
+    } catch (e) {
+        console.error('printInspectionsTable error:', e);
+        window.print();
+    }
 }
 
 // Trigger DataTables print for Livestock Alerts table
@@ -1282,10 +1228,58 @@ function printAlertsTable() {
     }
 }
 
+// Alerts export helpers
+function exportAlertsToCSV() {
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
+            $('#alertsTable').DataTable().button('.buttons-csv').trigger();
+        }
+    } catch (e) {
+        console.error('exportAlertsToCSV error:', e);
+    }
+}
+
+function exportAlertsToPDF() {
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
+            $('#alertsTable').DataTable().button('.buttons-pdf').trigger();
+        }
+    } catch (e) {
+        console.error('exportAlertsToPDF error:', e);
+    }
+}
+
+function exportAlertsToPNG() {
+    try {
+        const originalTable = document.getElementById('alertsTable');
+        const tempTable = originalTable.cloneNode(true);
+        const headerRow = tempTable.querySelector('thead tr');
+        if (headerRow && headerRow.lastElementChild) headerRow.lastElementChild.remove();
+        const dataRows = tempTable.querySelectorAll('tbody tr');
+        dataRows.forEach(row => { if (row.lastElementChild) row.lastElementChild.remove(); });
+        tempTable.style.position = 'absolute';
+        tempTable.style.left = '-9999px';
+        tempTable.style.top = '-9999px';
+        document.body.appendChild(tempTable);
+        html2canvas(tempTable, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'Farmer_Alerts_Report.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            document.body.removeChild(tempTable);
+        }).catch(err => {
+            console.error('exportAlertsToPNG error:', err);
+            if (document.body.contains(tempTable)) document.body.removeChild(tempTable);
+        });
+    } catch (e) {
+        console.error('exportAlertsToPNG wrapper error:', e);
+    }
+}
+
 // Alert related functions
 function viewAlertDetails(alertId) {
     $.ajax({
-        url: `/farmer/alerts/${alertId}`,
+        url: `/farmer/issue-alerts/${alertId}`,
         method: 'GET',
         success: function(response) {
             if (response.success) {

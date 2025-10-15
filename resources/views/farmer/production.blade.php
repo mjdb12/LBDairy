@@ -1334,7 +1334,7 @@
                     <button class="btn-action btn-action-ok" id="supplierSearch" title="Add Product" data-toggle="modal" data-target="#addProductionModal">
                         <i class="fas fa-plus"></i> Add Production
                     </button>
-                    <button class="btn-action btn-action-edits" title="Print" onclick="printProductionTable()">
+                    <button class="btn-action btn-action-print" title="Print" onclick="printProductionTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshProductionTable()">
@@ -1375,7 +1375,7 @@
                 </thead>
                 <tbody>
                     @forelse($productionData as $record)
-                    <tr>
+                    <tr data-record-id="{{ $record['id'] }}">
                         <td>{{ $record['production_date'] }}</td>
                         <td>{{ $record['livestock_name'] }} ({{ $record['livestock_tag'] }})</td>
                         <td>{{ number_format($record['milk_quantity'], 1) }}</td>
@@ -1425,8 +1425,8 @@
                 <div class="icon-circle">
                     <i class="fas fa-plus fa-2x"></i>
                 </div>
-                <h5 class="fw-bold mb-1">Add Production Record</h5>
-                <p class="text-muted mb-0 small">
+                <h5 id="addProductionModalLabel" class="fw-bold mb-1">Add Production Record</h5>
+                <p id="addProductionModalDesc" class="text-muted mb-0 small">
                     Fill out the details below to record a new milk production entry.
                 </p>
             </div>
@@ -1612,6 +1612,7 @@
 
 <script>
 let productionDT = null;
+const CSRF_TOKEN = "{{ csrf_token() }}";
 $(document).ready(function() {
     const productionStoreAction = $('#addProductionForm').attr('action');
     // Initialize DataTable for Production Records
@@ -1623,10 +1624,12 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
-            { extend: 'csvHtml5', title: 'Farmer_Production_Report', className: 'd-none' },
-            { extend: 'pdfHtml5', title: 'Farmer_Production_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none' },
-            { extend: 'print', title: 'Farmer Production Report', className: 'd-none' }
+            { extend: 'csvHtml5', title: 'Farmer_Production_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'pdfHtml5', title: 'Farmer_Production_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
+            { extend: 'print', title: 'Farmer Production Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } }
         ],
         language: { search: "", emptyTable: '<div class="empty-state"><i class="fas fa-inbox"></i><h5>No data available</h5><p>There are no records to display at this time.</p></div>' }
     };
@@ -1657,6 +1660,39 @@ $(document).ready(function() {
         if (productionDT) productionDT.search(this.value).draw();
     });
 
+    // AJAX submit for Add/Update Production form
+    $('#addProductionForm').on('submit', function(e){
+        try {
+            e.preventDefault();
+            const form = this;
+            const btn = document.getElementById('saveProductionBtn');
+            if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+            const actionUrl = form.getAttribute('action');
+            const fd = new FormData(form);
+            fetch(actionUrl, {
+                method: 'POST', // Laravel will honor _method for PUT
+                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                body: fd
+            }).then(async (r)=>{
+                let data = null; try { data = await r.json(); } catch(_){}
+                if (!r.ok || !data || data.success !== true){
+                    throw new Error((data && data.message) || `HTTP ${r.status}`);
+                }
+                if (data.record){ upsertProductionRow(data.record); }
+                $('#addProductionModal').modal('hide');
+                showAlert('success', data.message || 'Record saved successfully!');
+                // Reset for add mode
+                form.reset();
+                $('#production_date').val('{{ date('Y-m-d') }}');
+            }).catch(err=>{
+                console.error('save production error:', err);
+                showInlineFormError('Failed to save record. Please check your inputs and try again.');
+            }).finally(()=>{
+                if (btn){ btn.disabled = false; btn.innerHTML = 'Save Record'; }
+            });
+        } catch(e){ console.error('submit handler error:', e); }
+    });
+
     // Reset form to create mode when modal closes
     $('#addProductionModal').on('hidden.bs.modal', function(){
         resetProductionFormMode();
@@ -1672,7 +1708,8 @@ $(document).ready(function() {
     function resetProductionFormMode(){
         $('#addProductionForm').attr('action', productionStoreAction);
         $('#addProductionForm').find('input[name="_method"]').remove();
-        $('#addProductionModalLabel').html('<h5 class="fw-bold mb-1">Edit Record</h5><p class="text-muted mb-0 small">Fill out the details below to record a new milk production entry.</p>');
+        $('#addProductionModalLabel').text('Add Production Record');
+        $('#addProductionModalDesc').text('Fill out the details below to record a new milk production entry.');
         $('#saveProductionBtn').html('<i class="fas fa-save"></i> Save Record');
     }
 
@@ -1743,32 +1780,88 @@ $(document).ready(function() {
     });
 });
 
-function confirmDelete(recordId) {
-    $('#confirmDeleteModal').modal('show');
-    $('#confirmDeleteBtn').off('click').on('click', function() {
-        // Send delete request
-        fetch(`/farmer/production/${recordId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showAlert('success', 'Production record deleted successfully!');
-                location.reload();
-            } else {
-                showAlert('danger', 'Failed to delete record. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'An error occurred. Please try again.');
-        });
-        
-        $('#confirmDeleteModal').modal('hide');
+// Helpers
+function showInlineFormError(message){
+    const n = document.getElementById('formNotification');
+    if (!n) return;
+    n.className = 'alert alert-danger';
+    n.textContent = message || 'An error occurred.';
+    n.style.display = 'block';
+}
+
+function htmlEscape(s){
+    return (s==null? '': String(s)).replace(/[&<>"']/g, function(c){
+        return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
     });
+}
+
+function truncateText(s, n){
+    s = s || '';
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+}
+
+function getProductionRowByRecordId(id){
+    // Prefer data attribute if present
+    let tr = document.querySelector(`#productionTable tbody tr[data-record-id="${id}"]`);
+    if (tr) return tr;
+    // Fallback: find by edit button onclick
+    const btns = document.querySelectorAll('#productionTable tbody button');
+    for (const b of btns){
+        const on = (b.getAttribute('onclick')||'').replace(/\s+/g,'');
+        if (on === `editRecord(${id})` || on.indexOf(`editRecord(${id})`) !== -1){
+            const row = b.closest('tr');
+            if (row) return row;
+        }
+    }
+    return null;
+}
+
+function buildProductionRowCells(record){
+    const date = htmlEscape(record.production_date || '');
+    const livestock = record.livestock_name ? `${htmlEscape(record.livestock_name)}${record.livestock_tag? ' ('+htmlEscape(record.livestock_tag)+')':''}` : (record.livestock_id? ('ID '+record.livestock_id):'');
+    const qty = (record.milk_quantity!=null) ? Number(record.milk_quantity).toFixed(1) : '';
+    const score = record.milk_quality_score!=null ? Number(record.milk_quality_score) : null;
+    const scoreBadge = score!=null ? `<span class="badge badge-${score>=8?'success':(score>=6?'warning':'danger')}">${score}/10</span>` : 'N/A';
+    const notes = truncateText(String(record.notes||'No notes'), 30);
+    const actions = `
+        <div class="btn-group">
+            <button class="btn-action btn-action-ok" onclick="viewRecord(${record.id})" title="View Details"><i class="fas fa-eye"></i></button>
+            <button class="btn-action btn-action-edits" onclick="editRecord(${record.id})" title="Edit"><i class="fas fa-edit"></i></button>
+            <button class="btn-action btn-action-deletes" onclick="confirmDelete(${record.id})" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>`;
+    return [date, livestock, qty, scoreBadge, htmlEscape(notes), actions];
+}
+
+function upsertProductionRow(record){
+    try {
+        const cells = buildProductionRowCells(record);
+        const tr = getProductionRowByRecordId(record.id);
+        if (productionDT){
+            if (tr){ productionDT.row(tr).data(cells).draw(false); }
+            else {
+                const node = productionDT.row.add(cells).draw(false).node();
+                if (node) node.setAttribute('data-record-id', record.id);
+            }
+        }
+    } catch(e){ console.error('upsertProductionRow error:', e); }
+}
+
+function confirmDelete(recordId) {
+    try {
+        // Enhance modal text with context
+        const tr = getProductionRowByRecordId(recordId);
+        const dateText = tr && tr.cells[0] ? (tr.cells[0].innerText||'').trim() : '';
+        const livestockText = tr && tr.cells[1] ? (tr.cells[1].innerText||'').trim() : '';
+        const titleEl = $('#confirmDeleteModal').find('h5');
+        const descEl = $('#confirmDeleteModal').find('p');
+        if (titleEl.length) titleEl.text('Confirm Delete');
+        if (descEl.length) descEl.html(`Are you sure you want to delete the record for <strong>${htmlEscape(livestockText) || 'this livestock'}</strong>${dateText? ' on <strong>'+htmlEscape(dateText)+'</strong>':''}? This action <strong>cannot be undone</strong>.`);
+        $('#confirmDeleteModal').modal('show');
+        $('#confirmDeleteBtn').off('click').on('click', function(){
+            const btn = this; btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            deleteRecord(recordId).always(function(){ btn.disabled = false; btn.innerHTML = 'Yes, Delete'; });
+        });
+    } catch(e){ console.error('confirmDelete error:', e); $('#confirmDeleteModal').modal('show'); }
 }
 
 function loadHistory() {
@@ -1808,39 +1901,15 @@ function loadHistory() {
 
 function exportCSV() {
     try {
-        if (!productionDT) return showAlert('danger', 'Table is not ready.');
-        const rows = productionDT.data().toArray();
-        const headers = ['Date','Livestock','Milk Quantity (L)','Quality Score','Notes'];
-        const csv = [headers.join(',')];
-        rows.forEach(r => {
-            const arr = [];
-            for (let i = 0; i < r.length - 1; i++) { // exclude Actions
-                const tmp = document.createElement('div'); tmp.innerHTML = r[i];
-                let t = tmp.textContent || tmp.innerText || '';
-                t = t.replace(/\s+/g, ' ').trim();
-                if (t.includes(',') || t.includes('"') || t.includes('\n')) t = '"' + t.replace(/"/g, '""') + '"';
-                arr.push(t);
-            }
-            csv.push(arr.join(','));
-        });
-        const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Farmer_ProductionReport_${Date.now()}.csv`; a.click();
-        showAlert('success', 'CSV exported successfully!');
+        if (productionDT) { productionDT.button('.buttons-csv').trigger(); }
+        else { showAlert('danger', 'Table is not ready.'); }
     } catch (e) { console.error('CSV export error:', e); showAlert('danger', 'Error generating CSV.'); }
 }
 
 function exportPDF() {
     try {
-        if (!productionDT) return showAlert('danger', 'Table is not ready.');
-        const rows = productionDT.data().toArray();
-        const data = rows.map(r => [r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'']);
-        const headers = ['Date','Livestock','Milk Quantity (L)','Quality Score','Notes'];
-        const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape','mm','a4');
-        doc.setFontSize(18); doc.text('Farmer Production Report', 14, 22);
-        doc.setFontSize(12); doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        doc.autoTable({ head: [headers], body: data, startY: 40, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [24,55,93], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245,245,245] } });
-        doc.save(`Farmer_ProductionReport_${Date.now()}.pdf`);
-        showAlert('success', 'PDF exported successfully!');
+        if (productionDT) { productionDT.button('.buttons-pdf').trigger(); }
+        else { showAlert('danger', 'Table is not ready.'); }
     } catch (error) { console.error('Error generating PDF:', error); showAlert('danger', 'Error generating PDF.'); }
 }
 
@@ -1907,7 +1976,7 @@ function viewRecord(recordId) {
             }
         },
         error: function() {
-            showAlert('error', 'Failed to load record details.');
+            showAlert('danger', 'Failed to load record details.');
         }
     });
 }
@@ -1945,40 +2014,51 @@ function editRecord(recordId) {
                 const methodInput = $('#addProductionForm').find('input[name="_method"]');
                 if (methodInput.length) { methodInput.val('PUT'); }
                 else { $('#addProductionForm').prepend('<input type="hidden" name="_method" value="PUT">'); }
-                $('#addProductionModalLabel').html('<h5 class="fw-bold mb-1">Edit Production Record</h5><p class="text-muted mb-0 small">Fill out the details below to record a new milk production entry.</p>');
+                $('#addProductionModalLabel').text('Edit Production Record');
+                $('#addProductionModalDesc').text('Fill out the details below to record a new milk production entry.');
                 $('#saveProductionBtn').html('Update Record');
             }
         },
         error: function() {
-            showAlert('error', 'Failed to load record for editing.');
+            showAlert('danger', 'Failed to load record for editing.');
         }
     });
 }
 
-// Confirm Delete function
+// Confirm Delete function (duplicate guard)
 function confirmDelete(recordId) {
-    // Update modal message
-    $('#confirmDeleteModal').modal('show');
+    try {
+        const tr = getProductionRowByRecordId(recordId);
+        const dateText = tr && tr.cells[0] ? (tr.cells[0].innerText||'').trim() : '';
+        const livestockText = tr && tr.cells[1] ? (tr.cells[1].innerText||'').trim() : '';
+        const titleEl = $('#confirmDeleteModal').find('h5');
+        const descEl = $('#confirmDeleteModal').find('p');
+        if (titleEl.length) titleEl.text('Confirm Delete');
+        if (descEl.length) descEl.html(`Are you sure you want to delete the record for <strong>${htmlEscape(livestockText) || 'this livestock'}</strong>${dateText? ' on <strong>'+htmlEscape(dateText)+'</strong>':''}? This action <strong>cannot be undone</strong>.`);
+        $('#confirmDeleteModal').modal('show');
+        $('#confirmDeleteBtn').off('click').on('click', function(){
+            const btn = this; btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            deleteRecord(recordId).always(function(){ btn.disabled = false; btn.innerHTML = 'Yes, Delete'; });
+        });
+    } catch(e){ console.error('confirmDelete error:', e); $('#confirmDeleteModal').modal('show'); }
 }
 
 function deleteRecord(recordId) {
-    $.ajax({
+    return $.ajax({
         url: `/farmer/production/${recordId}`,
         method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            if (response.success) {
-                showAlert('success', 'Production record deleted successfully!');
-                location.reload();
-            } else {
-                showAlert('error', 'Failed to delete record.');
-            }
-        },
-        error: function() {
-            showAlert('error', 'Failed to delete record.');
+        headers: { 'X-CSRF-TOKEN': CSRF_TOKEN },
+    }).done(function(response){
+        if (response && response.success){
+            const tr = getProductionRowByRecordId(recordId);
+            if (tr && productionDT){ productionDT.row(tr).remove().draw(false); }
+            $('#confirmDeleteModal').modal('hide');
+            showAlert('success', 'Production record deleted successfully!');
+        } else {
+            showAlert('danger', 'Failed to delete record.');
         }
+    }).fail(function(){
+        showAlert('danger', 'Failed to delete record.');
     });
 }
 
@@ -2041,7 +2121,7 @@ function exportPNG() {
         if (document.body.contains(offscreen)) {
             document.body.removeChild(offscreen);
         }
-        showAlert('error', 'Error generating PNG export');
+        showAlert('danger', 'Error generating PNG export');
     });
 }
 
@@ -2051,7 +2131,7 @@ function printProductionTable() {
 }
 
 function refreshProductionTable(){
-    const btn = document.querySelector('.btn.btn-warning.btn-sm');
+    const btn = document.querySelector('.btn-action-refresh');
     if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...'; }
     sessionStorage.setItem('showRefreshNotificationProduction','true');
     setTimeout(()=>location.reload(), 800);

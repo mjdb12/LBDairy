@@ -107,6 +107,90 @@
   </div>
 </div>
 
+<div class="modal fade admin-modal" id="addLivestockModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content smart-form text-center p-4">
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-paw fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-1">Add Livestock</h5>
+      </div>
+      <form id="addLivestockForm">
+        @csrf
+        <div class="form-wrapper text-start mx-auto">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="al_tag_number" class="fw-semibold">Tag Number</label>
+              <input type="text" class="form-control" id="al_tag_number" name="tag_number" required>
+            </div>
+            <div class="col-md-6">
+              <label for="al_name" class="fw-semibold">Name</label>
+              <input type="text" class="form-control" id="al_name" name="name" required>
+            </div>
+            <div class="col-md-6">
+              <label for="al_type" class="fw-semibold">Type</label>
+              <select id="al_type" class="form-control" name="type" required>
+                <option value="cow">Cow</option>
+                <option value="buffalo">Buffalo</option>
+                <option value="goat">Goat</option>
+                <option value="sheep">Sheep</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="al_breed" class="fw-semibold">Breed</label>
+              <select id="al_breed" class="form-control" name="breed" required>
+                <option value="holstein">Holstein</option>
+                <option value="jersey">Jersey</option>
+                <option value="guernsey">Guernsey</option>
+                <option value="ayrshire">Ayrshire</option>
+                <option value="brown_swiss">Brown Swiss</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="al_birth_date" class="fw-semibold">Birth Date</label>
+              <input type="date" class="form-control" id="al_birth_date" name="birth_date" required>
+            </div>
+            <div class="col-md-6">
+              <label for="al_gender" class="fw-semibold">Gender</label>
+              <select id="al_gender" class="form-control" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="al_weight" class="fw-semibold">Weight (kg)</label>
+              <input type="number" step="0.01" class="form-control" id="al_weight" name="weight">
+            </div>
+            <div class="col-md-6">
+              <label for="al_health_status" class="fw-semibold">Health Status</label>
+              <select id="al_health_status" class="form-control" name="health_status" required>
+                <option value="healthy">Healthy</option>
+                <option value="sick">Sick</option>
+                <option value="recovering">Recovering</option>
+                <option value="under_treatment">Under Treatment</option>
+              </select>
+            </div>
+            <div class="col-md-12">
+              <label for="al_status" class="fw-semibold">Status</label>
+              <select id="al_status" class="form-control" name="status" required>
+                <option value="active" selected>Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div id="al_formNotification" class="mt-2" style="display: none;"></div>
+        </div>
+        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-modern btn-ok">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <!-- SMART DETAIL MODAL - Livestock Details -->
 <div class="modal fade admin" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
@@ -2412,6 +2496,7 @@ function viewLivestockDetails(id) {
             }, 2000);
         } else {
             showNotification(`No livestock found with ID: ${livestockId}`, 'error');
+            openAddLivestockModal(livestockId);
             updateStatus('Scanning...', 'scanning');
         }
     })
@@ -2733,15 +2818,72 @@ function processManualInput() {
     viewLivestockDetails(livestockId);
 }
 
-// Allow Enter key to submit manual input
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('manualLivestockId')?.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            processManualInput();
-        }
-    });
-});
+function openAddLivestockModal(prefillTag) {
+    const tagInput = document.getElementById('al_tag_number');
+    if (tagInput) { tagInput.value = prefillTag || ''; }
+    const name = document.getElementById('al_name');
+    if (name) name.value = '';
+    const type = document.getElementById('al_type');
+    if (type) type.value = 'cow';
+    const breed = document.getElementById('al_breed');
+    if (breed) breed.value = 'holstein';
+    const bd = document.getElementById('al_birth_date');
+    if (bd) bd.value = '';
+    const gender = document.getElementById('al_gender');
+    if (gender) gender.value = 'female';
+    const wt = document.getElementById('al_weight');
+    if (wt) wt.value = '';
+    const hs = document.getElementById('al_health_status');
+    if (hs) hs.value = 'healthy';
+    const st = document.getElementById('al_status');
+    if (st) st.value = 'active';
+    $('#addLivestockModal').modal('show');
+}
 
+document.getElementById('addLivestockForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const payload = {
+        tag_number: document.getElementById('al_tag_number')?.value?.trim(),
+        name: document.getElementById('al_name')?.value?.trim(),
+        type: document.getElementById('al_type')?.value,
+        breed: document.getElementById('al_breed')?.value,
+        birth_date: document.getElementById('al_birth_date')?.value,
+        gender: document.getElementById('al_gender')?.value,
+        weight: document.getElementById('al_weight')?.value,
+        health_status: document.getElementById('al_health_status')?.value,
+        status: document.getElementById('al_status')?.value
+    };
+    const btn = this.querySelector('.btn-ok');
+    const original = btn ? btn.innerHTML : null;
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+    try {
+        const res = await fetch('/farmer/livestock', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok && data.success && data.livestock) {
+            $('#addLivestockModal').modal('hide');
+            showNotification('Livestock added successfully!', 'success');
+            document.getElementById('detailLivestockId').textContent = data.livestock.tag_number || data.livestock.id;
+            populateBasicInfo(data.livestock);
+            $('#livestockDetailsModal').modal('show');
+        } else {
+            const msg = (data && data.message) ? data.message : 'Failed to add livestock. Please check inputs.';
+            showNotification(msg, 'error');
+        }
+    } catch (err) {
+        showNotification('Error saving livestock: ' + (err.message || err), 'error');
+    } finally {
+        if (btn && original) { btn.disabled = false; btn.innerHTML = original; }
+    }
+});
+ 
 // Improved QR code scanning function with fallback
 function scanQRCodeFromImage(imageDataUrl) {
     return new Promise((resolve, reject) => {

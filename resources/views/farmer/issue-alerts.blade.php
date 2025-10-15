@@ -99,7 +99,7 @@
                             <button class="btn-action btn-action-ok" onclick="openCreateAlertModal()">
                                 <i class="fas fa-plus"></i>Add Alert
                             </button>
-                            <button class="btn-action btn-action-edit" onclick="printTable()">
+                            <button class="btn-action btn-action-print" onclick="printTable()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshAlertsTable('alertsTable')">
@@ -289,14 +289,36 @@
     </div>
 
 
+<!-- Alert Action Modal -->
+<div class="modal fade admin-modal" id="alertActionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content smart-form text-center p-4">
+            <div class="d-flex flex-column align-items-center mb-3">
+                <div class="icon-circle mb-2">
+                    <i class="fas fa-question-circle fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="alertActionTitle">Confirm Action</h5>
+                <p class="text-muted small mb-0" id="alertActionMessage"></p>
+            </div>
+            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-3">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-modern btn-ok" id="confirmAlertActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
 <!-- Bottom spacing to match farm analysis tab -->
 <div style="margin-bottom: 3rem;"></div>
 
 @endsection
 
 @push('scripts')
-<!-- DataTables and dependencies (needed for print/csv/pdf buttons) -->
+<!-- DataTables CSS and dependencies (needed for print/csv/pdf buttons) -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
@@ -319,23 +341,37 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
+        autoWidth: false,
+        scrollX: true,
         buttons: [
             {
                 extend: 'csvHtml5',
                 title: 'Farmer_Alerts_Report',
-                className: 'd-none'
+                className: 'd-none',
+                exportOptions: {
+                    columns: [0,1,2,3,4,5],
+                    modifier: { page: 'all' }
+                }
             },
             {
                 extend: 'pdfHtml5',
                 title: 'Farmer_Alerts_Report',
                 orientation: 'landscape',
                 pageSize: 'Letter',
-                className: 'd-none'
+                className: 'd-none',
+                exportOptions: {
+                    columns: [0,1,2,3,4,5],
+                    modifier: { page: 'all' }
+                }
             },
             {
                 extend: 'print',
                 title: 'Farmer Alerts Report',
-                className: 'd-none'
+                className: 'd-none',
+                exportOptions: {
+                    columns: [0,1,2,3,4,5],
+                    modifier: { page: 'all' }
+                }
             }
         ],
         language: {
@@ -457,6 +493,108 @@ function printTable() {
     } catch (e) {
         console.error('printTable error:', e);
         window.print();
+    }
+}
+
+// Action buttons modal logic
+let pendingAlertAction = { id: null, type: null };
+
+function markAsResolved(alertId) {
+    pendingAlertAction = { id: alertId, type: 'resolve' };
+    $('#alertActionTitle').text('Mark as Resolved');
+    $('#alertActionMessage').text('Are you sure you want to mark this alert as resolved?');
+    $('#alertActionModal').modal('show');
+}
+
+function dismissAlert(alertId) {
+    pendingAlertAction = { id: alertId, type: 'dismiss' };
+    $('#alertActionTitle').text('Dismiss Alert');
+    $('#alertActionMessage').text('Are you sure you want to dismiss this alert?');
+    $('#alertActionModal').modal('show');
+}
+
+$('#confirmAlertActionBtn').on('click', function() {
+    try {
+        $('#alertActionModal').modal('hide');
+        // Provide immediate UI feedback
+        if (pendingAlertAction && pendingAlertAction.id) {
+            const selector = pendingAlertAction.type === 'resolve'
+                ? `button[onclick="markAsResolved('${pendingAlertAction.id}')"]`
+                : `button[onclick="dismissAlert('${pendingAlertAction.id}')"]`;
+            const row = document.querySelector(selector)?.closest('tr');
+            if (row) {
+                row.style.opacity = '0.6';
+                row.style.transition = 'opacity 0.3s ease';
+            }
+        }
+        // Backend call to update status
+        if (pendingAlertAction && pendingAlertAction.id) {
+            const status = pendingAlertAction.type === 'resolve' ? 'resolved' : 'dismissed';
+            $.ajax({
+                url: `/farmer/issue-alerts/${pendingAlertAction.id}/status`,
+                method: 'PATCH',
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: { status, resolution_notes: '' },
+                success: function() {
+                    showNotification('Alert ' + (status === 'resolved' ? 'resolved' : 'dismissed') + ' successfully', 'success');
+                    setTimeout(() => location.reload(), 600);
+                },
+                error: function() {
+                    showNotification('Failed to update alert status', 'danger');
+                }
+            });
+        }
+        pendingAlertAction = { id: null, type: null };
+    } catch (e) {
+        console.error('confirmAlertAction error:', e);
+    }
+});
+
+// Export helpers using DataTables buttons
+function exportToCSV() {
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
+            $('#alertsTable').DataTable().button('.buttons-csv').trigger();
+        }
+    } catch (e) {
+        console.error('exportToCSV error:', e);
+    }
+}
+
+function exportToPDF() {
+    try {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
+            $('#alertsTable').DataTable().button('.buttons-pdf').trigger();
+        }
+    } catch (e) {
+        console.error('exportToPDF error:', e);
+    }
+}
+
+function exportToPNG() {
+    try {
+        const originalTable = document.getElementById('alertsTable');
+        const tempTable = originalTable.cloneNode(true);
+        const headerRow = tempTable.querySelector('thead tr');
+        if (headerRow && headerRow.lastElementChild) headerRow.lastElementChild.remove();
+        const dataRows = tempTable.querySelectorAll('tbody tr');
+        dataRows.forEach(row => { if (row.lastElementChild) row.lastElementChild.remove(); });
+        tempTable.style.position = 'absolute';
+        tempTable.style.left = '-9999px';
+        tempTable.style.top = '-9999px';
+        document.body.appendChild(tempTable);
+        html2canvas(tempTable, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'Farmer_Alerts_Report.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            document.body.removeChild(tempTable);
+        }).catch(err => {
+            console.error('exportToPNG error:', err);
+            if (document.body.contains(tempTable)) document.body.removeChild(tempTable);
+        });
+    } catch (e) {
+        console.error('exportToPNG wrapper error:', e);
     }
 }
 </script>

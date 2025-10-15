@@ -85,15 +85,16 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::delete('/production/{id}', [FarmerController::class, 'deleteProduction'])->name('production.destroy');
         Route::get('/users', function () { return view('farmer.users'); })->name('users');
         Route::get('/suppliers', [App\Http\Controllers\FarmerController::class, 'suppliers'])->name('suppliers');
+        Route::delete('/suppliers/{expenseType}', [App\Http\Controllers\FarmerController::class, 'deleteSupplier'])->name('suppliers.destroy');
         Route::get('/schedule', function () { return view('farmer.schedule'); })->name('schedule');
         Route::get('/scan', function () { return view('farmer.scan'); })->name('scan');
         Route::get('/scan/{id}', [FarmerController::class, 'scanLivestock'])->name('scan.livestock');
-        Route::get('/farms', [FarmerController::class, 'farms'])->name('farms');
-        Route::post('/farms', [FarmerController::class, 'storeFarm'])->name('farms.store');
-        Route::get('/farm-details/{id}', [FarmerController::class, 'farmDetails'])->name('farm-details');
         Route::get('/sales', [App\Http\Controllers\FarmerController::class, 'sales'])->name('sales');
         Route::post('/sales', [App\Http\Controllers\FarmerController::class, 'storeSale'])->name('sales.store');
         Route::delete('/sales/{id}', [App\Http\Controllers\FarmerController::class, 'deleteSale'])->name('sales.destroy');
+        Route::get('/sales/{id}', [App\Http\Controllers\FarmerController::class, 'showSale'])->name('sales.show');
+        Route::get('/sales/{id}/edit', [App\Http\Controllers\FarmerController::class, 'editSale'])->name('sales.edit');
+        Route::put('/sales/{id}', [App\Http\Controllers\FarmerController::class, 'updateSale'])->name('sales.update');
         Route::get('/expenses', [FarmerController::class, 'expenses'])->name('expenses');
         Route::post('/expenses', [FarmerController::class, 'storeExpense'])->name('expenses.store');
         // Static history route before parameterized routes
