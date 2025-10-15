@@ -161,16 +161,6 @@
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
                                             </button>
-                                            @if($alert->status === 'active')
-                                            <button class="btn-action btn-action-approve" onclick="markAsResolved('{{ $alert->id }}')" title="Mark as Resolved">
-                                                <i class="fas fa-check"></i>
-                                                <span>Resolve</span>
-                                            </button>
-                                            <button class="btn-action btn-action-reject" onclick="dismissAlert('{{ $alert->id }}')" title="Dismiss Alert">
-                                                <i class="fas fa-times"></i>
-                                                <span>Dismiss</span>
-                                            </button>
-                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -622,15 +612,30 @@ $('#confirmAlertActionBtn').on('click', function() {
             const status = pendingAlertAction.type === 'resolve' ? 'resolved' : 'dismissed';
             $.ajax({
                 url: `/farmer/issue-alerts/${pendingAlertAction.id}/status`,
-                method: 'PATCH',
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: { status, resolution_notes: '' },
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                },
+                data: {
+                    _method: 'PATCH',
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    status: status,
+                    resolution_notes: ''
+                },
                 success: function() {
                     showNotification('Alert ' + (status === 'resolved' ? 'resolved' : 'dismissed') + ' successfully', 'success');
                     setTimeout(() => location.reload(), 600);
                 },
-                error: function() {
-                    showNotification('Failed to update alert status', 'danger');
+                error: function(xhr) {
+                    if (xhr && xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errs = xhr.responseJSON.errors;
+                        Object.keys(errs).forEach(k => showNotification(errs[k][0], 'danger'));
+                    } else if (xhr && xhr.status === 419) {
+                        showNotification('Session expired. Please refresh and try again.', 'danger');
+                    } else {
+                        showNotification('Failed to update alert status', 'danger');
+                    }
                 }
             });
         }

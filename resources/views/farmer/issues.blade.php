@@ -1317,22 +1317,15 @@ function viewAlertDetails(alertId) {
         method: 'GET',
         success: function (response) {
             if (response.success) {
-<<<<<<< HEAD
                 const alert = response.alert || {};
                 const issuedRel = alert.issuedBy || alert.issued_by; // handle relation vs FK id
                 const issuedName = issuedRel && typeof issuedRel === 'object' && issuedRel.name ? issuedRel.name : 'You';
                 const safeTopic = (alert.topic || '').toString();
                 const safeSeverity = (alert.severity || '').toString();
                 $('#issueDetailsContent').html(`
-=======
-                const alert = response.alert;
-
-                $('#alertDetailsContent').html(`
->>>>>>> a314ef8f855da84d4c74eef223c1412319ebb9f6
                     <div class="row">
                         <!-- Alert Information -->
                         <div class="col-md-6">
-<<<<<<< HEAD
                             <div class="card">
                                 <div class="card-header bg-warning text-white">
                                     <h6 class="mb-0"><i class="fas fa-bell"></i> Alert Information</h6>
@@ -1341,39 +1334,11 @@ function viewAlertDetails(alertId) {
                                     <table class="table table-borderless">
                                         <tr><td><strong>Topic:</strong></td><td><span class="alert-topic-badge alert-${safeTopic.toLowerCase()}">${safeTopic}</span></td></tr>
                                         <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${getSeverityColor(safeSeverity)}">${safeSeverity}</span></td></tr>
-                                        <tr><td><strong>Alert Date:</strong></td><td>${alert.alert_date}</td></tr>
+                                        <tr><td><strong>Alert Date:</strong></td><td>${alert.alert_date || 'N/A'}</td></tr>
                                         <tr><td><strong>Issued By:</strong></td><td><span class="badge badge-primary">${issuedName}</span></td></tr>
                                     </table>
                                 </div>
                             </div>
-=======
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                Alert Information
-                            </h6>
-                            <p><strong>Topic:</strong> 
-                                <span class="alert-topic-badge alert-${alert.topic ? alert.topic.toLowerCase() : 'default'}">
-                                    ${alert.topic || 'N/A'}
-                                </span>
-                            </p>
-                            <p><strong>Severity:</strong> 
-                                <span class="badge badge-${getSeverityColor(alert.severity)}">
-                                    ${alert.severity || 'N/A'}
-                                </span>
-                            </p>
-                            <p><strong>Status:</strong> 
-                                <span class="badge badge-${getStatusColor(alert.status)}">
-                                    ${alert.status || 'N/A'}
-                                </span>
-                            </p>
-                            <p><strong>Alert Date:</strong> 
-                                ${alert.alert_date ? new Date(alert.alert_date).toLocaleString() : 'N/A'}
-                            </p>
-                            <p><strong>Issued By:</strong> 
-                                <span class="badge badge-primary">
-                                    ${alert.issued_by ? alert.issued_by.name : 'Admin'}
-                                </span>
-                            </p>
->>>>>>> a314ef8f855da84d4c74eef223c1412319ebb9f6
                         </div>
 
                         <!-- Livestock Information -->
@@ -1406,7 +1371,7 @@ function viewAlertDetails(alertId) {
                     </div>
                 `);
 
-                $('#alertDetailsModal').modal('show');
+                $('#issueDetailsModal').modal('show');
             } else {
                 showToast('Failed to load alert details', 'error');
             }
