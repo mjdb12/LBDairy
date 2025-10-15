@@ -707,7 +707,7 @@ function loadLivestockData(livestockId) {
                 $('#registry_id').val(livestock.registry_id);
                 $('#natural_marks').val(livestock.natural_marks);
                 $('#property_no').val(livestock.property_no);
-                $('#acquisition_date').val(livestock.acquisition_date);
+                $('#acquisition_date').val(formatDateForInput(livestock.acquisition_date));
                 $('#acquisition_cost').val(livestock.acquisition_cost);
                 $('#sire_id').val(livestock.sire_id);
                 $('#sire_name').val(livestock.sire_name);

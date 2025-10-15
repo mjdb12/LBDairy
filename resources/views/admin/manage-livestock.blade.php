@@ -2686,7 +2686,7 @@ $(document).ready(function () {
                     $('#editRegistryId').val(livestock.registry_id);
                     $('#editNaturalMarks').val(livestock.natural_marks);
                     $('#editPropertyNo').val(livestock.property_no);
-                    $('#editAcquisitionDate').val(livestock.acquisition_date);
+                    $('#editAcquisitionDate').val(formatDateForInput(livestock.acquisition_date));
                     $('#editAcquisitionCost').val(livestock.acquisition_cost);
                     $('#editSireId').val(livestock.sire_id);
                     $('#editSireName').val(livestock.sire_name);

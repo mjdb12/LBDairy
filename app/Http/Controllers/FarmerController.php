@@ -562,6 +562,7 @@ class FarmerController extends Controller
             'weight' => 'nullable|numeric|min:0',
             'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
             'status' => 'required|in:active,inactive',
+            'acquisition_date' => 'nullable|date',
         ]);
 
         try {
@@ -587,6 +588,7 @@ class FarmerController extends Controller
                 'status' => $request->status,
                 'farm_id' => $farm->id,
                 'owner_id' => $user->id,
+                'acquisition_date' => $request->acquisition_date,
             ]);
 
             return response()->json([
@@ -734,6 +736,7 @@ class FarmerController extends Controller
             'weight' => 'nullable|numeric|min:0',
             'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
             'status' => 'required|in:active,inactive',
+            'acquisition_date' => 'nullable|date',
         ]);
 
         try {
@@ -752,6 +755,7 @@ class FarmerController extends Controller
                 'weight' => $request->weight,
                 'health_status' => $request->health_status,
                 'status' => $request->status,
+                'acquisition_date' => $request->acquisition_date,
             ]);
 
             return response()->json([
