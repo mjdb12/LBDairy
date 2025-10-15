@@ -15,14 +15,14 @@
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
                                 Total Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($totalExpenses, 2) }}</div>
-                            <div class="text-xs text-danger">
+                            <div class="text-xs ">
                                 <i class="fas fa-arrow-up"></i>
                                 {{ $expenseChange }}% from last month
                             </div>
@@ -36,14 +36,14 @@
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
                                 Feed Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($feedExpenses, 2) }}</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs ">
                                 <i class="fas fa-arrow-down"></i>
                                 {{ $feedChange }}% from last month
                             </div>
@@ -57,14 +57,14 @@
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
                                 Veterinary Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($veterinaryExpenses, 2) }}</div>
-                            <div class="text-xs text-info">
+                            <div class="text-xs ">
                                 <i class="fas fa-arrow-up"></i>
                                 {{ $veterinaryChange }}% from last month
                             </div>
@@ -78,14 +78,14 @@
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">
                                 Maintenance Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($maintenanceExpenses, 2) }}</div>
-                            <div class="text-xs text-warning">
+                            <div class="text-xs ">
                                 <i class="fas fa-arrow-up"></i>
                                 {{ $maintenanceChange }}% from last month
                             </div>
@@ -117,7 +117,7 @@
 
     <!-- Budget Alert -->
     @if($budgetExceeded)
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show refresh-notification" role="alert">
         <i class="fas fa-exclamation-triangle"></i>
         <strong>Budget Alert!</strong> Your expenses have exceeded your monthly budget by ₱{{ number_format($budgetExcess, 2) }}.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -127,8 +127,6 @@
     @endif
 
     <!-- Main Content -->
-    <div class="row">
-        <div class="col-12">
             <div class="card shadow fade-in">
                 <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="m-0 font-weight-bold">
@@ -149,7 +147,7 @@
                     <button class="btn-action btn-action-ok" id="supplierSearch" title="Add Expenses" onclick="openAddExpenseModal()">
                         <i class="fas fa-plus"></i> Add Expense
                     </button>
-                    <button class="btn-action btn-action-print" title="Print" onclick="printExpenses()">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printExpenses()">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshExpenses()">
@@ -189,7 +187,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="salesTableBody">
                                 @forelse($expensesData as $expense)
                                 <tr data-expense-id="{{ $expense['id'] }}">
                                     <td>
@@ -198,7 +196,7 @@
                                     <td>{{ $expense['expense_date'] }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <i class="fas fa-receipt text-primary mr-2"></i>
+                                            <i class="fas fa-receipt  mr-2"></i>
                                             {{ $expense['expense_name'] }}
                                         </div>
                                     </td>
@@ -242,8 +240,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
 <!-- ADD EXPENSE MODAL -->
 <div class="modal fade admin-modal" id="expenseModal" tabindex="-1" role="dialog" aria-labelledby="expenseModalLabel" aria-hidden="true">
@@ -987,6 +983,25 @@ function showToast(message, type = 'info') {
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 <style>
+    /* Make table cells wrap instead of forcing them all inline */
+#expensesTable td, 
+#expensesTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#expensesTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#expensesTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
     /* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
     border-radius: 1.5rem;
