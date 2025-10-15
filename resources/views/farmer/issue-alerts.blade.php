@@ -496,6 +496,79 @@ function printTable() {
     }
 }
 
+function viewAlertDetails(alertId) {
+    try {
+        $.ajax({
+            url: `/farmer/issue-alerts/${alertId}`,
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            success: function(response) {
+                if (!response || !response.success || !response.alert) {
+                    showNotification('Could not load alert details.', 'danger');
+                    return;
+                }
+                const a = response.alert || {};
+                const l = a.livestock || {};
+                const issued = a.issuedBy || a.issued_by || {};
+                const dateRaw = a.alert_date || a.created_at;
+                let dateText = '';
+                try {
+                    dateText = dateRaw ? new Date(dateRaw).toLocaleDateString() : '';
+                } catch (e) {
+                    dateText = dateRaw || '';
+                }
+
+                const escapeHtml = function(s) {
+                    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+                        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+                    });
+                };
+
+                const modalHtml = `
+                    <div class="modal fade" id="viewAlertModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Alert Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Livestock ID:</strong> ${escapeHtml(l.livestock_id || 'N/A')}</div>
+                                        <div class="col-md-6"><strong>Severity:</strong> ${escapeHtml((a.severity || '').toString().toUpperCase())}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Date:</strong> ${escapeHtml(dateText)}</div>
+                                        <div class="col-md-6"><strong>Status:</strong> ${escapeHtml((a.status || '').toString().toUpperCase())}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-12"><strong>Topic:</strong> ${escapeHtml(a.topic || '')}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Description:</strong>
+                                            <div class="mt-1">${escapeHtml(a.description || '')}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                $('#viewAlertModal').remove();
+                $('body').append(modalHtml);
+                $('#viewAlertModal').modal('show');
+            },
+            error: function() {
+                showNotification('Failed to load alert details.', 'danger');
+            }
+        });
+    } catch (e) {}
+}
+
 // Action buttons modal logic
 let pendingAlertAction = { id: null, type: null };
 
@@ -596,6 +669,21 @@ function exportToPNG() {
     } catch (e) {
         console.error('exportToPNG wrapper error:', e);
     }
+}
+
+function showNotification(message, type = 'info') {
+    const icon = type === 'success' ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : (type === 'danger' ? 'times-circle' : 'info-circle'));
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification" style="position: fixed; top: 1rem; right: 1rem; z-index: 1060;">
+            <i class="fas fa-${icon}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    $('body').append(notification);
+    setTimeout(() => { notification.alert('close'); }, 4000);
 }
 </script>
 @endpush

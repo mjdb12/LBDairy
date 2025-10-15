@@ -858,11 +858,12 @@ function loadIssueDetails(issueId) {
 }
 
 function getSeverityColor(severity) {
-    switch(severity) {
-        case 'Low': return 'success';
-        case 'Medium': return 'warning';
-        case 'High': return 'danger';
-        case 'Critical': return 'dark';
+    const s = (severity || '').toString().toLowerCase();
+    switch(s) {
+        case 'low': return 'success';
+        case 'medium': return 'warning';
+        case 'high': return 'danger';
+        case 'critical': return 'danger';
         default: return 'secondary';
     }
 }
@@ -1283,7 +1284,11 @@ function viewAlertDetails(alertId) {
         method: 'GET',
         success: function(response) {
             if (response.success) {
-                const alert = response.alert;
+                const alert = response.alert || {};
+                const issuedRel = alert.issuedBy || alert.issued_by; // handle relation vs FK id
+                const issuedName = issuedRel && typeof issuedRel === 'object' && issuedRel.name ? issuedRel.name : 'You';
+                const safeTopic = (alert.topic || '').toString();
+                const safeSeverity = (alert.severity || '').toString();
                 $('#issueDetailsContent').html(`
                     <div class="row">
                         <div class="col-md-6">
@@ -1293,10 +1298,10 @@ function viewAlertDetails(alertId) {
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-borderless">
-                                        <tr><td><strong>Topic:</strong></td><td><span class="alert-topic-badge alert-${alert.topic.toLowerCase()}">${alert.topic}</span></td></tr>
-                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${getSeverityColor(alert.severity)}">${alert.severity}</span></td></tr>
+                                        <tr><td><strong>Topic:</strong></td><td><span class="alert-topic-badge alert-${safeTopic.toLowerCase()}">${safeTopic}</span></td></tr>
+                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${getSeverityColor(safeSeverity)}">${safeSeverity}</span></td></tr>
                                         <tr><td><strong>Alert Date:</strong></td><td>${alert.alert_date}</td></tr>
-                                        <tr><td><strong>Issued By:</strong></td><td><span class="badge badge-primary">${alert.issued_by ? alert.issued_by.name : 'Admin'}</span></td></tr>
+                                        <tr><td><strong>Issued By:</strong></td><td><span class="badge badge-primary">${issuedName}</span></td></tr>
                                     </table>
                                 </div>
                             </div>
@@ -1360,6 +1365,21 @@ function markAlertAsRead(alertId) {
             showToast('Error marking alert as read', 'error');
         }
     });
+}
+
+function showNotification(message, type = 'info') {
+    const icon = type === 'success' ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : (type === 'danger' ? 'times-circle' : 'info-circle'));
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification" style="position: fixed; top: 1rem; right: 1rem; z-index: 1060;">
+            <i class="fas fa-${icon}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    $('body').append(notification);
+    setTimeout(() => { notification.alert('close'); }, 4000);
 }
 </script>
 @endpush

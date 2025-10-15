@@ -123,10 +123,10 @@
                             <a class="dropdown-item" href="#" onclick="exportToCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
-                            <a class="dropdown-item" href="#" onclick="exportToPDF()">
+                            <a class="dropdown-item" href="#" onclick="exportToPNG()">
                                 <i class="fas fa-image"></i> Download PNG
                             </a>
-                            <a class="dropdown-item" href="#" onclick="exportFarmersPDF()">
+                            <a class="dropdown-item" href="#" onclick="exportToPDF()">
                                 <i class="fas fa-file-pdf"></i> Download PDF
                             </a>
                         </div>
@@ -215,10 +215,8 @@
                         </label>
                         <select class="form-control mt-1" id="status" name="status" required>
                             <option value="">Select Status</option>
-                            <option value="Pending">Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Resolved">Resolved</option>
-                            <option value="Closed">Closed</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="dismissed">Dismissed</option>
                         </select>
                     </div>
                     <!-- Response Notes -->
@@ -226,7 +224,7 @@
                         <label for="resolution_notes" class="fw-semibold">
                             Response Notes <span class="text-danger">*</span>
                         </label>
-                        <textarea class="form-control mt-1" id="resolution_notes" name="resolution_notes" rows="4" required placeholder="Add your response or resolution notes for the farmer..." style="resize: none;"></textarea>
+                        <textarea class="form-control mt-1" id="resolution_notes" name="resolution_notes" rows="4" placeholder="Add your response or resolution notes for the farmer..." style="resize: none;"></textarea>
                     </div>
                 </div>
 
@@ -441,6 +439,22 @@ function initializeDataTables() {
     $('#farmerSearch').on('keyup', function() {
         alertsTable.search(this.value).draw();
     });
+}
+
+// Optional stats refresher (safe stub)
+function updateStats() {
+    try {
+        $.get('/admin/farmer-alerts-stats')
+            .done(function(resp) {
+                // If you later add IDs to the stat cards, update their text here.
+                // Example: $('#totalAlerts').text(resp.data.total);
+            })
+            .fail(function() {
+                // no-op; keep UI static if endpoint fails
+            });
+    } catch (e) {
+        // swallow to avoid blocking other features
+    }
 }
 
 // ✅ Export functions now work with alertsTable
@@ -776,8 +790,7 @@ function markAsResolved(alertId) {
     currentAlertId = alertId;
     currentAction = 'resolved';
     $('#statusUpdateForm').attr('action', `/admin/farmer-alerts/${alertId}/status`);
-    $('#statusUpdateForm').append('<input type="hidden" name="status" value="resolved">');
-    $('#statusUpdateLabel').html('<i class="fas fa-check mr-2"></i> Mark as Resolved');
+    $('#status').val('resolved');
     $('#statusUpdateModal').modal('show');
 }
 
@@ -785,33 +798,43 @@ function dismissAlert(alertId) {
     currentAlertId = alertId;
     currentAction = 'dismissed';
     $('#statusUpdateForm').attr('action', `/admin/farmer-alerts/${alertId}/status`);
-    $('#statusUpdateForm').append('<input type="hidden" name="status" value="dismissed">');
-    $('#statusUpdateLabel').html('<i class="fas fa-times mr-2"></i> Dismiss Alert');
+    $('#status').val('dismissed');
     $('#statusUpdateModal').modal('show');
 }
 
 function submitStatusUpdate() {
-    const formData = new FormData($('#statusUpdateForm')[0]);
-    
+    const payload = {
+        _method: 'PATCH',
+        status: $('#statusUpdateForm select[name="status"]').val(),
+        resolution_notes: $('#statusUpdateForm textarea[name="resolution_notes"]').val(),
+        _token: $('meta[name="csrf-token"]').attr('content')
+    };
+
     $.ajax({
         url: $('#statusUpdateForm').attr('action'),
-        method: 'PATCH',
-        data: formData,
-        processData: false,
-        contentType: false,
+        method: 'POST',
+        data: payload,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'Accept': 'application/json'
+        },
         success: function(response) {
-            showToast('Alert status updated successfully!', 'success');
+            showNotification('Alert status updated successfully!', 'success');
             $('#statusUpdateModal').modal('hide');
             location.reload();
         },
         error: function(xhr) {
             if (xhr.status === 422) {
-                const errors = xhr.responseJSON.errors;
+                const errors = xhr.responseJSON.errors || {};
+                if (!Object.keys(errors).length) {
+                    showNotification('Validation failed. Please check required fields.', 'danger');
+                    return;
+                }
                 Object.keys(errors).forEach(field => {
-                    showToast(errors[field][0], 'error');
+                    showNotification(errors[field][0], 'danger');
                 });
             } else {
-                showToast('Error updating alert status', 'error');
+                showNotification('Error updating alert status', 'danger');
             }
         }
     });

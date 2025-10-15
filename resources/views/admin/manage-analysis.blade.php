@@ -92,10 +92,10 @@
                     <input type="text" class="form-control" placeholder="Search farmer..." id="customSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
-                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
+                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshPendingFarmersTable()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
@@ -103,13 +103,13 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" onclick="exportCSV('pendingFarmersTable')">
+                            <a class="dropdown-item" href="#" onclick="exportCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
-                            <a class="dropdown-item" href="#" onclick="exportPNG('pendingFarmersTable')">
+                            <a class="dropdown-item" href="#" onclick="exportPNG()">
                                 <i class="fas fa-image"></i> Download PNG
                             </a>
-                            <a class="dropdown-item" href="#" onclick="exportPDF('pendingFarmersTable')">
+                            <a class="dropdown-item" href="#" onclick="exportPDF()">
                                 <i class="fas fa-file-pdf"></i> Download PDF
                             </a>
                         </div>
@@ -1799,7 +1799,7 @@ function deleteFarmer(farmerId) {
 
 // Export functions
 function exportCSV() {
-    const tableData = dataTable.data().toArray();
+    const tableData = farmersTable.data().toArray();
     const csvData = [];
     
     // Add headers (excluding Actions column)
@@ -1843,7 +1843,7 @@ function exportPDF() {
         // Force custom PDF generation to match superadmin styling
         // Don't fall back to DataTables PDF export as it has different styling
         
-        const tableData = dataTable.data().toArray();
+        const tableData = farmersTable.data().toArray();
         const pdfData = [];
         
         const headers = ['Farmer ID', 'Name', 'Email', 'Phone', 'Location', 'Status'];
@@ -1901,12 +1901,12 @@ function exportPDF() {
     } catch (error) {
         console.error('Error generating PDF:', error);
         showNotification('Error generating PDF. Falling back to DataTables export.', 'warning');
-        dataTable.button('.buttons-pdf').trigger();
+        farmersTable.button('.buttons-pdf').trigger();
     }
 }
 function printTable() {
     try {
-        const tableData = dataTable.data().toArray();
+        const tableData = farmersTable.data().toArray();
         
         if (!tableData || tableData.length === 0) {
             showNotification('No data available to print', 'warning');
@@ -1977,7 +1977,7 @@ function printTable() {
         
         // Fallback to DataTables print
         try {
-            dataTable.button('.buttons-print').trigger();
+            farmersTable.button('.buttons-print').trigger();
         } catch (fallbackError) {
             console.error('Fallback print also failed:', fallbackError);
             showNotification('Print failed. Please try again.', 'danger');
@@ -1986,7 +1986,7 @@ function printTable() {
 }
 
 function exportPNG() {
-    const originalTable = document.getElementById('dataTable');
+    const originalTable = document.getElementById('farmersTable');
     const tempTable = originalTable.cloneNode(true);
     
     const headerRow = tempTable.querySelector('thead tr');

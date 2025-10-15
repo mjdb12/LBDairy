@@ -2338,6 +2338,21 @@
 
 @push('scripts')
 <script>
+    function formatDateForInput(dateVal) {
+        if (!dateVal) return '';
+        try {
+            const d = new Date(dateVal);
+            if (isNaN(d.getTime())) {
+                return String(dateVal).slice(0, 10);
+            }
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        } catch (e) {
+            return String(dateVal).slice(0, 10);
+        }
+    }
     let selectedFarmerId = null;
     let selectedFarmerName = '';
     let selectedLivestockId = null;
@@ -2663,7 +2678,7 @@ $(document).ready(function () {
                     $('#editName').val(livestock.name);
                     $('#editType').val(livestock.type);
                     $('#editBreed').val(livestock.breed);
-                    $('#editBirthDate').val(livestock.birth_date);
+                    $('#editBirthDate').val(formatDateForInput(livestock.birth_date));
                     $('#editGender').val(livestock.gender);
                     $('#editWeight').val(livestock.weight);
                     $('#editHealthStatus').val(livestock.health_status);
@@ -2812,7 +2827,7 @@ $(document).ready(function () {
                                 <p class="text-left" ><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
                                 <p class="text-left" ><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
                                 <p class="text-left" ><strong>Gender:</strong> ${livestock.gender || 'N/A'}</p>
-                                <p class="text-left" ><strong>Birth Date:</strong> ${livestock.birth_date ? new Date(livestock.birth_date).toLocaleDateString() : 'N/A'}</p>
+                                <p class="text-left" ><strong>Birth Date:</strong> ${livestock.birth_date ? formatDateForInput(livestock.birth_date) : 'N/A'}</p>
                             </div>
 
                             <div class="col-md-6">

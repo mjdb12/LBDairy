@@ -472,6 +472,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
 <script>
+function formatDateForInput(dateVal) {
+    if (!dateVal) return '';
+    try {
+        const d = new Date(dateVal);
+        if (isNaN(d.getTime())) {
+            return String(dateVal).slice(0, 10);
+        }
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    } catch (e) {
+        return String(dateVal).slice(0, 10);
+    }
+}
+
 let currentLivestockId = null;
 let downloadCounter = 1;
 let livestockTable;
@@ -683,7 +699,7 @@ function loadLivestockData(livestockId) {
                 $('#name').val(livestock.name);
                 $('#type').val(livestock.type);
                 $('#breed').val(livestock.breed);
-                $('#birth_date').val(livestock.birth_date);
+                $('#birth_date').val(formatDateForInput(livestock.birth_date));
                 $('#weight').val(livestock.weight);
                 $('#gender').val(livestock.gender);
                 $('#health_status').val(livestock.health_status);

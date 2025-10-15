@@ -2173,6 +2173,14 @@ class AdminController extends Controller
             'user_agent' => $request->userAgent(),
         ]);
 
+        // Return JSON for AJAX requests, otherwise redirect
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Alert status updated successfully!'
+            ]);
+        }
+
         return redirect()->route('admin.farmer-alerts')->with('success', 'Alert status updated successfully!');
     }
 
