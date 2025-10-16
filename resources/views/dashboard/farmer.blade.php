@@ -78,23 +78,22 @@
 
 
 <!-- Task Board Row --> 
- <div class="row fade-in"> <!-- Task Board --> 
-    <div class="col-12 mb-4"> 
-        <div class="card shadow"> 
-            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start"> 
-                <h6 class="mb-0"> 
-                    <i class="fas fa-tasks"></i> Task Board 
-                </h6> 
-                <button class="btn-action btn-action-ok" title="New Task" id="addTaskBtn"> 
-                    <i class="fas fa-plus mr-2"></i> New Task 
-                </button> 
-            </div> 
-            <div class="card-body"> 
-                <ul class="list-group" id="taskList"></ul> 
-            </div> 
-        </div> 
-    </div> 
+        <div class="card shadow mb-4 fade-in">
+  <div class="card-body card-header-flex">
+    <h6 class="card-title mb-0">
+      <i class="fas fa-tasks"></i> Task Board
+    </h6>
+
+    <button class="btn-action btn-action-ok" title="New Task" id="addTaskBtn">
+      <i class="fas fa-plus mr-2"></i> New Task
+    </button>
+  </div>
+
+  <div class="card-body">
+    <ul class="list-group" id="taskList"></ul>
+  </div>
 </div>
+
 
 <!-- Recent Activity Row -->
 <div class="row fade-in">
@@ -130,7 +129,7 @@
         <div class="card shadow">
             <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start"> 
                 <h6 class="m-0 font-weight-bold ">
-                    <i class="fas fa-dollar-sign"></i>
+                    <i class="fas fa-money-bill"></i>
                     Recent Sales
                 </h6>
             </div>
@@ -142,7 +141,7 @@
                                 <h6 class="mb-1">{{ $sale->customer_name }}</h6>
                                 <small class="text-muted">{{ $sale->sale_date->format('M d, Y') }}</small>
                             </div>
-                            <span class="font-weight-bold">${{ number_format($sale->total_amount, 2) }}</span>
+                            <span class="font-weight-bold">₱{{ number_format($sale->total_amount, 2) }}</span>
                         </div>
                     @endforeach
                 @else
@@ -245,6 +244,150 @@
 
 @push('styles')
 <style>
+/* ===== Card Header: Task Board ===== */
+.card-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  text-align: left;
+}
+
+.card-header-flex .card-title {
+  color: #18375d;
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* New Task Button */
+#addTaskBtn {
+  background-color: #18375d !important;
+  border: 2px solid #18375d !important;
+  color: #fff !important;
+  transition: all 0.2s ease;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  border-radius: 6px;
+}
+
+#addTaskBtn:hover {
+  background-color: #fca700 !important;
+  border-color: #fca700 !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+/* Responsive header layout */
+@media (max-width: 576px) {
+  .card-header-flex {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #addTaskBtn {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    width: auto;
+  }
+}
+
+/* ===== Task Controls Layout ===== */
+.task-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap; /* keep side by side */
+  min-width: 0;
+}
+
+/* Badge styling */
+.task-controls .badge {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+/* ===== Buttons Group ===== */
+.task-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* ===== Common Button Base ===== */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #fff;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+/* ===== Edit Button ===== */
+.btn-action-ok {
+  background-color: #18375d;
+  border-color: #18375d;
+}
+
+.btn-action-ok:hover {
+  background-color: #fca700;
+  border-color: #fca700;
+  transform: translateY(-2px);
+}
+
+/* ===== Delete Button ===== */
+.btn-action-deletes {
+  background-color: #d9534f;
+  border-color: #d9534f;
+}
+
+.btn-action-deletes:hover {
+  background-color: #c9302c;
+  border-color: #c9302c;
+  transform: translateY(-2px);
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 576px) {
+  .task-controls {
+    flex-wrap: wrap; /* allow line break if space is too tight */
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .task-btn-group {
+    gap: 4px;
+  }
+
+  .btn-action {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+
+  .task-controls .badge {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+  }
+}
+
     /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
@@ -935,11 +1078,11 @@ html body #addTaskBtn.btn-primary,
 #addTaskBtn.btn-primary,
 #addTaskBtn,
 #addTaskBtn.btn {
-    background-color: #387057 !important;
-    background: #387057 !important;
-    border-color: #387057 !important;
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
     color: #fff !important;
-    border: 2px solid #387057 !important;
+    border: 2px solid #18375d !important;
     transition: all 0.2s ease;
     box-shadow: none !important;
     filter: none !important;
@@ -959,11 +1102,37 @@ html body #addTaskBtn.btn-primary:focus,
 #addTaskBtn:focus,
 #addTaskBtn.btn:hover,
 #addTaskBtn.btn:focus {
-    background-color: #2d5a47 !important;
-    background: #2d5a47 !important;
-    border-color: #2d5a47 !important;
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
     color: #fff !important;
-    border: 2px solid #2d5a47 !important;
+}
+
+/* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #taskSubmitBtn.btn-primary,
+#taskSubmitBtn.btn-primary,
+#taskSubmitBtn.btn,
+#taskSubmitBtn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #taskSubmitBtn.btn-primary:hover,
+html body #taskSubmitBtn.btn-primary:focus,
+#taskSubmitBtn.btn-primary:hover,
+#taskSubmitBtn.btn-primary:focus,
+#taskSubmitBtn:hover,
+#taskSubmitBtn:focus,
+#taskSubmitBtn.btn:hover,
+#taskSubmitBtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
     transform: translateY(-1px);
     box-shadow: none !important;
     filter: none !important;
@@ -982,9 +1151,9 @@ html body #addTaskBtn.btn-primary:focus,
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
     font-weight: 600;
-    background-color: #387057;
+    background-color: #18375d;
     color: #fff;
-    border: 2px solid #387057;
+    border: 2px solid #18375d;
     border-radius: 0.375rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1006,8 +1175,8 @@ html body #addTaskBtn.btn-primary:focus,
 
 .custom-task-btn:hover,
 .custom-task-btn:focus {
-    background-color: #2d5a47;
-    border-color: #2d5a47;
+    background-color: #fca700;
+    border-color: #fca700;
     color: #fff;
     transform: translateY(-1px);
     box-shadow: none;
@@ -1348,7 +1517,71 @@ html body #addTaskBtn.btn-primary:focus,
         border-color: #cbd3da;
         color: #495057;
     }
-    
+   
+/* container stays inline; prevents wrapping unless absolutely needed */
+.task-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;      /* keep them on one line */
+  min-width: 0;           /* allow children to shrink properly */
+}
+
+/* badge */
+.task-controls .badge {
+  flex: 0 0 auto;         /* don't let badge grow/shrink weirdly */
+  white-space: nowrap;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+}
+
+/* button group stays inline and doesn't collapse into next line */
+.task-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;         /* keep the group together */
+}
+
+/* buttons: default desktop look */
+.task-btn-group .btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* MOBILE: shrink spacing & hide text labels to keep everything on one line */
+@media (max-width: 576px) {
+  .task-controls {
+    gap: 6px;
+    justify-content: flex-start;
+  }
+
+  .task-btn-group .btn-action {
+    padding: 4px 6px;
+    font-size: 0.85rem;
+  }
+
+  /* hide the text but keep icons visible so the controls fit */
+  .task-btn-group .btn-action span {
+    display: none;
+  }
+
+  /* slightly smaller badge */
+  .task-controls .badge {
+    font-size: 0.8rem;
+    padding: 4px 6px;
+  }
+}
+
+/* if Bootstrap or other CSS still forces wrapping, add this override */
+.task-controls {
+  flex-wrap: nowrap !important;
+}
+
 </style>
 @endpush
 
@@ -1397,19 +1630,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </div>
 
-            <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-4">
-                    <i class="far fa-clock"></i> ${formatDue(task.due_date)}
-                </span>
-                <div class="btn-group">
-                    <button class="btn-action btn-action-ok edit-task" title="Edit Task">
-                        <i class="fas fa-edit"></i> <span>Edit</span>
-                    </button>
-                    <button class="btn-action btn-action-deletes delete-task" title="Delete Task">
-                        <i class="fas fa-trash"></i> <span>Delete</span>
-                    </button>
-                </div>
-            </div>
+            <div class="task-controls mt-2 mt-md-0 d-flex align-items-center">
+    <span class="badge badge-${priorityBadge(task.priority)} mr-2 mb-2 mb-md-0">
+        <i class="far fa-clock"></i> ${formatDue(task.due_date)}
+    </span>
+    <div class="btn-group task-btn-group">
+        <button class="btn-action btn-action-ok btn-sm edit-task" title="Edit Task">
+            <i class="fas fa-edit"></i> <span>Edit</span>
+        </button>
+        <button class="btn-action btn-action-deletes btn-sm delete-task" title="Delete Task">
+            <i class="fas fa-trash"></i> <span>Delete</span>
+        </button>
+    </div>
+</div>
+
+
         `;
 
         li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
