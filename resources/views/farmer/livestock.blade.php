@@ -103,7 +103,7 @@
                             <i class="fas fa-plus"></i> Add Livestock
                         </button>
                     @endif
-                    <button class="btn-action btn-action-print" onclick="printTable()">
+                    <button class="btn-action btn-action-edit" onclick="printTable()">
                         <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" onclick="refreshLivestockTable('livestockTable')">
@@ -167,7 +167,7 @@
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>
                                     </button>
-                                    <button class="btn-action btn-action-delete" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
+                                    <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
                                         <span>Delete</span>
                                     </button>
@@ -215,19 +215,19 @@
 
                     <div class="row g-3">
                         <!-- Tag Number -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="tag_number" class="fw-semibold">Tag Number <span class="text-danger">*</span></label>
                             <input type="text" class="form-control mt-1" id="tag_number" name="tag_number" required>
                         </div>
 
                         <!-- Name -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="name" class="fw-semibold">Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control mt-1" id="name" name="name" required>
                         </div>
 
                         <!-- Type -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="type" class="fw-semibold">Type <span class="text-danger">*</span></label>
                             <select class="form-control mt-1" id="type" name="type" required>
                                 <option value="">Select Type</option>
@@ -239,7 +239,7 @@
                         </div>
 
                         <!-- Breed -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="breed" class="fw-semibold">Breed <span class="text-danger">*</span></label>
                             <select class="form-control mt-1" id="breed" name="breed" required>
                                 <option value="">Select Breed</option>
@@ -253,13 +253,13 @@
                         </div>
 
                         <!-- Date of Birth -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="birth_date" class="fw-semibold">Date of Birth <span class="text-danger">*</span></label>
                             <input type="date" class="form-control mt-1" id="birth_date" name="birth_date" required>
                         </div>
 
                         <!-- Gender -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="gender" class="fw-semibold">Gender <span class="text-danger">*</span></label>
                             <select class="form-control mt-1" id="gender" name="gender" required>
                                 <option value="">Select Gender</option>
@@ -269,13 +269,13 @@
                         </div>
 
                         <!-- Weight -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="weight" class="fw-semibold">Weight (kg)</label>
                             <input type="number" class="form-control mt-1" id="weight" name="weight" min="0" step="0.1">
                         </div>
 
                         <!-- Health Status -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="health_status" class="fw-semibold">Health Status <span class="text-danger">*</span></label>
                             <select class="form-control mt-1" id="health_status" name="health_status" required>
                                 <option value="healthy">Healthy</option>
@@ -286,7 +286,7 @@
                         </div>
 
                         <!-- Status -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="status" class="fw-semibold">Status <span class="text-danger">*</span></label>
                             <select class="form-control mt-1" id="status" name="status" required>
                                 <option value="active">Active</option>
@@ -295,63 +295,67 @@
                         </div>
 
                         <!-- Registry ID -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="registry_id" class="fw-semibold">Registry ID</label>
                             <input type="text" class="form-control mt-1" id="registry_id" name="registry_id">
                         </div>
 
                         <!-- Natural Marks -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="natural_marks" class="fw-semibold">Natural Marks</label>
                             <input type="text" class="form-control mt-1" id="natural_marks" name="natural_marks">
                         </div>
 
                         <!-- Property Number -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="property_no" class="fw-semibold">Property Number</label>
                             <input type="text" class="form-control mt-1" id="property_no" name="property_no">
                         </div>
 
                         <!-- Acquisition Date -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="acquisition_date" class="fw-semibold">Acquisition Date</label>
                             <input type="date" class="form-control mt-1" id="acquisition_date" name="acquisition_date">
                         </div>
 
                         <!-- Acquisition Cost -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="acquisition_cost" class="fw-semibold">Acquisition Cost (₱)</label>
                             <input type="number" class="form-control mt-1" id="acquisition_cost" name="acquisition_cost" min="0" step="0.01">
                         </div>
 
-                        <!-- Sire ID + Name -->
-                        <div class="col-md-6 mb-3">
+                        <!-- Sire ID -->
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="sire_id" class="fw-semibold">Sire ID</label>
                             <input type="text" class="form-control mt-1" id="sire_id" name="sire_id">
                         </div>
-                        <div class="col-md-6 mb-3">
+
+                        <!-- Sire Name -->
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="sire_name" class="fw-semibold">Sire Name</label>
                             <input type="text" class="form-control mt-1" id="sire_name" name="sire_name">
                         </div>
 
-                        <!-- Dam ID + Name -->
-                        <div class="col-md-6 mb-3">
+                        <!-- Dam ID -->
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="dam_id" class="fw-semibold">Dam ID</label>
                             <input type="text" class="form-control mt-1" id="dam_id" name="dam_id">
                         </div>
-                        <div class="col-md-6 mb-3">
+
+                        <!-- Dam Name -->
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="dam_name" class="fw-semibold">Dam Name</label>
                             <input type="text" class="form-control mt-1" id="dam_name" name="dam_name">
                         </div>
 
                         <!-- Dispersal From -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="dispersal_from" class="fw-semibold">Dispersal From</label>
                             <input type="text" class="form-control mt-1" id="dispersal_from" name="dispersal_from">
                         </div>
 
                         <!-- Owned By -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <label for="owned_by" class="fw-semibold">Owned By</label>
                             <input type="text" class="form-control mt-1" id="owned_by" name="owned_by">
                         </div>
@@ -362,7 +366,7 @@
                             <textarea class="form-control mt-1" id="remarks" name="remarks" rows="3" style="resize: none;"></textarea>
                         </div>
                     </div>
-                </div>
+
 
                 <!-- Footer -->
                 <div class="modal-footer d-flex justify-content-center gap-2 mt-3 flex-wrap">
@@ -450,6 +454,9 @@
 <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 <!-- DataTables Buttons (CSV, PDF, Print) -->
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -623,13 +630,6 @@ function openAddLivestockModal() {
     // Check if Bootstrap modal is available
     if (typeof $.fn.modal === 'undefined') {
         showToast('Modal functionality is not available. Please refresh the page.', 'error');
-        return;
-    }
-    
-    // Check if user has farms - get the count from a data attribute
-    const farmCount = parseInt($('#livestockTable').data('farm-count') || 0);
-    if (farmCount === 0) {
-        showToast('You need to create a farm first before adding livestock.', 'error');
         return;
     }
     

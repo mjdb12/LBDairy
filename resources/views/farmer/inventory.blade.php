@@ -1848,7 +1848,7 @@ $(document).ready(function() {
     if (sessionStorage.getItem('showRefreshNotificationInventory') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationInventory');
         setTimeout(() => {
-            showNotification('Iventory data refreshed successfully!', 'success');
+            showNotification('Inventory data refreshed successfully!', 'success');
         }, 500);
     }
 });

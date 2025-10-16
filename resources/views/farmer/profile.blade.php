@@ -1602,7 +1602,7 @@ SMART FORM - Enhanced Version
         });
     }
 
-    function showNotification(message, type) {
+function showNotification(message, type) {
     const notification = $(`
         <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
