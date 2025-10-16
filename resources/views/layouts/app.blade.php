@@ -1545,6 +1545,29 @@
         });
     </script>
     
+    <style id="__print_helper_css__">
+    @media print {
+        body.print-element-only *:not(#__print_area__):not(#__print_area__ *) {
+            display: none !important;
+        }
+        #__print_area__ {
+            display: block !important;
+            width: 100% !important;
+        }
+        /* Hide Actions column and interactive controls when printing a section */
+        #__print_area__ table th:last-child,
+        #__print_area__ table td:last-child,
+        #__print_area__ .action-buttons,
+        #__print_area__ .btn-group,
+        #__print_area__ .btn-action,
+        #__print_area__ .btn,
+        #__print_area__ [data-toggle],
+        #__print_area__ [data-target] {
+            display: none !important;
+        }
+    }
+    </style>
+    
     @stack('scripts')
     
     <!-- Toast Container -->

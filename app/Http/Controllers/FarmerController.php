@@ -956,6 +956,12 @@ class FarmerController extends Controller
                 }),
         ];
 
+        // Build livestock list for selection in the Add Production modal
+        $livestockList = Livestock::whereIn('farm_id', $farmIds)
+            ->select('id', 'name', 'tag_number')
+            ->orderBy('name')
+            ->get();
+
         return view('farmer.production', compact(
             'totalProduction',
             'monthlyProduction',

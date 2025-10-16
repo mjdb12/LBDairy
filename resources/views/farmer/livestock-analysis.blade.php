@@ -1520,24 +1520,11 @@ function viewLivestockHistory(livestockId) {
 }
 
 function printLivestockAnalysis() {
-    const printContent = $('#livestockAnalysisContent').html();
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <html>
-            <head>
-                <title>Livestock Analysis Report</title>
-                <link rel="stylesheet" href="/css/app.css">
-            </head>
-            <body>
-                <div class="container">
-                    <h2>Livestock Analysis Report</h2>
-                    ${printContent}
-                </div>
-            </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    if (!document.getElementById('livestockAnalysisContent')) {
+        showToast('Nothing to print. Open the analysis first.', 'warning');
+        return;
+    }
+    window.printElement('#livestockAnalysisContent');
 }
 
 function exportLivestockHistory() {
@@ -1785,24 +1772,11 @@ function forceCenterAlignment() {
 }
 
 function printLivestockHistory() {
-    const printContent = $('#livestockHistoryContent').html();
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <html>
-            <head>
-                <title>Livestock History Report</title>
-                <link rel="stylesheet" href="/css/app.css">
-            </head>
-            <body>
-                <div class="container">
-                    <h2>Livestock History Report</h2>
-                    ${printContent}
-                </div>
-            </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    if (!document.getElementById('livestockHistoryContent')) {
+        showToast('Nothing to print. Open the history first.', 'warning');
+        return;
+    }
+    window.printElement('#livestockHistoryContent');
 }
 
 // Export functions matching superadmin pattern
@@ -1927,11 +1901,10 @@ function exportPNG(tableId) {
 
 function printLivestockTable() {
     try {
-        const table = $('#livestockTable').DataTable();
-        table.button('.buttons-print').trigger();
+        window.printElement('#livestockTable');
     } catch (error) {
         console.error('Error triggering print:', error);
-        showToast('Print unavailable', 'danger');
+        try { window.print(); } catch (_) {}
     }
 }
 

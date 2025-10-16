@@ -915,7 +915,7 @@ function exportPNG() {
 }
 
 function printExpenses() {
-    try { if (expensesDT) expensesDT.button('.buttons-print').trigger(); else window.print(); }
+    try { window.printElement('#expensesTable'); }
     catch(e){ console.error('printExpenses error:', e); window.print(); }
 }
 

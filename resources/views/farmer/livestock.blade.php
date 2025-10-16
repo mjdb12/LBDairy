@@ -149,7 +149,7 @@
                         @endphp
                         <tr>
                             <td>
-                                <a href="#" class="livestock-id-link" onclick="openLivestockDetails('{{ $animal->id }}')">{{ $animal->tag_number }}</a>
+                                <a href="javascript:void(0)" class="livestock-id-link" data-toggle="modal" data-target="#livestockDetailsModal" onclick="openLivestockDetails('{{ $animal->id }}')">{{ $animal->tag_number }}</a>
                             </td>
                             <td>{{ ucfirst($animal->type) }}</td>
                             <td>{{ ucfirst(str_replace('_', ' ', $animal->breed)) }}</td>
@@ -167,7 +167,7 @@
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>
                                     </button>
-                                    <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
+                                    <button class="btn-action btn-action-deletes" data-toggle="modal" data-target="#confirmDeleteModal" onclick="confirmDelete('{{ $animal->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
                                         <span>Delete</span>
                                     </button>
@@ -454,8 +454,6 @@
 <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <!-- DataTables Buttons (CSV, PDF, Print) -->
@@ -637,7 +635,10 @@ function openAddLivestockModal() {
     $('#livestockForm')[0].reset();
     $('#livestockForm').attr('action', '{{ route("farmer.livestock.store") }}');
     $('#livestockForm').attr('method', 'POST');
-    $('#livestockModal').modal('show');
+    const $m = $('#livestockModal');
+    if (!$m.parent().is('body')) { $m.appendTo('body'); }
+    $m.modal({ backdrop: 'static', keyboard: true });
+    $m.modal('show');
 }
 
 function openEditLivestockModal(livestockId) {
@@ -658,7 +659,10 @@ function openEditLivestockModal(livestockId) {
     
     // Load livestock data
     loadLivestockData(livestockId);
-    $('#livestockModal').modal('show');
+    const $m = $('#livestockModal');
+    if (!$m.parent().is('body')) { $m.appendTo('body'); }
+    $m.modal({ backdrop: 'static', keyboard: true });
+    $m.modal('show');
 }
 
 function openLivestockDetails(livestockId) {
@@ -670,7 +674,10 @@ function openLivestockDetails(livestockId) {
     
     currentLivestockId = livestockId;
     loadLivestockDetails(livestockId);
-    $('#livestockDetailsModal').modal('show');
+    const $m = $('#livestockDetailsModal');
+    if (!$m.parent().is('body')) { $m.appendTo('body'); }
+    $m.modal({ backdrop: true, keyboard: true });
+    $m.modal('show');
 }
 
 function loadLivestockData(livestockId) {
@@ -961,7 +968,10 @@ function confirmDelete(livestockId) {
     }
     
     currentLivestockId = livestockId;
-    $('#confirmDeleteModal').modal('show');
+    const $m = $('#confirmDeleteModal');
+    if (!$m.parent().is('body')) { $m.appendTo('body'); }
+    $m.modal({ backdrop: 'static', keyboard: true });
+    $m.modal('show');
 }
 
 $('#confirmDeleteBtn').on('click', function() {
@@ -1001,9 +1011,12 @@ function editCurrentLivestock() {
 
 function printLivestockRecord() {
     if (currentLivestockId) {
-        // Open the print page in a new window
-        const printUrl = `/farmer/livestock/${currentLivestockId}/print`;
-        window.open(printUrl, '_blank');
+        const contentEl = document.getElementById('livestockDetailsContent');
+        if (!contentEl) {
+            showToast('Nothing to print. Open the livestock details first.', 'warning');
+            return;
+        }
+        window.printElement('#livestockDetailsContent');
     }
 }
 
@@ -1523,14 +1536,9 @@ function exportToPDF() {
 
 function printTable() {
     try {
-        if (!livestockTable) {
-            showNotification('Table not initialized. Please refresh the page.', 'danger');
-            return;
-        }
-        livestockTable.button('.buttons-print').trigger();
+        window.printElement('#livestockTable');
     } catch (error) {
         console.error('Print error:', error);
-        showNotification('Error printing table. Please try again.', 'danger');
         try { window.print(); } catch (_) {}
     }
 }

@@ -1002,43 +1002,22 @@ function exportToPNG() {
 }
 
 function printTable() {
-    try {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#issuesTable')) {
-            $('#issuesTable').DataTable().button('.buttons-print').trigger();
-        } else {
-            window.print();
-        }
-    } catch (e) {
-        console.error('printTable error:', e);
-        window.print();
-    }
+    try { window.printElement('#issuesTable'); } catch (e) { console.error('printTable error:', e); window.print(); }
 }
 
 function showToast(message, type = 'info') {
-    const toast = `
-        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+    // Bootstrap 4-compatible inline alert (no bootstrap.Toast API)
+    const icon = type === 'success' ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : (type === 'error' ? 'times-circle' : 'info-circle'));
+    const alertClass = type === 'error' ? 'alert-danger' : `alert-${type}`;
+    const $notification = $(`
+        <div class="alert ${alertClass} alert-dismissible fade show refresh-notification" style="position: fixed; top: 1rem; right: 1rem; z-index: 1060;">
+            <i class="fas fa-${icon}"></i>
             ${message}
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
         </div>
-    `;
-    
-    // Add toast to page and show it
-    const toastContainer = document.createElement('div');
-    toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
-    toastContainer.innerHTML = toast;
-    document.body.appendChild(toastContainer);
-    
-    const toastElement = toastContainer.querySelector('.toast');
-    const bsToast = new bootstrap.Toast(toastElement);
-    bsToast.show();
-    
-    // Remove toast after it's hidden
-    toastElement.addEventListener('hidden.bs.toast', () => {
-        document.body.removeChild(toastContainer);
-    });
+    `);
+    $('body').append($notification);
+    setTimeout(() => { $notification.alert('close'); }, 5000);
 }
 
 // Inspection related functions
@@ -1235,30 +1214,12 @@ function exportInspectionsToPNG() {
 }
 
 function printInspectionsTable() {
-    try {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#inspectionsTable')) {
-            $('#inspectionsTable').DataTable().button('.buttons-print').trigger();
-        } else {
-            window.print();
-        }
-    } catch (e) {
-        console.error('printInspectionsTable error:', e);
-        window.print();
-    }
+    try { window.printElement('#inspectionsTable'); } catch (e) { console.error('printInspectionsTable error:', e); window.print(); }
 }
 
 // Trigger DataTables print for Livestock Alerts table
 function printAlertsTable() {
-    try {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
-            $('#alertsTable').DataTable().button('.buttons-print').trigger();
-        } else {
-            window.print();
-        }
-    } catch (e) {
-        console.error('printAlertsTable error:', e);
-        window.print();
-    }
+    try { window.printElement('#alertsTable'); } catch (e) { console.error('printAlertsTable error:', e); window.print(); }
 }
 
 // Alerts export helpers
@@ -1405,38 +1366,18 @@ function markAlertAsRead(alertId) {
     });
 }
 
-<<<<<<< HEAD
 function showNotification(message, type = 'info') {
-    const icon = type === 'success' ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : (type === 'danger' ? 'times-circle' : 'info-circle'));
+    const icon = type === 'success' ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : (type === 'danger' || type === 'error' ? 'times-circle' : 'info-circle'));
     const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show refresh-notification" style="position: fixed; top: 1rem; right: 1rem; z-index: 1060;">
+        <div class="alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show refresh-notification" style="position: fixed; top: 1rem; right: 1rem; z-index: 1060;">
             <i class="fas fa-${icon}"></i>
-=======
-function showNotification(message, type) {
-    const notification = $(`
-        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
->>>>>>> a314ef8f855da84d4c74eef223c1412319ebb9f6
             ${message}
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
         </div>
     `);
-<<<<<<< HEAD
     $('body').append(notification);
-    setTimeout(() => { notification.alert('close'); }, 4000);
+    setTimeout(() => { notification.alert('close'); }, 5000);
 }
-=======
-    
-    $('body').append(notification);
-    
-    setTimeout(() => {
-        notification.alert('close');
-    }, 5000);
-}
-
->>>>>>> a314ef8f855da84d4c74eef223c1412319ebb9f6
 </script>
 @endpush
 

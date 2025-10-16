@@ -2126,7 +2126,7 @@ function exportPNG() {
 }
 
 function printProductionTable() {
-    try { if (productionDT) productionDT.button('.buttons-print').trigger(); else window.print(); }
+    try { window.printElement('#productionTable'); }
     catch(e){ console.error('printProductionTable error:', e); window.print(); }
 }
 

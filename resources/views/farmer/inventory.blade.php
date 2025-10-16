@@ -1824,7 +1824,7 @@ function parseQuantityText(qt){
 }
 
 function printInventory(){
-    try { if (inventoryDT) inventoryDT.button('.buttons-print').trigger(); else window.print(); }
+    try { window.printElement('#dataTable'); }
     catch(e){ console.error('printInventory error:', e); window.print(); }
 }
 

@@ -2803,6 +2803,8 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -2861,7 +2863,8 @@ $(document).ready(function() {
     });
 });
 function hideAddSupplierLedgerEntryForm() {
-    $('#addLedgerEntryFormInner').modal('hide');
+    const c = document.getElementById('supplierLedgerEntryForm');
+    if (c) c.style.display = 'none';
 }
 
 // Add Supplier form submission -> add a new row to the DataTable
@@ -2958,49 +2961,53 @@ $(document).ready(function(){
 
 // View Ledger function
 function viewLedger(supplierName) {
-    // Update modal with supplier information
     document.getElementById('ledgerSupplierName').textContent = supplierName;
-    
+    const tr = getSupplierRowByName(supplierName);
+    if (tr) {
+        const tds = tr.querySelectorAll('td');
+        const id = tds[0] ? (tds[0].innerText||'').trim() : '';
+        const address = tds[2] ? (tds[2].innerText||'').trim() : '';
+        const idEl = document.getElementById('supplierInfoId');
+        const addrEl = document.getElementById('supplierInfoAddress');
+        if (idEl) idEl.textContent = id || 'N/A';
+        if (addrEl) addrEl.textContent = address || 'N/A';
+    }
     // In a real implementation, you would fetch supplier details and ledger data
     // For now, we'll show the modal with placeholder data
     $('#supplierLedgerModal').modal('show');
 }
 
 function viewDetails(supplier) {
-    const modalBody = document.querySelector('#supplierDetailsModal .modal-body');
-    const { name, status, totalTransactions, totalSpent, lastTransaction, paymentStatus } = supplier;
+    var data = {};
+    if (typeof supplier === 'string') {
+        const tr = getSupplierRowByName(supplier);
+        const tds = tr ? tr.querySelectorAll('td') : [];
+        data.id = tds[0] ? (tds[0].innerText||'').trim() : '';
+        data.name = tds[1] ? (tds[1].innerText||'').trim() : '';
+        data.address = tds[2] ? (tds[2].innerText||'').trim() : '';
+        data.contact = tds[3] ? (tds[3].innerText||'').trim() : '';
+        data.status = tds[4] ? (tds[4].innerText||'').trim() : '';
+    } else {
+        data = supplier || {};
+    }
 
-    modalBody.innerHTML = `
-        <div class="row">
-    <!-- Supplier Information -->
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Supplier Information</h6>
-        <p class="text-left"><strong>Name:</strong> ${name || 'N/A'}</p>
-        <p class="text-left"><strong>Status:</strong> 
-            <span class="badge badge-${status === 'Active' ? 'success' : 'secondary'}">
-                ${status || 'N/A'}
-            </span>
-        </p>
-        <p class="text-left"><strong>Total Transactions:</strong> ${totalTransactions || 0}</p>
-        <p class="text-left"><strong>Total Spent:</strong> ₱${totalSpent ? totalSpent.toLocaleString() : '0.00'}</p>
-    </div>
-
-    <!-- Recent Activity -->
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Recent Activity</h6>
-        <p class="text-left"><strong>Last Transaction:</strong> 
-            ${lastTransaction ? new Date(lastTransaction).toLocaleDateString() : 'N/A'}
-        </p>
-        <p class="text-left"><strong>Payment Status:</strong> 
-            <span class="badge badge-${paymentStatus === 'Good Standing' ? 'success' : 'warning'}">
-                ${paymentStatus || 'N/A'}
-            </span>
-        </p>
-    </div>
-</div>
-
-    `;
-
+    const container = document.getElementById('supplierDetailsContainer');
+    if (!container) { $('#supplierDetailsModal').modal('show'); return; }
+    container.innerHTML = (
+        '<div class="row">'
+        + '<div class="col-md-6">'
+        + '<h6 class="mb-3" style="color: #18375d; font-weight: 600;">Supplier Information</h6>'
+        + '<p class="text-left"><strong>Supplier ID:</strong> ' + (data.id || 'N/A') + '</p>'
+        + '<p class="text-left"><strong>Name:</strong> ' + (data.name || 'N/A') + '</p>'
+        + '<p class="text-left"><strong>Address:</strong> ' + (data.address || 'N/A') + '</p>'
+        + '<p class="text-left"><strong>Contact:</strong> ' + (data.contact || 'N/A') + '</p>'
+        + '</div>'
+        + '<div class="col-md-6">'
+        + '<h6 class="mb-3" style="color: #18375d; font-weight: 600;">Status</h6>'
+        + '<p class="text-left"><strong>Current Status:</strong> <span class="badge badge-' + ((data.status||'').toLowerCase()==='active'?'success':'secondary') + '">' + (data.status || 'N/A') + '</span></p>'
+        + '</div>'
+        + '</div>'
+    );
     $('#supplierDetailsModal').modal('show');
 }
 
@@ -3100,7 +3107,7 @@ function exportHistory() {
 
 // Print suppliers table using DataTables
 function printSuppliersTable(){
-    try { if (suppliersDT) suppliersDT.button('.buttons-print').trigger(); else window.print(); }
+    try { window.printElement('#suppliersTable'); }
     catch(e){ console.error('printSuppliersTable error:', e); window.print(); }
 }
 

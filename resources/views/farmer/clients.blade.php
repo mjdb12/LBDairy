@@ -93,7 +93,7 @@
         border-radius: 8px;
         overflow: hidden;
     }
-    
+
     /* Ensure DataTables controls are properly positioned */
     .table-responsive + .dataTables_wrapper,
     .table-responsive .dataTables_wrapper {
@@ -1968,6 +1968,9 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <!-- PDF/PNG helpers -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -1977,9 +1980,11 @@
 <script>
 let clientsDT = null;
 document.addEventListener('DOMContentLoaded', function() {
-    // Client Distribution Chart
-    const clientCtx = document.getElementById('clientDistributionChart').getContext('2d');
-    window.clientChart = new Chart(clientCtx, {
+    // Client Distribution Chart (guarded)
+    try {
+        if (window.Chart && document.getElementById('clientDistributionChart')) {
+            const clientCtx = document.getElementById('clientDistributionChart').getContext('2d');
+            window.clientChart = new Chart(clientCtx, {
         type: 'doughnut',
         data: {
             labels: ['Retail', 'Wholesale', 'Business', 'Market'],
@@ -2005,7 +2010,9 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             cutout: '70%'
         }
-    });
+            });
+        }
+    } catch (err) { console.warn('Client chart init failed:', err); }
 
     // Initialize DataTable for Client Directory
     const commonConfig = {
@@ -2052,9 +2059,11 @@ document.addEventListener('DOMContentLoaded', function() {
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
 
-    // Wire custom search
+    // Wire custom search (with fallback when DataTables is unavailable)
     $('#clientSearch').on('keyup', function(){
-        if (clientsDT) clientsDT.search(this.value).draw();
+        const q = this.value || '';
+        if (clientsDT) { clientsDT.search(q).draw(); }
+        else { manualFilter(q); }
     });
 
     // Form submission
@@ -2098,6 +2107,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (clientsDT) {
             const rowNode = clientsDT.row.add([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false).node();
             if (rowNode) { rowNode.setAttribute('data-client-name', name); }
+        } else {
+            const tbody = document.querySelector('#dataTable tbody');
+            if (tbody) {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-client-name', name);
+                tr.innerHTML = `<td>${nameCell}</td><td>${contactCell}</td><td>${typeCell}</td><td>${statusCell}</td><td>${totalOrdersCell}</td><td>${actionCell}</td>`;
+                tbody.appendChild(tr);
+            }
         }
 
         // Update Chart counts
@@ -2119,11 +2136,12 @@ document.addEventListener('DOMContentLoaded', function() {
     window.triggerClientSearch = function(){
         const q = document.getElementById('clientSearch') ? document.getElementById('clientSearch').value : '';
         if (clientsDT) clientsDT.search(q).draw();
+        else manualFilter(q);
     }
 
     // Print using DataTables button (global)
     window.printClientsTable = function(){
-        try { if (clientsDT) clientsDT.button('.buttons-print').trigger(); else window.print(); }
+        try { window.printElement('#dataTable'); }
         catch(e){ console.error('printClientsTable error:', e); window.print(); }
     }
 
@@ -2159,6 +2177,14 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             notification.alert('close');
         }, 5000);
+    }
+    function manualFilter(query){
+        const rows = document.querySelectorAll('#dataTable tbody tr');
+        const q = (query || '').toLowerCase();
+        rows.forEach(function(tr){
+            const text = (tr.innerText || '').toLowerCase();
+            tr.style.display = text.indexOf(q) !== -1 ? '' : 'none';
+        });
     }
 
     // Export CSV (global)
@@ -2290,7 +2316,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showNotification('Client updated successfully!', 'success');
         });
     });
-
+    });
     // No-op to avoid inline handler error (logic handled by addEventListener above)
     window.submitClient = function(e){ if (e) e.preventDefault(); }
 </script>

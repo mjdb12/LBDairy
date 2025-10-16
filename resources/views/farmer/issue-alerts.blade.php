@@ -492,16 +492,8 @@ function showNotification(message, type) {
 
 // Print handler for My Alerts table - triggers DataTables print button
 function printTable() {
-    try {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#alertsTable')) {
-            $('#alertsTable').DataTable().button('.buttons-print').trigger();
-        } else {
-            window.print();
-        }
-    } catch (e) {
-        console.error('printTable error:', e);
-        window.print();
-    }
+    try { window.printElement('#alertsTable'); }
+    catch (e) { console.error('printTable error:', e); window.print(); }
 }
 
 function viewAlertDetails(alertId) {

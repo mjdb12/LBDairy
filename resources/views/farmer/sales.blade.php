@@ -2285,16 +2285,8 @@ function exportPNG() {
 }
 
 function printProductivity() {
-    try {
-        if (salesDT) {
-            salesDT.button('.buttons-print').trigger();
-        } else {
-            window.print();
-        }
-    } catch (e) {
-        console.error('printProductivity error:', e);
-        window.print();
-    }
+    try { window.printElement('#salesTable'); }
+    catch (e) { console.error('printProductivity error:', e); window.print(); }
 }
 
 function refreshSalesTable() {
