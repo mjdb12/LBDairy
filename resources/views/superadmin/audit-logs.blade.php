@@ -403,7 +403,7 @@
         text-overflow: ellipsis;
         max-width: 150px;
         padding: 0.75rem 0.5rem;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -615,7 +615,7 @@
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
@@ -669,7 +669,7 @@
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
@@ -743,7 +743,7 @@
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
@@ -929,6 +929,26 @@
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 
@@ -1088,10 +1108,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search alerts..." id="securitySearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printSecurityTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshSecurityAlerts()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -1100,6 +1117,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printSecurityTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportSecurityCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -1176,7 +1196,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search users..." id="userActivitySearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                         <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshUserActivity()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -1261,10 +1281,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search logs..." id="logSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printSystemLogsTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshSystemLogs()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -1273,6 +1290,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printSystemLogsTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportSystemLogsCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>

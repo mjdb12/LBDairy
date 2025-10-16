@@ -28,7 +28,7 @@
                             <i class="fas fa-search"></i>
                         </span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Search pending farmers..." id="farmerSearch">
+                    <input type="text" class="form-control" placeholder="Search farmers..." id="farmerSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
                     <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshfarmersTable('pendingFarmersTable')">
@@ -158,7 +158,7 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="action-buttons">
+                                <div class="btn-group">
                                     <button class="btn-action btn-action-view-issue" onclick="viewIssue('{{ $issue->id }}')" title="View">
                                         <i class="fas fa-eye"></i>
                                         <span>View</span>
@@ -216,39 +216,40 @@
                 <div class="form-wrapper text-start mx-auto">
                     <div class="row g-3">
 
+                        <div class="col-md-6 col-12">
+                            <label for="selectedLivestockInfo">Livestock <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="selectedLivestockInfo" name="livestock_info" readonly>
+                        </div>
+
                         <!-- Issue Type -->
-                        <div class="col-md-12">
+                        <div class="col-md-6 col-12">
                             <label for="issueType" class="font-weight-bold ">Issue Type <span class="text-danger">*</span></label>
-                                <select class="form-control" id="issueType" name="issue_type" required>
-                                    <option value="">Select Issue Type</option>
-                                    <option value="Health">Health</option>
-                                    <option value="Production">Production</option>
-                                    <option value="Behavioral">Behavioral</option>
-                                    <option value="Environmental">Environmental</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                            <select class="form-control" id="issueType" name="issue_type" required>
+                                <option value="">Select Issue Type</option>
+                                <option value="Health">Health</option>
+                                <option value="Production">Production</option>
+                                <option value="Behavioral">Behavioral</option>
+                                <option value="Environmental">Environmental</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
 
                         <!-- Priority -->
-                        <div class="col-md-12">
+                        <div class="col-md-6 col-12">
                             <label for="priority">Priority <span class="text-danger">*</span></label>
-                                <select class="form-control" id="priority" name="priority" required>
-                                    <option value="">Select Priority</option>
-                                    <option value="Low">Low</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="High">High</option>
-                                    <option value="Urgent">Urgent</option>
-                                </select>
+                            <select class="form-control" id="priority" name="priority" required>
+                                <option value="">Select Priority</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
                         </div>
 
-                            <div class="col-md-6">
-                                <label for="dateReported">Date Reported <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="dateReported" name="date_reported" required value="{{ date('Y-m-d') }}">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="selectedLivestockInfo">Livestock <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="selectedLivestockInfo" name="livestock_info" readonly>
-                            </div>
+                        <div class="col-md-6 col-12">
+                            <label for="dateReported">Date Reported <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="dateReported" name="date_reported" required value="{{ date('Y-m-d') }}">
+                        </div>
 
                         <!-- Description -->
                         <div class="col-md-12">
@@ -266,7 +267,7 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+               <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok" title="Report Issue" >
                         Report Issue
@@ -392,7 +393,7 @@
                 </div>
 
                 <!-- Footer -->
-                <div class="modal-footer justify-content-center mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">Update Issue</button>
                 </div>
@@ -422,7 +423,7 @@
       </p>
 
       <!-- Buttons -->
-      <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+      <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn-modern btn-delete" id="confirmDeleteIssueBtn">
           Yes, Delete
@@ -1510,7 +1511,7 @@
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;

@@ -91,10 +91,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search farmer..." id="customSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshPendingFarmersTable()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -103,6 +100,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -192,7 +192,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <div>
                         <h6 class="mb-1"><strong>Farm ID:</strong> <span id="modalFarmId" class="text-primary">F001</span></h6>
                         <p class="text-muted mb-0">Detailed productivity metrics and trends</p>
@@ -338,6 +338,31 @@
 
 @push('styles')
 <style>
+        .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
     /* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
     border-radius: 1.5rem;
@@ -1656,25 +1681,25 @@ function viewFarmerDetails(farmerId) {
                     <div class="row">
                         <div class="col-sm-6 col-lg-3 mb-3">
                             <div class="p-3 bg-light rounded text-center">
-                                <div class="small text-muted">Total Production</div>
+                                <div class="small ">Total Production</div>
                                 <div class="h5 mb-0">${(stats?.total_production ?? farmer.total_production ?? 0)} L</div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
                             <div class="p-3 bg-light rounded text-center">
-                                <div class="small text-muted">Avg Daily</div>
+                                <div class="small ">Avg Daily</div>
                                 <div class="h5 mb-0">${(stats?.avg_daily_production ?? farmer.avg_daily_production ?? 0)} L</div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
                             <div class="p-3 bg-light rounded text-center">
-                                <div class="small text-muted">Active Livestock</div>
+                                <div class="small ">Active Livestock</div>
                                 <div class="h5 mb-0">${(stats?.active_livestock ?? farmer.active_livestock ?? 0)}</div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-3 mb-3">
                             <div class="p-3 bg-light rounded text-center">
-                                <div class="small text-muted">Efficiency</div>
+                                <div class="small ">Efficiency</div>
                                 <div class="h5 mb-0">${(stats?.efficiency ?? farmer.efficiency ?? 0)}%</div>
                             </div>
                         </div>
@@ -1686,32 +1711,32 @@ function viewFarmerDetails(farmerId) {
                 <div class="col-md-4 mb-3">
                     <div class="p-3 bg-light rounded h-100">
                         <h6 class="mb-2" style="color:#18375d; font-weight:600;"><i class="fas fa-user-circle mr-2"></i>Profile</h6>
-                        <p class="mb-1"><strong>Name:</strong> ${farmer.name || 'N/A'}</p>
-                        <p class="mb-1"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
-                        <p class="mb-1"><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
-                        <p class="mb-1"><strong>Location:</strong> ${farmer.location || 'N/A'}</p>
-                        <p class="mb-1"><strong>Status:</strong> <span class="badge badge-${farmer.status === 'approved' ? 'success' : (farmer.status === 'pending' ? 'warning' : 'danger')}">${farmer.status || 'N/A'}</span></p>
-                        <hr>
+                        <p class="text-left"><strong>Name:</strong> ${farmer.name || 'N/A'}</p>
+                        <p class="text-left"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
+                        <p class="text-left"><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
+                        <p class="text-left"><strong>Location:</strong> ${farmer.location || 'N/A'}</p>
+                        <p class="text-left"><strong>Status:</strong> <span class="badge badge-${farmer.status === 'approved' ? 'success' : (farmer.status === 'pending' ? 'warning' : 'danger')}">${farmer.status || 'N/A'}</span></p>
+                        
                         <h6 class="mb-2" style="color:#18375d; font-weight:600;"><i class="fas fa-lightbulb mr-2 text-warning"></i>Analysis</h6>
                         <div id="analysisSummaryText" class="small text-muted">Loading analysis...</div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 p-3 bg-light rounded h-100">
                     <h6 class="mb-3" style="color:#18375d; font-weight:600;"><i class="fas fa-paw mr-2"></i>Livestock</h6>
-                    <p class="mb-1"><strong>Total:</strong> ${stats?.total_livestock ?? farmer.total_livestock ?? '0'}</p>
-                    <p class="mb-1"><strong>Active:</strong> ${stats?.active_livestock ?? farmer.active_livestock ?? '0'}</p>
-                    <p class="mb-1"><strong>Inactive:</strong> ${stats?.inactive_livestock ?? farmer.inactive_livestock ?? '0'}</p>
+                    <p class="text-left"><strong>Total:</strong> ${stats?.total_livestock ?? farmer.total_livestock ?? '0'}</p>
+                    <p class="text-left"><strong>Active:</strong> ${stats?.active_livestock ?? farmer.active_livestock ?? '0'}</p>
+                    <p class="text-left"><strong>Inactive:</strong> ${stats?.inactive_livestock ?? farmer.inactive_livestock ?? '0'}</p>
                     <div class="mt-2"><strong>Types:</strong>
                         <ul id="livestockTypeList" class="mt-1 list-unstyled text-muted small">${farmer.livestock_types ? farmer.livestock_types.map(type => `<li>${type}</li>`).join('') : '<li>N/A</li>'}</ul>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 p-3 bg-light rounded h-100">
                     <h6 class="mb-3" style="color:#18375d; font-weight:600;"><i class="fas fa-chart-line mr-2"></i>Production Stats</h6>
-                    <p class="mb-1"><strong>Recent (30 days):</strong> ${stats?.recent_production ?? farmer.recent_production ?? '0'} L</p>
-                    <p class="mb-1"><strong>Peak Day:</strong> ${stats?.peak_day ?? 'N/A'}</p>
-                    <p class="mb-1"><strong>Peak Output:</strong> ${stats?.peak_output ?? '0'} L</p>
+                    <p class="text-left"><strong>Recent (30 days):</strong> ${stats?.recent_production ?? farmer.recent_production ?? '0'} L</p>
+                    <p class="text-left"><strong>Peak Day:</strong> ${stats?.peak_day ?? 'N/A'}</p>
+                    <p class="text-left"><strong>Peak Output:</strong> ${stats?.peak_output ?? '0'} L</p>
                 </div>
             </div>
             `);

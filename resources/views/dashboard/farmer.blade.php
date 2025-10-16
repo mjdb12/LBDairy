@@ -174,21 +174,18 @@
                 <div class="form-wrapper text-start mx-auto">
                     
                         
+                        <div class="row g-3"> <!-- added g-3 for consistent spacing -->
+
                         <!-- Title -->
-                        <div class="col-md-12">
+                        <div class="col-12">
                             <label for="taskTitle" class="fw-semibold">Title <span class="text-danger">*</span></label>
                             <input type="text" class="form-control mt-1" id="taskTitle" required maxlength="255" placeholder="Enter task title">
                         </div>
 
-                        <!-- Description -->
-                        <div class="col-md-12">
-                            <label for="taskDescription" class="fw-semibold">Description <span class="text-danger">*</span></label>
-                            <textarea class="form-control mt-1" id="taskDescription" rows="3" placeholder="Enter task details" style="resize: none;"></textarea>
-                        </div>
-                            <!-- Priority -->
-                        <div class="col-md-12">
+                        <!-- Priority -->
+                        <div class="col-md-6 col-12">
                             <label for="taskPriority" class="fw-semibold">Priority <span class="text-danger">*</span></label>
-                            <select class="form-control mt-1" id="taskPriority">
+                            <select class="form-control mt-1" id="taskPriority" required>
                                 <option value="low">Low</option>
                                 <option value="medium" selected>Medium</option>
                                 <option value="high">High</option>
@@ -196,10 +193,18 @@
                         </div>
 
                         <!-- Due Date -->
-                        <div class="col-md-12">
+                        <div class="col-md-6 col-12">
                             <label for="taskDueDate" class="fw-semibold">Due Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control mt-1" id="taskDueDate">
+                            <input type="date" class="form-control mt-1" id="taskDueDate" required>
                         </div>
+
+                        <!-- Description -->
+                        <div class="col-12">
+                            <label for="taskDescription" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="taskDescription" rows="3" placeholder="Enter task details" style="resize: none;" required></textarea>
+                        </div>
+
+                    </div>
 
                     <!-- Notification -->
                     <div id="taskNotification" class="mt-3 text-center" style="display: none;"></div>
@@ -1629,20 +1634,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     <small class="text-muted">${escapeHtml(task.description || '')}</small>
                 </div>
             </div>
-
             <div class="task-controls mt-2 mt-md-0 d-flex align-items-center">
-    <span class="badge badge-${priorityBadge(task.priority)} mr-2 mb-2 mb-md-0">
-        <i class="far fa-clock"></i> ${formatDue(task.due_date)}
-    </span>
-    <div class="btn-group task-btn-group">
-        <button class="btn-action btn-action-ok btn-sm edit-task" title="Edit Task">
-            <i class="fas fa-edit"></i> <span>Edit</span>
-        </button>
-        <button class="btn-action btn-action-deletes btn-sm delete-task" title="Delete Task">
-            <i class="fas fa-trash"></i> <span>Delete</span>
-        </button>
-    </div>
-</div>
+                <span class="badge badge-${priorityBadge(task.priority)} mr-2 mb-2 mb-md-0">
+                    <i class="far fa-clock"></i> ${formatDue(task.due_date)}
+                </span>
+                <div class="btn-group task-btn-group">
+                    <button class="btn-action btn-action-ok btn-sm edit-task" title="Edit Task">
+                        <i class="fas fa-edit"></i> <span>Edit</span>
+                    </button>
+                    <button class="btn-action btn-action-deletes btn-sm delete-task" title="Delete Task">
+                        <i class="fas fa-trash"></i> <span>Delete</span>
+                    </button>
+                </div>
+            </div>
 
 
         `;

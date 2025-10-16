@@ -91,18 +91,24 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search logs..." id="auditSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="print" onclick="printTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshAuditData('auditLogsTable')">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
+                    <button class="btn-action btn-action-refresh-farmers" 
+                            title="Refresh" 
+                            onclick="refreshAuditData('auditLogsTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
+
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools dropdown-toggle" 
+                                title="Tools" 
+                                type="button" 
+                                data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -115,6 +121,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
             <div class="filter-controls">
                 <div class="filter-row">
@@ -148,7 +155,7 @@
                     </div>
 
                     <!-- Buttons -->
-                    <div class="filter-actions">
+                    <div class="filter-actions ">
                         <button class="btn-action btn-action-apply" title="Refresh" onclick="applyFilters()">
                             <i class="fas fa-filter"></i> Apply
                         </button>
@@ -212,6 +219,32 @@
 
 @push('styles')
 <style>
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
+
 /* Role and Action Badges */
     .role-badge,
     .action-badge {

@@ -1978,6 +1978,31 @@
         text-align: left;
     }
 }
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 
@@ -2064,10 +2089,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmerSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-add" title="Print" onclick="printFarmersTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh-admins" title="Refresh" onclick="refreshFarmersData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -2076,6 +2098,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printFarmersTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportFarmersCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -2129,10 +2154,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="inspectionSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-add" title="Print" onclick="printInspectionsTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh-admins" title="Refresh" onclick="refreshInspectionsData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -2141,6 +2163,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printInspectionsTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportInspectionsCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -2231,7 +2256,7 @@
                         </div>
 
                         <!-- Notes -->
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label for="inspectionNotes" class="fw-semibold">Inspection Notes <span class="text-danger">*</span></label>
                             <textarea class="form-control mt-1" id="inspectionNotes" name="notes" rows="3" placeholder="Enter any specific notes or instructions for the inspection..." style="resize: none;"></textarea>
                         </div>
@@ -2242,9 +2267,9 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok" id="inspectionSubmitBtn" title="Schedule Inspection" >Schedule Inspection</button>
+                    <button type="submit" class="btn-modern btn-ok" id="inspectionSubmitBtn" title="Schedule Inspection" >Schedule</button>
                 </div>
             </form>
         </div>
@@ -2384,7 +2409,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">
             Update Inspection
@@ -2418,12 +2443,12 @@
       </p>
 
       <!-- Footer -->
-      <div class="modal-footer justify-content-center mt-4">
+      <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
           Cancel
         </button>
         <button type="button" class="btn-modern btn-delete" id="confirmCancelInspectionBtn">
-          Yes, Cancel Inspection
+          Yes, Cancel
         </button>
       </div>
     </div>
