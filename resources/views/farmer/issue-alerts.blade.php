@@ -305,18 +305,19 @@
 @endsection
 
 @push('scripts')
-<!-- DataTables CSS and dependencies (needed for print/csv/pdf buttons) -->
 <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
 <!-- Required libraries for PDF/Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <!-- jsPDF and autoTable for custom PDF generation (if needed) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -532,37 +533,74 @@ function viewAlertDetails(alertId) {
                 };
 
                 const modalHtml = `
-                    <div class="modal fade" id="viewAlertModal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Alert Details</h5>
-                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                     <!-- Smart Detail Modal -->
+                    <div class="modal fade admin-modal" id="viewAlertModal" tabindex="-1" role="dialog" aria-labelledby="saleDetailsLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                            <div class="modal-content smart-detail p-4">
+
+                            <!-- Icon + Header -->
+                                <div class="d-flex flex-column align-items-center mb-4">
+                                    <div class="icon-circle">
+                                        <i class="fas fa-eye fa-2x"></i>
+                                    </div>
+                                    <h5 class="fw-bold mb-1">Alert Details </h5>
+                                    <p class="text-centertext-muted mb-0 small">Below are the complete details of the selected entry.</p>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Livestock ID:</strong> ${escapeHtml(l.livestock_id || 'N/A')}</div>
-                                        <div class="col-md-6"><strong>Severity:</strong> ${escapeHtml((a.severity || '').toString().toUpperCase())}</div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Date:</strong> ${escapeHtml(dateText)}</div>
-                                        <div class="col-md-6"><strong>Status:</strong> ${escapeHtml((a.status || '').toString().toUpperCase())}</div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-md-12"><strong>Topic:</strong> ${escapeHtml(a.topic || '')}</div>
-                                    </div>
+
+                            <!-- Body -->
+                            <div class="modal-body">
+                                <div class="detail-wrapper">
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <strong>Description:</strong>
-                                            <div class="mt-1">${escapeHtml(a.description || '')}</div>
+                                        <!-- Livestock Information -->
+                                        <div class="col-md-6">
+                                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                                Livestock Information
+                                            </h6>
+                                            <p><strong>Livestock ID:</strong> ${escapeHtml(l.livestock_id || 'N/A')}</p>
+                                            <p><strong>Severity:</strong> ${escapeHtml((a.severity || 'N/A').toString().toUpperCase())}</p>
+                                            <p><strong>Date:</strong> ${escapeHtml(dateText)}</p>
+                                            <p><strong>Status:</strong> ${escapeHtml((a.status || 'N/A').toString().toUpperCase())}</p>
+                                        </div>
+
+                                        <!-- Case Details -->
+                                        <div class="col-md-6">
+                                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                                Case Details
+                                            </h6>
+                                            <p><strong>Topic:</strong> ${escapeHtml(a.topic || 'N/A')}</p>
+                                            <p><strong>Handled By:</strong> ${escapeHtml(a.veterinarian_name || 'N/A')}</p>
+                                            <p><strong>Treatment Given:</strong> ${escapeHtml(a.treatment || 'N/A')}</p>
+                                            <p><strong>Remarks:</strong> ${escapeHtml(a.remarks || 'None')}</p>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
+
+                                    <!-- Description Section -->
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                                Additional Details
+                                            </h6>
+                                            <p><strong>Description:</strong></p>
+                                            <p>${escapeHtml(a.description || 'No description provided.')}</p>
+
+                                            ${a.notes ? `
+                                                <p><strong>Notes:</strong></p>
+                                                <p>${escapeHtml(a.notes)}</p>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+
                             </div>
                         </div>
+
+                        <!-- Footer -->
+
+                            <div class="modal-footer justify-content-center mt-4">
+                                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
                     </div>`;
 
                 $('#viewAlertModal').remove();
@@ -712,6 +750,130 @@ function showNotification(message, type = 'info') {
 
 @push('styles')
 <style>
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 55px;
+    height: 55px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+/* Footer */
+#historyModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
+/* User Details Modal Styling */
+    #viewAlertModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #viewAlertModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #viewAlertModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #viewAlertModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #viewAlertModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #viewAlertModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #viewAlertModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
      /* ============================
    SMART FORM - Enhanced Version
    ============================ */

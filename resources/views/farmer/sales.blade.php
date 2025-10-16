@@ -1516,7 +1516,7 @@
                         <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addLivestockDetailsModal">
                         <i class="fas fa-plus mr-1"></i> Add Sale
                         </button>
-                        <button class="btn-action btn-action-print" onclick="printProductivity()">
+                        <button class="btn-action btn-action-edit" onclick="printProductivity()">
                         <i class="fas fa-print mr-1"></i> Print
                         </button>
                         <button class="btn-action btn-action-refresh" onclick="refreshSalesTable('salesTable')">
@@ -1906,6 +1906,7 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
 
 <!-- Required libraries for PDF/Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

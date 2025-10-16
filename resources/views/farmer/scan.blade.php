@@ -296,7 +296,7 @@
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn-action btn-action-ok btn-sm">
-                  <i class="fas fa-save"></i> Save Record
+                  Save Record
                 </button>
               </div>
             </form>
@@ -326,7 +326,7 @@
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn-action btn-action-ok btn-sm">
-                  <i class="fas fa-save"></i> Save Record
+                  Save Record
                 </button>
               </div>
             </form>
@@ -464,6 +464,41 @@
 
 @push('styles')
 <style>
+  /* Make nav tabs responsive and scrollable on small screens */
+@media (max-width: 768px) {
+  #livestockTab {
+    display: flex;
+    flex-wrap: nowrap;          /* prevent wrapping */
+    overflow-x: auto;           /* allow horizontal scroll */
+    white-space: nowrap;        /* keep text inline */
+    -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+    gap: 4px;
+  }
+
+  #livestockTab::-webkit-scrollbar {
+    height: 6px; /* small horizontal scrollbar */
+  }
+
+  #livestockTab::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+
+  #livestockTab .nav-item {
+    flex: 0 0 auto; /* don't shrink items */
+  }
+
+  #livestockTab .nav-link {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+
+  #livestockTab .nav-link i {
+    margin-right: 4px;
+    font-size: 0.9rem;
+  }
+}
+
     /* ============================
    SMART DETAIL MODAL (Livestock)
    ============================ */
@@ -2260,13 +2295,15 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .scanner-container {
-        margin: 1rem;
-        padding: 1rem;
+        margin: 1rem auto;
+        padding: 1.25rem;
+        max-width: 95%; /* keeps it centered and avoids edge overflow */
+        border-radius: 16px;
     }
 
     #qr-reader-container {
-        height: 300px;
-        border-radius: 16px;
+        height: 280px;
+        border-radius: 14px;
     }
 
     .scanner-btn {
@@ -2280,9 +2317,10 @@
     }
 
     .page-header p {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 }
+
 
 @media (max-width: 480px) {
     #qr-reader-container {

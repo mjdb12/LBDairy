@@ -1303,7 +1303,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </div>
             <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-4"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
+                <span class="badge badge-${priorityBadge(task.priority)} mr-2"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
                 <div class="btn-group">
                     <button class="btn-action btn-action-ok edit-task" title="Edit Task">
                         <i class="fas fa-edit"></i>
