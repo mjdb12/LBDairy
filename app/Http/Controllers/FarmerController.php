@@ -737,6 +737,18 @@ class FarmerController extends Controller
             'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
             'status' => 'required|in:active,inactive',
             'acquisition_date' => 'nullable|date',
+            'acquisition_cost' => 'nullable|numeric|min:0',
+            'registry_id' => 'nullable|string|max:255',
+            'natural_marks' => 'nullable|string|max:255',
+            'property_no' => 'nullable|string|max:255',
+            'sire_id' => 'nullable|string|max:255',
+            'sire_name' => 'nullable|string|max:255',
+            'dam_id' => 'nullable|string|max:255',
+            'dam_name' => 'nullable|string|max:255',
+            'dispersal_from' => 'nullable|string|max:255',
+            'owned_by' => 'nullable|string|max:255',
+            'remarks' => 'nullable|string|max:1000',
+            'description' => 'nullable|string|max:1000',
         ]);
 
         try {
@@ -756,6 +768,18 @@ class FarmerController extends Controller
                 'health_status' => $request->health_status,
                 'status' => $request->status,
                 'acquisition_date' => $request->acquisition_date,
+                'acquisition_cost' => $request->acquisition_cost,
+                'registry_id' => $request->registry_id,
+                'natural_marks' => $request->natural_marks,
+                'property_no' => $request->property_no,
+                'sire_id' => $request->sire_id,
+                'sire_name' => $request->sire_name,
+                'dam_id' => $request->dam_id,
+                'dam_name' => $request->dam_name,
+                'dispersal_from' => $request->dispersal_from,
+                'owned_by' => $request->owned_by,
+                'remarks' => $request->remarks,
+                'description' => $request->description,
             ]);
 
             return response()->json([

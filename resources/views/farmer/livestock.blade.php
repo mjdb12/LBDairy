@@ -467,6 +467,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
 <script>
+const CURRENT_FARMER_NAME = @json(Auth::user()->name);
 function formatDateForInput(dateVal) {
     if (!dateVal) return '';
     try {
@@ -580,7 +581,6 @@ $(document).ready(function() {
         submitLivestockForm();
     });
     
-
 });
 
 
@@ -699,7 +699,7 @@ function loadLivestockData(livestockId) {
                 $('#dam_id').val(livestock.dam_id);
                 $('#dam_name').val(livestock.dam_name);
                 $('#dispersal_from').val(livestock.dispersal_from);
-                $('#owned_by').val(livestock.owned_by);
+                $('#owned_by').val(livestock.owned_by && String(livestock.owned_by).trim() !== '' ? livestock.owned_by : CURRENT_FARMER_NAME);
                 $('#remarks').val(livestock.remarks);
             }
         },

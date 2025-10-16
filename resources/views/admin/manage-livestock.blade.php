@@ -2693,7 +2693,7 @@ $(document).ready(function () {
                     $('#editDamId').val(livestock.dam_id);
                     $('#editDamName').val(livestock.dam_name);
                     $('#editDispersalFrom').val(livestock.dispersal_from);
-                    $('#editOwnedBy').val(livestock.owned_by);
+                    $('#editOwnedBy').val(livestock.owned_by && String(livestock.owned_by).trim() !== '' ? livestock.owned_by : selectedFarmerName);
                     $('#editRemarks').val(livestock.remarks);
                     $('#editDescription').val(livestock.description);
                     
