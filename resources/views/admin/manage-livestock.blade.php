@@ -280,7 +280,7 @@
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
@@ -327,6 +327,12 @@
 .table-responsive {
     overflow-x: auto;
 }
+#livestockTable td, 
+#livestockTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
     /* Make sure action buttons don’t overflow */
 #livestockTable td .btn-group {
     display: flex;
@@ -339,7 +345,32 @@
     min-width: 90px; /* prevent too tiny buttons */
     text-align: center;
 }
-
+ /* Table-responsive wrapper positioning - match active admins spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables - match active admins spacing */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
     
     /* DataTables Pagination Styling - FIXED */
     .dataTables_wrapper .dataTables_paginate {
@@ -1583,6 +1614,31 @@
     min-width: 90px; /* prevent too tiny buttons */
     text-align: center;
 }
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 
@@ -1658,7 +1714,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search livestock..." id="activeSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-secondary btn-sm" title="Back to Farmers" onclick="backToFarmers()">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
@@ -1885,7 +1941,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">
             Add Livestock
@@ -1920,7 +1976,7 @@
 
       <!-- Footer -->
 
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="openLivestockEditModal()">
                 Edit Livestock
@@ -1955,7 +2011,7 @@
 
       <!-- Footer -->
 
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="downloadQRCode()">
                 Download
@@ -2162,7 +2218,7 @@
                 </div>
 
                 <!-- Footer -->
-                <div class="modal-footer justify-content-center mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">Update Livestock</button>
                 </div>
@@ -2192,7 +2248,7 @@
       </p>
 
       <!-- Buttons -->
-      <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+      <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn">
           Yes, Delete
@@ -2224,7 +2280,7 @@
                 <input type="hidden" id="farmerIdHiddenApprove">
 
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-approve">
                         Approve
@@ -2291,7 +2347,7 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         Issue Alert

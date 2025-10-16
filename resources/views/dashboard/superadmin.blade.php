@@ -78,26 +78,21 @@
 </div>
 
 
+<!-- Task Board Row --> 
+        <div class="card shadow mb-4 fade-in">
+  <div class="card-body card-header-flex">
+    <h6 class="card-title mb-0">
+      <i class="fas fa-tasks"></i> Task Board
+    </h6>
 
-<!-- Task Board Row -->
-<div class="row fade-in">
-    <!-- Task Board -->
-    <div class="col-12 mb-4">
-        <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
-                <h6 class="mb-0">
-                    <i class="fas fa-tasks"></i>
-                    Task Board
-                </h6>
-                <button class="btn-action btn-action-ok" id="addTaskBtn" title="New Task">
-                    <i class="fas fa-plus mr-2"></i> New Task
-                </button>
-            </div>
-            <div class="card-body">
-                <ul class="list-group" id="taskList"></ul>
-            </div>
-        </div>
-    </div>
+    <button class="btn-action btn-action-ok" title="New Task" id="addTaskBtn">
+      <i class="fas fa-plus mr-2"></i> New Task
+    </button>
+  </div>
+
+  <div class="card-body">
+    <ul class="list-group" id="taskList"></ul>
+  </div>
 </div>
 
 <!-- Livestock Trends Chart Row -->
@@ -121,8 +116,6 @@
 
 
 <!-- Recent System Activity -->
-<div class="row fade-in">
-    <div class="col-12">
         <div class="card shadow">
             <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="m-0 font-weight-bold">
@@ -163,8 +156,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 <!-- Modern Task Modal -->
 <div class="modal fade admin-modal" id="taskModal" tabindex="-1" aria-hidden="true">
@@ -188,21 +179,18 @@
 
                 <div class="form-wrapper text-start mx-auto">
                         
+                        <div class="row g-3"> <!-- added g-3 for consistent spacing -->
+
                         <!-- Title -->
-                        <div class="col-md-12">
+                        <div class="col-12">
                             <label for="taskTitle" class="fw-semibold">Title <span class="text-danger">*</span></label>
                             <input type="text" class="form-control mt-1" id="taskTitle" required maxlength="255" placeholder="Enter task title">
                         </div>
 
-                        <!-- Description -->
-                        <div class="col-md-12">
-                            <label for="taskDescription" class="fw-semibold">Description <span class="text-danger">*</span></label>
-                            <textarea class="form-control mt-1" id="taskDescription" rows="3" placeholder="Enter task details" style="resize: none;"></textarea>
-                        </div>
-                            <!-- Priority -->
-                        <div class="col-md-12">
+                        <!-- Priority -->
+                        <div class="col-md-6 col-12">
                             <label for="taskPriority" class="fw-semibold">Priority <span class="text-danger">*</span></label>
-                            <select class="form-control mt-1" id="taskPriority">
+                            <select class="form-control mt-1" id="taskPriority" required>
                                 <option value="low">Low</option>
                                 <option value="medium" selected>Medium</option>
                                 <option value="high">High</option>
@@ -210,17 +198,25 @@
                         </div>
 
                         <!-- Due Date -->
-                        <div class="col-md-12">
+                        <div class="col-md-6 col-12">
                             <label for="taskDueDate" class="fw-semibold">Due Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control mt-1" id="taskDueDate">
+                            <input type="date" class="form-control mt-1" id="taskDueDate" required>
                         </div>
+
+                        <!-- Description -->
+                        <div class="col-12">
+                            <label for="taskDescription" class="fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="taskDescription" rows="3" placeholder="Enter task details" style="resize: none;" required></textarea>
+                        </div>
+
+                    </div>
 
                     <!-- Notification -->
                     <div id="taskNotification" class="mt-3 text-center" style="display: none;"></div>
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-approves" id="taskSubmitBtn">Add Task</button>
                 </div>
@@ -246,7 +242,7 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteTaskBtn" class="btn-modern btn-delete">
                     Yes, Delete
@@ -260,6 +256,75 @@
 
 @push('styles')
 <style>
+    /* Custom Green Button for New Task - NO GLASS EFFECTS */
+html body .card .card-header #addTaskBtn.btn-primary,
+html body #addTaskBtn.btn-primary,
+#addTaskBtn.btn-primary,
+#addTaskBtn,
+#addTaskBtn.btn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+    border: 2px solid #18375d !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+html body .card .card-header #addTaskBtn.btn-primary:hover,
+html body .card .card-header #addTaskBtn.btn-primary:focus,
+html body #addTaskBtn.btn-primary:hover,
+html body #addTaskBtn.btn-primary:focus,
+#addTaskBtn.btn-primary:hover,
+#addTaskBtn.btn-primary:focus,
+#addTaskBtn:hover,
+#addTaskBtn:focus,
+#addTaskBtn.btn:hover,
+#addTaskBtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+}
+
+/* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #taskSubmitBtn.btn-primary,
+#taskSubmitBtn.btn-primary,
+#taskSubmitBtn.btn,
+#taskSubmitBtn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #taskSubmitBtn.btn-primary:hover,
+html body #taskSubmitBtn.btn-primary:focus,
+#taskSubmitBtn.btn-primary:hover,
+#taskSubmitBtn.btn-primary:focus,
+#taskSubmitBtn:hover,
+#taskSubmitBtn:focus,
+#taskSubmitBtn.btn:hover,
+#taskSubmitBtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
     /* ============================
 SMART FORM - Enhanced Version
 ============================ */
@@ -1183,7 +1248,7 @@ html body #addTaskBtn.btn-primary:focus,
 #activeFarmersTable td {
     vertical-align: middle;
     padding: 0.75rem;
-    text-align: left;
+    text-align: center;
     border: 1px solid #dee2e6;
     white-space: nowrap;
     overflow: visible;
@@ -1196,11 +1261,11 @@ html body #addTaskBtn.btn-primary:focus,
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
-    text-align: left;
+    text-align: center;
     vertical-align: middle;
     position: relative;
     white-space: nowrap;
@@ -1258,6 +1323,150 @@ html body #addTaskBtn.btn-primary:focus,
     min-width: 90px; /* prevent too tiny buttons */
     text-align: center;
 }
+/* ===== Card Header: Task Board ===== */
+.card-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  text-align: left;
+}
+
+.card-header-flex .card-title {
+  color: #18375d;
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* New Task Button */
+#addTaskBtn {
+  background-color: #18375d !important;
+  border: 2px solid #18375d !important;
+  color: #fff !important;
+  transition: all 0.2s ease;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  border-radius: 6px;
+}
+
+#addTaskBtn:hover {
+  background-color: #fca700 !important;
+  border-color: #fca700 !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+/* Responsive header layout */
+@media (max-width: 576px) {
+  .card-header-flex {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #addTaskBtn {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    width: auto;
+  }
+}
+
+/* ===== Task Controls Layout ===== */
+.task-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap; /* keep side by side */
+  min-width: 0;
+}
+
+/* Badge styling */
+.task-controls .badge {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+/* ===== Buttons Group ===== */
+.task-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* ===== Common Button Base ===== */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #fff;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+/* ===== Edit Button ===== */
+.btn-action-ok {
+  background-color: #18375d;
+  border-color: #18375d;
+}
+
+.btn-action-ok:hover {
+  background-color: #fca700;
+  border-color: #fca700;
+  transform: translateY(-2px);
+}
+
+/* ===== Delete Button ===== */
+.btn-action-deletes {
+  background-color: #d9534f;
+  border-color: #d9534f;
+}
+
+.btn-action-deletes:hover {
+  background-color: #c9302c;
+  border-color: #c9302c;
+  transform: translateY(-2px);
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 576px) {
+  .task-controls {
+    flex-wrap: wrap; /* allow line break if space is too tight */
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .task-btn-group {
+    gap: 4px;
+  }
+
+  .btn-action {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+
+  .task-controls .badge {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+  }
+}
+
 </style>
 @endpush
 
@@ -1302,16 +1511,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     <small class="text-muted">${escapeHtml(task.description || '')}</small>
                 </div>
             </div>
-            <div class="mt-2 mt-md-0 d-flex align-items-center">
-                <span class="badge badge-${priorityBadge(task.priority)} mr-2"><i class="far fa-clock"></i> ${formatDue(task.due_date)}</span>
-                <div class="btn-group">
-                    <button class="btn-action btn-action-ok edit-task" title="Edit Task">
-                        <i class="fas fa-edit"></i>
-                        <span>Edit</span>
+            <div class="task-controls mt-2 mt-md-0 d-flex align-items-center">
+                <span class="badge badge-${priorityBadge(task.priority)} mr-2 mb-2 mb-md-0">
+                    <i class="far fa-clock"></i> ${formatDue(task.due_date)}
+                </span>
+                <div class="btn-group task-btn-group">
+                    <button class="btn-action btn-action-ok btn-sm edit-task" title="Edit Task">
+                        <i class="fas fa-edit"></i> <span>Edit</span>
                     </button>
-                    <button class="btn-action btn-action-deletes delete-task" title="Delete Task">
-                        <i class="fas fa-trash"></i>
-                        <span>Delete</span>
+                    <button class="btn-action btn-action-deletes btn-sm delete-task" title="Delete Task">
+                        <i class="fas fa-trash"></i> <span>Delete</span>
                     </button>
                 </div>
             </div>

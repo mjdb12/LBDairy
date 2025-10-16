@@ -70,23 +70,28 @@
 
 @if($criticalAlerts > 0)
     <div class="alert alert-danger alert-dismissible fade show refresh-notification" role="alert">
-        <i class="fas fa-times-circle "></i>&nbsp;
-        You have&nbsp;<strong>{{ $criticalAlerts }}</strong>&nbsp;critical alerts that require immediate attention.
+        <div class="alert-content">
+            <i class="fas fa-times-circle me-2"></i>
+            <span>You have <strong>{{ $criticalAlerts }}</strong> critical alerts that require immediate attention.</span>
+        </div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span>&nbsp;&times;&nbsp;</span>
+            <span>&times;</span>
         </button>
     </div>
 @endif
 
 @if($activeAlerts > 0)
     <div class="alert alert-warning alert-dismissible fade show refresh-notification" role="alert">
-        <i class="fas fa-exclamation-triangle "></i>&nbsp;
-        You have&nbsp;<strong>{{ $activeAlerts }}</strong>&nbsp;active alerts awaiting your response.
+        <div class="alert-content">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span>You have <strong>{{ $activeAlerts }}</strong> active alerts awaiting your response.</span>
+        </div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span>&nbsp;&times;&nbsp;</span>
+            <span>&times;</span>
         </button>
     </div>
 @endif
+
 
 
   
@@ -108,10 +113,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="farmerSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="Print"  onclick="printTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh-alerts" title="Refresh" onclick="refreshAlertsData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -120,6 +122,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportToCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -229,7 +234,7 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         Update Status
@@ -889,6 +894,31 @@ function showNotification(message, type) {
 
 @push('styles')
 <style>
+        .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
     /* ============================
    SMART FORM - Enhanced Version
    ============================ */

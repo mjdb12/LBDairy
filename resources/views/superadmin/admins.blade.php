@@ -631,8 +631,8 @@
        /* Apply consistent styling for Pending Farmers and Active Farmers tables */
 #pendingAdminsTable th,
 #pendingAdminsTable td,
-#activeFarmersTable th,
-#activeFarmersTable td {
+#activeAdminsTable th,
+#activeAdminsTable td {
     vertical-align: middle;
     padding: 0.75rem;
     text-align: center;
@@ -643,12 +643,12 @@
 
 /* Ensure all table headers have consistent styling */
 #pendingAdminsTable thead th,
-#activeFarmersTable thead th {
+#activeAdminsTable thead th {
     background-color: #f8f9fa;
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
@@ -662,15 +662,15 @@
 #pendingAdminsTable thead th.sorting,
 #pendingAdminsTable thead th.sorting_asc,
 #pendingAdminsTable thead th.sorting_desc,
-#activeFarmersTable thead th.sorting,
-#activeFarmersTable thead th.sorting_asc,
-#activeFarmersTable thead th.sorting_desc {
+#activeAdminsTable thead th.sorting,
+#activeAdminsTable thead th.sorting_asc,
+#activeAdminsTable thead th.sorting_desc {
     padding-right: 2rem !important;
 }
 
 /* Ensure proper spacing for sort indicators */
 #pendingAdminsTable thead th::after,
-#activeFarmersTable thead th::after {
+#activeAdminsTable thead th::after {
     content: '';
     position: absolute;
     right: 0.5rem;
@@ -686,9 +686,9 @@
 #pendingAdminsTable thead th.sorting::after,
 #pendingAdminsTable thead th.sorting_asc::after,
 #pendingAdminsTable thead th.sorting_desc::after,
-#activeFarmersTable thead th.sorting::after,
-#activeFarmersTable thead th.sorting_asc::after,
-#activeFarmersTable thead th.sorting_desc::after {
+#activeAdminsTable thead th.sorting::after,
+#activeAdminsTable thead th.sorting_asc::after,
+#activeAdminsTable thead th.sorting_desc::after {
     display: none;
 }
 
@@ -1383,68 +1383,84 @@
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
-#pendingAdminsTable th,
-    #pendingAdminsTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        white-space: nowrap;
-        overflow: visible;
+
+        .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
     }
-    
-    /* Ensure Registration Date column has enough space */
-    #pendingAdminsTable th:nth-child(6),
-    #pendingAdminsTable td:nth-child(6) {
-        min-width: 220px !important;
-        width: 220px !important;
-        white-space: nowrap;
-        overflow: visible;
-        text-overflow: initial;
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
     }
-    
-    /* Ensure all table headers have consistent styling */
-    #pendingAdminsTable thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 1rem 0.75rem;
-        text-align: center;
-        vertical-align: middle;
-        position: relative;
-        white-space: nowrap;
-    }
-    
-    /* Fix DataTables sorting button overlap */
-    #pendingAdminsTable thead th.sorting,
-    #pendingAdminsTable thead th.sorting_asc,
-    #pendingAdminsTable thead th.sorting_desc {
-        padding-right: 2rem !important;
-    }
-    
-    /* Ensure proper spacing for sort indicators */
-    #pendingAdminsTable thead th::after {
-        content: '';
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-    }
-    
-    /* Remove default DataTables sort indicators to prevent overlap */
-    #pendingAdminsTable thead th.sorting::after,
-    #pendingAdminsTable thead th.sorting_asc::after,
-    #pendingAdminsTable thead th.sorting_desc::after {
-        display: none;
-    }
+}
+/* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #saveAdminBtn.btn-primary,
+#saveAdminBtn.btn-primary,
+#saveAdminBtn.btn,
+#saveAdminBtn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #saveAdminBtn.btn-primary:hover,
+html body #saveAdminBtn.btn-primary:focus,
+#saveAdminBtn.btn-primary:hover,
+#saveAdminBtn.btn-primary:focus,
+#saveAdminBtn:hover,
+#saveAdminBtn:focus,
+#saveAdminBtn.btn:hover,
+#saveAdminBtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+      /* Make table cells wrap instead of forcing them all inline */
+#activeAdminsTable td, 
+#activeAdminsTable th {
+    white-space: normal !important;  /* allow wrapping */
+    vertical-align: middle;
+}
+
+/* Make sure action buttons don’t overflow */
+#activeAdminsTable td .btn-group {
+    display: flex;
+    flex-wrap: wrap; /* buttons wrap if not enough space */
+    gap: 0.25rem;    /* small gap between buttons */
+}
+
+#activeAdminsTable td .btn-action {
+    flex: 1 1 auto; /* allow buttons to shrink/grow */
+    min-width: 90px; /* prevent too tiny buttons */
+    text-align: center;
+}
 </style>
 @endpush
 
@@ -1576,12 +1592,9 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search active admins..." id="activeSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-ok" title="Add User" onclick="showAddAdminModal()">
                         <i class="fas fa-user-plus"></i> Add User
-                    </button>
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printActiveAdminsTable()">
-                        <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshActiveAdmins()">
                         <i class="fas fa-sync-alt"></i> Refresh
@@ -1591,6 +1604,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printActiveAdminsTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV('activeAdminsTable')">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -1659,7 +1675,7 @@
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
             <div class="icon-wrapper mx-auto mb-4 text-danger">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <i class="fas fa-times-circle fa-2x"></i>
             </div>
             <!-- Title -->
             <h5>Confirm Rejection</h5>
@@ -1669,7 +1685,7 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmRejectBtn" class="btn-modern btn-delete">
                     Yes, Reject
@@ -1748,7 +1764,7 @@
 
       <!-- Footer -->
 
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="openContactModal()">
                 Contact Admin
@@ -1816,7 +1832,7 @@
             
 
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         Send Message
@@ -1882,7 +1898,7 @@
                 <div id="messageNotification" class="mt-3 text-center" style="display: none;"></div>
 
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         Send Message
@@ -2033,7 +2049,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok" id="saveAdminBtn">
             Save User
@@ -2163,7 +2179,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">Update Admin</button>
         </div>
@@ -2190,7 +2206,7 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteAdminBtn" class="btn-modern btn-delete">
                     Yes, Delete
@@ -2208,7 +2224,6 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
 
 <!-- Required libraries for PDF/Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -2404,14 +2419,14 @@ function initializeDataTables() {
     pendingAdminsTable = $('#pendingAdminsTable').DataTable({
         ...commonConfig,
         columnDefs: [
-            { width: '80px', targets: 0 }, // User ID
-            { width: '180px', targets: 1 }, // Name
-            { width: '140px', targets: 2 }, // Barangay
-            { width: '140px', targets: 3 }, // Contact
-            { width: '220px', targets: 4 }, // Email
-            { width: '140px', targets: 5 }, // Username
-            { width: '140px', targets: 6 }, // Registration Date
-            { width: '220px', targets: 7, className: 'text-left' }  // Actions
+            { width: '80px', targets: 0, className: 'text-center' }, // User ID
+            { width: '180px', targets: 1, className: 'text-center' }, // Name
+            { width: '140px', targets: 2, className: 'text-center' }, // Barangay
+            { width: '140px', targets: 3, className: 'text-center' }, // Contact
+            { width: '220px', targets: 4, className: 'text-center' }, // Email
+            { width: '140px', targets: 5, className: 'text-center' }, // Username
+            { width: '140px', targets: 6, className: 'text-center' }, // Registration Date
+            { width: '220px', targets: 7, className: 'text-center' }  // Actions
         ],
         buttons: [
             {
@@ -2437,15 +2452,15 @@ function initializeDataTables() {
     activeAdminsTable = $('#activeAdminsTable').DataTable({
         ...commonConfig,
         columnDefs: [
-            { width: '80px', targets: 0 }, // User ID
-            { width: '180px', targets: 1 }, // Name
-            { width: '140px', targets: 2 }, // Barangay
-            { width: '140px', targets: 3 }, // Contact
-            { width: '220px', targets: 4 }, // Email
-            { width: '140px', targets: 5 }, // Username
-            { width: '140px', targets: 6 }, // Approval Date
-            { width: '160px', targets: 7 }, // Last Login
-            { width: '220px', targets: 8, className: 'text-left' }  // Actions
+            { width: '80px', targets: 0, className: 'text-center' }, // User ID
+            { width: '180px', targets: 1, className: 'text-center' }, // Name
+            { width: '140px', targets: 2, className: 'text-center' }, // Barangay
+            { width: '140px', targets: 3, className: 'text-center' }, // Contact
+            { width: '220px', targets: 4, className: 'text-center' }, // Email
+            { width: '140px', targets: 5, className: 'text-center' }, // Username
+            { width: '140px', targets: 6, className: 'text-center' }, // Approval Date
+            { width: '160px', targets: 7, className: 'text-center'}, // Last Login
+            { width: '220px', targets: 8, className: 'text-center' }  // Actions
         ],
         buttons: [
             {

@@ -788,6 +788,135 @@ SMART FORM - Enhanced Version
     margin-top: 0.5rem;
   }
 }
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
+/* Reset table layout */
+.profile-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+/* Basic cell styling */
+.profile-info-table th,
+.profile-info-table td {
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+    border: none;
+    white-space: nowrap;
+}
+
+/* Header column (labels) */
+.profile-info-table th {
+    font-weight: 600;
+    color: #18375d;
+}
+
+/* Data column */
+.profile-info-table td {
+    color: #333;
+}
+
+/* Icons inside headers */
+.profile-info-table th i {
+    color: #18375d;
+    margin-right: 6px;
+}
+
+/* Badge colors */
+.badge-primary {
+    background-color: #18375d !important;
+    color: #fff !important;
+}
+
+.badge-success {
+    background-color: #28a745 !important;
+    color: #fff !important;
+}
+
+/* Make table scrollable on smaller screens */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Optional: improve mobile readability */
+@media (max-width: 768px) {
+    .profile-info-table th,
+    .profile-info-table td {
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+}
+/* Make table scrollable horizontally */
+.profile-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent layout break on scroll */
+.profile-info-table {
+    min-width: 370px; /* or adjust if you want */
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.profile-info-table th,
+.profile-info-table td {
+    padding: 10px 12px;
+    white-space: nowrap; /* prevents wrapping */
+}
+
+/* Optional: improve mobile view */
+@media (max-width: 768px) {
+    .profile-info-table {
+        font-size: 0.9rem;
+    }
+}
+.action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 
@@ -927,7 +1056,7 @@ SMART FORM - Enhanced Version
                 <h3 class="mt-3 mb-1 font-weight-bold">{{ $headerName }}</h3>
                 <p class="text-muted mb-2">{{ auth()->user()->email }}</p>
                 <!-- Action Buttons -->
-            <div class="action-buttons">
+            <div class="btn-group d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                 <button class="btn-action btn-action-edit-profile" data-toggle="modal" data-target="#editProfileModal" title="Edit Profile">
                     <i class="fas fa-edit mr-2"></i>Edit Profile
                 </button>
@@ -954,7 +1083,7 @@ SMART FORM - Enhanced Version
             
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-borderless mb-0 profile-info-table">
+                    <table class="table table-borderless mb-0 profile-info-table profile-scroll">
                         <tbody>
                             <!-- Full name row removed as requested -->
                             <tr>
@@ -1133,7 +1262,7 @@ SMART FORM - Enhanced Version
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">Save Changes</button>
                 </div>
@@ -1216,7 +1345,7 @@ SMART FORM - Enhanced Version
                 </div>
         </div>
 
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">Change Password</button>
         </div>

@@ -1084,7 +1084,7 @@
 }
 
 .smart-detail .recommendations li i {
-    color: #2563eb; /* Default blue icons */
+    color: #4f5a6cff; /* Default blue icons */
     font-size: 0.95rem;
     margin-right: 0.5rem;
 }
@@ -1156,7 +1156,26 @@
         margin-bottom: 0.5rem;
     }
 }
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
 
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 
@@ -1302,7 +1321,7 @@
 <div class="row fade-in">
     <div class="col-12 mb-4">
         <div class="card shadow">
-            <div class="card-body d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 text-center text-sm-start">
+            <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6>
                     <i class="fas fa-chart-line"></i>
                     Production Trends
@@ -1336,10 +1355,7 @@
                         </div>
                         <input type="text" class="form-control" placeholder="Search farms..." id="farmSearch">
                     </div>
-                    <div class="d-flex flex-column flex-sm-row align-items-center">
-                        <button class="btn-action btn-action-edits" title="Print" onclick="printFarmTable()">
-                            <i class="fas fa-print"></i> Print
-                        </button>
+                    <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                         <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshFarmData()">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </button>
@@ -1348,6 +1364,9 @@
                                 <i class="fas fa-tools"></i> Tools
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#" onclick="printFarmTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                                 <a class="dropdown-item" href="#" onclick="exportFarmCSV()">
                                     <i class="fas fa-file-csv"></i> Download CSV
                                 </a>
@@ -1362,7 +1381,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover" id="farmAnalysisTable" >
+                    <table class="table table-bordered table-hover" id="farmAnalysisTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Farm ID</th>
@@ -1561,7 +1580,7 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         Update Farm
@@ -1589,7 +1608,7 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
                     Yes, Delete
@@ -2402,15 +2421,14 @@ function showNotification(message, type) {
     .table-hover tbody tr:hover {
         background-color: rgba(0,0,0,.075);
     }
-    
-    #farmAnalysisTable th,
-    #farmAnalysisTable td {
-        vertical-align: middle;
-        padding: 0.75rem;
-        text-align: center;
-        border: 1px solid #dee2e6;
+    /* Ensure Registration Date column has enough space */
+    #farmAnalysisTable th:nth-child(6),
+    #farmAnalysisTable td:nth-child(6) {
+        min-width: 220px !important;
+        width: 220px !important;
         white-space: nowrap;
         overflow: visible;
+        text-overflow: initial;
     }
     
     /* Ensure all table headers have consistent styling */
@@ -2419,11 +2437,11 @@ function showNotification(message, type) {
         border-bottom: 2px solid #dee2e6;
         font-weight: bold;
         color: #495057;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         padding: 1rem 0.75rem;
-        text-align: left;
+        text-align: center;
         vertical-align: middle;
         position: relative;
         white-space: nowrap;
@@ -2436,13 +2454,25 @@ function showNotification(message, type) {
         padding-right: 2rem !important;
     }
     
+    /* Ensure proper spacing for sort indicators */
+    #farmAnalysisTable thead th::after {
+        content: '';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+    }
+    
     /* Remove default DataTables sort indicators to prevent overlap */
     #farmAnalysisTable thead th.sorting::after,
     #farmAnalysisTable thead th.sorting_asc::after,
     #farmAnalysisTable thead th.sorting_desc::after {
         display: none;
     }
-    
     /* DataTables Pagination Styling */
     .dataTables_wrapper .dataTables_paginate {
         margin-top: 1rem;
@@ -2464,7 +2494,55 @@ function showNotification(message, type) {
         background-color: #fff;
         transition: all 0.15s ease-in-out;
     }
+    /* Ensure table has enough space for actions column */
+    .table th:last-child,
+    .table td:last-child {
+        min-width: 200px;
+        width: auto;
+    }
     
+    /* Table responsiveness and spacing */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure DataTables controls are properly positioned */
+    .table-responsive + .dataTables_wrapper,
+    .table-responsive .dataTables_wrapper {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix pagination positioning for wide tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        margin: 1rem 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #usersTable {
+        width: 100% !important;
+        min-width: 1280px;
+        border-collapse: collapse;
+    }
+    
+    /* Ensure consistent table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+    }
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
         color: #18375d;
         background-color: #e9ecef;
@@ -2805,6 +2883,31 @@ function showNotification(message, type) {
             margin-bottom: 1rem;
         }
     }
+    .recommendations .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    word-break: break-word;
+}
+
+.recommendations .timeline-item i {
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+@media (max-width: 576px) {
+    .recommendations {
+        padding: 1rem;
+    }
+    .recommendations .timeline-item {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    .recommendations .timeline-item span {
+        font-size: 0.85rem;
+    }
+}
+
 </style>
 @endpush
 
@@ -3209,29 +3312,29 @@ function showFarmDetails(farmId) {
                         <div class="col-md-6">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farm Information
                             </h6>
-                            <p><strong>Farm ID:</strong> ${farm.id || 'N/A'}</p>
-                            <p><strong>Farm Name:</strong> ${farm.name || 'N/A'}</p>
-                            <p><strong>Owner:</strong> ${farm.owner ? farm.owner.name : 'Unknown'}</p>
-                            <p><strong>Location:</strong> ${farm.location || 'Not specified'}</p>
-                            <p><strong>Status:</strong> 
+                            <p class="text-left"><strong>Farm ID:</strong> ${farm.id || 'N/A'}</p>
+                            <p class="text-left"><strong>Farm Name:</strong> ${farm.name || 'N/A'}</p>
+                            <p class="text-left"><strong>Owner:</strong> ${farm.owner ? farm.owner.name : 'Unknown'}</p>
+                            <p class="text-left"><strong>Location:</strong> ${farm.location || 'Not specified'}</p>
+                            <p class="text-left"><strong>Status:</strong> 
                                 <span class="badge badge-${farm.status === 'active' ? 'success' : 'warning'}">
                                     <i class="fas fa-${farm.status === 'active' ? 'check-circle' : 'clock'} mr-1"></i>
                                     ${farm.status ? farm.status.charAt(0).toUpperCase() + farm.status.slice(1) : 'N/A'}
                                 </span>
                             </p>
-                            <p><strong>Created:</strong> ${farm.created_at ? new Date(farm.created_at).toLocaleDateString() : 'N/A'}</p>
-                            <p><strong>Last Updated:</strong> ${farm.updated_at ? new Date(farm.updated_at).toLocaleDateString() : 'N/A'}</p>
+                            <p class="text-left"><strong>Created:</strong> ${farm.created_at ? new Date(farm.created_at).toLocaleDateString() : 'N/A'}</p>
+                            <p class="text-left"><strong>Last Updated:</strong> ${farm.updated_at ? new Date(farm.updated_at).toLocaleDateString() : 'N/A'}</p>
                         </div>
 
                         <!-- Production Metrics -->
                         <div class="col-md-6">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Production Metrics
                             </h6>
-                            <p><strong>Livestock Count:</strong> ${livestockCount || 0}</p>
-                            <p><strong>Monthly Production:</strong> ${monthlyProduction ? monthlyProduction + ' L' : '0 L'}</p>
-                            <p><strong>Daily Average:</strong> ${dailyAverage ? dailyAverage + ' L' : '0 L'}</p>
-                            <p><strong>Per Livestock:</strong> ${productionPerLivestock ? productionPerLivestock + ' L' : '0 L'}</p>
-                            <p><strong>Expected Production:</strong> ${expectedProduction ? expectedProduction + ' L/month' : 'N/A'}</p>
+                            <p class="text-left"><strong>Livestock Count:</strong> ${livestockCount || 0}</p>
+                            <p class="text-left"><strong>Monthly Production:</strong> ${monthlyProduction ? monthlyProduction + ' L' : '0 L'}</p>
+                            <p class="text-left"><strong>Daily Average:</strong> ${dailyAverage ? dailyAverage + ' L' : '0 L'}</p>
+                            <p class="text-left"><strong>Per Livestock:</strong> ${productionPerLivestock ? productionPerLivestock + ' L' : '0 L'}</p>
+                            <p class="text-left"><strong>Expected Production:</strong> ${expectedProduction ? expectedProduction + ' L/month' : 'N/A'}</p>
                         </div>
                     </div>
 
@@ -3252,61 +3355,83 @@ function showFarmDetails(farmId) {
                             <h4 class="text-${performanceColor} mb-2">
                                 <i class="fas ${performanceIcon} mr-2"></i>${efficiency}%
                             </h4>
-                            <p class="text-muted mb-2">Efficiency Rate: <strong>${performanceLevel || 'N/A'}</strong></p>
-                            <p><strong>Actual Production:</strong> ${monthlyProduction} L/month</p>
-                            <p><strong>Production Gap:</strong> 
+                            <p class="text-muted text-left mb-2">Efficiency Rate: <strong>${performanceLevel || 'N/A'}</strong></p>
+                            <p class="text-left"><strong>Actual Production:</strong> ${monthlyProduction} L/month</p>
+                            <p class="text-left"><strong>Production Gap:</strong> 
                                 <span class="text-${monthlyProduction >= expectedProduction ? 'success' : 'danger'}">
                                     ${monthlyProduction - expectedProduction} L
                                 </span>
                             </p>
                         </div>
 
-                        <!-- Recommendations -->
-                        <div class="col-md-6">
-                        <div class="recommendations">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Recommendations
-                            </h6>
-                            ${efficiency < 60 ? `
-                                <div class="alert alert-warning enhanced-alert p-3 d-flex align-items-start">
-                                    <div class="alert-icon mr-3">
-                                        <i class="fas fa-exclamation-triangle fa-lg"></i>
-                                    </div>
-                                    <div class="alert-content">
-                                        <strong>Low Efficiency Detected</strong><br>
-                                        <span>Consider reviewing livestock health and feeding schedules to improve performance.</span>
-                                    </div>
-                                </div>
+                    <!-- Recommendations -->
+                        <div class="col-12 col-md-6">
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Recommendations</h6>
+                            <div class="recommendations p-3 rounded shadow-sm bg-white">
 
-                            ` : efficiency >= 80 ? `
-                                <div class="alert alert-success enhanced-alert p-3 d-flex align-items-start">
-                                    <div class="alert-icon mr-3">
-                                        <i class="fas fa-exclamation-triangle fa-lg"></i>
+                                <!-- Dynamic Recommendation Message -->
+                                ${efficiency < 60 ? `
+                                    <div class="timeline-item mb-3 d-flex align-items-start">
+                                        <i class="fas fa-exclamation-triangle text-warning me-2 mt-1"></i>
+                                        <div>
+                                            <p class="text-left">Low Efficiency Detected</p>
+                                            <span class=" text-muted small">
+                                                Consider reviewing livestock health and feeding schedules to improve performance.
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="alert-content">
-                                        <strong>Excellent Performance</strong><br>
-                                        <span>This farm is operating at optimal efficiency.</span>
+                                ` : efficiency >= 80 ? `
+                                    <div class="timeline-item mb-3 d-flex align-items-start">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <div>
+                                            <p class="text-left">Excellent Performance</p>
+                                            <span class="text-muted small">
+                                                This farm is operating at optimal efficiency.
+                                            </span>
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <div class="timeline-item mb-3 d-flex align-items-start">
+                                        <i class="fas fa-info-circle text-info me-2 mt-1"></i>
+                                        <div>
+                                            <p class="text-left">Good Performance</p>
+                                            <span class="text-muted small">
+                                                Minor improvements could boost efficiency further.
+                                            </span>
+                                        </div>
+                                    </div>
+                                `}
+
+                                <!-- Static Recommendations List -->
+                                <div class="timeline">
+                                    ${livestockCount === 0 ? `
+                                        <div class="timeline-item mb-2 d-flex align-items-start">
+                                            <i class="fas fa-plus me-2 mt-1"></i>
+                                            <span class="text-muted small">Add livestock to start production.</span>
+                                        </div>` : ''}
+
+                                    ${efficiency < 80 ? `
+                                        <div class="timeline-item mb-2 d-flex align-items-start">
+                                            <i class="fas fa-chart-line  me-2 mt-1"></i>
+                                            <span class="text-muted small">Monitor daily production trends.</span>
+                                        </div>` : ''}
+
+                                    <div class="timeline-item mb-2 d-flex align-items-start">
+                                        <i class="fas fa-calendar  me-2 mt-1"></i>
+                                        <span class="text-muted small">Schedule regular health checkups.</span>
+                                    </div>
+
+                                    <div class="timeline-item mb-2 d-flex align-items-start">
+                                        <i class="fas fa-leaf  me-2 mt-1"></i>
+                                        <span class="text-muted small">Optimize feeding schedules.</span>
                                     </div>
                                 </div>
-                            ` : `
-                                <div class="alert alert-info enhanced-alert p-3 d-flex align-items-start">
-                                    <div class="alert-icon mr-3">
-                                        <i class="fas fa-exclamation-triangle fa-lg"></i>
-                                    </div>
-                                    <div class="alert-content">
-                                        <strong>Good Performance</strong><br>
-                                        <span>Minor improvements could boost efficiency further.</span>
-                                    </div>
-                                </div>
-                            `}
-                            <ul class="list-unstyled mb-0">
-                                ${livestockCount === 0 ? '<li><i class="fas fa-plus  mr-2"></i>Add livestock to start production</li>' : ''}
-                                ${efficiency < 80 ? '<li><i class="fas fa-chart-line mr-2"></i>Monitor daily production trends</li>' : ''}
-                                <li><i class="fas fa-calendar mr-2"></i>Schedule regular health checkups</li>
-                                <li><i class="fas fa-leaf mr-2"></i>Optimize feeding schedules</li>
-                            </ul>
-                        </div>
+                            </div>
                         </div>
                     </div>
+
+
+
 
                     <!-- Timeline -->
                     <div class="row mt-4">

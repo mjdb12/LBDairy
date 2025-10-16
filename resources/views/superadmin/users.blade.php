@@ -510,7 +510,7 @@
         border-bottom: 2px solid #dee2e6;
         font-weight: bold;
         color: #495057;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         padding: 1rem 0.75rem;
@@ -818,7 +818,6 @@
   margin: auto;
   transition: all 0.3s ease;
 }
-
 .smart-modal .icon-wrapper {
   width: 60px;
     height: 60px;
@@ -1211,6 +1210,100 @@
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
+/* Custom Green Button for New Task - NO GLASS EFFECTS */
+html body .card .card-header #addTaskBtn.btn-primary,
+html body #addTaskBtn.btn-primary,
+#addTaskBtn.btn-primary,
+#addTaskBtn,
+#addTaskBtn.btn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+    border: 2px solid #18375d !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+html body .card .card-header #addTaskBtn.btn-primary:hover,
+html body .card .card-header #addTaskBtn.btn-primary:focus,
+html body #addTaskBtn.btn-primary:hover,
+html body #addTaskBtn.btn-primary:focus,
+#addTaskBtn.btn-primary:hover,
+#addTaskBtn.btn-primary:focus,
+#addTaskBtn:hover,
+#addTaskBtn:focus,
+#addTaskBtn.btn:hover,
+#addTaskBtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+}
+
+/* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #updateAdminBtn.btn-primary,
+#updateAdminBtn.btn-primary,
+#updateAdminBtn.btn,
+#updateAdminBtn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #updateAdminBtn.btn-primary:hover,
+html body #updateAdminBtn.btn-primary:focus,
+#updateAdminBtn.btn-primary:hover,
+#updateAdminBtn.btn-primary:focus,
+#updateAdminBtn:hover,
+#updateAdminBtn:focus,
+#updateAdminBtn.btn:hover,
+#updateAdminBtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 
@@ -1302,12 +1395,9 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search users..." id="userSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-ok" title="Add User" onclick="showAddUserModal()">
                         <i class="fas fa-user-plus"></i> Add User
-                    </button>
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable()">
-                        <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshData()">
                         <i class="fas fa-sync-alt"></i> Refresh
@@ -1317,6 +1407,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -1492,7 +1585,7 @@
         </div>
         <div id="userFormNotification" class="mt-3 text-center" style="display: none;"></div>
         <!-- Footer -->
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">Save User</button>
         </div>
@@ -1630,7 +1723,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" id="updateAdminBtn" class="btn-modern btn-ok">Update User</button>
         </div>
@@ -1657,7 +1750,7 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
                     Yes, Delete
@@ -1849,7 +1942,7 @@ function initializeDataTables() {
             { width: '120px', targets: 4 }, // Status
             { width: '220px', targets: 5 }, // Registration Date
             { width: '160px', targets: 6 }, // Last Login
-            { width: '220px', targets: 7, className: 'text-left' }  // Actions
+            { width: '220px', targets: 7 }  // Actions
         ],
         buttons: [
             {

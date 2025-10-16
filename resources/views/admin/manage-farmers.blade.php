@@ -1188,6 +1188,31 @@
     padding-top: 1.25rem;
     margin-top: 1.5rem;
 }
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 
@@ -1275,10 +1300,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search pending farmers..." id="pendingSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable('pendingFarmersTable')">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh-farmers" title="Refresh" onclick="refreshPendingFarmersTable('pendingFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -1287,6 +1309,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printTable('pendingFarmersTable')">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV('pendingFarmersTable')">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -1342,10 +1367,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search active farmers..." id="activeSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printTable('activeFarmersTable')">
-                        <i class="fas fa-print"></i> Print
-                    </button>
+                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-refresh-admins" title="Refresh" onclick="refreshAdminsTable('activeFarmersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -1354,6 +1376,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printTable('activeFarmersTable')">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV('activeFarmersTable')">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
