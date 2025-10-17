@@ -2836,6 +2836,8 @@
 <script>
 let suppliersDT = null;
 const CSRF_TOKEN = "{{ csrf_token() }}";
+// In-memory store for supplier ledger entries keyed by supplier name
+const supplierLedgers = {};
 // Initialize DataTable
 $(document).ready(function() {
     const commonConfig = {
@@ -2999,9 +3001,97 @@ function viewLedger(supplierName) {
         if (idEl) idEl.textContent = id || 'N/A';
         if (addrEl) addrEl.textContent = address || 'N/A';
     }
-    // In a real implementation, you would fetch supplier details and ledger data
-    // For now, we'll show the modal with placeholder data
+    // Set current supplier context for the ledger modal and render existing entries
+    const $modal = $('#supplierLedgerModal');
+    $modal.data('currentSupplier', supplierName);
+    if (!supplierLedgers[supplierName]) supplierLedgers[supplierName] = [];
+    renderSupplierLedgerTable(supplierName);
+    // Reset and hide the Add Entry form by default
+    hideAddSupplierLedgerEntryForm();
+    const form = document.getElementById('addLedgerEntryFormInner');
+    if (form) form.reset();
+    // In a real implementation, you would fetch supplier details and ledger data from backend
     $('#supplierLedgerModal').modal('show');
+}
+
+// Render ledger entries for the current supplier into the table
+function renderSupplierLedgerTable(supplierName) {
+    const tbody = document.querySelector('#supplierLedgerTable tbody');
+    if (!tbody) return;
+    const entries = supplierLedgers[supplierName] || [];
+    tbody.innerHTML = '';
+    if (entries.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="7" class="text-center text-muted">No ledger entries</td>'; 
+        tbody.appendChild(tr);
+        return;
+    }
+    entries.forEach((e, idx) => {
+        const tr = document.createElement('tr');
+        const badge = statusBadge(e.status);
+        tr.innerHTML = `
+            <td>${escapeHtml(e.date)}</td>
+            <td>${escapeHtml(e.type)}</td>
+            <td>${formatCurrency(e.payable)}</td>
+            <td>${formatCurrency(e.paid)}</td>
+            <td>${formatCurrency(e.due)}</td>
+            <td>${badge}</td>
+            <td class="text-center">
+                <button class="btn-modern btn-delete btn-sm" onclick="deleteLedgerEntry(${idx})"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function deleteLedgerEntry(index) {
+    const supplierName = $('#supplierLedgerModal').data('currentSupplier');
+    if (!supplierName) return;
+    const entries = supplierLedgers[supplierName] || [];
+    if (index >= 0 && index < entries.length) {
+        entries.splice(index, 1);
+        renderSupplierLedgerTable(supplierName);
+        showNotification('Ledger entry deleted.', 'success');
+    }
+}
+
+// Handle Add Ledger Entry form submission
+$(document).on('submit', '#addLedgerEntryFormInner', function(e){
+    e.preventDefault();
+    const supplierName = $('#supplierLedgerModal').data('currentSupplier') || document.getElementById('ledgerSupplierName')?.textContent?.trim();
+    if (!supplierName) { showNotification('No supplier selected.', 'error'); return; }
+    const dateVal = ($('#purchaseDate').val() || '').trim();
+    const typeVal = ($('#purchaseType').val() || '').trim();
+    const payableVal = parseFloat($('#payableAmount').val());
+    const paidVal = parseFloat($('#paidAmount').val());
+    const statusVal = ($('#paymentStatus').val() || '').trim();
+    if (!dateVal || !typeVal || isNaN(payableVal) || isNaN(paidVal) || !statusVal) {
+        showNotification('Please fill all required fields.', 'error');
+        return;
+    }
+    const dueVal = Math.max(0, payableVal - paidVal);
+    const entry = { date: dateVal, type: typeVal, payable: payableVal, paid: paidVal, due: dueVal, status: statusVal };
+    if (!supplierLedgers[supplierName]) supplierLedgers[supplierName] = [];
+    supplierLedgers[supplierName].push(entry);
+    renderSupplierLedgerTable(supplierName);
+    hideAddSupplierLedgerEntryForm();
+    this.reset();
+    showNotification('Ledger entry saved.', 'success');
+});
+
+// Utilities
+function formatCurrency(n){
+    const num = Number(n || 0);
+    return '₱' + num.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function statusBadge(status){
+    const s = (status||'').toLowerCase();
+    if (s === 'paid') return '<span class="badge badge-success">Paid</span>';
+    if (s === 'partial') return '<span class="badge badge-warning">Partial</span>';
+    return '<span class="badge badge-secondary">Unpaid</span>';
+}
+function escapeHtml(str){
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function viewDetails(supplier) {
