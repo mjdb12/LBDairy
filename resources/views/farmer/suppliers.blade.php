@@ -2418,7 +2418,7 @@
             </div>
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover" id="suppliersTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th>Supplier ID</th>
                                 <th>Name</th>
@@ -2821,8 +2821,8 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        autoWidth: false,
-        scrollX: true,
+        autoWidth: true,
+        scrollX: false,
         buttons: [
             { extend: 'csvHtml5', title: 'Farmer_Suppliers_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
             { extend: 'pdfHtml5', title: 'Farmer_Suppliers_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
@@ -2845,9 +2845,11 @@ $(document).ready(function() {
                     { width: '240px', targets: 2 }, // Address
                     { width: '160px', targets: 3 }, // Contact
                     { width: '120px', targets: 4 }, // Status
-                    { width: '200px', targets: 5, orderable: false } // Actions
+                    { width: '220px', targets: 5, orderable: false }, // Actions
+                    { targets: '_all', className: 'text-center align-middle' }
                 ]
             });
+            suppliersDT.columns.adjust();
         } catch (e) {
             console.error('Failed to initialize suppliers DataTable:', e);
         }

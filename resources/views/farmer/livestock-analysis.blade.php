@@ -2,22 +2,23 @@
 
 @section('title', 'LBDAIRY: Farmers - Livestock Analysis')
 
-@section('styles')
+@push('styles')
 <style>
 /* Cache buster: {{ time() }} */
     /* Table layout styling to match superadmin */
     /* Ensure the table container and scroll area are correctly styled */
     .table-responsive {
-        overflow-x: auto;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
         min-width: 100%;
         position: relative;
         border-radius: 8px;
-        overflow: hidden;
         clear: both; /* Ensure it clears properly */
         margin-top: 0.5rem; /* Add space above the scroll area */
     }
     
     /* Make the DataTables scroll body very prominent to indicate the scrollable area */
+    .dataTables_scrollBody {
         overflow-x: auto !important;
         overflow-y: visible !important; /* Allow vertical overflow if needed */
         clear: both !important;
@@ -62,6 +63,7 @@
         border-radius: 4px;
     }
     
+    .table-responsive::-webkit-scrollbar-thumb:hover {
         background: #a8a8a8; /* Darker gray on hover */
     }
     
@@ -86,9 +88,12 @@
     
     
     /* Style the scroll body */
+    #livestockTable {
         border-collapse: collapse;
         margin-bottom: 0;
         table-layout: fixed !important;
+        width: auto !important;           /* allow natural width for horizontal scroll */
+        min-width: 1400px !important;     /* ensure overflow beyond viewport */
     }
 
     
@@ -130,6 +135,34 @@
    
     
     /* Badge styling - matching Inventory Table */
+    /* User ID link styling - superadmin theme */
+    .user-id-link {
+        color: #18375d;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        background-color: rgba(24, 55, 93, 0.1);
+        border: 1px solid rgba(24, 55, 93, 0.2);
+        display: inline-block;
+        text-align: center;
+    }
+
+    .user-id-link:hover {
+        color: #fff;
+        background-color: #18375d;
+        border-color: #18375d;
+        text-decoration: none;
+    }
+
+    .user-id-link:active {
+        color: #fff;
+        background-color: #122a4e;
+        border-color: #122a4e;
+        text-decoration: none;
+    }
     #livestockTable .badge {
         border-radius: 20px !important;
         font-size: 0.75rem !important;
@@ -225,7 +258,7 @@
     
     /* Ensure all buttons in the group have the same baseline */
     .search-controls .d-flex {
-        align-items: baseline;
+        align-items: center;
         gap: 0.75rem; /* Increased gap between buttons */
     }
     
@@ -521,7 +554,7 @@
     border-bottom: 2px solid #dee2e6;
     font-weight: bold;
     color: #495057;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 1rem 0.75rem;
@@ -532,37 +565,26 @@
 }
 
 /* Fix DataTables sorting button overlap */
-#pendilivestockTablengFarmersTable thead th.sorting,
+#livestockTable thead th.sorting,
 #livestockTable thead th.sorting_asc,
-#livestockTable thead th.sorting_desc,
-#activeFarmersTable thead th.sorting,
-#activeFarmersTable thead th.sorting_asc,
-#activeFarmersTable thead th.sorting_desc {
+#livestockTable thead th.sorting_desc {
     padding-right: 2rem !important;
 }
 
-/* Ensure proper spacing for sort indicators */
-#livestockTable thead th::after,
-#activeFarmersTable thead th::after {
-    content: '';
-    position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-}
-
-/* Remove default DataTables sort indicators to prevent overlap */
+/* Remove default DataTables sort indicators to prevent mismatch with superadmin */
+#livestockTable thead th.sorting::before,
+#livestockTable thead th.sorting_asc::before,
+#livestockTable thead th.sorting_desc::before,
 #livestockTable thead th.sorting::after,
 #livestockTable thead th.sorting_asc::after,
 #livestockTable thead th.sorting_desc::after,
-#activeFarmersTable thead th.sorting::after,
-#activeFarmersTable thead th.sorting_asc::after,
-#activeFarmersTable thead th.sorting_desc::after {
-    display: none;
+.dataTables_wrapper table.dataTable thead th.sorting:before,
+.dataTables_wrapper table.dataTable thead th.sorting_asc:before,
+.dataTables_wrapper table.dataTable thead th.sorting_desc:before,
+.dataTables_wrapper table.dataTable thead th.sorting:after,
+.dataTables_wrapper table.dataTable thead th.sorting_asc:after,
+.dataTables_wrapper table.dataTable thead th.sorting_desc:after {
+    display: none !important;
 }
 
 /* Allow table to scroll horizontally if too wide */
@@ -577,11 +599,14 @@
     vertical-align: middle;
 }
 
-/* Make sure action buttons don’t overflow */
-#livestockTable td .btn-group {
+/* Make sure action buttons don’t overflow - standard action-buttons wrapper */
+#livestockTable td .action-buttons {
     display: flex;
-    flex-wrap: wrap; /* buttons wrap if not enough space */
-    gap: 0.25rem;    /* small gap between buttons */
+    flex-wrap: nowrap; /* keep them in one line */
+    gap: 0.5rem;    /* standard spacing */
+    justify-content: center;
+    min-width: 260px;
+    flex-shrink: 0;
 }
 
 #livestockTable td .btn-action {
@@ -589,8 +614,21 @@
     min-width: 90px; /* prevent too tiny buttons */
     text-align: center;
 }
+
+/* Enforce last column min width like other tables */
+#livestockTable th:last-child,
+#livestockTable td:last-child {
+    min-width: 260px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Center the Name column contents even with internal flex markup */
+#livestockTable td:nth-child(2) .d-flex {
+    justify-content: center;
+}
 </style>
-@endsection
+@endpush
 
 @section('content')
 <!-- Page Header -->
@@ -729,8 +767,8 @@
                 </div>
                 <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
             </div>
-            <div class="d-flex flex-row align-items-center" style="gap: 20px;">
-                <button class="btn-action btn-action-edit" onclick="printLivestockTable()">
+            <div class="d-flex flex-column flex-sm-row align-items-center">
+                <button class="btn-action btn-action-print" onclick="printLivestockTable()">
                     <i class="fas fa-print"></i> Print
                 </button>
                 <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()">
@@ -755,8 +793,8 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="livestockTable" cellspacing="0" style="width: 1750px; min-width: 1750px; margin-bottom: 0; background-color: white;">
-                <thead >
+            <table class="table table-bordered table-hover" id="livestockTable" cellspacing="0" style="min-width: 1280px; margin-bottom: 0; background-color: white;">
+                <thead class="thead-light">
                     <tr>
                         <th>Livestock ID</th>
                         <th>Name</th>
@@ -771,7 +809,7 @@
                 <tbody>
                     @forelse($livestockData ?? [] as $animal)
                     <tr class="livestock-row" data-status="{{ $animal['health_status'] ?? 'healthy' }}" data-type="{{ $animal['breed'] ?? 'unknown' }}">
-                        <td><a href="#" class="livestock-id-link" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')">{{ $animal['livestock_id'] ?? 'LS' . str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</a></td>
+                        <td><a href="#" class="user-id-link" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')">{{ $animal['livestock_id'] ?? 'LS' . str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</a></td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center mr-2">
@@ -798,12 +836,12 @@
                             <span class="badge badge-{{ $statusClass }}">{{ $breedingStatus }}</span>
                         </td>
                         <td>
-                            <div class="btn-group">
-                                <button class="btn-action btn-action-edit" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
-                                    <i class="fas fa-chart-line"></i>Analysis</span>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-action-ok" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis">
+                                    <i class="fas fa-chart-line"></i> Analysis
                                 </button>
-                                <button class="btn-action btn-action-edit " onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')" title="History">
-                                    <i class="fas fa-history"></i>History</span>
+                                <button class="btn-action btn-action-edit" onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')" title="History">
+                                    <i class="fas fa-history"></i> History
                                 </button>
                             </div>
                         </td>
@@ -1118,8 +1156,8 @@
     }
     
     .btn-action-print {
-        background-color: #387057 ;
-        border-color: #387057 ;
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
         color: white !important;
     }
     
@@ -1296,7 +1334,18 @@ document.addEventListener('DOMContentLoaded', function() {
         lengthChange: false,
         pageLength: 10,
         autoWidth: false,
-        scrollX: true,
+        scrollX: false,
+        columnDefs: [
+            { width: '100px', targets: 0 }, // Livestock ID
+            { width: '180px', targets: 1 }, // Name
+            { width: '140px', targets: 2 }, // Breed
+            { width: '140px', targets: 3 }, // Age (months)
+            { width: '160px', targets: 4 }, // Health Score
+            { width: '200px', targets: 5 }, // Avg. Production
+            { width: '160px', targets: 6 }, // Breeding Status
+            { width: '260px', targets: 7, orderable: false }, // Actions
+            { targets: '_all', className: 'text-center align-middle' }
+        ],
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -1338,6 +1387,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(forceCenterAlignment, 100);
         }
     });
+    table.columns.adjust();
 
     // The custom DOM in commonConfig should handle layout correctly.
     // Hide any default elements that might interfere.
@@ -1708,7 +1758,7 @@ function forceCenterAlignment() {
     });
     
     // FORCE livestock ID link styling - EXACT MATCH from manage livestock
-    $('#livestockTable .livestock-id-link').each(function() {
+    $('#livestockTable .user-id-link').each(function() {
         $(this).css({
             'color': '#18375d',
             'text-decoration': 'none',
@@ -1742,27 +1792,27 @@ function forceCenterAlignment() {
         });
     });
     
-    // FORCE Analysis button styling to yellow
+    // FORCE Analysis button styling to standard dark blue with orange hover
     $('#livestockTable .btn-action-ok').each(function() {
         $(this).css({
-            'background-color': '#fca700',
-            'border-color': '#fca700',
+            'background-color': '#18375d',
+            'border-color': '#18375d',
             'color': 'white'
         });
         
         // Add hover effects for analysis button
         $(this).on('mouseenter', function() {
             $(this).css({
-                'background-color': '#e69500',
-                'border-color': '#e69500',
+                'background-color': '#fca700',
+                'border-color': '#fca700',
                 'color': 'white'
             });
         });
         
         $(this).on('mouseleave', function() {
             $(this).css({
-                'background-color': '#fca700',
-                'border-color': '#fca700',
+                'background-color': '#18375d',
+                'border-color': '#18375d',
                 'color': 'white'
             });
         });
@@ -1901,11 +1951,14 @@ function exportPNG(tableId) {
 
 function printLivestockTable() {
     try {
-        window.printElement('#livestockTable');
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#livestockTable')) {
+            $('#livestockTable').DataTable().button('.buttons-print').trigger();
+            return;
+        }
     } catch (error) {
-        console.error('Error triggering print:', error);
-        try { window.print(); } catch (_) {}
+        console.error('Error triggering DataTables print:', error);
     }
+    try { window.print(); } catch (_) {}
 }
 
 // Refresh Pending Farmers Table

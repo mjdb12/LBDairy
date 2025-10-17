@@ -129,7 +129,7 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="livestockTable">
-                    <thead>
+                    <thead class="thead-light">
                         <tr>
                             <th>Livestock ID</th>
                             <th>Type</th>
@@ -506,9 +506,20 @@ $(document).ready(function() {
                 ordering: true,
                 lengthChange: false,
                 pageLength: 10,
-                autoWidth: false,
-                scrollX: true,
+                autoWidth: true,
+                scrollX: false,
                 order: [[0, 'asc']],
+                columnDefs: [
+                    { width: '100px', targets: 0 }, // Livestock ID
+                    { width: '120px', targets: 1 }, // Type
+                    { width: '140px', targets: 2 }, // Breed
+                    { width: '100px', targets: 3 }, // Age
+                    { width: '120px', targets: 4 }, // Weight
+                    { width: '140px', targets: 5 }, // Health Status
+                    { width: '140px', targets: 6 }, // Registration Date
+                    { width: '220px', targets: 7, orderable: false }, // Actions
+                    { targets: '_all', className: 'text-center align-middle' }
+                ],
                 buttons: [
                     {
                         extend: 'csvHtml5',
@@ -551,6 +562,7 @@ $(document).ready(function() {
                     }
                 }
             });
+            livestockTable.columns.adjust();
             
             // Hide default DataTables elements
             $('.dataTables_filter').hide();

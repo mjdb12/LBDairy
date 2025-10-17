@@ -210,6 +210,29 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+
+/* Center align farm performance table like Super Admin tables */
+#dataTable th,
+#dataTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#dataTable {
+    width: 100% !important;
+    min-width: 1280px;
+}
+
+#dataTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+}
 </style>
 @endpush
 
@@ -360,8 +383,8 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead class="thead-light">
                             <tr>
                                 <th style="width: 25%;">Metric</th>
                                 <th style="width: 20%;">Current Month</th>

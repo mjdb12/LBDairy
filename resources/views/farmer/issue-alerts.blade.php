@@ -125,7 +125,7 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
-                            <thead>
+                            <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
                                     <th>Topic</th>
@@ -332,8 +332,8 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        autoWidth: false,
-        scrollX: true,
+        autoWidth: true,
+        scrollX: false,
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -389,9 +389,11 @@ $(document).ready(function() {
                         { width: '100px', targets: 3 }, // Severity
                         { width: '140px', targets: 4 }, // Date Created
                         { width: '120px', targets: 5 }, // Status
-                        { width: '200px', targets: 6, orderable: false } // Actions
+                        { width: '220px', targets: 6, orderable: false }, // Actions
+                        { targets: '_all', className: 'text-center align-middle' }
                     ]
                 });
+                dt.columns.adjust();
             } catch (error) {
                 console.error('Error initializing Alerts DataTable:', error);
             }

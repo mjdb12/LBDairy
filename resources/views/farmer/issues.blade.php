@@ -158,8 +158,8 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered " id="issuesTable" width="100%" cellspacing="0">
-                            <thead >
+                        <table class="table table-bordered table-hover" id="issuesTable" width="100%" cellspacing="0">
+                            <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
                                     <th>Animal Type</th>
@@ -282,7 +282,7 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
-                            <thead >
+                            <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
                                     <th>Animal Type</th>
@@ -401,7 +401,7 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="inspectionsTable" width="100%" cellspacing="0">
-                            <thead >
+                            <thead class="thead-light">
                                 <tr>
                                     <th>Inspection Date</th>
                                     <th>Time</th>
@@ -616,8 +616,8 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        autoWidth: false,
-        scrollX: true,
+        autoWidth: true,
+        scrollX: false,
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -666,7 +666,8 @@ $(document).ready(function() {
                         { width: '140px', targets: 6 }, // Date Reported
                         { width: '120px', targets: 7 }, // Status
                         { width: '140px', targets: 8 }, // Reported By
-                        { width: '180px', targets: 9, orderable: false } // Actions
+                        { width: '220px', targets: 9, orderable: false }, // Actions
+                        { targets: '_all', className: 'text-center align-middle' }
                     ],
                     buttons: [
                         { extend: 'csvHtml5', title: 'Farmer_Issues_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7,8], modifier: { page: 'all' } } },
@@ -674,6 +675,7 @@ $(document).ready(function() {
                         { extend: 'print', title: 'Farmer Issues Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6,7,8], modifier: { page: 'all' } } }
                     ]
                 });
+                dt.columns.adjust();
                 console.log('Issues DataTable initialized successfully');
             } catch (error) {
                 console.error('Error initializing Issues DataTable:', error);
@@ -689,7 +691,7 @@ $(document).ready(function() {
         const hasEmptyRow = alertsTable.find('tbody tr td[colspan]').length > 0;
         
         if (!hasEmptyRow) {
-            alertsTable.DataTable({
+            const alertsDT = alertsTable.DataTable({
                 ...commonConfig,
                 order: [[6, 'desc']], // Sort by alert date
                 buttons: [
@@ -706,9 +708,11 @@ $(document).ready(function() {
                     { width: '100px', targets: 5 }, // Severity
                     { width: '140px', targets: 6 }, // Alert Date
                     { width: '140px', targets: 7 }, // Issued By
-                    { width: '220px', targets: 8, orderable: false } // Actions
+                    { width: '220px', targets: 8, orderable: false }, // Actions
+                    { targets: '_all', className: 'text-center align-middle' }
                 ]
             });
+            alertsDT.columns.adjust();
         }
     }
 
@@ -718,7 +722,7 @@ $(document).ready(function() {
         const hasEmptyRow = inspectionsTable.find('tbody tr td[colspan]').length > 0;
         
         if (!hasEmptyRow) {
-            inspectionsTable.DataTable({
+            const inspectionsDT = inspectionsTable.DataTable({
                 ...commonConfig,
                 order: [[0, 'asc']], // Sort by inspection date
                 buttons: [
@@ -733,9 +737,11 @@ $(document).ready(function() {
                     { width: '120px', targets: 3 }, // Status
                     { width: '140px', targets: 4 }, // Scheduled By
                     { width: '250px', targets: 5 }, // Notes
-                    { width: '200px', targets: 6, orderable: false } // Actions
+                    { width: '220px', targets: 6, orderable: false }, // Actions
+                    { targets: '_all', className: 'text-center align-middle' }
                 ]
             });
+            inspectionsDT.columns.adjust();
         }
     }
 
@@ -2237,6 +2243,14 @@ function showNotification(message, type = 'info') {
     white-space: normal !important;  /* allow wrapping */
     vertical-align: middle;
 }
+/* Match wrapping for other tables to avoid header/body width drift */
+#issuesTable td, 
+#issuesTable th,
+#inspectionsTable td,
+#inspectionsTable th {
+    white-space: normal !important;
+    vertical-align: middle;
+}
 
 /* Make sure action buttons don’t overflow */
 #alertsTable td .btn-group {
@@ -2290,6 +2304,14 @@ function showNotification(message, type = 'info') {
 
 .table-bordered {
     border: 1px solid #dee2e6;
+}
+/* Ensure table has enough space for actions column (match superadmin) */
+.table th:last-child,
+.table td:last-child {
+    min-width: 200px;
+    width: auto;
+    text-align: center;
+    vertical-align: middle;
 }
 
 #issuesTable th,

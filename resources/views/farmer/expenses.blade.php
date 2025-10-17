@@ -175,7 +175,7 @@
                 </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="expensesTable" width="100%" cellspacing="0" >
+                        <table class="table table-bordered table-hover" id="expensesTable" width="100%" cellspacing="0" >
                             <thead class="thead-light">
                                 <tr>
                                     <th>Expense ID</th>
@@ -505,8 +505,8 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        autoWidth: false,
-        scrollX: true,
+        autoWidth: true,
+        scrollX: false,
         buttons: [
             { extend: 'csvHtml5', title: 'Farmer_Expenses_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
             { extend: 'pdfHtml5', title: 'Farmer_Expenses_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
@@ -527,9 +527,11 @@ $(document).ready(function() {
                     { width: '140px', targets: 3 },
                     { width: '160px', targets: 4 },
                     { width: '160px', targets: 5 },
-                    { width: '200px', targets: 6, orderable: false }
+                    { width: '220px', targets: 6, orderable: false },
+                    { targets: '_all', className: 'text-center align-middle' }
                 ]
             });
+            expensesDT.columns.adjust();
 
 // Helpers
 function htmlEscape(s){
