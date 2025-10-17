@@ -739,16 +739,16 @@
 /* ============================
    FORM ELEMENT STYLES
    ============================ */
-#addLivestockDetailsModal form {
+#editClientModal form {
   text-align: left;
 }
 
-#addLivestockDetailsModal .form-group {
+#editClientModal .form-group {
   width: 100%;
   margin-bottom: 1.2rem;
 }
 
-#addLivestockDetailsModal label {
+#editClientModal label {
   font-weight: 600;            /* make labels bold */
   color: #18375d;              /* consistent primary blue */
   display: inline-block;
@@ -756,9 +756,9 @@
 }
 
 /* Unified input + select + textarea styles */
-#addLivestockDetailsModal .form-control,
-#addLivestockDetailsModal select.form-control,
-#addLivestockDetailsModal textarea.form-control {
+#editClientModal .form-control,
+#editClientModal select.form-control,
+#editClientModal textarea.form-control {
   border-radius: 12px;
   border: 1px solid #d1d5db;
   padding: 12px 15px;          /* consistent padding */
@@ -774,13 +774,13 @@
 }
 
 /* Keep textarea resizable but visually aligned */
-#addLivestockDetailsModal textarea.form-control {
+#editClientModal textarea.form-control {
   min-height: 100px;
   height: auto;                /* flexible height for textarea */
 }
 
 /* Focus state */
-#addLivestockDetailsModal .form-control:focus {
+#editClientModal .form-control:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
@@ -1497,6 +1497,137 @@
     margin-top: 0.5rem;
   }
 }
+  .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
+ /* Search and button group alignment */
+    .search-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end; /* Align to bottom for perfect leveling */
+        }
+    }
+    
+    .search-controls .input-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure input group aligns to bottom */
+    }
+    
+    .search-controls .btn-group {
+        flex-shrink: 0;
+        align-self: flex-end; /* Ensure button group aligns to bottom */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure buttons have consistent height with input */
+    .search-controls .btn-action {
+        height: 38px; /* Match Bootstrap input height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+    
+    /* Ensure dropdown button is perfectly aligned */
+    .search-controls .dropdown .btn-action {
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ensure all buttons in the group have the same baseline */
+    .search-controls .d-flex {
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between buttons */
+    }
+    
+    @media (max-width: 767px) {
+        .search-controls {
+            align-items: stretch;
+        }
+        
+        .search-controls .btn-group {
+            margin-top: 0.5rem;
+            justify-content: center;
+            align-self: center;
+        }
+        
+        .search-controls .input-group {
+            max-width: 100% !important;
+        }
+    }
+    /* User Details Modal Styling */
+    #clientDetailsModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    }
+    
+    #clientDetailsModal .modal-header {
+        background: #18375d !important;
+        color: white !important;
+        border-bottom: none !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #clientDetailsModal .modal-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    #clientDetailsModal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    #clientDetailsModal .modal-body h6 {
+        color: #18375d !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #e3e6f0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem !important;
+    }
+    
+    #clientDetailsModal .modal-body p {
+        margin-bottom: 0.75rem;
+        color: #333 !important;
+    }
+    
+    #clientDetailsModal .modal-body strong {
+        color: #5a5c69 !important;
+        font-weight: 600;
+    }
 </style>
 @section('content')
 <!-- Page Header -->
@@ -1579,24 +1710,18 @@
             <div class="card-body">
                 <!-- Search + Actions controls -->
                 <div class="search-controls mb-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
-                        <div class="input-group" style="max-width: 380px;">
+                    <div class="input-group" style="max-width: 300px;">
                             <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
                             </div>
-                            <input type="text" id="clientSearch" class="form-control" placeholder="Search clients...">
-                            <div class="input-group-append">
-                                <button type="button" class="btn-action btn-action-tools" onclick="triggerClientSearch()">
-                                    <i class="fas fa-search"></i> Search
-                                </button>
-                            </div>
+                            <input type="text" class="form-control" placeholder="Search clients..." id="clientSearch">
                         </div>
-                        <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
+                        <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                             <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addClientModal">
                             <i class="fas fa-plus mr-1"></i> Add Client
-                            </button>
-                            <button class="btn-action btn-action-edit" onclick="printClientsTable()">
-                                <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshClientsTable()">
                                 <i class="fas fa-sync-alt"></i> Refresh
@@ -1606,6 +1731,9 @@
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="printClientsTable()">
+                                        <i class="fas fa-print"></i> Print Table
+                                    </a>
                                     <a class="dropdown-item" href="#" onclick="exportClientsCSV()">
                                         <i class="fas fa-file-csv"></i> Download CSV
                                     </a>
@@ -1681,23 +1809,36 @@
             </div>
         </div>
 
-<!-- VIEW CLIENT MODAL -->
-<div class="modal fade admin-modal" id="clientDetailsModal" tabindex="-1" aria-hidden="true">
+    <!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="clientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="clientDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
-                <div class="icon-circle"><i class="fas fa-user fa-2x"></i></div>
-                <h5 class="fw-bold mb-1">Client Details</h5>
+                <div class="icon-circle">
+                    <i class="fas fa-user fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Client Details </h5>
+                <p class="text-center text-muted mb-0 small">Below are the complete details of the selected client.</p>
             </div>
-            <div class="modal-body">
-                <div id="clientDetailsContainer" class="detail-wrapper"></div>
-            </div>
-            <div class="modal-footer justify-content-center mt-4">
-                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
-            </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div id="clientDetailsContainer" >
+          <!-- Dynamic details injected here -->
         </div>
+      </div>
+
+      <!-- Footer -->
+
+        <div class="modal-footer justify-content-center mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+
     </div>
-    </div>
+  </div>
+</div>
 
 <!-- EDIT CLIENT MODAL -->
 <div class="modal fade admin-modal" id="editClientModal" tabindex="-1" aria-hidden="true">
@@ -1706,11 +1847,12 @@
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle"><i class="fas fa-user-edit fa-2x"></i></div>
                 <h5 class="fw-bold mb-1">Edit Client</h5>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected client.</p>
             </div>
             <form id="editClientForm">
                 <div class="form-wrapper text-start mx-auto">
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <label for="edit_clientName" class="fw-semibold">Full Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="edit_clientName" required>
                         </div>
@@ -1732,10 +1874,6 @@
                             <input type="email" class="form-control" id="edit_clientEmail">
                         </div>
                         <div class="col-md-6">
-                            <label for="edit_clientAddress" class="fw-semibold">Address <span class="text-danger">*</span></label>
-                            <textarea class="form-control mt-1" id="edit_clientAddress" rows="3" style="resize: none;"></textarea>
-                        </div>
-                        <div class="col-md-6">
                             <label for="edit_clientStatus" class="fw-semibold">Status <span class="text-danger">*</span></label>
                             <select class="form-control" id="edit_clientStatus" required>
                                 <option value="active">Active</option>
@@ -1744,14 +1882,18 @@
                             </select>
                         </div>
                         <div class="col-md-12">
+                            <label for="edit_clientAddress" class="fw-semibold">Address <span class="text-danger">*</span></label>
+                            <textarea class="form-control mt-1" id="edit_clientAddress" rows="3" style="resize: none;"></textarea>
+                        </div>
+                        <div class="col-md-12">
                             <label for="edit_clientNotes" class="fw-semibold">Notes</label>
                             <textarea class="form-control mt-1" id="edit_clientNotes" rows="3" style="resize: none;"></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok">Save Changes</button>
+                    <button type="submit" class="btn-modern btn-ok"><i class="fas fa-save"></i> Save</button>
                 </div>
             </form>
         </div>
@@ -1949,10 +2091,10 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+               <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok" title="Save Client">
-                        Save Client
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
             </form>
@@ -2240,24 +2382,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('clientDetailsContainer');
         if (!container){ return; }
         container.innerHTML = `
-            <div class="row gy-3">
-                <div class="col-md-6">
-                    <div class="smart-card p-3 rounded-3 shadow-sm border">
-                        <h6 class="section-title mb-3">Client Information</h6>
-                        <p><strong>Name:</strong> <span class="text-dark">${data.name || 'N/A'}</span></p>
-                        <p><strong>Type:</strong> <span class="text-dark">${data.type || 'N/A'}</span></p>
-                        <p><strong>Status:</strong> <span class="text-dark">${data.status || 'N/A'}</span></p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="smart-card p-3 rounded-3 shadow-sm border">
-                        <h6 class="section-title mb-3">Contact</h6>
-                        <p><strong>Phone:</strong> <span class="text-dark">${data.phone || 'N/A'}</span></p>
-                        <p><strong>Email:</strong> <span class="text-dark">${data.email || 'N/A'}</span></p>
-                        <p><strong>Total Orders:</strong> <span class="text-dark">${data.totalOrders || '0'}</span></p>
-                    </div>
-                </div>
-            </div>`;
+                    <div class="row">
+                        <!-- Sale Information -->
+                        <div class="col-md-6">
+    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+        <i class="fas fa-user me-2"></i> Client Information
+    </h6>
+    <p><strong>Name:</strong> <span class="text-dark">${data.name || 'N/A'}</span></p>
+    <p><strong>Type:</strong> <span class="text-dark">${data.type || 'N/A'}</span></p>
+    <p><strong>Status:</strong> <span class="text-dark">${data.status || 'N/A'}</span></p>
+</div>
+
+<!-- Financial Details -->
+<div class="col-md-6">
+    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+        <i class="fas fa-address-book me-2"></i> Contact
+    </h6>
+    <p><strong>Phone:</strong> <span class="text-dark">${data.phone || 'N/A'}</span></p>
+    <p><strong>Email:</strong> <span class="text-dark">${data.email || 'N/A'}</span></p>
+    <p><strong>Total Orders:</strong> <span class="text-dark">${data.totalOrders || '0'}</span></p>
+</div>
+
+                    </div>`;
         $('#clientDetailsModal').modal('show');
     }
 

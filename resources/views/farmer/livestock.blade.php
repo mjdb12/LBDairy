@@ -371,7 +371,7 @@
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
-                        Save Livestock
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
 
@@ -405,12 +405,12 @@
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
                     Close
                 </button>
                 <button type="button" class="btn-modern btn-edit" onclick="printLivestockRecord()" id="printLivestockBtn">
-                    <i class="fas fa-print"></i> Print Record
+                    <i class="fas fa-print"></i> Print
                 </button>
                 <button type="button" class="btn-modern btn-ok" onclick="editCurrentLivestock()">
                     <i class="fas fa-edit"></i> Edit
@@ -440,7 +440,7 @@
             <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
-                    Yes, Delete
+                    <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>
@@ -732,160 +732,239 @@ function loadLivestockDetails(livestockId) {
                 const updatedDate = livestock.updated_at ? new Date(livestock.updated_at).toLocaleDateString() : 'Not recorded';
                 
                 $('#livestockDetailsContent').html(`
-                    <!-- Smart Detail Body Content -->
-                <div class="detail-wrapper">
+            <!-- Smart Detail Body Content -->
 
-                    <!-- QR Code & Quick Info Section -->
-                    <div class="row mb-4">
-                        <!-- QR Code Status -->
-                        <div class="col-md-6 mb-3">
-                            <div class="smart-card shadow-sm h-100">
-                                <div class="smart-card-header text-#18375d d-flex align-items-center">
-                                    <i class="fas fa-qrcode mr-2"></i>
-                                    <h6 class="mb-0 fw-bold">QR Code Status</h6>
-                                </div>
-                                <div class="smart-card-body text-center p-3">
-                                    <div id="qrCodeContainer" class="mb-3">
-                                        <p class="text-muted mb-0">Checking QR code status...</p>
-                                    </div>
-                                    <button type="button" class="btn-action btn-action-ok" onclick="checkQRCodeStatus('${livestock.id}')">
-                                        Check QR Code Status
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+<!-- QR Code & Quick Info Section -->
+<div class="row mb-4">
+    <!-- QR Code Status -->
+    <div class="col-md-6 mb-3">
+        <div class="smart-card shadow-sm h-100">
+            <div class="smart-card-header text-#18375d d-flex align-items-center">
+                <i class="fas fa-qrcode mr-2"></i>
+                <h6 class="mb-0 fw-bold">QR Code Status</h6>
+            </div>
+            <div class="smart-card-body text-center p-3">
+                <div id="qrCodeContainer" class="mb-3">
+                    <p class="text-muted mb-0">Checking QR code status...</p>
+                </div>
+                <button type="button" 
+                        class="btn-action btn-action-ok" 
+                        onclick="checkQRCodeStatus('${livestock.id}')">
+                    Check QR Code Status
+                </button>
+            </div>
+        </div>
+    </div>
 
-                        <!-- Quick Info -->
-                        <div class="col-md-6 mb-3">
-                            <div class="smart-card shadow-sm h-100">
-                                <div class="smart-card-header  text-#18375d d-flex align-items-center">
-                                    <i class="fas fa-info-circle mr-2"></i>
-                                    <h6 class="mb-0 fw-bold">Quick Info</h6>
-                                </div>
-                                <div class="smart-card-body p-3">
-                                    <div class="row">
-                                        <div class="col-6 mb-2"><small class="text-muted">Tag Number</small><p class="fw-bold mb-0">${livestock.tag_number || 'N/A'}</p></div>
-                                        <div class="col-6 mb-2"><small class="text-muted">Name</small><p class="fw-bold mb-0">${livestock.name || 'N/A'}</p></div>
-                                        <div class="col-6 mb-2"><small class="text-muted">Type</small><p class="fw-bold mb-0">${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'N/A'}</p></div>
-                                        <div class="col-6 mb-2"><small class="text-muted">Breed</small><p class="fw-bold mb-0">${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p></div>
-                                        <div class="col-6 mb-2"><small class="text-muted">Age</small><p class="fw-bold mb-0">${age}</p></div>
-                                        <div class="col-6 mb-2"><small class="text-muted">Status</small><p class="fw-bold mb-0"><span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'N/A'}</span></p></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Quick Info -->
+    <div class="col-md-6 mb-3">
+        <div class="smart-card shadow-sm h-100">
+            <div class="smart-card-header text-#18375d d-flex align-items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                <h6 class="mb-0 fw-bold">Quick Info</h6>
+            </div>
+            <div class="smart-card-body p-3">
+                <div class="row">
+                    <div class="col-6 mb-2">
+                        <small class="text-muted">Tag Number</small>
+                        <p class="fw-bold mb-0">${livestock.tag_number || 'N/A'}</p>
                     </div>
 
-                    <!-- Navigation Tabs -->
-                    <ul class="nav nav-tabs smart-tabs mb-3" id="livestockTab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab">Basic Info</a></li>
-                        <li class="nav-item"><a class="nav-link" id="production-tab" data-toggle="tab" href="#productionForm" role="tab">Production</a></li>
-                        <li class="nav-item"><a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab">Health</a></li>
-                        <li class="nav-item"><a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab">Breeding</a></li>
-                    </ul>
+                    <div class="col-6 mb-2">
+                        <small class="text-muted">Name</small>
+                        <p class="fw-bold mb-0">${livestock.name || 'N/A'}</p>
+                    </div>
 
-                    <!-- Tabs Content -->
-                    <div class="tab-content" id="livestockTabContent">
+                    <div class="col-6 mb-2">
+                        <small class="text-muted">Type</small>
+                        <p class="fw-bold mb-0">
+                            ${livestock.type 
+                                ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) 
+                                : 'N/A'}
+                        </p>
+                    </div>
 
-                        <!-- Basic Info Tab -->
-                        <div class="tab-pane fade show active" id="basicForm" role="tabpanel">
-                            <div class="smart-table table-responsive">
-                                <table class="table table-sm table-bordered align-middle mb-0">
-                                    <tbody>
-                                        <tr><th>Tag Number</th><td>${livestock.tag_number || 'Not assigned'}</td></tr>
-                                        <tr><th>Name</th><td>${livestock.name || 'Not assigned'}</td></tr>
-                                        <tr><th>Type</th><td>${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'Not recorded'}</td></tr>
-                                        <tr><th>Breed</th><td>${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not recorded'}</td></tr>
-                                        <tr><th>Date of Birth</th><td>${birthDate}</td></tr>
-                                        <tr><th>Age</th><td>${age}</td></tr>
-                                        <tr><th>Gender</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
-                                        <tr><th>Weight</th><td>${livestock.weight ? livestock.weight + ' kg' : 'Not recorded'}</td></tr>
-                                        <tr><th>Health Status</th><td><span class="badge badge-${livestock.health_status === 'healthy' ? 'success' : livestock.health_status === 'sick' ? 'danger' : 'warning'}">${livestock.health_status ? livestock.health_status.charAt(0).toUpperCase() + livestock.health_status.slice(1) : 'Not recorded'}</span></td></tr>
-                                        <tr><th>Status</th><td><span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'Not recorded'}</span></td></tr>
-                                        <tr><th>Farm</th><td>${livestock.farm ? livestock.farm.name : 'Not assigned'}</td></tr>
-                                        <tr><th>Registry ID</th><td>${livestock.registry_id || 'Not assigned'}</td></tr>
-                                        <tr><th>Natural Marks</th><td>${livestock.natural_marks || 'None recorded'}</td></tr>
-                                        <tr><th>Property Number</th><td>${livestock.property_no || 'Not assigned'}</td></tr>
-                                        <tr><th>Acquisition Date</th><td>${livestock.acquisition_date ? new Date(livestock.acquisition_date).toLocaleDateString() : 'Not recorded'}</td></tr>
-                                        <tr><th>Acquisition Cost</th><td>${livestock.acquisition_cost ? '₱' + parseFloat(livestock.acquisition_cost).toFixed(2) : 'Not recorded'}</td></tr>
-                                        <tr><th>Remarks</th><td>${livestock.remarks || 'None'}</td></tr>
-                                        <tr><th>Created</th><td>${createdDate}</td></tr>
-                                        <tr><th>Last Updated</th><td>${updatedDate}</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="col-6 mb-2">
+                        <small class="text-muted">Breed</small>
+                        <p class="fw-bold mb-0">
+                            ${livestock.breed 
+                                ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) 
+                                : 'N/A'}
+                        </p>
+                    </div>
 
-                        <!-- Production Tab -->
-                        <div class="tab-pane fade" id="productionForm" role="tabpanel">
-                            <div class="smart-table table-responsive">
-                                <table class="table table-sm table-bordered align-middle mb-0">
-                                    <thead class="thead-light">
-                                        <tr><th>Date</th><th>Production Type</th><th>Quantity</th><th>Quality</th><th>Notes</th></tr>
-                                    </thead>
-                                    <tbody id="productionRecordsTable">
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted py-3">
-                                                <i class="fas fa-info-circle"></i>
-                                                No production records found.
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="text-right mt-3">
-                                <button class="btn-action btn-action-ok" onclick="addProductionRecord('${livestock.id}')">
-                                    <i class="fas fa-plus"></i> Add Production Record
-                                </button>
-                            </div>
-                        </div>
+                    <div class="col-6 mb-2">
+                        <small class="text-muted">Age</small>
+                        <p class="fw-bold mb-0">${age}</p>
+                    </div>
 
-                        <!-- Health Tab -->
-                        <div class="tab-pane fade" id="healthForm" role="tabpanel">
-                            <div class="smart-table table-responsive">
-                                <table class="table table-sm table-bordered align-middle mb-0">
-                                    <thead class="thead-light">
-                                        <tr><th>Date</th><th>Health Status</th><th>Treatment</th><th>Veterinarian</th><th>Notes</th></tr>
-                                    </thead>
-                                    <tbody id="healthRecordsTable">
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted py-3">
-                                                <i class="fas fa-info-circle"></i>
-                                                No health records found.
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="text-right mt-3">
-                                <button class="btn-action btn-action-ok" onclick="addHealthRecord('${livestock.id}')">
-                                    <i class="fas fa-plus"></i> Add Health Record
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Breeding Tab -->
-                        <div class="tab-pane fade" id="breedingForm" role="tabpanel">
-                            <div class="smart-table table-responsive">
-                                <table class="table table-sm table-bordered align-middle mb-0">
-                                    <tbody>
-                                        <tr><th>Sire ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
-                                        <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
-                                        <tr><th>Dam ID</th><td>${livestock.dam_id || 'Not recorded'}</td></tr>
-                                        <tr><th>Dam Name</th><td>${livestock.dam_name || 'Not recorded'}</td></tr>
-                                        <tr><th>Dispersal From</th><td>${livestock.dispersal_from || 'Not recorded'}</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="text-right mt-3">
-                                <button class="btn-action btn-action-ok" onclick="addBreedingRecord('${livestock.id}')">
-                                    <i class="fas fa-plus"></i> Add Breeding Record
-                                </button>
-                            </div>
-                        </div>
-
+                    <div class="col-6 mb-2">
+                        <small class="text-muted">Status</small>
+                        <p class="fw-bold mb-0">
+                            <span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">
+                                ${livestock.status 
+                                    ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) 
+                                    : 'N/A'}
+                            </span>
+                        </p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Tabs -->
+<ul class="nav nav-tabs smart-tabs mb-3" id="livestockTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab">
+            Basic Info
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="production-tab" data-toggle="tab" href="#productionForm" role="tab">
+            Production
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab">
+            Health
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab">
+            Breeding
+        </a>
+    </li>
+</ul>
+
+<!-- Tabs Content -->
+<div class="tab-content" id="livestockTabContent">
+
+    <!-- Basic Info Tab -->
+    <div class="tab-pane fade show active" id="basicForm" role="tabpanel">
+        <div class="smart-table table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <tbody>
+                    <tr><th>Tag Number</th><td>${livestock.tag_number || 'Not assigned'}</td></tr>
+                    <tr><th>Name</th><td>${livestock.name || 'Not assigned'}</td></tr>
+                    <tr><th>Type</th><td>${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'Not recorded'}</td></tr>
+                    <tr><th>Breed</th><td>${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not recorded'}</td></tr>
+                    <tr><th>Date of Birth</th><td>${birthDate}</td></tr>
+                    <tr><th>Age</th><td>${age}</td></tr>
+                    <tr><th>Gender</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
+                    <tr><th>Weight</th><td>${livestock.weight ? livestock.weight + ' kg' : 'Not recorded'}</td></tr>
+                    <tr>
+                        <th>Health Status</th>
+                        <td>
+                            <span class="badge badge-${livestock.health_status === 'healthy' ? 'success' : livestock.health_status === 'sick' ? 'danger' : 'warning'}">
+                                ${livestock.health_status ? livestock.health_status.charAt(0).toUpperCase() + livestock.health_status.slice(1) : 'Not recorded'}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            <span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">
+                                ${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'Not recorded'}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr><th>Farm</th><td>${livestock.farm ? livestock.farm.name : 'Not assigned'}</td></tr>
+                    <tr><th>Registry ID</th><td>${livestock.registry_id || 'Not assigned'}</td></tr>
+                    <tr><th>Natural Marks</th><td>${livestock.natural_marks || 'None recorded'}</td></tr>
+                    <tr><th>Property Number</th><td>${livestock.property_no || 'Not assigned'}</td></tr>
+                    <tr><th>Acquisition Date</th><td>${livestock.acquisition_date ? new Date(livestock.acquisition_date).toLocaleDateString() : 'Not recorded'}</td></tr>
+                    <tr><th>Acquisition Cost</th><td>${livestock.acquisition_cost ? '₱' + parseFloat(livestock.acquisition_cost).toFixed(2) : 'Not recorded'}</td></tr>
+                    <tr><th>Remarks</th><td>${livestock.remarks || 'None'}</td></tr>
+                    <tr><th>Created</th><td>${createdDate}</td></tr>
+                    <tr><th>Last Updated</th><td>${updatedDate}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Production Tab -->
+    <div class="tab-pane fade" id="productionForm" role="tabpanel">
+        <div class="smart-table table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Production Type</th>
+                        <th>Quantity</th>
+                        <th>Quality</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="productionRecordsTable">
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle"></i>
+                            No production records found.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-right mt-3">
+            <button class="btn-action btn-action-ok" onclick="addProductionRecord('${livestock.id}')">
+                <i class="fas fa-plus"></i> Add Production Record
+            </button>
+        </div>
+    </div>
+
+    <!-- Health Tab -->
+    <div class="tab-pane fade" id="healthForm" role="tabpanel">
+        <div class="smart-table table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Health Status</th>
+                        <th>Treatment</th>
+                        <th>Veterinarian</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="healthRecordsTable">
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle"></i>
+                            No health records found.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-right mt-3">
+            <button class="btn-action btn-action-ok" onclick="addHealthRecord('${livestock.id}')">
+                <i class="fas fa-plus"></i> Add Health Record
+            </button>
+        </div>
+    </div>
+
+    <!-- Breeding Tab -->
+    <div class="tab-pane fade" id="breedingForm" role="tabpanel">
+        <div class="smart-table table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <tbody>
+                    <tr><th>Sire ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
+                    <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
+                    <tr><th>Dam ID</th><td>${livestock.dam_id || 'Not recorded'}</td></tr>
+                    <tr><th>Dam Name</th><td>${livestock.dam_name || 'Not recorded'}</td></tr>
+                    <tr><th>Dispersal From</th><td>${livestock.dispersal_from || 'Not recorded'}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-right mt-3">
+            <button class="btn-action btn-action-ok" onclick="addBreedingRecord('${livestock.id}')">
+                <i class="fas fa-plus"></i> Add Breeding Record
+            </button>
+        </div>
+    </div>
+</div>
+
 
                 `);
                 
@@ -1710,6 +1789,40 @@ function showToast(message, type = 'info') {
 
 @push('styles')
 <style>
+     /* Make nav tabs responsive and scrollable on small screens */
+@media (max-width: 768px) {
+  #livestockTab {
+    display: flex;
+    flex-wrap: nowrap;          /* prevent wrapping */
+    overflow-x: auto;           /* allow horizontal scroll */
+    white-space: nowrap;        /* keep text inline */
+    -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+    gap: 4px;
+  }
+
+  #livestockTab::-webkit-scrollbar {
+    height: 6px; /* small horizontal scrollbar */
+  }
+
+  #livestockTab::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+
+  #livestockTab .nav-item {
+    flex: 0 0 auto; /* don't shrink items */
+  }
+
+  #livestockTab .nav-link {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+
+  #livestockTab .nav-link i {
+    margin-right: 4px;
+    font-size: 0.9rem;
+  }
+}
      .action-toolbar {
     flex-wrap: nowrap !important;
     gap: 0.5rem;
@@ -1778,50 +1891,51 @@ function showToast(message, type = 'info') {
 .smart-table td {
   background: #fff;
 }
-
-    /* SMART DETAIL MODAL TEMPLATE */
+/* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
     border-radius: 1.5rem;
     border: none;
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
     background-color: #fff;
     transition: all 0.3s ease-in-out;
+    max-width: 90vw; /* make modal a bit wider */
+    margin: auto;
 }
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0rem;
 }
 
 /* Titles & Paragraphs */
 .smart-detail h5 {
     color: #18375d;
     font-weight: 700;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
     letter-spacing: 0.5px;
 }
 
 .smart-detail p {
     color: #6b7280;
     font-size: 0.96rem;
-    margin-bottom: 1.8rem;
-    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
 }
 
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 1.75rem 2rem;
-    border-radius: 1rem;
-    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    padding: 2.5rem 1rem; /* increased horizontal and vertical padding */
+    border-radius: 1.25rem;
+    max-height: 80vh; /* more vertical stretch before scrolling */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
@@ -1830,16 +1944,16 @@ function showToast(message, type = 'info') {
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    font-size: 0.95rem;
+    border-radius: 1.25rem;
+    padding: 0rem; /* more internal spacing */
+    font-size: 0.97rem;
 }
 
 .smart-detail .detail-row {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px dashed #ddd;
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
 }
 
 .smart-detail .detail-row:last-child {
@@ -1855,6 +1969,7 @@ function showToast(message, type = 'info') {
     color: #333;
     text-align: right;
 }
+
 
 /* Footer */
 #userDetailsModal .modal-footer {

@@ -90,7 +90,6 @@
     </div>
     <div class="card-body">
         <div class="search-controls mb-3">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch">
                 <div class="input-group" style="max-width: 300px;">
                     <div class="input-group-prepend">
                         <span class="input-group-text">
@@ -99,24 +98,24 @@
                     </div>
                     <input type="text" id="inventorySearch" class="form-control" placeholder="Search inventory...">
                 </div>
-                <div class="btn-group d-flex gap-2 align-items-center mt-2 mt-sm-0">
+               <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addItemModal">
                     <i class="fas fa-plus mr-1"></i> Add Item
                     </button>
-                    <button class="btn-action btn-action-edit" onclick="printInventory()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
                     <button class="btn-action btn-action-refresh" onclick="refreshInventory()">
                         <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button id="btnInventoryHistory" type="button" class="btn-action btn-action-history" data-toggle="modal" data-target="#inventoryHistoryModal">
-                        <i class="fas fa-history"></i> History
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#inventoryHistoryModal">
+                                <i class="fas fa-history"></i> Download CSV
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="printInventory()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportInventoryCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -129,7 +128,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -199,10 +197,10 @@
                 Are you sure you want to <strong>delete</strong> this inventory record?
             </p>
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-delete" id="confirmDeleteBtn">
-                        Delete
+                        <i class="fas fa-trash"></i> Yes, Delete
                     </button>
                 </div>
             
@@ -338,10 +336,10 @@
         </div>
 
         <!-- Footer Buttons -->
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok" title="Save Item">
-            Save Item
+            <i class="fas fa-save"></i> Save
           </button>
         </div>
       </form>
@@ -365,17 +363,17 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="inventoryDetailsContent" class="detail-wrapper">
+        <div id="inventoryDetailsContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
 
       <!-- Footer -->
 
-        <div class="modal-footer justify-content-center mt-4">
+         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="beginEditCurrentItem()">
-                Edit
+                <i class="fas fa-edit"></i> Edit
             </button>
         </div>
 
@@ -437,7 +435,7 @@
       </div>
 
       <!-- Footer -->
-      <div class="modal-footer justify-content-center mt-4">
+       <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
           Close
         </button>
@@ -455,71 +453,96 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 <style>
-    /* Search and button group alignment */
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
+    /* Search and button group alignment - EXACT COPY FROM SUPERADMIN */
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
     .search-controls {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end; /* Align to bottom for perfect leveling */
     }
-    
-    @media (min-width: 768px) {
-        .search-controls {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: flex-end; /* Align to bottom for perfect leveling */
-        }
-    }
-    
-    .search-controls .input-group {
-        flex-shrink: 0;
-        align-self: flex-end; /* Ensure input group aligns to bottom */
+}
+
+.search-controls .input-group {
+    flex-shrink: 0;
+    align-self: flex-end; /* Ensure input group aligns to bottom */
+}
+
+.search-controls .btn-group {
+    flex-shrink: 0;
+    align-self: flex-end; /* Ensure button group aligns to bottom */
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure buttons have consistent height with input */
+.search-controls .btn-action {
+    height: 38px; /* Match Bootstrap input height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Ensure dropdown button is perfectly aligned */
+.search-controls .dropdown .btn-action {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure all buttons in the group have the same baseline */
+.search-controls .d-flex {
+    align-items: center;
+    gap: 0.75rem; /* Increased gap between buttons */
+}
+
+@media (max-width: 767px) {
+    .search-controls {
+        align-items: stretch;
     }
     
     .search-controls .btn-group {
-        flex-shrink: 0;
-        align-self: flex-end; /* Ensure button group aligns to bottom */
-        display: flex;
-        align-items: center;
-    }
-    
-    /* Ensure buttons have consistent height with input */
-    .search-controls .btn-action {
-        height: 38px; /* Match Bootstrap input height */
-        display: flex;
-        align-items: center;
+        margin-top: 0.5rem;
         justify-content: center;
-        line-height: 1;
+        align-self: center;
     }
     
-    /* Ensure dropdown button is perfectly aligned */
-    .search-controls .dropdown .btn-action {
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .search-controls .input-group {
+        max-width: 100% !important;
     }
-    
-    /* Ensure all buttons in the group have the same baseline */
-    .search-controls .d-flex {
-        align-items: center;
-        gap: 0.75rem; /* Increased gap between buttons */
-    }
-    
-    @media (max-width: 767px) {
-        .search-controls {
-            align-items: stretch;
-        }
-        
-        .search-controls .btn-group {
-            margin-top: 0.5rem;
-            justify-content: center;
-            align-self: center;
-        }
-        
-        .search-controls .input-group {
-            max-width: 100% !important;
-        }
-    }
+}
 /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
@@ -936,77 +959,62 @@ SMART FORM - Enhanced Version
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
     background-color: #fff;
     transition: all 0.3s ease-in-out;
-}
-
-/* Center alignment for header section */
-.smart-detail .modal-header,
-.smart-detail .modal-footer {
-    text-align: center;
+    max-width: 90vw; /* make modal a bit wider */
+    margin: auto;
 }
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0rem;
 }
 
 /* Titles & Paragraphs */
 .smart-detail h5 {
     color: #18375d;
     font-weight: 700;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
     letter-spacing: 0.5px;
 }
 
 .smart-detail p {
     color: #6b7280;
-    font-size: 1rem;
-    margin-bottom: 1.8rem;
+    font-size: 0.96rem;
+    margin-bottom: 1.5rem;
     line-height: 1.6;
-    text-align: left; /* ensures proper centering */
 }
 
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 3rem 3.5rem; /* more spacious layout */
-    border-radius: 1rem;
-    max-height: 88vh; /* taller for longer content */
+    padding: 2.5rem 1rem; /* increased horizontal and vertical padding */
+    border-radius: 1.25rem;
+    max-height: 80vh; /* more vertical stretch before scrolling */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
-}
-
-/* Wider modal container */
-.smart-detail .modal-dialog {
-    max-width: 92%; /* slightly wider modal */
-    width: 100%;
-    margin: 1.75rem auto;
 }
 
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
     border-radius: 1.25rem;
-    padding: 2.25rem; /* more inner padding */
-    font-size: 1rem;
-    line-height: 1.65;
+    padding: 0rem; /* more internal spacing */
+    font-size: 0.97rem;
 }
 
-/* Detail Rows */
 .smart-detail .detail-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     border-bottom: 1px dashed #ddd;
-    padding: 0.6rem 0;
+    padding: 0.75rem 0;
 }
 
 .smart-detail .detail-row:last-child {
@@ -1751,28 +1759,31 @@ function viewItem(id){
             const item = resp.item;
             $('#inventoryDetailsContent').html(`
                 <div class="row text-left">
-    <!-- Item Information -->
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Item Information</h6>
-        <p><strong>Code:</strong> ${item.code || 'N/A'}</p>
-        <p><strong>Name:</strong> ${item.name || 'N/A'}</p>
-        <p><strong>Category:</strong> ${item.category || 'N/A'}</p>
-        <p><strong>Date:</strong> ${item.date || 'N/A'}</p>
-    </div>
+        <!-- Item Information -->
+        <div class="col-md-6">
+           <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+    <i class="fas fa-box me-2"></i> Item Information
+</h6>
 
-    <!-- Additional Details -->
-    <div class="col-md-6">
-        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
-        <p><strong>Quantity:</strong> ${item.quantity_text || 'N/A'}</p>
-        <p><strong>Farm ID:</strong> ${item.farm_id || 'N/A'}</p>
-        <p><strong>Status:</strong> 
-            <span class="badge badge-${item.status === 'available' ? 'success' : item.status === 'low stock' ? 'warning' : 'secondary'}">
-                ${item.status || 'N/A'}
-            </span>
-        </p>
-        <p><strong>Last Updated:</strong> ${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'N/A'}</p>
+            <p class="text-left"><strong>Code:</strong> ${item.code || 'N/A'}</p>
+            <p class="text-left"><strong>Name:</strong> ${item.name || 'N/A'}</p>
+            <p class="text-left"><strong>Category:</strong> ${item.category || 'N/A'}</p>
+            <p class="text-left"><strong>Date:</strong> ${item.date || 'N/A'}</p>
+        </div>
+
+        <!-- Additional Details -->
+        <div class="col-md-6">
+            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-sticky-note me-2"></i> Additional Details</h6>
+            <p class="text-left"><strong>Quantity:</strong> ${item.quantity_text || 'N/A'}</p>
+            <p class="text-left"><strong>Farm ID:</strong> ${item.farm_id || 'N/A'}</p>
+            <p class="text-left"><strong>Status:</strong> 
+                <span class="badge badge-${item.status === 'available' ? 'success' : item.status === 'low stock' ? 'warning' : 'secondary'}">
+                    ${item.status || 'N/A'}
+                </span>
+            </p>
+            <p class="text-left"><strong>Last Updated:</strong> ${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'N/A'}</p>
+        </div>
     </div>
-</div>
 
                 
             `);

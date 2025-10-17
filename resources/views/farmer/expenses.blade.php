@@ -143,24 +143,24 @@
                     </div>
                     <input type="text" id="expensesSearch" class="form-control" placeholder="Search expenses...">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-ok" id="supplierSearch" title="Add Expenses" onclick="openAddExpenseModal()">
                         <i class="fas fa-plus"></i> Add Expense
                     </button>
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printExpenses()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshExpenses()">
                         <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="btn-action btn-action-history" data-toggle="modal" data-target="#historyModal">
-                        <i class="fas fa-history"></i> History
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#historyModal">
+                                <i class="fas fa-history"></i> History 
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="printExpenses()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -332,10 +332,10 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok" title="Save Expense">
-                        Save Expense
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
             </form>
@@ -362,15 +362,15 @@
 
             <!-- Body -->
             <div class="modal-body">
-                <div class="detail-wrapper text-start mx-auto" id="expenseDetailsContent">
+                <div id="expenseDetailsContent">
                 </div>
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer justify-content-center mt-4">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
                 <button type="button" class="btn-modern btn-ok" onclick="editCurrentExpense()">
-                    <i class="fas fa-edit"></i> Edit Expense
+                    <i class="fas fa-edit"></i> Edit
                 </button>
             </div>
         </div>
@@ -431,7 +431,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer justify-content-center mt-4">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
                 <button type="button" class="btn-modern btn-ok" onclick="exportExpensesHistory()">
                     Export History
@@ -461,9 +461,9 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn">Yes, Delete</button>
+                <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Yes, Delete</button>
             </div>
 
         </div>
@@ -716,20 +716,25 @@ function loadExpenseDetails(expenseId) {
                 $('#expenseDetailsContent').html(`
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Expense Information</h6>
-                            <p><strong>Date:</strong> ${expense.expense_date}</p>
-                            <p><strong>Category:</strong> ${expense.expense_type}</p>
-                            <p><strong>Description:</strong> ${expense.description}</p>
-                            <p><strong>Amount:</strong> ₱${expense.amount}</p>
-                        </div>
+    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+        <i class="fas fa-money-bill-wave me-2"></i> Expense Information
+    </h6>
+    <p><strong>Date:</strong> ${expense.expense_date}</p>
+    <p><strong>Category:</strong> ${expense.expense_type}</p>
+    <p><strong>Description:</strong> ${expense.description}</p>
+    <p><strong>Amount:</strong> ₱${expense.amount}</p>
+</div>
 
-                        <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
-                            <p><strong>Farm:</strong> ${expense.farm_name}</p>
-                            <p><strong>Payment Method:</strong> ${expense.payment_method}</p>
-                            <p><strong>Receipt No.:</strong> ${expense.receipt_number || 'N/A'}</p>
-                            <p><strong>Notes:</strong> ${expense.notes || 'No notes available.'}</p>
-                        </div>
+<div class="col-md-6">
+    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+        <i class="fas fa-sticky-note me-2"></i> Additional Details
+    </h6>
+    <p><strong>Farm:</strong> ${expense.farm_name}</p>
+    <p><strong>Payment Method:</strong> ${expense.payment_method}</p>
+    <p><strong>Receipt No.:</strong> ${expense.receipt_number || 'N/A'}</p>
+    <p><strong>Notes:</strong> ${expense.notes || 'No notes available.'}</p>
+</div>
+
                     </div>
                 `);
             }
@@ -983,6 +988,31 @@ function showToast(message, type = 'info') {
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 <style>
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}s
     /* Make table cells wrap instead of forcing them all inline */
 #expensesTable td, 
 #expensesTable th {

@@ -61,34 +61,45 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 w-full z-50" style="background-color: #f6f4e8;">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center space-x-4" style="align-items: flex-start;">
-                        <img src="/img/LBDairy.png" alt="LB Dairy Logo" class="h-12 w-auto" style="max-height: 48px; object-fit: contain;">
-                        <img src="/img/LBDairy_Rectangle.png" alt="LB Dairy Logo" class="h-12 w-auto" style="max-height: 48px; object-fit: contain;">
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-md" style="background: #18375d !important;">
-                            Dashboard
+    <nav class="fixed top-0 left-0 w-full bg-[#f6f4e8] shadow-sm border-b border-gray-200 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3">
+                <a href="/" class="flex items-center space-x-2">
+                    <img src="/img/LBDairy.png" alt="LB Dairy Logo" class="h-10 sm:h-12 w-auto object-contain">
+                    <img src="/img/LBDairy_Rectangle.png" alt="LB Dairy Text Logo" class="h-10 sm:h-12 w-auto object-contain">
+                </a>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                @auth
+                    <a href="{{ url('/dashboard') }}" 
+                       id="dashboard-link"
+                       class="text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out">
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ url('/login') }}" 
+                       id="login-btn"
+                       class="text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out">
+                        Sign In
+                    </a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" 
+                           id="register-link"
+                           class="text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out">
+                            Sign Up
                         </a>
-                    @else
-                         <a href="{{ url('/login') }}" id="login-btn" class="bg-#f6f4e8 text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out !important;">
-                            Sign In
-                        </a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" id="manage-dairy-link" class="bg-#f6f4e8 text-blue-900 border-2 border-transparent hover:border-blue-900 px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out !important;">
-                                Sign Up
-                            </a>
-                        @endif
-                    @endauth
-                </div>
+                    @endif
+                @endauth
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <!-- Hero Section -->
     <section class="hero-gradient text-white" style="background: url('/img/cow.jpg') no-repeat center center; background-size: cover; padding: 200px 0;">

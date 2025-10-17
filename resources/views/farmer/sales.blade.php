@@ -1313,41 +1313,44 @@
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
     background-color: #fff;
     transition: all 0.3s ease-in-out;
+    max-width: 90vw; /* make modal a bit wider */
+    margin: auto;
 }
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 55px;
-    height: 55px;
+    width: 70px;
+    height: 70px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto 0rem;
 }
 
 /* Titles & Paragraphs */
 .smart-detail h5 {
     color: #18375d;
     font-weight: 700;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
     letter-spacing: 0.5px;
 }
 
 .smart-detail p {
     color: #6b7280;
     font-size: 0.96rem;
-    margin-bottom: 1.8rem;
-    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
 }
 
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 1.75rem 2rem;
-    border-radius: 1rem;
-    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    padding: 2.5rem 1rem; /* increased horizontal and vertical padding */
+    border-radius: 1.25rem;
+    max-height: 80vh; /* more vertical stretch before scrolling */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
@@ -1356,16 +1359,16 @@
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    font-size: 0.95rem;
+    border-radius: 1.25rem;
+    padding: 0rem; /* more internal spacing */
+    font-size: 0.97rem;
 }
 
 .smart-detail .detail-row {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px dashed #ddd;
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
 }
 
 .smart-detail .detail-row:last-child {
@@ -1381,7 +1384,6 @@
     color: #333;
     text-align: right;
 }
-
 /* Footer */
 #historyModal .modal-footer {
     text-align: center;
@@ -1430,6 +1432,71 @@
         color: #5a5c69 !important;
         font-weight: 600;
     }
+    /* Search and button group alignment - EXACT COPY FROM SUPERADMIN */
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .search-controls {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end; /* Align to bottom for perfect leveling */
+    }
+}
+
+.search-controls .input-group {
+    flex-shrink: 0;
+    align-self: flex-end; /* Ensure input group aligns to bottom */
+}
+
+.search-controls .btn-group {
+    flex-shrink: 0;
+    align-self: flex-end; /* Ensure button group aligns to bottom */
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure buttons have consistent height with input */
+.search-controls .btn-action {
+    height: 38px; /* Match Bootstrap input height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Ensure dropdown button is perfectly aligned */
+.search-controls .dropdown .btn-action {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure all buttons in the group have the same baseline */
+.search-controls .d-flex {
+    align-items: center;
+    gap: 0.75rem; /* Increased gap between buttons */
+}
+
+@media (max-width: 767px) {
+    .search-controls {
+        align-items: stretch;
+    }
+    
+    .search-controls .btn-group {
+        margin-top: 0.5rem;
+        justify-content: center;
+        align-self: center;
+    }
+    
+    .search-controls .input-group {
+        max-width: 100% !important;
+    }
+}
 </style>
 @section('content')
 <!-- Page Header -->
@@ -1512,26 +1579,35 @@
                 </h6>
             </div>
             <div class="card-body">
-                <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
-                        <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addLivestockDetailsModal">
-                        <i class="fas fa-plus mr-1"></i> Add Sale
-                        </button>
-                        <button class="btn-action btn-action-edit" onclick="printProductivity()">
-                        <i class="fas fa-print mr-1"></i> Print
-                        </button>
-                        <button class="btn-action btn-action-refresh" onclick="refreshSalesTable('salesTable')">
-                        <i class="fas fa-sync-alt mr-1"></i> Refresh
-                        </button>
-                        <button class="btn-action btn-action-history" data-toggle="modal" data-target="#historyModal">
-                        <i class="fas fa-history mr-1"></i> History
-                        </button>
-                        <div class="dropdown">
-                            <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
-                                <i class="fas fa-tools"></i> Tools
+                <div class="search-controls mb-3">
+                        <div class="input-group" style="max-width: 300px;">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search sales..." id="salesSearch">
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
+                            <button class="btn-action btn-action-ok" data-toggle="modal" data-target="#addLivestockDetailsModal">
+                                <i class="fas fa-plus mr-1"></i> Add Sale
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right">
+                            <button class="btn-action btn-action-refresh" onclick="refreshSalesTable('salesTable')">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                    <i class="fas fa-tools"></i> Tools
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#historyModal">
+                                    <i class="fas fa-history"></i> History
+                                </a>
                                 <a class="dropdown-item" href="#" onclick="document.getElementById('csvInput').click()">
                                     <i class="fas fa-history"></i> Import Table
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="printProductivity()">
+                                    <i class="fas fa-print"></i> Print Table
                                 </a>
                                 <a class="dropdown-item" href="#" onclick="exportCSV()">
                                     <i class="fas fa-file-csv"></i> Download CSV
@@ -1542,12 +1618,13 @@
                                 <a class="dropdown-item" href="#" onclick="exportPDF()">
                                     <i class="fas fa-file-pdf"></i> Download PDF
                                 </a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    
                     <!-- Hidden CSV input for Import -->
                     <input id="csvInput" type="file" accept=".csv" style="display:none" onchange="importCSV(event)">
-<br>
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="salesTable" width="100%" cellspacing="0">
                         <thead >
@@ -1627,10 +1704,10 @@
                 Are you sure you want to <strong>delete</strong> this sale record?
             </p>
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-delete" id="confirmDeleteBtn">
-                        Delete
+                        <i class="fas fa-trash"></i> Yes, Delete
                     </button>
                 </div>
             
@@ -1733,10 +1810,10 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok" title="Save Sale">
-                        Save Sale
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
             </form>
@@ -1755,12 +1832,12 @@
                     <i class="fas fa-eye fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Sale Details </h5>
-                <p class="text-muted mb-0 small">Below are the complete details of the selected entry.</p>
+                <p class="text-center text-muted mb-0 small">Below are the complete details of the selected entry.</p>
             </div>
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="saleDetailsContent" class="detail-wrapper">
+        <div id="saleDetailsContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -1834,12 +1911,12 @@
       </div>
 
       <!-- Footer -->
-      <div class="modal-footer justify-content-center mt-4">
+      <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
           Close
         </button>
         <button type="button" class="btn-modern btn-ok" onclick="exportHistory()">
-          Export History
+          <i class="fas fa-file-export"></i> Export History
         </button>
       </div>
     </div>
@@ -1854,6 +1931,31 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 <style>
+     .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 .stats-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1972,7 +2074,11 @@ $(document).ready(function () {
     // Hide default DataTables UI elements we replace with custom controls
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
-
+$('#salesSearch').on('keyup', function() {
+        if ($.fn.DataTable.isDataTable('#salesTable')) {
+            $('#salesTable').DataTable().search(this.value).draw();
+        }
+    });
     // Form submission (create or update)
     document.getElementById('addLivestockDetailsForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -2042,48 +2148,49 @@ function viewSale(saleId) {
 
                 $('#saleDetailsContent').html(`
                     <div class="row">
-                        <!-- Sale Information -->
-                        <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                Sale Information
-                            </h6>
-                            <p><strong>Sale ID:</strong> ${sale.sale_id || 'N/A'}</p>
-                            <p><strong>Date:</strong> ${sale.sale_date ? new Date(sale.sale_date).toLocaleDateString() : 'N/A'}</p>
-                            <p><strong>Customer:</strong> ${sale.customer_name || 'N/A'}</p>
-                            <p><strong>Quantity:</strong> ${sale.quantity ? sale.quantity + ' L' : 'N/A'}</p>
-                        </div>
+    <!-- Sale Information -->
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+            <i class="fas fa-receipt me-2"></i> Sale Information
+        </h6>
+        <p><strong>Sale ID:</strong> ${sale.sale_id || 'N/A'}</p>
+        <p><strong>Date:</strong> ${sale.sale_date ? new Date(sale.sale_date).toLocaleDateString() : 'N/A'}</p>
+        <p><strong>Customer:</strong> ${sale.customer_name || 'N/A'}</p>
+        <p><strong>Quantity:</strong> ${sale.quantity ? sale.quantity + ' L' : 'N/A'}</p>
+    </div>
 
-                        <!-- Financial Details -->
-                        <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                Financial Details
-                            </h6>
-                            <p><strong>Unit Price:</strong> ₱${sale.unit_price ? sale.unit_price.toFixed(2) : '0.00'}</p>
-                            <p><strong>Total Amount:</strong> ₱${sale.amount ? sale.amount.toFixed(2) : '0.00'}</p>
-                            <p><strong>Payment Status:</strong> 
-                                <span class="badge badge-${sale.payment_status === 'paid' ? 'success' : sale.payment_status === 'pending' ? 'warning' : 'secondary'}">
-                                    ${sale.payment_status ? sale.payment_status.charAt(0).toUpperCase() + sale.payment_status.slice(1) : 'N/A'}
-                                </span>
-                            </p>
-                            <p><strong>Payment Method:</strong> ${sale.payment_method || 'N/A'}</p>
-                        </div>
-                    </div>
+    <!-- Financial Details -->
+    <div class="col-md-6">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+            <i class="fas fa-dollar-sign me-2"></i> Financial Details
+        </h6>
+        <p><strong>Unit Price:</strong> ₱${sale.unit_price ? sale.unit_price.toFixed(2) : '0.00'}</p>
+        <p><strong>Total Amount:</strong> ₱${sale.amount ? sale.amount.toFixed(2) : '0.00'}</p>
+        <p><strong>Payment Status:</strong> 
+            <span class="badge badge-${sale.payment_status === 'paid' ? 'success' : sale.payment_status === 'pending' ? 'warning' : 'secondary'}">
+                ${sale.payment_status ? sale.payment_status.charAt(0).toUpperCase() + sale.payment_status.slice(1) : 'N/A'}
+            </span>
+        </p>
+        <p><strong>Payment Method:</strong> ${sale.payment_method || 'N/A'}</p>
+    </div>
+</div>
 
-                    <!-- Notes Section -->
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                Additional Details
-                            </h6>
-                            <p><strong>Description:</strong></p>
-                            <p>${sale.description || 'No description provided.'}</p>
+<!-- Notes Section -->
+<div class="row mt-3">
+    <div class="col-12">
+        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+            <i class="fas fa-sticky-note me-2"></i> Additional Details
+        </h6>
+        <p><strong>Description:</strong></p>
+        <p>${sale.description || 'No description provided.'}</p>
 
-                            ${sale.notes ? `
-                                <p><strong>Notes:</strong></p>
-                                <p>${sale.notes}</p>
-                            ` : ''}
-                        </div>
-                    </div>
+        ${sale.notes ? `
+            <p><strong>Notes:</strong></p>
+            <p>${sale.notes}</p>
+        ` : ''}
+    </div>
+</div>
+
                 `);
 
                 $('#saleDetailsModal').modal('show');
