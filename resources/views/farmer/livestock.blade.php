@@ -571,10 +571,11 @@ $(document).ready(function() {
             setTimeout(forcePaginationLeft, 500);
             setTimeout(forcePaginationLeft, 1000);
             
-            // Connect custom search to DataTables
             $('#livestockSearch').on('keyup', function() {
-                livestockTable.search(this.value).draw();
-            });
+        if ($.fn.DataTable.isDataTable('#livestockTable')) {
+            $('#livestockTable').DataTable().search(this.value).draw();
+        }
+    });
         } catch (error) {
             console.error('DataTables initialization error:', error);
         }

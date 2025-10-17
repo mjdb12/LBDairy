@@ -108,7 +108,7 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a class="dropdown-item" href="#" onclick="printTable()">
-                                        <i class="fas fa-print"></i> Download CSV
+                                        <i class="fas fa-print"></i> Print Table
                                     </a>
                                     <a class="dropdown-item" href="#" onclick="exportToCSV()">
                                         <i class="fas fa-file-csv"></i> Download CSV

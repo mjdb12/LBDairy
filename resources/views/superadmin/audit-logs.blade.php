@@ -1419,7 +1419,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="logDetailsContent" class="detail-wrapper">
+        <div id="logDetailsContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>

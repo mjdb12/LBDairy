@@ -1465,7 +1465,7 @@
 
             <!-- Body -->
             <div class="modal-body">
-                <div id="farmDetailsContent" class="detail-wrapper">
+                <div id="farmDetailsContent" >
                     <div class="text-center">
                         <i class="fas fa-spinner fa-spin fa-2x"></i>
                         <p class="mt-2">Loading farm details...</p>
@@ -1583,7 +1583,7 @@
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
-                        Update Farm
+                        <i class="fas fa-save"></i> Update Farm
                     </button>
                 </div>
             </form>
@@ -1611,7 +1611,7 @@
             <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
-                    Yes, Delete
+                    <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>

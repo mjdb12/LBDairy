@@ -159,7 +159,7 @@
 
 <!-- Modern Task Modal -->
 <div class="modal fade admin-modal" id="taskModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content smart-form text-center p-4">
 
             <!-- Icon + Header -->
@@ -188,7 +188,7 @@
                         </div>
 
                         <!-- Priority -->
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-6 ">
                             <label for="taskPriority" class="fw-semibold">Priority <span class="text-danger">*</span></label>
                             <select class="form-control mt-1" id="taskPriority" required>
                                 <option value="low">Low</option>
@@ -198,7 +198,7 @@
                         </div>
 
                         <!-- Due Date -->
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-6">
                             <label for="taskDueDate" class="fw-semibold">Due Date <span class="text-danger">*</span></label>
                             <input type="date" class="form-control mt-1" id="taskDueDate" required>
                         </div>
@@ -218,7 +218,7 @@
                 <!-- Footer Buttons -->
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-approves" id="taskSubmitBtn">Add Task</button>
+                    <button type="submit" class="btn-modern btn-approves" id="taskSubmitBtn"><i class="fas fa-save"></i> Add Task</button>
                 </div>
             </form>
         </div>
@@ -245,7 +245,7 @@
             <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteTaskBtn" class="btn-modern btn-delete">
-                    Yes, Delete
+                    <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>
@@ -1555,7 +1555,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('taskDescription').value = '';
         document.getElementById('taskPriority').value = 'medium';
         document.getElementById('taskDueDate').value = '';
-        document.getElementById('taskSubmitBtn').textContent = 'Add Task';
+       document.getElementById('taskSubmitBtn').innerHTML = '<i class="fas fa-edit me-1"></i> Add Task';
         document.getElementById('taskModalTitle').textContent = 'New Task';
         $('#taskModal').modal('show');
     }
@@ -1566,7 +1566,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('taskDescription').value = task.description || '';
         document.getElementById('taskPriority').value = task.priority || 'medium';
         document.getElementById('taskDueDate').value = task.due_date ? task.due_date.substring(0,10) : '';
-        document.getElementById('taskSubmitBtn').textContent = 'Update Task';
+       document.getElementById('taskSubmitBtn').innerHTML = '<i class="fas fa-edit me-1"></i> Update Task';
         document.getElementById('taskModalTitle').textContent = 'Edit Task';
         document.getElementById('taskTitle').focus();
         $('#taskModal').modal('show');

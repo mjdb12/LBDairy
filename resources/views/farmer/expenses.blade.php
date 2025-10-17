@@ -434,7 +434,7 @@
             <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
                 <button type="button" class="btn-modern btn-ok" onclick="exportExpensesHistory()">
-                    Export History
+                    <i class="fas fa-file-export"></i> Export History
                 </button>
             </div>
         </div>
