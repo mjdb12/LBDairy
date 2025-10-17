@@ -1465,7 +1465,7 @@ SMART FORM - Enhanced Version
             Cancel
           </button>
           <button type="submit" class="btn-modern btn-ok">
-            Save Changes
+            <i class="fas fa-save"></i> Save Changes
           </button>
         </div>
       </form>
@@ -1544,7 +1544,7 @@ SMART FORM - Enhanced Version
             Cancel
           </button>
           <button type="submit" class="btn-modern btn-ok">
-            Change Password
+            <i class="fas fa-save"></i> Change Password
           </button>
         </div>
 

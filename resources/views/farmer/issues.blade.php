@@ -116,7 +116,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow fade-in">
-                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-list"></i>
                         Issues Reported by Administrators
@@ -132,10 +132,7 @@
                             </div>
                             <input type="text" class="form-control" placeholder="Search issues..." id="issueSearch">
                         </div>
-                        <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-edit" onclick="printTable()">
-                                <i class="fas fa-print"></i> Print
-                            </button>
+                        <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                             <button class="btn-action btn-action-refresh" onclick="refreshIssuesTable('issuesTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
@@ -144,6 +141,9 @@
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="printTable()">
+                                        <i class="fas fa-print"></i> Print Table
+                                    </a>
                                     <a class="dropdown-item" href="#" onclick="exportToCSV()">
                                         <i class="fas fa-file-csv"></i> Download CSV
                                     </a>
@@ -206,7 +206,7 @@
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <button class="btn-action btn-action-ok" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
+                                            <button class="btn-action btn-action-ok" id="viewbtn" onclick="viewIssueDetails('{{ $issue->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View Details</span>
                                             </button>
@@ -239,7 +239,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow fade-in">
-                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-bell"></i>
                         Livestock Alerts from Administrators
@@ -255,10 +255,7 @@
                             </div>
                             <input type="text" class="form-control" placeholder="Search alerts..." id="alertSearch">
                         </div>
-                        <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-edit" onclick="printAlertsTable()">
-                                <i class="fas fa-print"></i> Print
-                            </button>
+                        <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                             <button class="btn-action btn-action-refresh-alerts" onclick="refreshAlertsTable('alertsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
@@ -267,6 +264,9 @@
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="printAlertsTable()">
+                                        <i class="fas fa-print"></i> Print Table
+                                    </a>
                                     <a class="dropdown-item" href="#" onclick="exportAlertsToCSV()">
                                         <i class="fas fa-file-csv"></i> Download CSV
                                     </a>
@@ -322,11 +322,11 @@
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <button class="btn-action btn-action-ok" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
+                                            <button class="btn-action btn-action-ok" id="viewbtn" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View Details</span>
                                             </button>
-                                            <button class="btn-action btn-action-edit" onclick="markAlertAsRead('{{ $alert->id }}')" title="Mark as Read">
+                                            <button class="btn-action btn-action-edit" id="markbtn" onclick="markAlertAsRead('{{ $alert->id }}')" title="Mark as Read">
                                                 <i class="fas fa-check"></i>
                                                 <span>Mark as Read</span>
                                             </button>
@@ -437,7 +437,7 @@
                                     <td>{{ Str::limit($inspection->notes, 50) }}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <button class="btn-action btn-action-ok" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
+                                            <button class="btn-action btn-action-ok" id="viewbtn" onclick="viewInspectionDetails('{{ $inspection->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>View
                                             </button>
                                             @if($inspection->status === 'scheduled')
@@ -483,7 +483,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="issueDetailsContent" class="detail-wrapper">
+        <div id="issueDetailsContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -511,7 +511,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="alertDetailsContent" class="detail-wrapper">
+        <div id="alertDetailsContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -539,7 +539,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="inspectionDetailsContent" class="detail-wrapper">
+        <div id="inspectionDetailsContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -848,7 +848,7 @@ function loadIssueDetails(issueId) {
                     <div class="row">
                         <!-- Issue Information -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Issue Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-bell mr-2"></i> Issue Information</h6>
                             <p><strong>Type:</strong> <span class="issue-type-badge issue-${issue.issue_type.toLowerCase()}">${issue.issue_type}</span></p>
                             <p><strong>Status:</strong> <span class="badge badge-${getStatusColor(issue.status)}">${issue.status}</span></p>
                             <p><strong>Priority:</strong> <span class="badge badge-${getPriorityColor(issue.priority)}">${issue.priority}</span></p>
@@ -858,7 +858,7 @@ function loadIssueDetails(issueId) {
 
                         <!-- Livestock Information -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Livestock Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-leaf mr-2"></i >Livestock Information</h6>
                             <p><strong>ID:</strong> ${issue.livestock ? issue.livestock.livestock_id : 'N/A'}</p>
                             <p><strong>Type:</strong> ${issue.livestock ? issue.livestock.type : 'N/A'}</p>
                             <p><strong>Breed:</strong> ${issue.livestock ? issue.livestock.breed : 'N/A'}</p>
@@ -870,12 +870,10 @@ function loadIssueDetails(issueId) {
                     <div class="row mt-3">
                         <!-- Issue Details -->
                         <div class="col-12">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Issue Details</h6>
-                            <p><strong>Description:</strong></p>
-                            <p>${issue.description}</p>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-bell mr-2"></i> Issue Details</h6>
+                            <p><strong>Description:</strong> ${issue.description}</p>
                             ${issue.notes ? `
-                                <p><strong>Additional Notes:</strong></p>
-                                <p>${issue.notes}</p>
+                                <p><strong>Additional Notes:</strong> ${issue.notes}</p>
                             ` : ''}
                         </div>
                     </div>
@@ -1287,25 +1285,19 @@ function viewAlertDetails(alertId) {
                     <div class="row">
                         <!-- Alert Information -->
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-warning text-white">
-                                    <h6 class="mb-0"><i class="fas fa-bell"></i> Alert Information</h6>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>Topic:</strong></td><td><span class="alert-topic-badge alert-${safeTopic.toLowerCase()}">${safeTopic}</span></td></tr>
-                                        <tr><td><strong>Severity:</strong></td><td><span class="badge badge-${getSeverityColor(safeSeverity)}">${safeSeverity}</span></td></tr>
-                                        <tr><td><strong>Alert Date:</strong></td><td>${alert.alert_date || 'N/A'}</td></tr>
-                                        <tr><td><strong>Issued By:</strong></td><td><span class="badge badge-primary">${issuedName}</span></td></tr>
-                                    </table>
-                                </div>
-                            </div>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                                <i class="fas fa-bell me-1"></i> Alert Information
+                            </h6>
+                            <p><strong>Topic:</strong> <span class="alert-topic-badge alert-${safeTopic.toLowerCase()}">${safeTopic}</span></p>
+                            <p><strong>Severity:</strong> <span class="badge badge-${getSeverityColor(safeSeverity)}">${safeSeverity}</span></p>
+                            <p><strong>Alert Date:</strong> ${alert.alert_date || 'N/A'}</p>
+                            <p><strong>Issued By:</strong> <span class="badge badge-primary">${issuedName}</span></p>
                         </div>
 
                         <!-- Livestock Information -->
                         <div class="col-md-6">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                Livestock Information
+                                <i class="fas fa-leaf me-1"></i> Livestock Information
                             </h6>
                             <p><strong>Tag Number:</strong> ${alert.livestock ? alert.livestock.tag_number : 'N/A'}</p>
                             <p><strong>Type:</strong> ${alert.livestock ? alert.livestock.type : 'N/A'}</p>
@@ -1313,13 +1305,14 @@ function viewAlertDetails(alertId) {
                             <p><strong>Health Status:</strong> ${alert.livestock ? alert.livestock.health_status : 'N/A'}</p>
                             <p><strong>Farm:</strong> ${alert.livestock && alert.livestock.farm ? alert.livestock.farm.name : 'N/A'}</p>
                         </div>
+
                     </div>
 
                     <!-- Alert Details -->
                     <div class="row mt-3">
                         <div class="col-12">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                Alert Details
+                                <i class="fas fa-bell me-1"></i> Alert Details
                             </h6>
                             <p><strong>Description:</strong></p>
                             <p>${alert.description || 'No description provided.'}</p>
@@ -1383,6 +1376,97 @@ function showNotification(message, type = 'info') {
 
 @push('styles')
 <style>
+    /* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #markbtn.btn-primary,
+#markbtn.btn-primary,
+#markbtn.btn,
+#markbtn {
+    background-color: #387057 !important;
+    background: #387057 !important;
+    border-color: #387057 !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #markbtn.btn-primary:hover,
+html body #markbtn.btn-primary:focus,
+#markbtn.btn-primary:hover,
+#markbtn.btn-primary:focus,
+#markbtn:hover,
+#markbtn:focus,
+#markbtn.btn:hover,
+#markbtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+    /* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #viewbtn.btn-primary,
+#viewbtn.btn-primary,
+#viewbtn.btn,
+#viewbtn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #viewbtn.btn-primary:hover,
+html body #viewbtn.btn-primary:focus,
+#viewbtn.btn-primary:hover,
+#viewbtn.btn-primary:focus,
+#viewbtn:hover,
+#viewbtn:focus,
+#viewbtn.btn:hover,
+#viewbtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+       .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
     /* User Details Modal Styling */
     #alertDetailsModal .modal-content {
         border: none;
@@ -1536,58 +1620,62 @@ function showNotification(message, type = 'info') {
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
     background-color: #fff;
     transition: all 0.3s ease-in-out;
+    max-width: 90vw; /* make modal a bit wider */
+    margin: auto;
 }
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0rem;
 }
 
 /* Titles & Paragraphs */
 .smart-detail h5 {
     color: #18375d;
     font-weight: 700;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
     letter-spacing: 0.5px;
 }
 
 .smart-detail p {
     color: #6b7280;
     font-size: 0.96rem;
-    margin-bottom: 1.8rem;
-    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
 }
 
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 1rem 1.25rem; /* smaller padding for compact layout */
-    border-radius: 1rem;
-    max-height: none; /* allow detail-wrapper to expand naturally */
-    overflow-y: visible; /* remove scroll restriction so it can grow */
+    padding: 2.5rem 1rem; /* increased horizontal and vertical padding */
+    border-radius: 1.25rem;
+    max-height: 80vh; /* more vertical stretch before scrolling */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
-    border-radius: 1rem;
-    padding: 1rem;
-    font-size: 0.95rem;
+    border-radius: 1.25rem;
+    padding: 0rem; /* more internal spacing */
+    font-size: 0.97rem;
 }
 
 .smart-detail .detail-row {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px dashed #ddd;
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
 }
 
 .smart-detail .detail-row:last-child {
@@ -1601,7 +1689,6 @@ function showNotification(message, type = 'info') {
 
 .smart-detail .detail-value {
     color: #333;
-    text-align: right;
 }
 
 /* Footer */

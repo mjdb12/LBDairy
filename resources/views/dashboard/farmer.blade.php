@@ -212,9 +212,9 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok" id="taskSubmitBtn">Add Task</button>
+                    <button type="submit" class="btn-modern btn-ok" id="taskSubmitBtn"><i class="fas fa-plus"></i> Add Task</button>
                 </div>
             </form>
         </div>
@@ -236,10 +236,10 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteTaskBtn" class="btn-modern btn-delete">
-                    Yes, Delete
+                    <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>
@@ -1681,7 +1681,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('taskDescription').value = '';
         document.getElementById('taskPriority').value = 'medium';
         document.getElementById('taskDueDate').value = '';
-        document.getElementById('taskSubmitBtn').textContent = 'Add Task';
+        document.getElementById('taskSubmitBtn').innerHTML = '<i class="fas fa-save me-1"></i> Save';
         document.getElementById('taskModalTitle').textContent = 'New Task';
         $('#taskModal').modal('show');
     }
@@ -1692,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('taskDescription').value = task.description || '';
         document.getElementById('taskPriority').value = task.priority || 'medium';
         document.getElementById('taskDueDate').value = task.due_date ? task.due_date.substring(0,10) : '';
-        document.getElementById('taskSubmitBtn').textContent = 'Update Task';
+        document.getElementById('taskSubmitBtn').innerHTML = '<i class="fas fa-save me-1"></i> Save';
         document.getElementById('taskModalTitle').textContent = 'Edit Task';
         document.getElementById('taskTitle').focus();
         $('#taskModal').modal('show');

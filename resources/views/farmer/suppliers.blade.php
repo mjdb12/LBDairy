@@ -2297,6 +2297,31 @@
         color: #5a5c69 !important;
         font-weight: 600;
     }
+    .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @endpush
 @section('content')
@@ -2388,12 +2413,9 @@
                     </div>
                     <input type="text" id="supplierSearch" class="form-control" placeholder="Search suppliers...">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-ok" id="addSupplierBtn" title="Add Supplier" data-toggle="modal" data-target="#addLivestockDetailsModal">
                         <i class="fas fa-plus"></i> Add Supplier
-                    </button>
-                    <button class="btn-action btn-action-edit" title="Print" onclick="printSuppliersTable('suppliersTable')">
-                        <i class="fas fa-print"></i> Print
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshSuppliersTable('suppliersTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
@@ -2403,6 +2425,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printSuppliersTable('suppliersTable')">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -2630,9 +2655,9 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn">Yes, Delete</button>
+                <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Yes, Delete</button>
             </div>
 
         </div>
@@ -2695,7 +2720,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer justify-content-center mt-4">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
                 <button type="button" class="btn-modern btn-ok" onclick="exportHistory()">Export History</button>
             </div>
@@ -2751,10 +2776,10 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" id="saveSupplierBtn" class="btn-modern btn-ok" title="Save Supplier">
-                        Save Supplier
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
             </form>
@@ -2778,7 +2803,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="supplierDetailsContainer" class="detail-wrapper">
+        <div id="supplierDetailsContainer" >
           <!-- Dynamic supplier details will be injected here -->
         </div>
       </div>
@@ -2996,14 +3021,14 @@ function viewDetails(supplier) {
     container.innerHTML = (
         '<div class="row">'
         + '<div class="col-md-6">'
-        + '<h6 class="mb-3" style="color: #18375d; font-weight: 600;">Supplier Information</h6>'
+        + '<h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-truck mr-2"></i>Supplier Information</h6>'
         + '<p class="text-left"><strong>Supplier ID:</strong> ' + (data.id || 'N/A') + '</p>'
         + '<p class="text-left"><strong>Name:</strong> ' + (data.name || 'N/A') + '</p>'
         + '<p class="text-left"><strong>Address:</strong> ' + (data.address || 'N/A') + '</p>'
         + '<p class="text-left"><strong>Contact:</strong> ' + (data.contact || 'N/A') + '</p>'
         + '</div>'
         + '<div class="col-md-6">'
-        + '<h6 class="mb-3" style="color: #18375d; font-weight: 600;">Status</h6>'
+        + '<h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-info-circle mr-2"></i>Status</h6>'
         + '<p class="text-left"><strong>Current Status:</strong> <span class="badge badge-' + ((data.status||'').toLowerCase()==='active'?'success':'secondary') + '">' + (data.status || 'N/A') + '</span></p>'
         + '</div>'
         + '</div>'
