@@ -96,7 +96,7 @@
         </div>
 
         <!-- Footer Buttons -->
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn-modern btn-ok" onclick="processManualInput()">
             Search
@@ -182,7 +182,7 @@
           </div>
           <div id="al_formNotification" class="mt-2" style="display: none;"></div>
         </div>
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">Save</button>
         </div>
@@ -381,7 +381,7 @@
         </div> <!-- END TAB CONTENT -->
       </div> <!-- END MODAL BODY -->
         <!-- Footer -->
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Got it</button>
         </div>
 

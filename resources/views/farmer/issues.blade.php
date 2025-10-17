@@ -374,10 +374,7 @@
                             </div>
                             <input type="text" class="form-control" placeholder="Search inspections..." id="inspectionSearch">
                         </div>
-                        <div class="d-flex flex-column flex-sm-row align-items-center">
-                            <button class="btn-action btn-action-edit" onclick="printInspectionsTable()">
-                                <i class="fas fa-print"></i> Print
-                            </button>
+                        <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                             <button class="btn-action btn-action-refresh-inspection" onclick="refreshInspectionTable('inspectionsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
@@ -386,6 +383,9 @@
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="printInspectionsTable()">
+                                        <i class="fas fa-print"></i> Print Table
+                                    </a>
                                     <a class="dropdown-item" href="#" onclick="exportInspectionsToCSV()">
                                         <i class="fas fa-file-csv"></i> Download CSV
                                     </a>
