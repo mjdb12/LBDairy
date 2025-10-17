@@ -153,7 +153,7 @@
 </div>
 <!-- Modern Task Modal -->
 <div class="modal fade admin-modal" id="taskModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content smart-form text-center p-4">
 
             <!-- Icon + Header -->
@@ -205,6 +205,7 @@
                         </div>
 
                     </div>
+
 
                     <!-- Notification -->
                     <div id="taskNotification" class="mt-3 text-center" style="display: none;"></div>

@@ -93,7 +93,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     @if($farms->count() > 0)
                         <button class="btn-action btn-action-ok" onclick="openAddLivestockModal()">
                             <i class="fas fa-plus mr-2"></i> Add Livestock
@@ -103,9 +103,6 @@
                             <i class="fas fa-plus"></i> Add Livestock
                         </button>
                     @endif
-                    <button class="btn-action btn-action-edit" onclick="printTable()">
-                        <i class="fas fa-print"></i> Print
-                    </button>
                     <button class="btn-action btn-action-refresh" onclick="refreshLivestockTable('livestockTable')">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
@@ -114,6 +111,9 @@
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" onclick="printTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportToCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -369,7 +369,7 @@
 
 
                 <!-- Footer -->
-                <div class="modal-footer d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         Save Livestock
@@ -405,7 +405,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer justify-content-center mt-4">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
                     Close
                 </button>
@@ -437,7 +437,7 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
                     Yes, Delete
@@ -1700,6 +1700,31 @@ function showToast(message, type = 'info') {
 
 @push('styles')
 <style>
+     .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
     .smart-card {
   border-radius: 15px;
   background: #fff;
