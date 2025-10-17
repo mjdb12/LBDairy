@@ -767,10 +767,14 @@
                 </div>
                 <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
             </div>
+<<<<<<< HEAD
             <div class="d-flex flex-column flex-sm-row align-items-center">
                 <button class="btn-action btn-action-print" onclick="printLivestockTable()">
                     <i class="fas fa-print"></i> Print
                 </button>
+=======
+            <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
+>>>>>>> d2c2ffadaa96913b98e84c97cc51b9aa29f48392
                 <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
@@ -779,6 +783,9 @@
                         <i class="fas fa-tools"></i> Tools
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#" onclick="printLivestockTable()">
+                            <i class="fas fa-print"></i> Print Table
+                        </a>
                         <a class="dropdown-item" href="#" onclick="exportCSV('livestockTable')">
                             <i class="fas fa-file-csv"></i> Download CSV
                         </a>
@@ -836,9 +843,15 @@
                             <span class="badge badge-{{ $statusClass }}">{{ $breedingStatus }}</span>
                         </td>
                         <td>
+<<<<<<< HEAD
                             <div class="action-buttons">
                                 <button class="btn-action btn-action-ok" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis">
                                     <i class="fas fa-chart-line"></i> Analysis
+=======
+                            <div class="btn-group">
+                                <button class="btn-action btn-action-ok" id="viewbtn" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
+                                    <i class="fas fa-chart-line"></i>Analysis</span>
+>>>>>>> d2c2ffadaa96913b98e84c97cc51b9aa29f48392
                                 </button>
                                 <button class="btn-action btn-action-edit" onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')" title="History">
                                     <i class="fas fa-history"></i> History
@@ -880,7 +893,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="livestockAnalysisContent" class="detail-wrapper">
+        <div id="livestockAnalysisContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -893,7 +906,7 @@
                 <i class="fas fa-print"></i> Print Analysis
             </button>
             <button type="button" class="btn-modern btn-ok" onclick="exportLivestockAnalysis()">
-                <i class="fas fa-download"></i> Export Data
+                <i class="fas fa-download"></i> Export
             </button>
         </div>
 
@@ -902,7 +915,7 @@
 </div>
 
 <!-- Livestock History Modal -->
-<div class="modal fade admin-modal" id="livestockHistoryModal" tabindex="-1" role="dialog" aria-labelledby="livestockHistoryLabel" aria-hidden="true">
+<div class="modal fade livestock-modal" id="livestockHistoryModal" tabindex="-1" role="dialog" aria-labelledby="livestockHistoryLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content smart-detail p-4">
 
@@ -915,10 +928,9 @@
         <p class="text-muted mb-0 small text-center">Below is the complete history record of the selected livestock.</p>
       </div>
 
-      <!-- Modal Body -->
-      <div class="modal-body">
-        <div id="livestockHistoryContent" class="detail-wrapper">
-          <!-- Dynamic content injected here -->
+        <div class="modal-body">
+        <div id="livestockHistoryContent" >
+          <!-- Dynamic details injected here -->
         </div>
       </div>
 
@@ -944,6 +956,64 @@
 @endsection
 @push('styles')
 <style>
+    /* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #viewbtn.btn-primary,
+#viewbtn.btn-primary,
+#viewbtn.btn,
+#viewbtn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #viewbtn.btn-primary:hover,
+html body #viewbtn.btn-primary:focus,
+#viewbtn.btn-primary:hover,
+#viewbtn.btn-primary:focus,
+#viewbtn:hover,
+#viewbtn:focus,
+#viewbtn.btn:hover,
+#viewbtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+     .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
      /* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
     border-radius: 1.5rem;

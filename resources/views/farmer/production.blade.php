@@ -1203,7 +1203,31 @@
     min-width: 90px; /* prevent too tiny buttons */
     text-align: center;
 }
+.action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
 
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
 </style>
 @section('content')
 <!-- Page Header -->
@@ -1359,24 +1383,24 @@
                     </div>
                     <input type="text" id="productionSearch" class="form-control" placeholder="Search production records...">
                 </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button class="btn-action btn-action-ok" id="supplierSearch" title="Add Product" data-toggle="modal" data-target="#addProductionModal">
-                        <i class="fas fa-plus"></i> Add Production
-                    </button>
-                    <button class="btn-action btn-action-print" title="Print" onclick="printProductionTable()">
-                        <i class="fas fa-print"></i> Print
+                        <i class="fas fa-plus"></i> Add Product
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshProductionTable()">
                         <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="btn-action btn-action-history" data-toggle="modal" data-target="#historyModal">
-                        <i class="fas fa-history"></i> History
                     </button>
                     <div class="dropdown">
                         <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#historyModal">
+                                <i class="fas fa-history"></i> History 
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="printProductionTable()">
+                                <i class="fas fa-print"></i> Print Table
+                            </a>
                             <a class="dropdown-item" href="#" onclick="exportCSV()">
                                 <i class="fas fa-file-csv"></i> Download CSV
                             </a>
@@ -1417,13 +1441,13 @@
                         <td>
                             <div class="btn-group">
                             <button class="btn-action btn-action-ok" onclick="viewRecord({{ $record['id'] }})" title="View Details">
-                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-eye"></i> View
                             </button>
                             <button class="btn-action btn-action-edits" onclick="editRecord({{ $record['id'] }})" title="Edit">
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-edit"></i> Edit
                             </button>
                             <button class="btn-action btn-action-deletes" onclick="confirmDelete({{ $record['id'] }})" title="Delete">
-                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-trash"></i> Delete
                             </button>
                             </div>
                         </td>
@@ -1511,10 +1535,10 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" id="saveProductionBtn" class="btn-modern btn-ok" title="Save Record">
-                        Save Record
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
             </form>
@@ -1542,9 +1566,9 @@
             </p>
 
             <!-- Buttons -->
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn">Yes, Delete</button>
+                <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Yes, Delete</button>
             </div>
 
         </div>
@@ -1605,7 +1629,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer justify-content-center mt-4">
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
                 <button type="button" class="btn-modern btn-ok" onclick="exportHistory()">
                     Export History
@@ -1972,21 +1996,26 @@ function viewRecord(recordId) {
 
             <!-- Body -->
             <div class="modal-body">
-                <div class="detail-wrapper text-start mx-auto">
+                <div class="text-start mx-auto">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Production Information</h6>
-                            <p><strong>Date:</strong> ${record.production_date || ''}</p>
-                            <p><strong>Livestock:</strong> ${record.livestock_name ? `${record.livestock_name} (${record.livestock_tag || ''})` : `ID ${record.livestock_id || ''}`}</p>
-                            <p><strong>Quantity:</strong> ${record.milk_quantity} L</p>
-                            <p><strong>Quality Score:</strong> ${record.milk_quality_score}/10</p>
-                        </div>
+    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+        <i class="fas fa-tint me-2"></i> Production Information
+    </h6>
+    <p><strong>Date:</strong> ${record.production_date || ''}</p>
+    <p><strong>Livestock:</strong> ${record.livestock_name ? `${record.livestock_name} (${record.livestock_tag || ''})` : `ID ${record.livestock_id || ''}`}</p>
+    <p><strong>Quantity:</strong> ${record.milk_quantity} L</p>
+    <p><strong>Quality Score:</strong> ${record.milk_quality_score}/10</p>
+</div>
 
-                        <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
-                            <p><strong>Farm:</strong> ${record.farm_name || ''}</p>
-                            <p><strong>Notes:</strong> ${record.notes || 'No notes available.'}</p>
-                        </div>
+<div class="col-md-6">
+    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+        <i class="fas fa-sticky-note me-2"></i> Additional Details
+    </h6>
+    <p><strong>Farm:</strong> ${record.farm_name || ''}</p>
+    <p><strong>Notes:</strong> ${record.notes || 'No notes available.'}</p>
+</div>
+
                     </div>
                 </div>
             </div>
@@ -2047,7 +2076,7 @@ function editRecord(recordId) {
                 else { $('#addProductionForm').prepend('<input type="hidden" name="_method" value="PUT">'); }
                 $('#addProductionModalLabel').text('Edit Production Record');
                 $('#addProductionModalDesc').text('Fill out the details below to record a new milk production entry.');
-                $('#saveProductionBtn').html('Update Record');
+                $('#saveProductionBtn').html('<i class="fas fa-save"></i> Save');
             }
         },
         error: function() {

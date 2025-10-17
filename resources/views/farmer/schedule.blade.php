@@ -1668,7 +1668,7 @@ SMART FORM - Enhanced Version
                     <i class="fas fa-calendar-week"></i>
                     Farm Activity Calendar
                 </h6>
-                <div class="d-flex gap-2">
+                 <div class="d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button class="btn-action btn-action-ok " data-toggle="modal" data-target="#addEventModal" type="button">
                         <i class="fas fa-plus"></i> Add Event
                     </button>
@@ -1757,10 +1757,10 @@ SMART FORM - Enhanced Version
         </div>
 
         <!-- Footer Buttons -->
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+       <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok" title="Save Event">
-            Save Event
+            <i class="fas fa-save"></i> Save
           </button>
         </div>
       </form>

@@ -1,82 +1,69 @@
 <style>
-      /* SMART DETAIL MODAL TEMPLATE */
+      /* SMART DETAIL MODAL TEMPLATE (COMPRESSED VERSION) */
 .smart-detail .modal-content {
-    border-radius: 1.5rem;
+    border-radius: 1rem;
     border: none;
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     transition: all 0.3s ease-in-out;
-}
-
-/* Center alignment for header section */
-.smart-detail .modal-header,
-.smart-detail .modal-footer {
-    text-align: center;
+    max-width: 85vw;
+    margin: auto;
 }
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0.5rem;
+    font-size: 1.2rem;
 }
 
 /* Titles & Paragraphs */
-.smart-detail h6 {
+.smart-detail h5 {
     color: #18375d;
     font-weight: 700;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
 }
 
 .smart-detail p {
     color: #6b7280;
-    font-size: 1rem;
-    margin-bottom: 1.8rem;
-    line-height: 1.6;
-    text-align: left; /* ensures proper centering */
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
 }
 
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 3rem 3.5rem; /* more spacious layout */
+    padding: 1.5rem 1rem;
     border-radius: 1rem;
-    max-height: 88vh; /* taller for longer content */
+    max-height: 75vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
 }
 
-/* Wider modal container */
-.smart-detail .modal-dialog {
-    max-width: 92%; /* slightly wider modal */
-    width: 100%;
-    margin: 1.75rem auto;
-}
-
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
-    border-radius: 1.25rem;
-    padding: 2.25rem; /* more inner padding */
-    font-size: 1rem;
-    line-height: 1.65;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
 }
 
-/* Detail Rows */
 .smart-detail .detail-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     border-bottom: 1px dashed #ddd;
-    padding: 0.6rem 0;
+    padding: 0.5rem 0;
+    gap: 0.5rem;
 }
 
 .smart-detail .detail-row:last-child {
@@ -92,7 +79,6 @@
     color: #333;
     text-align: right;
 }
-
 /* Footer */
 #livestockDetailsModal .modal-footer {
     text-align: center;
@@ -326,109 +312,289 @@
   padding: 0.35rem 0.6rem;
   border-radius: 8px;
 }
+/* SMART DETAIL HEADER */
+.smart-detail-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+}
+
+.smart-detail-header .icon-circle {
+    width: 55px;
+    height: 55px;
+    font-size: 1.3rem;
+}
+
+.smart-detail-header h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0.3rem;
+}
+
+.smart-detail-header .progress {
+    background: #eef2f7;
+}
+
+.smart-detail-header .progress-bar strong {
+    font-size: 0.9rem;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+/* RESPONSIVE OPTIMIZATION */
+@media (max-width: 767.98px) {
+    .smart-detail-header {
+        text-align: center;
+    }
+    .smart-detail-header .icon-circle {
+        margin: 0 auto 0.75rem;
+    }
+    .smart-detail-header h5 {
+        font-size: 1.1rem;
+    }
+    .smart-detail-header .progress {
+        height: 22px;
+    }
+}
+/* SMART METRICS SECTION */
+.smart-metrics {
+    margin-top: 0.5rem;
+}
+
+.metric-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.25s ease-in-out;
+    padding: 1rem 1.25rem;
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Label & Value */
+.metric-label {
+    color: #6b7280;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    color: #18375d;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.metric-value small {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Icon Styling */
+.metric-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+/* Subtle background variants */
+.bg-blue-subtle { background: #e8f0fe; }
+.bg-success-subtle { background: #e9fbe7; }
+.bg-warning-subtle { background: #fff8e1; }
+.bg-info-subtle { background: #e7f7fb; }
+
+/* ---------- Responsive Tweaks ---------- */
+@media (max-width: 992px) {
+    .metric-card {
+        padding: 0.9rem 1rem;
+    }
+    .metric-label {
+        font-size: 0.8rem;
+    }
+    .metric-value {
+        font-size: 1.1rem;
+    }
+    .metric-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .metric-card {
+        padding: 0.8rem 0.9rem;
+        text-align: center;
+    }
+    .metric-label {
+        font-size: 0.75rem;
+    }
+    .metric-value {
+        font-size: 1rem;
+    }
+    .metric-icon {
+        width: 38px;
+        height: 38px;
+        margin-top: 0.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .metric-card {
+        padding: 0.7rem 0.8rem;
+    }
+    .metric-value {
+        font-size: 0.95rem;
+    }
+    .metric-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+}
+/* Container for the status badge */
+.status-display {
+    display: inline-block;
+}
+
+/* Status badge styling */
+.status-display .badge {
+    font-weight: 600;
+    border-radius: 0.75rem; /* rounded corners */
+    padding: 0.4rem 0.8rem;  /* vertical and horizontal padding */
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px; /* ensures badge has a minimum width */
+}
+
+/* Optional: hover effect */
+.status-display .badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Success status color */
+.status-display .bg-success {
+    background-color: #28a745 !important;
+    color: #fff !important;
+}
+
+/* Secondary status color */
+.status-display .bg-secondary {
+    background-color: #6c757d !important;
+    color: #fff !important;
+}
 
 </style>
-<div class="livestock-history-container">
     <!-- Livestock Header Information -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h5>
-                <i class="fas fa-cow"></i>
-                {{$livestock->name ?? $livestock->tag_number }} - History Records
-            </h5>
-            <p class="text-muted">
-                <strong>Tag ID:</strong> {{ $livestock->tag_number }} | 
-                <strong>Type:</strong> {{ ucfirst($livestock->type) }} | 
-                <strong>Total Records:</strong> {{ $productionHistory->count() }}
-            </p>
+    <div class="smart-detail-header row align-items-center mb-4">
+        <!-- Livestock Info -->
+        <div class="col-lg-8 col-md-7 col-sm-12 mb-3 mb-md-0">
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <div>
+                    <h5 class="mb-1" style="font-weight: 700; color: #18375d;">
+                        {{ $livestock->name ?? $livestock->tag_number }} 
+                        <span class="text-muted" style="font-size: 0.9rem;">– History Records</span>
+                    </h5>
+                    <p class="text-muted mb-0" style="font-size: 0.95rem;">
+                        <strong>Tag ID:</strong> {{ $livestock->tag_number }} &nbsp; | &nbsp;
+                        <strong>Type:</strong> {{ ucfirst($livestock->type) }} &nbsp; | &nbsp;
+                        <strong>Total Records:</strong> {{ $productionHistory->count() }}
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 text-right">
+
+        <!-- Status -->
+        <div class="col-lg-4 col-md-5 col-sm-12 text-md-end text-center">
             <div class="status-display">
-                <span class="badge badge-{{ $livestock->status === 'active' ? 'success' : 'secondary' }} badge-lg">
+                <span class="badge {{ $livestock->status === 'active' ? 'bg-success' : 'bg-secondary' }} px-3 py-2" style="font-size: 0.9rem;">
                     {{ ucfirst($livestock->status) }}
                 </span>
             </div>
         </div>
     </div>
 
+
     <!-- History Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
-                                Total Records</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $productionHistory->count() }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-database fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+<div class="row g-3 mb-4">
+    <!-- Total Records -->
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 shadow-sm border-start-primary p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs text-uppercase text-muted mb-1">Total Records</div>
+                    <div class="h5 fw-bold text-gray-800">{{ $productionHistory->count() }}</div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                Avg Production</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $productionHistory->avg('milk_quantity') ? round($productionHistory->avg('milk_quantity'), 1) : 0 }} L
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-tint fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                First Record</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $productionHistory->last() ? $productionHistory->last()->production_date->format('M Y') : 'N/A' }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                Last Record</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $productionHistory->first() ? $productionHistory->first()->production_date->format('M Y') : 'N/A' }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+                <div class="metric-icon bg-blue-subtle text-#blue">
+                    <i class="fas fa-database"></i>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Avg Production -->
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 shadow-sm border-start-primary p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs text-uppercase text-muted mb-1">Avg Production</div>
+                    <div class="h5 fw-bold text-gray-800">
+                        {{ $productionHistory->avg('milk_quantity') ? round($productionHistory->avg('milk_quantity'), 1) : 0 }} L
+                    </div>
+                </div>
+                <div class="metric-icon bg-success-subtle text-success">
+                    <i class="fas fa-tint"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- First Record -->
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 shadow-sm border-start-primary p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs text-uppercase text-muted mb-1">First Record</div>
+                    <div class="h5 fw-bold text-gray-800">
+                        {{ $productionHistory->last() ? $productionHistory->last()->production_date->format('M Y') : 'N/A' }}
+                    </div>
+                </div>
+                <div class="metric-icon bg-warning-subtle text-warning">
+                    <i class="fas fa-calendar"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Last Record -->
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card h-100 shadow-sm border-start-primary p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-xs text-uppercase text-muted mb-1">Last Record</div>
+                    <div class="h5 fw-bold text-gray-800">
+                        {{ $productionHistory->first() ? $productionHistory->first()->production_date->format('M Y') : 'N/A' }}
+                    </div>
+                </div>
+                <div class="metric-icon bg-info-subtle text-info">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <!-- Production History Chart -->
     <div class="row mb-4">
@@ -457,12 +623,12 @@
                     <ul class="nav nav-tabs card-header-tabs" id="historyTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="production-tab" data-toggle="tab" href="#productionHistory" role="tab">
-                                <i class="fas fa-tint"></i> Production History
+                                <i class="fas fa-tint"></i> Production
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthHistory" role="tab">
-                                <i class="fas fa-heartbeat"></i> Health History
+                                <i class="fas fa-heartbeat"></i> Health
                             </a>
                         </li>
                     </ul>
@@ -615,7 +781,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

@@ -95,12 +95,9 @@
                             </div>
                             <input type="text" class="form-control" placeholder="Search alerts..." id="alertSearch">
                         </div>
-                        <div class="d-flex flex-column flex-sm-row align-items-center">
+                        <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                             <button class="btn-action btn-action-ok" onclick="openCreateAlertModal()">
                                 <i class="fas fa-plus"></i>Add Alert
-                            </button>
-                            <button class="btn-action btn-action-edit" onclick="printTable()">
-                                <i class="fas fa-print"></i> Print
                             </button>
                             <button class="btn-action btn-action-refresh" onclick="refreshAlertsTable('alertsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
@@ -110,6 +107,9 @@
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="printTable()">
+                                        <i class="fas fa-print"></i> Download CSV
+                                    </a>
                                     <a class="dropdown-item" href="#" onclick="exportToCSV()">
                                         <i class="fas fa-file-csv"></i> Download CSV
                                     </a>
@@ -157,7 +157,7 @@
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <button class="btn-action btn-action-view" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
+                                            <button class="btn-action btn-action-view" id="viewbtn" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
                                             </button>
@@ -267,10 +267,10 @@
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
-                        Create Alert
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
             </form>
@@ -290,9 +290,9 @@
                 <h5 class="fw-bold mb-1" id="alertActionTitle">Confirm Action</h5>
                 <p class="text-muted small mb-0" id="alertActionMessage"></p>
             </div>
-            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-3">
+            <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-modern btn-ok" id="confirmAlertActionBtn">Confirm</button>
+                <button type="button" class="btn-modern btn-ok" id="confirmAlertActionBtn"><i class="fas fa-check"></i> Confirm</button>
             </div>
         </div>
     </div>
@@ -538,17 +538,16 @@ function viewAlertDetails(alertId) {
                                         <i class="fas fa-eye fa-2x"></i>
                                     </div>
                                     <h5 class="fw-bold mb-1">Alert Details </h5>
-                                    <p class="text-centertext-muted mb-0 small">Below are the complete details of the selected entry.</p>
+                                    <p class="text-center text-muted mb-0 small">Below are the complete details of the selected entry.</p>
                                 </div>
 
                             <!-- Body -->
                             <div class="modal-body">
-                                <div class="detail-wrapper">
                                     <div class="row">
                                         <!-- Livestock Information -->
                                         <div class="col-md-6">
                                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                                Livestock Information
+                                                <i class="fas fa-leaf mr-2"></i >Livestock Information
                                             </h6>
                                             <p><strong>Livestock ID:</strong> ${escapeHtml(l.livestock_id || 'N/A')}</p>
                                             <p><strong>Severity:</strong> ${escapeHtml((a.severity || 'N/A').toString().toUpperCase())}</p>
@@ -559,7 +558,7 @@ function viewAlertDetails(alertId) {
                                         <!-- Case Details -->
                                         <div class="col-md-6">
                                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                                Case Details
+                                                <i class="fas fa-bell mr-2"></i>Case Details
                                             </h6>
                                             <p><strong>Topic:</strong> ${escapeHtml(a.topic || 'N/A')}</p>
                                             <p><strong>Handled By:</strong> ${escapeHtml(a.veterinarian_name || 'N/A')}</p>
@@ -572,7 +571,7 @@ function viewAlertDetails(alertId) {
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
-                                                Additional Details
+                                                <i class="fas fa-file-alt mr-2"></i>Additional Details
                                             </h6>
                                             <p><strong>Description:</strong></p>
                                             <p>${escapeHtml(a.description || 'No description provided.')}</p>
@@ -584,7 +583,6 @@ function viewAlertDetails(alertId) {
                                         </div>
                                     </div>
 
-                            </div>
                         </div>
 
                         <!-- Footer -->
@@ -594,7 +592,6 @@ function viewAlertDetails(alertId) {
                             </div>
 
                         </div>
-                    </div>
                     </div>`;
 
                 $('#viewAlertModal').remove();
@@ -744,6 +741,143 @@ function showNotification(message, type = 'info') {
 
 @push('styles')
 <style>
+    /* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #viewbtn.btn-primary,
+#viewbtn.btn-primary,
+#viewbtn.btn,
+#viewbtn {
+    background-color: #18375d !important;
+    background: #18375d !important;
+    border-color: #18375d !important;
+    color: #fff !important;
+}
+
+/* Hover and Focus State */
+html body #viewbtn.btn-primary:hover,
+html body #viewbtn.btn-primary:focus,
+#viewbtn.btn-primary:hover,
+#viewbtn.btn-primary:focus,
+#viewbtn:hover,
+#viewbtn:focus,
+#viewbtn.btn:hover,
+#viewbtn.btn:focus {
+    background-color: #fca700 !important;
+    background: #fca700 !important;
+    border-color: #fca700 !important;
+    color: #fff !important;
+    border: 2px solid #fca700 !important;
+    transform: translateY(-1px);
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+    /* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+    max-width: 90vw; /* make modal a bit wider */
+    margin: auto;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 70px;
+    height: 70px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 2.5rem 1rem; /* increased horizontal and vertical padding */
+    border-radius: 1.25rem;
+    max-height: 80vh; /* more vertical stretch before scrolling */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 0rem; /* more internal spacing */
+    font-size: 0.97rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.75rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
+     .action-toolbar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+}
+
+/* Prevent buttons from stretching */
+.action-toolbar .btn-action {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    width: auto !important;
+}
+
+/* Adjust spacing for mobile without stretching */
+@media (max-width: 576px) {
+    .action-toolbar {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .action-toolbar .btn-action {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        width: auto !important;
+    }
+}
     /* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
     border-radius: 1.5rem;

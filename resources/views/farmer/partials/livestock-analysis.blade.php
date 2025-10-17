@@ -1,82 +1,69 @@
 <style>
-      /* SMART DETAIL MODAL TEMPLATE */
+/* SMART DETAIL MODAL TEMPLATE (COMPRESSED VERSION) */
 .smart-detail .modal-content {
-    border-radius: 1.5rem;
+    border-radius: 1rem;
     border: none;
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     transition: all 0.3s ease-in-out;
-}
-
-/* Center alignment for header section */
-.smart-detail .modal-header,
-.smart-detail .modal-footer {
-    text-align: center;
+    max-width: 85vw;
+    margin: auto;
 }
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0.5rem;
+    font-size: 1.2rem;
 }
 
 /* Titles & Paragraphs */
 .smart-detail h5 {
     color: #18375d;
     font-weight: 700;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
 }
 
 .smart-detail p {
     color: #6b7280;
-    font-size: 1rem;
-    margin-bottom: 1.8rem;
-    line-height: 1.6;
-    text-align: left; /* ensures proper centering */
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
 }
 
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 3rem 3.5rem; /* more spacious layout */
+    padding: 1.5rem 1rem;
     border-radius: 1rem;
-    max-height: 88vh; /* taller for longer content */
+    max-height: 75vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
 }
 
-/* Wider modal container */
-.smart-detail .modal-dialog {
-    max-width: 92%; /* slightly wider modal */
-    width: 100%;
-    margin: 1.75rem auto;
-}
-
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
-    border-radius: 1.25rem;
-    padding: 2.25rem; /* more inner padding */
-    font-size: 1rem;
-    line-height: 1.65;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
 }
 
-/* Detail Rows */
 .smart-detail .detail-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     border-bottom: 1px dashed #ddd;
-    padding: 0.6rem 0;
+    padding: 0.5rem 0;
+    gap: 0.5rem;
 }
 
 .smart-detail .detail-row:last-child {
@@ -97,8 +84,8 @@
 #livestockDetailsModal .modal-footer {
     text-align: center;
     border-top: 1px solid #e5e7eb;
-    padding-top: 1.5rem;
-    margin-top: 2rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
 }
 
 /* RESPONSIVE ADJUSTMENTS */
@@ -108,41 +95,41 @@
     }
 
     .smart-detail .modal-body {
-        padding: 2rem;
-        max-height: 82vh;
+        padding: 1.25rem;
+        max-height: 78vh;
     }
 
     .smart-detail .detail-wrapper {
-        padding: 1.5rem;
-        font-size: 0.95rem;
+        padding: 0.75rem 0.9rem;
+        font-size: 0.88rem;
     }
 
     .smart-detail p {
-        text-align: center;
-        font-size: 0.95rem;
+        font-size: 0.88rem;
     }
 }
 
 @media (max-width: 576px) {
     .smart-detail .modal-body {
-        padding: 1.5rem;
-        max-height: 80vh;
+        padding: 1rem;
+        max-height: 75vh;
     }
 
     .smart-detail .detail-wrapper {
-        padding: 1.25rem;
+        padding: 0.75rem;
     }
 
     .smart-detail .detail-row {
         flex-direction: column;
         text-align: left;
-        gap: 0.3rem;
+        gap: 0.25rem;
     }
 
     .smart-detail .detail-value {
         text-align: left;
     }
 }
+
     /* Action buttons styling */
     .action-buttons {
         display: flex;
@@ -326,115 +313,374 @@
   padding: 0.35rem 0.6rem;
   border-radius: 8px;
 }
+/* SMART DETAIL HEADER */
+.smart-detail-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+}
+
+.smart-detail-header .icon-circle {
+    width: 55px;
+    height: 55px;
+    font-size: 1.3rem;
+}
+
+.smart-detail-header h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0.3rem;
+}
+
+.smart-detail-header .progress {
+    background: #eef2f7;
+}
+
+.smart-detail-header .progress-bar strong {
+    font-size: 0.9rem;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+/* RESPONSIVE OPTIMIZATION */
+@media (max-width: 767.98px) {
+    .smart-detail-header {
+        text-align: center;
+    }
+    .smart-detail-header .icon-circle {
+        margin: 0 auto 0.75rem;
+    }
+    .smart-detail-header h5 {
+        font-size: 1.1rem;
+    }
+    .smart-detail-header .progress {
+        height: 22px;
+    }
+}
+
+/* SMART METRICS SECTION */
+.smart-metrics {
+    margin-top: 0.5rem;
+}
+
+.metric-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.25s ease-in-out;
+    padding: 1rem 1.25rem;
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Label & Value */
+.metric-label {
+    color: #6b7280;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    color: #18375d;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.metric-value small {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Icon Styling */
+.metric-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+/* Subtle background variants */
+.bg-blue-subtle { background: #e8f0fe; }
+.bg-success-subtle { background: #e9fbe7; }
+.bg-warning-subtle { background: #fff8e1; }
+.bg-info-subtle { background: #e7f7fb; }
+
+/* ---------- Responsive Tweaks ---------- */
+@media (max-width: 992px) {
+    .metric-card {
+        padding: 0.9rem 1rem;
+    }
+    .metric-label {
+        font-size: 0.8rem;
+    }
+    .metric-value {
+        font-size: 1.1rem;
+    }
+    .metric-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .metric-card {
+        padding: 0.8rem 0.9rem;
+        text-align: center;
+    }
+    .metric-label {
+        font-size: 0.75rem;
+    }
+    .metric-value {
+        font-size: 1rem;
+    }
+    .metric-icon {
+        width: 38px;
+        height: 38px;
+        margin-top: 0.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .metric-card {
+        padding: 0.7rem 0.8rem;
+    }
+    .metric-value {
+        font-size: 0.95rem;
+    }
+    .metric-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+}
+
+.detail-divider {
+    border: none;
+    border-top: 1px dashed #d1d5db;
+    margin: 1.5rem 0;
+}
+
+.detail-section .section-title i {
+    font-size: 1rem;
+    opacity: 0.85;
+}
+
+.smart-detail {
+    background: #f9fafb;
+}
+
+.smart-detail strong {
+    color: #1b3043;
+    font-weight: 600;
+}
+
+.smart-detail .badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.6em;
+    border-radius: 0.4rem;
+}
+
+@media (max-width: 768px) {
+    .smart-detail .row > div {
+        font-size: 0.9rem;
+    }
+    .detail-section .section-title {
+        font-size: 1rem;
+    }
+}
+/* === Insights Section Styles === */
+.card-body .alert {
+    border-radius: 0.75rem;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+/* Left border indicator */
+.border-left-success {
+    border-left: 5px solid #28a745 !important;
+}
+.border-left-warning {
+    border-left: 5px solid #ffc107 !important;
+}
+.border-left-danger {
+    border-left: 5px solid #dc3545 !important;
+}
+.border-left-info {
+    border-left: 5px solid #17a2b8 !important;
+}
+
+/* Icon spacing and size */
+.alert i {
+    font-size: 1.6rem;
+    margin-right: 0.75rem;
+    color: #ffff; /* Neutral default */
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+.alert:hover i {
+    transform: scale(1.1);
+}
+
+/* Text styles inside alert */
+.alert .alert-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffff;
+}
+.alert p {
+    font-size: 0.9rem;
+    margin: 0;
+    color: #ffff;
+    text-align: left;
+}
+
+/* Type-specific icon tints */
+.alert-success i {
+    color: #ade2c9ff;
+}
+.alert-warning i {
+    color: #e19033ff;
+}
+.alert-danger i {
+    color: #e5b3b3ff;
+}
+.alert-info i {
+    color: #9fc6d8ff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body .alert {
+        padding: 0.9rem 1rem;
+        flex-direction: row;
+    }
+    .alert i {
+        font-size: 1.4rem;
+        margin-right: 0.6rem;
+    }
+    .alert .alert-heading {
+        font-size: 0.95rem;
+    }
+    .alert p {
+        font-size: 0.85rem;
+    }
+}
 
 </style>
-<div class="livestock-analysis-container">
     <!-- Livestock Header Information -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h5>
-                <i class="fas fa-cow"></i>
-                {{$livestock->name ?? $livestock->tag_number }} - Detailed Analysis
-            </h5>
-            <p class="text-muted">
-                <strong>Tag ID:</strong> {{ $livestock->tag_number }} | 
-                <strong>Type:</strong> {{ ucfirst($livestock->type) }} | 
-                <strong>Breed:</strong> {{ ucfirst(str_replace('_', ' ', $livestock->breed)) }} | 
-                <strong>Age:</strong> {{ $age }} years
-            </p>
+    <div class="smart-detail-header row align-items-center mb-4">
+        <!-- Livestock Info -->
+        <div class="col-lg-8 col-md-7 col-sm-12 mb-3 mb-md-0">
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <div>
+                    <h5 class="mb-1" style="font-weight: 700; color: #18375d;">
+                        {{ $livestock->name ?? $livestock->tag_number }} 
+                        <span class="text-muted" style="font-size: 0.9rem;">– Detailed Analysis</span>
+                    </h5>
+                    <p class="text-muted mb-0" style="font-size: 0.95rem;">
+                        <strong>Tag ID:</strong> {{ $livestock->tag_number }} &nbsp; | &nbsp;
+                        <strong>Type:</strong> {{ ucfirst($livestock->type) }} &nbsp; | &nbsp;
+                        <strong>Breed:</strong> {{ ucfirst(str_replace('_', ' ', $livestock->breed)) }} &nbsp; | &nbsp;
+                        <strong>Age:</strong> {{ $age }} years
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 text-right">
+
+        <!-- Health Score -->
+        <div class="col-lg-4 col-md-5 col-sm-12 text-md-end text-center">
             <div class="health-score-display">
-                <div class="progress" style="height: 25px;">
-                    <div class="progress-bar {{ $healthScore >= 80 ? 'bg-success' : ($healthScore >= 60 ? 'bg-warning' : 'bg-danger') }}" 
-                         role="progressbar" 
-                         style="width: {{ $healthScore }}%">
+                <label class="fw-semibold text-muted small mb-1 d-block">Health Score</label>
+                <div class="progress" style="height: 26px; border-radius: 0.75rem; background: #f1f5f9;">
+                    <div class="progress-bar {{ $healthScore >= 80 ? 'bg-success' : ($healthScore >= 60 ? 'bg-warning' : 'bg-danger') }}"
+                        role="progressbar"
+                        style="width: {{ $healthScore }}%; transition: width 0.5s ease;">
                         <strong>{{ $healthScore }}%</strong>
                     </div>
                 </div>
-                <small class="text-muted">Health Score</small>
             </div>
         </div>
     </div>
 
-    <!-- Key Metrics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
-                                Avg Production</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $productionData->avg() ? round($productionData->avg(), 1) : 0 }} L/day
-                            </div>
+
+    <!-- Key Metrics Section -->
+        <div class="smart-metrics row g-3 mb-4">
+            <!-- Average Production -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="metric-card h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="metric-label">Avg Production</div>
+                        <div class="metric-value">
+                            {{ $productionData->avg() ? round($productionData->avg(), 1) : 0 }}
+                            <small>L/day</small>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-tint fa-2x text-gray-300"></i>
+                    </div>
+                    <div class="metric-icon bg-blue-subtle text-#blue">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Max Production -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="metric-card h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="metric-label">Max Production</div>
+                        <div class="metric-value">
+                            {{ $productionData->max() ? round($productionData->max(), 1) : 0 }}
+                            <small>L/day</small>
                         </div>
+                    </div>
+                    <div class="metric-icon bg-success-subtle text-success">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Records -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="metric-card h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="metric-label">Total Records</div>
+                        <div class="metric-value">
+                            {{ $livestock->productionRecords->count() }}
+                        </div>
+                    </div>
+                    <div class="metric-icon bg-warning-subtle text-warning">
+                        <i class="fas fa-database"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Weight -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="metric-card h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="metric-label">Current Weight</div>
+                        <div class="metric-value">
+                            {{ $livestock->weight ?? 'N/A' }}
+                            <small>kg</small>
+                        </div>
+                    </div>
+                    <div class="metric-icon bg-info-subtle text-info">
+                        <i class="fas fa-weight"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
-                                Max Production</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $productionData->max() ? round($productionData->max(), 1) : 0 }} L/day
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
-                                Total Records</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $livestock->productionRecords->count() }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-database fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                Current Weight</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $livestock->weight ?? 'N/A' }} kg
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-weight fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Charts Row -->
     <div class="row mb-4">
@@ -485,14 +731,12 @@
                     @if(count($insights) > 0)
                         <div class="row">
                             @foreach($insights as $insight)
-                                <div class="col-md-6 col-sm-12 mb-3">
-                                    <div class="alert alert-{{ $insight['type'] }} border-left-{{ $insight['type'] }}">
-                                        <div class="d-flex align-items-center">
-                                            <i class="{{ $insight['icon'] }} fa-2x mr-3"></i>
-                                            <div>
-                                                <h6 class="alert-heading mb-1">{{ $insight['title'] }}</h6>
-                                                <p class="mb-0">{{ $insight['message'] }}</p>
-                                            </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                    <div class="alert alert-{{ $insight['type'] }} border-left-{{ $insight['type'] }} d-flex flex-column flex-sm-row align-items-start">
+                                        <i class="{{ $insight['icon'] }} fa-2x mr-0 mr-sm-3 mb-2 mb-sm-0"></i>
+                                        <div>
+                                            <h6 class="alert-heading mb-1">{{ $insight['title'] }}</h6>
+                                            <p class="mb-0">{{ $insight['message'] }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -509,117 +753,83 @@
         </div>
     </div>
 
-    <!-- Detailed Information Table -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2  text-sm-start">
-                    <h6 class="m-0 font-weight-bold ">
-                        <i class="fas fa-table"></i>
-                        Detailed Information
-                    </h6>
+    <!-- Detailed Information Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body">
+                
+                <!-- Header -->
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3">
+                    <h5 class="fw-bold m-0 d-flex align-items-center">
+                        <i class="fas fa-table me-2"></i> Detailed Information
+                    </h5>
                 </div>
-               <div class="card smart-detail border-0 shadow-sm rounded-4 p-3">
-    <div class="card-body">
-        <div class="detail-section mb-4">
-            <h6 class="section-title  fw-bold mb-3">
-                <i class="fas fa-info-circle me-2"></i> Basic Information
-            </h6>
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <strong>Tag Number:</strong> {{ $livestock->tag_number }}
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Name:</strong> {{ $livestock->name ?? 'Not specified' }}
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Type:</strong> {{ ucfirst($livestock->type) }}
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Breed:</strong> {{ ucfirst(str_replace('_', ' ', $livestock->breed)) }}
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Gender:</strong> {{ ucfirst($livestock->gender) }}
-                </div>
-            </div>
-        </div>
+                <hr>
+                <!-- Smart Detail Wrapper -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">
+                            <i class="fas fa-info-circle me-1"></i> Basic Information
+                        </h6>
+                        <p class="text-left"><strong>Tag Number:</strong> {{ $livestock->tag_number }}</p>
+                        <p class="text-left"><strong>Name:</strong> {{ $livestock->name ?? 'Not specified' }}</p>
+                        <p class="text-left"><strong>Type:</strong> {{ ucfirst($livestock->type) }}</p>
+                        <p class="text-left"><strong>Breed:</strong> {{ ucfirst(str_replace('_', ' ', $livestock->breed)) }}</p>
+                        <p class="text-left"><strong>Gender:</strong> {{ ucfirst($livestock->gender) }}</p>
+                    </div>
 
-        <hr class="my-3">
+                    <div class="col-md-6">
+                        <h6 class="mb-3 text-success" style="font-weight: 600;">
+                            <i class="fas fa-heartbeat me-1"></i> Health & Status
+                        </h6>
+                        <p class="text-left">
+                            <strong>Health Status:</strong>
+                            <span class="badge badge-{{ $livestock->health_status === 'healthy' ? 'success' : ($livestock->health_status === 'under_treatment' ? 'warning' : 'danger') }}">
+                                {{ ucfirst(str_replace('_', ' ', $livestock->health_status)) }}
+                            </span>
+                        </p>
+                        <p class="text-left"><strong>Health Score:</strong> {{ $healthScore }}%</p>
+                        <p class="text-left">
+                            <strong>Status:</strong>
+                            <span class="badge badge-{{ $livestock->status === 'active' ? 'success' : 'secondary' }}">
+                                {{ ucfirst($livestock->status) }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
 
-        <div class="detail-section mb-4">
-            <h6 class="section-title text-success fw-bold mb-3">
-                <i class="fas fa-heartbeat me-2"></i> Health & Status
-            </h6>
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <strong>Health Status:</strong>
-                    <span class="badge badge-{{ $livestock->health_status === 'healthy' ? 'success' : ($livestock->health_status === 'under_treatment' ? 'warning' : 'danger') }}">
-                        {{ ucfirst(str_replace('_', ' ', $livestock->health_status)) }}
-                    </span>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Health Score:</strong> {{ $healthScore }}%
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Status:</strong>
-                    <span class="badge badge-{{ $livestock->status === 'active' ? 'success' : 'secondary' }}">
-                        {{ ucfirst($livestock->status) }}
-                    </span>
-                </div>
-            </div>
-        </div>
+<hr class="detail-divider">
 
-        <hr class="my-3">
+<!-- Physical & Production Details -->
+<div class="row">
+    <div class="col-md-6">
+        <h6 class="mb-3 text-warning" style="font-weight: 600;">
+            <i class="fas fa-dumbbell me-1"></i> Physical Details
+        </h6>
+        <p class="text-left"><strong>Birth Date:</strong> {{ $livestock->birth_date ? \Carbon\Carbon::parse($livestock->birth_date)->format('M d, Y') : 'Not recorded' }}</p>
+        <p class="text-left"><strong>Age:</strong> {{ $age }} years</p>
+        <p class="text-left"><strong>Weight:</strong> {{ $livestock->weight ?? 'Not recorded' }} kg</p>
+        <p class="text-left"><strong>Farm:</strong> {{ $livestock->farm->name ?? 'Not assigned' }}</p>
+    </div>
 
-        <div class="detail-section mb-4">
-            <h6 class="section-title text-warning fw-bold mb-3">
-                <i class="fas fa-heartbeat me-2"></i> Physical Details
-            </h6>
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <strong>Birth Date:</strong> 
-                    {{ $livestock->birth_date ? \Carbon\Carbon::parse($livestock->birth_date)->format('M d, Y') : 'Not recorded' }}
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Age:</strong> {{ $age }} years
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Weight:</strong> {{ $livestock->weight ?? 'Not recorded' }} kg
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Farm:</strong> {{ $livestock->farm->name ?? 'Not assigned' }}
-                </div>
-            </div>
-        </div>
+    <div class="col-md-6">
+        <h6 class="mb-3 text-info" style="font-weight: 600;">
+            <i class="fas fa-industry me-1"></i> Production Summary
+        </h6>
+        <p class="text-left"><strong>Total Records:</strong> {{ $livestock->productionRecords->count() }}</p>
+        <p class="text-left"><strong>Average Daily Production:</strong> {{ $productionData->avg() ? round($productionData->avg(), 1) : 0 }} L</p>
+        <p class="text-left"><strong>Maximum Daily Production:</strong> {{ $productionData->max() ? round($productionData->max(), 1) : 0 }} L</p>
+        <p class="text-left"><strong>Minimum Daily Production:</strong> {{ $productionData->min() ? round($productionData->min(), 1) : 0 }} L</p>
+    </div>
+</div>
 
-        <hr class="my-3">
 
-        <div class="detail-section">
-            <h6 class="section-title text-info fw-bold mb-3">
-                <i class="fas fa-industry me-2"></i> Production Summary
-            </h6>
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <strong>Total Production Records:</strong> {{ $livestock->productionRecords->count() }}
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Average Daily Production:</strong> {{ $productionData->avg() ? round($productionData->avg(), 1) : 0 }} L
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Maximum Daily Production:</strong> {{ $productionData->max() ? round($productionData->max(), 1) : 0 }} L
-                </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Minimum Daily Production:</strong> {{ $productionData->min() ? round($productionData->min(), 1) : 0 }} L
-                </div>
             </div>
         </div>
     </div>
 </div>
 
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -678,8 +888,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         {{ $productionData->filter(function($value) { return $value >= 10 && $value <= 20; })->count() }},
                         {{ $productionData->filter(function($value) { return $value < 10; })->count() }}
                     ],
-                    backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b'],
-                    hoverBackgroundColor: ['#17a673', '#f4b619', '#e02424'],
+                    backgroundColor: ['#b2f0d9ff', '#f7e2b0ff', '#fdc6c1ff'],
+                    hoverBackgroundColor: ['#b2f0d9ff', '#f7e2b0ff', '#fdc6c1ff'],
                     hoverBorderColor: 'rgba(234, 236, 244, 1)',
                 }]
             },

@@ -16,7 +16,7 @@
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn-modern btn-confirm"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Logout
+                <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

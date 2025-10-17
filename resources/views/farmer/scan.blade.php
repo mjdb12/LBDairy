@@ -99,7 +99,7 @@
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn-modern btn-ok" onclick="processManualInput()">
-            Search
+            <i class="fas fa-search"></i> Search
           </button>
         </div>
       </form>
@@ -382,7 +382,7 @@
       </div> <!-- END MODAL BODY -->
         <!-- Footer -->
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
-            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Got it</button>
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
         </div>
 
     </div>
