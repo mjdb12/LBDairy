@@ -194,11 +194,11 @@
 
 <!-- Add/Edit Livestock Modal -->
 <div class="modal fade" id="livestockModal" tabindex="-1" role="dialog" aria-labelledby="livestockModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content smart-form p-4">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content smart-form text-center p-4">
 
             <!-- Icon + Header -->
-            <div class="d-flex flex-column align-items-center mb-4 text-center">
+            <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle">
                     <i class="fas fa-paw fa-2x"></i>
                 </div>
@@ -207,7 +207,6 @@
                     Fill out the details below to register livestock information.
                 </p>
             </div>
-
             <!-- Form -->
             <form id="livestockForm" method="POST" action="{{ route('farmer.livestock.store') }}">
                 @csrf
@@ -369,12 +368,13 @@
 
 
                 <!-- Footer -->
-                <div class="modal-footer d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         Save Livestock
                     </button>
                 </div>
+
             </form>
         </div>
     </div>
@@ -587,7 +587,6 @@ $(document).ready(function() {
     });
     
 });
-
 
 // Refresh Admins Table
 
@@ -1004,8 +1003,11 @@ function deleteLivestock(livestockId) {
 
 function editCurrentLivestock() {
     if (currentLivestockId) {
-        $('#livestockDetailsModal').modal('hide');
-        openEditLivestockModal(currentLivestockId);
+        $('#livestockDetailsModal')
+            .one('hidden.bs.modal', function() {
+                openEditLivestockModal(currentLivestockId);
+            })
+            .modal('hide');
     }
 }
 
@@ -1934,7 +1936,10 @@ function showToast(message, type = 'info') {
   padding: 3rem 3.5rem; /* bigger spacing */
   transition: all 0.3s ease;
   max-width: 900px; /* slightly wider form container */
-  margin: 2rem auto;
+  margin: 0; /* remove outer margins inside modal to maximize usable height */
+  /* Let Bootstrap's .modal-body handle scrolling */
+  max-height: none;
+  overflow: visible;
 }
 
 .smart-form:hover {
