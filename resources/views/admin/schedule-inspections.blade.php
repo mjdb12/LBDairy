@@ -3302,18 +3302,16 @@ function printInspectionsTable() {
                 </table>
             </div>`;
         
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
+        // Print in same tab without background using printElement (no new tab)
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'Scheduled Inspections Report');
+        } else {
+            window.print();
+        }
         
     } catch (error) {
         console.error('Error in print function:', error);
@@ -3552,18 +3550,16 @@ function printFarmersTable() {
                 </table>
             </div>`;
         
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
+        // Print in same tab without background using printElement (no new tab)
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'Active Farmers Report');
+        } else {
+            window.print();
+        }
         
     } catch (error) {
         console.error('Error in print function:', error);

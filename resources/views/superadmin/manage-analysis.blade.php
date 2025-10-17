@@ -1912,18 +1912,16 @@ function printFarmTable() {
                 </table>
             </div>`;
         
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
+        // Open minimal print window to avoid background page showing
+        if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'SuperAdmin Farm Analysis Report');
+        } else if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else {
+            window.print();
+        }
         
     } catch (error) {
         console.error('Error in print function:', error);

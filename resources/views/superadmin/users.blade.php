@@ -2736,13 +2736,14 @@ function printTable() {
                 </table>
             </div>`;
 
-        // Use global same-tab print helper without altering the page
+        // Print in same tab without background using printElement (no new tab)
         if (typeof window.printElement === 'function') {
             const container = document.createElement('div');
             container.innerHTML = printContent;
             window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'SuperAdmin User Report');
         } else {
-            // Fallback to native print of current page
             window.print();
         }
     } catch (error) {

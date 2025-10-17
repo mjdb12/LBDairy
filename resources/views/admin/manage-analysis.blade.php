@@ -1983,18 +1983,16 @@ function printTable() {
                 </table>
             </div>`;
         
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
+        // Print in same tab without background using printElement (no new tab)
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'Farmers Analysis Report');
+        } else {
+            window.print();
+        }
         
     } catch (error) {
         console.error('Error in print function:', error);
@@ -2112,18 +2110,18 @@ async function exportModalPDF() {
 }
 
 function printProductivity() {
-    const modalBody = document.querySelector('#productivityModal .modal-body').innerHTML;
-    const originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = `
-        <div style="padding: 20px;">
-            <h2>Farm Productivity Analysis</h2>
-            ${modalBody}
-        </div>
-    `;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload();
+    try {
+        const modalBodyEl = document.querySelector('#productivityModal .modal-body');
+        if (modalBodyEl && typeof window.printElement === 'function') {
+            window.printElement(modalBodyEl);
+        } else if (modalBodyEl && typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow('<div style="padding: 20px;"><h2>Farm Productivity Analysis</h2>' + modalBodyEl.innerHTML + '</div>', 'Farm Productivity Analysis');
+        } else {
+            window.print();
+        }
+    } catch (e) {
+        window.print();
+    }
 }
 
 function showNotification(message, type) {

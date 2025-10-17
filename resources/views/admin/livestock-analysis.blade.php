@@ -537,7 +537,15 @@ function downloadFile(url, filename) {
 }
 
 function printChart() {
-    window.print();
+    const canvas = document.getElementById('mainChart');
+    if (canvas && typeof window.printElement === 'function') {
+        window.printElement(canvas);
+    } else if (canvas && typeof window.openPrintWindow === 'function') {
+        const img = `<div style="text-align:center;"><img src="${canvas.toDataURL('image/png')}" style="max-width:100%;"/></div>`;
+        window.openPrintWindow(img, 'Livestock Productivity Trends');
+    } else {
+        window.print();
+    }
 }
 
 function refreshTable() {

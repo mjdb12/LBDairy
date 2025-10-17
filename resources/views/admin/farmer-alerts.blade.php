@@ -334,7 +334,10 @@ function initializeDataTables() {
         ajax: {
             url: '/admin/farmer-alerts-data',
             dataSrc: function(json) {
-                return Array.isArray(json) ? json : [];
+                if (Array.isArray(json)) return json;
+                if (json && Array.isArray(json.data)) return json.data;
+                if (json && Array.isArray(json.records)) return json.records;
+                return [];
             }
         },
         columns: [
@@ -464,32 +467,28 @@ function updateStats() {
 
 // ✅ Export functions now work with alertsTable
 function exportToCSV() {
-    const tableData = alertsTable.data().toArray();
+    const data = alertsTable.rows({ search: 'applied' }).data().toArray();
     const csvData = [];
-    
-    // Add headers (excluding Actions column)
     const headers = ['Farmer', 'Livestock ID', 'Topic', 'Description', 'Severity', 'Date Created', 'Status'];
     csvData.push(headers.join(','));
-    
-    // Add data rows (excluding Actions column)
-    tableData.forEach(row => {
-        const rowData = [];
-        for (let i = 0; i < row.length - 1; i++) {
-            let cellText = '';
-            if (row[i]) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = row[i];
-                cellText = tempDiv.textContent || tempDiv.innerText || '';
-                cellText = cellText.replace(/\s+/g, ' ').trim();
-            }
-            if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
-                cellText = '"' + cellText.replace(/"/g, '""') + '"';
-            }
-            rowData.push(cellText);
-        }
-        csvData.push(rowData.join(','));
+
+    data.forEach(obj => {
+        const farmer = [obj.farmer_name || '', obj.farmer_email ? `(${obj.farmer_email})` : ''].filter(Boolean).join(' ').trim();
+        const livestock = [obj.livestock_id || 'N/A', [obj.livestock_type, obj.livestock_breed].filter(Boolean).join(' ')].filter(Boolean).join(' ').trim();
+        const topic = (obj.topic || '').toString();
+        let description = (obj.description || '').toString().replace(/\s+/g, ' ').trim();
+        const severity = (obj.severity || '').toString();
+        const dateCreated = (obj.alert_date || '').toString();
+        const status = (obj.status || '').toString();
+
+        const row = [farmer, livestock, topic, description, severity, dateCreated, status].map(val => {
+            let cell = val || '';
+            if (/,|"|\n/.test(cell)) cell = '"' + cell.replace(/"/g, '""') + '"';
+            return cell;
+        });
+        csvData.push(row.join(','));
     });
-    
+
     const csvContent = csvData.join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -500,71 +499,45 @@ function exportToCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
     downloadCounter++;
 }
 
 function exportToPDF() {
     try {
-        // Force custom PDF generation to match superadmin styling
-        // Don't fall back to DataTables PDF export as it has different styling
-        
-        const tableData = alertsTable.data().toArray();
+        const data = alertsTable.rows({ search: 'applied' }).data().toArray();
         const pdfData = [];
-        
         const headers = ['Farmer', 'Livestock ID', 'Topic', 'Description', 'Severity', 'Date Created', 'Status'];
-        
-        tableData.forEach(row => {
-            const rowData = [];
-            for (let i = 0; i < row.length - 1; i++) {
-                let cellText = '';
-                if (row[i]) {
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = row[i];
-                    cellText = tempDiv.textContent || tempDiv.innerText || '';
-                    cellText = cellText.replace(/\s+/g, ' ').trim();
-                }
-                rowData.push(cellText);
-            }
-            pdfData.push(rowData);
+
+        data.forEach(obj => {
+            const farmer = [obj.farmer_name || '', obj.farmer_email ? `(${obj.farmer_email})` : ''].filter(Boolean).join(' ').trim();
+            const livestock = [obj.livestock_id || 'N/A', [obj.livestock_type, obj.livestock_breed].filter(Boolean).join(' ')].filter(Boolean).join(' ').trim();
+            const topic = (obj.topic || '').toString();
+            let description = (obj.description || '').toString().replace(/\s+/g, ' ').trim();
+            const severity = (obj.severity || '').toString();
+            const dateCreated = (obj.alert_date || '').toString();
+            const status = (obj.status || '').toString();
+            pdfData.push([farmer, livestock, topic, description, severity, dateCreated, status]);
         });
-        
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('landscape', 'mm', 'a4');
-        
-        // Set title
         doc.setFontSize(18);
         doc.text('Admin Farmer Alerts Report', 14, 22);
         doc.setFontSize(12);
         doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 32);
-        
-        // Add table
+
         doc.autoTable({
             head: [headers],
             body: pdfData,
             startY: 40,
-            styles: {
-                fontSize: 8,
-                cellPadding: 2
-            },
-            headStyles: {
-                fillColor: [24, 55, 93],
-                textColor: 255,
-                fontStyle: 'bold'
-            },
-            alternateRowStyles: {
-                fillColor: [245, 245, 245]
-            }
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [24, 55, 93], textColor: 255, fontStyle: 'bold' },
+            alternateRowStyles: { fillColor: [245, 245, 245] }
         });
-        
-        // Save PDF with counter
+
         doc.save(`Admin_FarmerAlertsReport_${downloadCounter}.pdf`);
-        
-        // Increment download counter
         downloadCounter++;
-        
         showNotification('PDF exported successfully!', 'success');
-        
     } catch (error) {
         console.error('Error generating PDF:', error);
         showNotification('Error generating PDF. Please try again.', 'danger');
@@ -620,16 +593,12 @@ function exportToPNG() {
 
 function printTable() {
     try {
-        const tableData = alertsTable.data().toArray();
-        
-        if (!tableData || tableData.length === 0) {
+        const data = alertsTable.rows({ search: 'applied' }).data().toArray();
+        if (!data || data.length === 0) {
             showNotification('No data available to print', 'warning');
             return;
         }
-        
-        // Create print content directly in current page
-        const originalContent = document.body.innerHTML;
-        
+
         let printContent = `
             <div style="font-family: Arial, sans-serif; margin: 20px;">
                 <div style="text-align: center; margin-bottom: 20px;">
@@ -649,48 +618,44 @@ function printTable() {
                         </tr>
                     </thead>
                     <tbody>`;
-        
-        // Add data rows (excluding Actions column)
-        tableData.forEach(row => {
-            printContent += '<tr>';
-            for (let i = 0; i < row.length - 1; i++) { // Skip last column (Actions)
-                let cellText = '';
-                if (row[i]) {
-                    // Remove HTML tags and get clean text
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = row[i];
-                    cellText = tempDiv.textContent || tempDiv.innerText || '';
-                    // Clean up the text
-                    cellText = cellText.replace(/\s+/g, ' ').trim();
-                }
-                printContent += `<td style="border: 3px solid #000; padding: 10px; text-align: left;">${cellText}</td>`;
-            }
-            printContent += '</tr>';
+
+        data.forEach(obj => {
+            const farmer = [obj.farmer_name || '', obj.farmer_email ? `(${obj.farmer_email})` : ''].filter(Boolean).join(' ').trim();
+            const livestock = [obj.livestock_id || 'N/A', [obj.livestock_type, obj.livestock_breed].filter(Boolean).join(' ')].filter(Boolean).join(' ').trim();
+            const topic = (obj.topic || '').toString();
+            const desc = ((obj.description || '').toString().replace(/\s+/g, ' ').trim());
+            const severity = (obj.severity || '').toString();
+            const dateCreated = (obj.alert_date || '').toString();
+            const status = (obj.status || '').toString();
+            printContent += `
+                <tr>
+                    <td style="border: 3px solid #000; padding: 10px; text-align: left;">${farmer}</td>
+                    <td style="border: 3px solid #000; padding: 10px; text-align: left;">${livestock}</td>
+                    <td style="border: 3px solid #000; padding: 10px; text-align: left;">${topic}</td>
+                    <td style="border: 3px solid #000; padding: 10px; text-align: left;">${desc}</td>
+                    <td style="border: 3px solid #000; padding: 10px; text-align: left;">${severity}</td>
+                    <td style="border: 3px solid #000; padding: 10px; text-align: left;">${dateCreated}</td>
+                    <td style="border: 3px solid #000; padding: 10px; text-align: left;">${status}</td>
+                </tr>`;
         });
-        
+
         printContent += `
                     </tbody>
                 </table>
             </div>`;
-        
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
-        
+
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'Farmer Alerts Report');
+        } else {
+            window.print();
+        }
     } catch (error) {
         console.error('Error in print function:', error);
         showNotification('Error generating print. Please try again.', 'danger');
-        
-        // Fallback to DataTables print
         try {
             alertsTable.button('.buttons-print').trigger();
         } catch (fallbackError) {

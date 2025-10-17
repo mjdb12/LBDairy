@@ -2421,18 +2421,16 @@ function printSecurityTable() {
                 </table>
             </div>`;
         
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
+        // Print in same tab without background using printElement (no new tab)
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'Security Alerts & Critical Events Report');
+        } else {
+            window.print();
+        }
         
     } catch (error) {
         console.error('Error in print function:', error);
@@ -2516,18 +2514,16 @@ function printUserActivityTable() {
                 </table>
             </div>`;
         
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
+        // Print in same tab without background using printElement (no new tab)
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'User Activity Summary Report');
+        } else {
+            window.print();
+        }
         
     } catch (error) {
         console.error('Error in print function:', error);
@@ -2958,18 +2954,16 @@ function printSystemLogsTable() {
                 </table>
             </div>`;
         
-        // Replace page content with print content
-        document.body.innerHTML = printContent;
-        
-        // Print the page
-        window.print();
-        
-        // Restore original content after print dialog closes
-        setTimeout(() => {
-            document.body.innerHTML = originalContent;
-            // Re-initialize any JavaScript that might be needed
-            location.reload(); // Reload to restore full functionality
-        }, 100);
+        // Print in same tab without background using printElement (no new tab)
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'System Activity Logs Report');
+        } else {
+            window.print();
+        }
         
     } catch (error) {
         console.error('Error in print function:', error);

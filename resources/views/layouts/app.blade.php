@@ -1243,6 +1243,59 @@
             body.print-element-only #__print_area__ * { visibility: visible !important; }
             body.print-element-only #__print_area__ { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
         }
+
+        /* Global print cleanup for all pages (incl. DataTables print view) */
+        @media print {
+            html, body { background: #fff !important; }
+            /* Hide app chrome and interactive UI */
+            .sidebar,
+            #accordionSidebar,
+            .topbar,
+            .navbar,
+            .footer,
+            .page,
+            .card-header,
+            .container-fluid,
+            .card,
+            .card-body,
+            .table-responsive,
+            .dataTables_wrapper,
+            .search-controls,
+            .pagination,
+            .btn,
+            .dropdown,
+            .alert,
+            .toast,
+            .toast-container,
+            .modal { display: none !important; }
+
+            /* Flatten layout spacing */
+            #wrapper,
+            #content-wrapper,
+            #content,
+            .container-fluid { padding: 0 !important; margin: 0 !important; background: #fff !important; }
+
+            /* Hide DataTables chrome */
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter,
+            .dataTables_wrapper .dataTables_info,
+            .dataTables_wrapper .dataTables_paginate { display: none !important; }
+
+            /* Ensure dt-print-view also hides chrome */
+            body.dt-print-view .topbar,
+            body.dt-print-view .sidebar,
+            body.dt-print-view .navbar,
+            body.dt-print-view .footer,
+            body.dt-print-view .page,
+            body.dt-print-view .card-header,
+            body.dt-print-view .container-fluid,
+            body.dt-print-view .card,
+            body.dt-print-view .card-body,
+            body.dt-print-view .table-responsive,
+            body.dt-print-view .dataTables_wrapper,
+            body.dt-print-view .btn,
+            body.dt-print-view .dropdown { display: none !important; }
+        }
     </style>
     
     @stack('styles')
@@ -1368,6 +1421,47 @@
                 }, 300);
             } catch (e) {
                 window.print();
+            }
+        };
+
+        window.openPrintWindow = function(html, title) {
+            try {
+                var win = window.open('', '_blank', 'noopener,noreferrer');
+                if (!win) {
+                    // Popup blocked: print in-place using print-element-only container
+                    var printArea = document.getElementById('__print_area__') || (function(){ var d=document.createElement('div'); d.id='__print_area__'; document.body.appendChild(d); return d; })();
+                    printArea.innerHTML = (typeof html === 'string') ? html : '';
+                    document.body.classList.add('print-element-only');
+                    window.print();
+                    setTimeout(function(){
+                        printArea.innerHTML='';
+                        document.body.classList.remove('print-element-only');
+                    }, 300);
+                    return;
+                }
+                var doc = win.document;
+                doc.open();
+                doc.write('<!doctype html><html><head><meta charset="utf-8"><title>' + (title || 'Print') + '</title>');
+                doc.write('<style>@page{size:auto;margin:12mm;}html,body{background:#fff!important;color:#000;} .btn,.dropdown,.dataTables_wrapper,.table-responsive{display:none!important;} table{width:100%;border-collapse:collapse;} th,td{border:3px solid #000;padding:10px;text-align:left;} thead th{background:#f2f2f2;color:#18375d;}</style>');
+                doc.write('</head><body>');
+                doc.write(html);
+                doc.write('</body></html>');
+                doc.close();
+                win.focus();
+                setTimeout(function(){ win.print(); setTimeout(function(){ win.close(); }, 200); }, 200);
+            } catch (e) {
+                try {
+                    var printArea2 = document.getElementById('__print_area__') || (function(){ var d=document.createElement('div'); d.id='__print_area__'; document.body.appendChild(d); return d; })();
+                    printArea2.innerHTML = (typeof html === 'string') ? html : '';
+                    document.body.classList.add('print-element-only');
+                    window.print();
+                    setTimeout(function(){
+                        printArea2.innerHTML='';
+                        document.body.classList.remove('print-element-only');
+                    }, 300);
+                } catch(ignored) {
+                    window.print();
+                }
             }
         };
 

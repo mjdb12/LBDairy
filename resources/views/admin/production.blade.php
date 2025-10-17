@@ -882,7 +882,63 @@ function exportPNG() {
 }
 
 function printProductivity() {
-    window.print();
+    try {
+        const tableData = productionTable && productionTable.data ? productionTable.data().toArray() : [];
+        if (!tableData || tableData.length === 0) {
+            showNotification('No data available to print', 'warning');
+            return;
+        }
+
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">Production Report</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="1" style="border-collapse: collapse; width: 100%; border: 1px solid #000;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Product ID</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Product Name</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Batch Number</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Stock Number</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Farm</th>
+                            <th style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2; text-align: left;">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        tableData.forEach(row => {
+            printContent += '<tr>';
+            for (let i = 0; i < row.length - 1; i++) { // Exclude Actions column
+                let cellText = '';
+                if (row[i]) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = row[i];
+                    cellText = (tempDiv.textContent || tempDiv.innerText || '').replace(/\s+/g, ' ').trim();
+                }
+                printContent += `<td style=\"border: 1px solid #000; padding: 8px; text-align: left;\">${cellText}</td>`;
+            }
+            printContent += '</tr>';
+        });
+
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'Production Report');
+        } else {
+            window.print();
+        }
+    } catch (e) {
+        window.print();
+    }
 }
 
 function exportHistory() {

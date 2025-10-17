@@ -1949,9 +1949,15 @@ function printTable() {
                     </tbody>
                 </table>
             </div>`;
-        document.body.innerHTML = printContent;
-        window.print();
-        setTimeout(() => { document.body.innerHTML = originalContent; location.reload(); }, 100);
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div');
+            container.innerHTML = printContent;
+            window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'SuperAdmin Farms Report');
+        } else {
+            window.print();
+        }
     } catch (error) {
         console.error('Error in print function:', error);
         showNotification('Error generating print. Please try again.', 'danger');
