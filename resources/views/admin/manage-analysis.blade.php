@@ -249,7 +249,7 @@
 
             <!-- Body -->
             <div class="modal-body">
-                <div id="farmerDetailsContent" class="detail-wrapper">
+                <div id="farmerDetailsContent" >
                     <!-- Personal & Farm Info -->
                 </div>
             </div>
@@ -293,7 +293,7 @@
         <form id="deleteFarmerForm" method="POST">
           @csrf
           @method('DELETE')
-          <button type="submit" class="btn-modern btn-delete">Yes, Delete</button>
+          <button type="submit" class="btn-modern btn-delete"><i class="fas fa-trash"></i> Yes, Delete</button>
         </form>
       </div>
     </div>

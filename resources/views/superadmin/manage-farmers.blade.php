@@ -1564,7 +1564,7 @@ html body #updateFarmerBtn.btn-primary:focus,
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok" id="updateAdminBtn" >
-            Save User
+            <i class="fas fa-save"></i> Save User
           </button>
         </div>
       </form>
@@ -1590,7 +1590,7 @@ html body #updateFarmerBtn.btn-primary:focus,
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="farmerDetailsContent" class="detail-wrapper">
+        <div id="farmerDetailsContent">
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -1723,7 +1723,7 @@ html body #updateFarmerBtn.btn-primary:focus,
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" id="updateFarmerBtn" class="btn-modern btn-ok">
-            Update Farmer
+            <i class="fas fa-save"></i> Update Farmer
           </button>
         </div>
       </form>
@@ -1751,7 +1751,7 @@ html body #updateFarmerBtn.btn-primary:focus,
             <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteFarmerBtn" class="btn-modern btn-delete">
-                    Yes, Delete
+                    <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>

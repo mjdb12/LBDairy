@@ -1711,7 +1711,7 @@ html body #saveAdminBtn.btn-primary:focus,
 
             <!-- Body -->
              <div class="modal-body">
-                <div id="userDetails" class="detail-wrapper text-start">
+                <div id="userDetails" >
                     <!-- Example user detail layout -->
                     <div class="detail-row">
                         <span class="detail-label">Full Name:</span>
@@ -1757,7 +1757,7 @@ html body #saveAdminBtn.btn-primary:focus,
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="farmerDetails" class="detail-wrapper">
+        <div id="farmerDetails">
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -1767,7 +1767,7 @@ html body #saveAdminBtn.btn-primary:focus,
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="openContactModal()">
-                Contact Admin
+                <i class="fas fa-envelope"></i> Contact Admin
             </button>
         </div>
 
@@ -1835,7 +1835,7 @@ html body #saveAdminBtn.btn-primary:focus,
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
-                        Send Message
+                        <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </div>
             </form>
@@ -1901,7 +1901,7 @@ html body #saveAdminBtn.btn-primary:focus,
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
-                        Send Message
+                        <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </div>
             </form>
@@ -2052,7 +2052,7 @@ html body #saveAdminBtn.btn-primary:focus,
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok" id="saveAdminBtn">
-            Save User
+            <i class="fas fa-save"></i> Save User
           </button>
         </div>
       </form>
@@ -2183,7 +2183,11 @@ html body #saveAdminBtn.btn-primary:focus,
         <!-- Footer -->
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+<<<<<<< HEAD
           <button type="submit" class="btn-modern btn-ok" id="updateAdminBtn">Update Admin</button>
+=======
+          <button type="submit" class="btn-modern btn-ok"><i class="fas fa-save"></i> Update Admin</button>
+>>>>>>> 5932f9c88aa173c10f4b72ddd96ad0cc9f7a3533
         </div>
 
       </form>
@@ -2211,7 +2215,7 @@ html body #saveAdminBtn.btn-primary:focus,
             <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteAdminBtn" class="btn-modern btn-delete">
-                    Yes, Delete
+                    <i class="fas fa-trash"></i>Yes, Delete
                 </button>
             </div>
         </div>

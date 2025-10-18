@@ -111,7 +111,7 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#inventoryHistoryModal">
-                                <i class="fas fa-history"></i> Download CSV
+                                <i class="fas fa-history"></i> History
                             </a>
                             <a class="dropdown-item" href="#" onclick="printInventory()">
                                 <i class="fas fa-print"></i> Print Table
@@ -440,7 +440,7 @@
           Close
         </button>
         <button type="button" class="btn-modern btn-ok" onclick="exportInventoryHistory()">
-          Export History
+          <i class="fas fa-file-export"></i> Export History
         </button>
       </div>
     </div>

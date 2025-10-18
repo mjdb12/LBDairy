@@ -1944,7 +1944,7 @@
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">
-            Add Livestock
+            <i class="fas fa-save"></i> Add Livestock
           </button>
         </div>
       </form>
@@ -1969,7 +1969,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="livestockDetailsContent" class="detail-wrapper">
+        <div id="livestockDetailsContent" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -1979,7 +1979,7 @@
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="openLivestockEditModal()">
-                Edit Livestock
+                <i class="fas fa-edit"></i> Edit 
             </button>
         </div>
 
@@ -2004,7 +2004,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="qrCodeContent" class="detail-wrapper">
+        <div id="qrCodeContent" >
           <p class="mt-3" id="qrCodeText"></p>
         </div>
       </div>
@@ -2014,7 +2014,7 @@
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="downloadQRCode()">
-                Download
+                <i class="fas fa-download"></i> Download
             </button>
         </div>
 
@@ -2220,7 +2220,7 @@
                 <!-- Footer -->
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok">Update Livestock</button>
+                    <button type="submit" class="btn-modern btn-ok"><i class="fas fa-save"></i> Update Livestock</button>
                 </div>
 
             </form>
@@ -2251,7 +2251,7 @@
       <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn-modern btn-delete" id="confirmDeleteBtn">
-          Yes, Delete
+          <i class="fas fa-trash"></i> Yes, Delete
         </button>
       </div>
 
@@ -2283,7 +2283,7 @@
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-approve">
-                        Approve
+                        <i class="fas fa-check-circle"></i> Approve
                     </button>
                 </div>
             </form>
@@ -2350,7 +2350,7 @@
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
-                        Issue Alert
+                        <i class="fas fa-save"></i> Issue Alert
                     </button>
                 </div>
             </form>

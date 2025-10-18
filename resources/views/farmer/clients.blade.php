@@ -2245,8 +2245,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const statusCell = `<span class="${statusBadgeMap[status] || 'badge badge-secondary'}">${statusLabelMap[status] || 'N/A'}</span>`;
         const totalOrdersCell = `0`;
         const actionCell = `
-            <button class="btn btn-sm btn-outline-primary" onclick="viewClient('${name.replace(/'/g, "&#39;")}')">View</button>
-            <button class="btn btn-sm btn-outline-info" onclick="editClient('${name.replace(/'/g, "&#39;")}')">Edit</button>`;
+            <div class="btn-group">
+                <button class="btn-action btn-action-ok" onclick="viewClient('{{ $client['name'] }}')" title="View Details">
+                    <i class="fas fa-eye"></i>
+                    <span>View</span>
+                </button>
+                <button class="btn-action btn-action-edits" onclick="editClient('{{ $client['name'] }}')" title="Edit">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit</span>
+                </button>
+            </div>`;
 
         if (clientsDT) {
             const rowNode = clientsDT.row.add([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false).node();

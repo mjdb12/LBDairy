@@ -399,7 +399,7 @@
 
             <!-- Body -->
             <div class="modal-body" style="overflow-x: auto;">
-                <div id="livestockDetailsContent" class="detail-wrapper">
+                <div id="livestockDetailsContent">
                     <!-- Dynamic details will be injected here -->
                 </div>
             </div>
@@ -410,7 +410,7 @@
                     Close
                 </button>
                 <button type="button" class="btn-modern btn-edit" onclick="printLivestockRecord()" id="printLivestockBtn">
-                    <i class="fas fa-print"></i> Print
+                    <i class="fas fa-print"></i> Print Record
                 </button>
                 <button type="button" class="btn-modern btn-ok" onclick="editCurrentLivestock()">
                     <i class="fas fa-edit"></i> Edit
@@ -583,10 +583,11 @@ $(document).ready(function() {
             setTimeout(forcePaginationLeft, 500);
             setTimeout(forcePaginationLeft, 1000);
             
-            // Connect custom search to DataTables (keyup + input for mobile/IME)
-            $('#livestockSearch').on('input keyup', function() {
-                livestockTable.search(this.value).draw();
-            });
+            $('#livestockSearch').on('keyup', function() {
+        if ($.fn.DataTable.isDataTable('#livestockTable')) {
+            $('#livestockTable').DataTable().search(this.value).draw();
+        }
+    });
         } catch (error) {
             console.error('DataTables initialization error:', error);
         }
@@ -745,6 +746,7 @@ function loadLivestockDetails(livestockId) {
                 
                 $('#livestockDetailsContent').html(`
             <!-- Smart Detail Body Content -->
+<div id="livestockPrintContainer" style="display:none;"></div>
 
 <!-- QR Code & Quick Info Section -->
 <div class="row mb-4">
@@ -1328,73 +1330,82 @@ function addProductionRecord(livestockId) {
     
     // Create production record modal
     const modalHtml = `
-        <div class="modal fade" id="productionRecordModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-chart-line"></i>
-                            Add Production Record
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="productionRecordForm">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="production_date">Production Date *</label>
-                                        <input type="date" class="form-control" id="production_date" name="production_date" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="production_type">Production Type *</label>
-                                        <select class="form-control" id="production_type" name="production_type" required>
-                                            <option value="milk">Milk</option>
-                                            <option value="eggs">Eggs</option>
-                                            <option value="meat">Meat</option>
-                                            <option value="wool">Wool</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="quantity">Quantity *</label>
-                                        <input type="number" class="form-control" id="quantity" name="quantity" min="0" step="0.1" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="quality">Quality</label>
-                                        <select class="form-control" id="quality" name="quality">
-                                            <option value="excellent">Excellent</option>
-                                            <option value="good">Good</option>
-                                            <option value="fair">Fair</option>
-                                            <option value="poor">Poor</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="notes">Notes</label>
-                                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="saveProductionRecord(${livestockId})">
-                            <i class="fas fa-save"></i> Save Record
-                        </button>
+        <!-- Add Production Record Modal -->
+<div class="modal fade" id="productionRecordModal" tabindex="-1" role="dialog" aria-labelledby="productionRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="productionRecordModalLabel">Add Production Record</h5>
+                <p class="text-muted mb-0 small">
+                    Enter the production details below to record livestock output.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="productionRecordForm" class="text-start mx-auto">
+                <div class="form-wrapper">
+                    <div class="row g-3">
+                        <!-- Production Date -->
+                        <div class="col-md-6 ">
+                            <label for="production_date" class="fw-semibold">Production Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="production_date" name="production_date" required>
+                        </div>
+
+                        <!-- Production Type -->
+                        <div class="col-md-6 ">
+                            <label for="production_type" class="fw-semibold">Production Type <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="production_type" name="production_type" required>
+                                <option value="">Select Type</option>
+                                <option value="milk">Milk</option>
+                                <option value="eggs">Eggs</option>
+                                <option value="meat">Meat</option>
+                                <option value="wool">Wool</option>
+                            </select>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="col-md-6 ">
+                            <label for="quantity" class="fw-semibold">Quantity <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control mt-1" id="quantity" name="quantity" min="0" step="0.1" required>
+                        </div>
+
+                        <!-- Quality -->
+                        <div class="col-md-6 ">
+                            <label for="quality" class="fw-semibold">Quality</label>
+                            <select class="form-control mt-1" id="quality" name="quality">
+                                <option value="">Select Quality</option>
+                                <option value="excellent">Excellent</option>
+                                <option value="good">Good</option>
+                                <option value="fair">Fair</option>
+                                <option value="poor">Poor</option>
+                            </select>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-12 mb-3">
+                            <label for="notes" class="fw-semibold">Notes</label>
+                            <textarea class="form-control mt-1" id="notes" name="notes" rows="3" style="resize: none;"></textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-modern btn-ok" onclick="saveProductionRecord()">
+                        <i class="fas fa-save"></i> Save Record
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
+
     `;
     
     // Remove existing modal if any
@@ -1463,82 +1474,90 @@ function addHealthRecord(livestockId) {
     
     // Create health record modal
     const modalHtml = `
-        <div class="modal fade" id="healthRecordModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-heartbeat"></i>
-                            Add Health Record
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="healthRecordForm">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="health_date">Health Check Date *</label>
-                                        <input type="date" class="form-control" id="health_date" name="health_date" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="health_status">Health Status *</label>
-                                        <select class="form-control" id="health_status" name="health_status" required>
-                                            <option value="healthy">Healthy</option>
-                                            <option value="sick">Sick</option>
-                                            <option value="recovering">Recovering</option>
-                                            <option value="under_treatment">Under Treatment</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="weight">Weight (kg)</label>
-                                        <input type="number" class="form-control" id="weight" name="weight" min="0" step="0.1">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="temperature">Temperature (°C)</label>
-                                        <input type="number" class="form-control" id="temperature" name="temperature" min="0" step="0.1">
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="symptoms">Symptoms/Observations</label>
-                                        <textarea class="form-control" id="symptoms" name="symptoms" rows="3"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="treatment">Treatment Given</label>
-                                        <textarea class="form-control" id="treatment" name="treatment" rows="3"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="veterinarian_id">Veterinarian</label>
-                                        <select class="form-control" id="veterinarian_id" name="veterinarian_id">
-                                            <option value="">Select Veterinarian</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="saveHealthRecord(${livestockId})">
-                            <i class="fas fa-save"></i> Save Record
-                        </button>
+        <!-- Add Health Record Modal -->
+<div class="modal fade" id="healthRecordModal" tabindex="-1" role="dialog" aria-labelledby="healthRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-heartbeat fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="healthRecordModalLabel">Add Health Record</h5>
+                <p class="text-muted mb-0 small">
+                    Provide the details below to record the livestock’s health status.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="healthRecordForm" class="text-start mx-auto">
+                <div class="form-wrapper">
+                    <div class="row g-3">
+                        <!-- Health Date -->
+                        <div class="col-md-6">
+                            <label for="health_date" class="fw-semibold">Health Check Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="health_date" name="health_date" required>
+                        </div>
+
+                        <!-- Health Status -->
+                        <div class="col-md-6">
+                            <label for="health_status" class="fw-semibold">Health Status <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="health_status" name="health_status" required>
+                                <option value="">Select Status</option>
+                                <option value="healthy">Healthy</option>
+                                <option value="sick">Sick</option>
+                                <option value="recovering">Recovering</option>
+                                <option value="under_treatment">Under Treatment</option>
+                            </select>
+                        </div>
+
+                        <!-- Weight -->
+                        <div class="col-md-6 ">
+                            <label for="weight" class="fw-semibold">Weight (kg)</label>
+                            <input type="number" class="form-control mt-1" id="weight" name="weight" min="0" step="0.1">
+                        </div>
+
+                        <!-- Temperature -->
+                        <div class=" col-md-6 ">
+                            <label for="temperature" class="fw-semibold">Temperature (°C)</label>
+                            <input type="number" class="form-control mt-1" id="temperature" name="temperature" min="0" step="0.1">
+                        </div>
+
+                        <!-- Symptoms / Observations -->
+                        <div class="col-12 mb-3">
+                            <label for="symptoms" class="fw-semibold">Symptoms / Observations</label>
+                            <textarea class="form-control mt-1" id="symptoms" name="symptoms" rows="3" style="resize: none;"></textarea>
+                        </div>
+
+                        <!-- Treatment -->
+                        <div class="col-12 mb-3">
+                            <label for="treatment" class="fw-semibold">Treatment Given</label>
+                            <textarea class="form-control mt-1" id="treatment" name="treatment" rows="3" style="resize: none;"></textarea>
+                        </div>
+
+                        <!-- Veterinarian -->
+                        <div class="col-lg-6 col-md-6 mb-3">
+                            <label for="veterinarian_id" class="fw-semibold">Veterinarian</label>
+                            <select class="form-control mt-1" id="veterinarian_id" name="veterinarian_id">
+                                <option value="">Select Veterinarian</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-modern btn-ok" onclick="saveHealthRecord()">
+                        <i class="fas fa-save"></i> Save Record
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
+
     `;
     
     // Remove existing modal if any
@@ -1630,87 +1649,97 @@ function addBreedingRecord(livestockId) {
     
     // Create breeding record modal
     const modalHtml = `
-        <div class="modal fade" id="breedingRecordModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-heart"></i>
-                            Add Breeding Record
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="breedingRecordForm">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="breeding_date">Breeding Date *</label>
-                                        <input type="date" class="form-control" id="breeding_date" name="breeding_date" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="breeding_type">Breeding Type *</label>
-                                        <select class="form-control" id="breeding_type" name="breeding_type" required>
-                                            <option value="natural">Natural Breeding</option>
-                                            <option value="artificial">Artificial Insemination</option>
-                                            <option value="embryo_transfer">Embryo Transfer</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="partner_livestock_id">Partner Livestock ID</label>
-                                        <input type="text" class="form-control" id="partner_livestock_id" name="partner_livestock_id">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="expected_birth_date">Expected Birth Date</label>
-                                        <input type="date" class="form-control" id="expected_birth_date" name="expected_birth_date">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="pregnancy_status">Pregnancy Status</label>
-                                        <select class="form-control" id="pregnancy_status" name="pregnancy_status">
-                                            <option value="unknown">Unknown</option>
-                                            <option value="pregnant">Pregnant</option>
-                                            <option value="not_pregnant">Not Pregnant</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="breeding_success">Breeding Success</label>
-                                        <select class="form-control" id="breeding_success" name="breeding_success">
-                                            <option value="unknown">Unknown</option>
-                                            <option value="successful">Successful</option>
-                                            <option value="unsuccessful">Unsuccessful</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="notes">Notes</label>
-                                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn-action btn-action-ok" onclick="saveBreedingRecord(${livestockId})">
-                            Save Record
-                        </button>
+        <!-- Add Breeding Record Modal -->
+<div class="modal fade" id="breedingRecordModal" tabindex="-1" role="dialog" aria-labelledby="breedingRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-heart fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="breedingRecordModalLabel">Add Breeding Record</h5>
+                <p class="text-muted mb-0 small">
+                    Provide the breeding details below to update the livestock’s reproductive record.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="breedingRecordForm" class="text-start mx-auto">
+                <div class="form-wrapper">
+                    <div class="row g-3">
+                        <!-- Breeding Date -->
+                        <div class="col-md-6">
+                            <label for="breeding_date" class="fw-semibold">Breeding Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="breeding_date" name="breeding_date" required>
+                        </div>
+
+                        <!-- Breeding Type -->
+                        <div class="col-md-6">
+                            <label for="breeding_type" class="fw-semibold">Breeding Type <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="breeding_type" name="breeding_type" required>
+                                <option value="">Select Type</option>
+                                <option value="natural">Natural Breeding</option>
+                                <option value="artificial">Artificial Insemination</option>
+                                <option value="embryo_transfer">Embryo Transfer</option>
+                            </select>
+                        </div>
+
+                        <!-- Partner Livestock ID -->
+                        <div class="col-md-6 ">
+                            <label for="partner_livestock_id" class="fw-semibold">Partner Livestock ID</label>
+                            <input type="text" class="form-control mt-1" id="partner_livestock_id" name="partner_livestock_id">
+                        </div>
+
+                        <!-- Expected Birth Date -->
+                        <div class="col-md-6 ">
+                            <label for="expected_birth_date" class="fw-semibold">Expected Birth Date</label>
+                            <input type="date" class="form-control mt-1" id="expected_birth_date" name="expected_birth_date">
+                        </div>
+
+                        <!-- Pregnancy Status -->
+                        <div class="col-md-6">
+                            <label for="pregnancy_status" class="fw-semibold">Pregnancy Status</label>
+                            <select class="form-control mt-1" id="pregnancy_status" name="pregnancy_status">
+                                <option value="">Select Status</option>
+                                <option value="unknown">Unknown</option>
+                                <option value="pregnant">Pregnant</option>
+                                <option value="not_pregnant">Not Pregnant</option>
+                            </select>
+                        </div>
+
+                        <!-- Breeding Success -->
+                        <div class="col-md-6">
+                            <label for="breeding_success" class="fw-semibold">Breeding Success</label>
+                            <select class="form-control mt-1" id="breeding_success" name="breeding_success">
+                                <option value="">Select Result</option>
+                                <option value="unknown">Unknown</option>
+                                <option value="successful">Successful</option>
+                                <option value="unsuccessful">Unsuccessful</option>
+                            </select>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-12 mb-3">
+                            <label for="notes" class="fw-semibold">Notes</label>
+                            <textarea class="form-control mt-1" id="notes" name="notes" rows="3" style="resize: none;"></textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-modern btn-ok" onclick="saveBreedingRecord()">
+                        <i class="fas fa-save"></i> Save Record
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
+
     `;
     
     // Remove existing modal if any
@@ -1957,6 +1986,149 @@ function showToast(message, type = 'info') {
 
 @push('styles')
 <style>
+    /* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#breedingRecordModal form {
+  text-align: left;
+}
+
+#breedingRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#breedingRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#breedingRecordModal .form-control,
+#breedingRecordModal select.form-control,
+#breedingRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#breedingRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#breedingRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#healthRecordModal form {
+  text-align: left;
+}
+
+#healthRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#healthRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#healthRecordModal .form-control,
+#healthRecordModal select.form-control,
+#healthRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#healthRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#healthRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#productionRecordModal form {
+  text-align: left;
+}
+
+#productionRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#productionRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#productionRecordModal .form-control,
+#productionRecordModal select.form-control,
+#productionRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#productionRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#productionRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
      /* Make nav tabs responsive and scrollable on small screens */
 @media (max-width: 768px) {
   #livestockTab {

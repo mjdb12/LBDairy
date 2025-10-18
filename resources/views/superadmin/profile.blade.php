@@ -1264,7 +1264,7 @@ SMART FORM - Enhanced Version
                 <!-- Footer Buttons -->
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok">Save Changes</button>
+                    <button type="submit" class="btn-modern btn-ok"><i class="fas fa-save"></i> Save Changes</button>
                 </div>
             </form>
             
@@ -1347,7 +1347,7 @@ SMART FORM - Enhanced Version
 
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-modern btn-ok">Change Password</button>
+          <button type="submit" class="btn-modern btn-ok"><i class="fas fa-save"></i> Change Password</button>
         </div>
       </form>
     </div>
