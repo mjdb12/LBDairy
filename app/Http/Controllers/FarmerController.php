@@ -1879,6 +1879,7 @@ class FarmerController extends Controller
                 'receipt_number' => $expense->receipt_number,
                 'notes' => $expense->notes,
                 'farm_id' => $expense->farm_id,
+                'farm_name' => $expense->farm ? $expense->farm->name : 'Unknown',
             ]
         ]);
     }
@@ -2877,7 +2878,21 @@ class FarmerController extends Controller
 
         return response()->json([
             'success' => true,
-            'sale' => $sale
+            'sale' => [
+                'id' => $sale->id,
+                'sale_id' => 'SALE-' . str_pad((string)$sale->id, 5, '0', STR_PAD_LEFT),
+                'sale_date' => $sale->sale_date ? \Carbon\Carbon::parse($sale->sale_date)->format('Y-m-d') : null,
+                'customer_name' => $sale->customer_name,
+                'customer_phone' => $sale->customer_phone,
+                'customer_email' => $sale->customer_email,
+                'quantity' => (float) $sale->quantity,
+                'unit_price' => (float) $sale->unit_price,
+                'amount' => (float) $sale->total_amount,
+                'payment_status' => $sale->payment_status,
+                'payment_method' => $sale->payment_method,
+                'notes' => $sale->notes,
+                'farm_id' => $sale->farm_id,
+            ]
         ]);
     }
 
@@ -2893,7 +2908,6 @@ class FarmerController extends Controller
             'customer_email' => 'nullable|email|max:255',
             'quantity' => 'required|numeric|min:0',
             'unit_price' => 'required|numeric|min:0',
-            'sale_date' => 'required|date',
             'payment_method' => 'nullable|string',
             'payment_status' => 'nullable|in:pending,paid,partial',
             'notes' => 'nullable|string'
@@ -2919,7 +2933,6 @@ class FarmerController extends Controller
                 'total_amount' => $totalAmount,
                 'payment_status' => $request->payment_status ?? $sale->payment_status,
                 'payment_method' => $request->payment_method ?? $sale->payment_method,
-                'sale_date' => $request->sale_date,
                 'notes' => $request->notes,
             ]);
 

@@ -765,8 +765,12 @@ function submitExpenseForm() {
         if (data.success){
             const id = (data.expense && data.expense.id) ? data.expense.id : null;
             if (id){
-                // Fetch normalized expense then upsert row
-                await fetchExpenseAndUpsert(id);
+                // Fetch normalized expense then upsert row (fallback to reload if helper unavailable)
+                if (typeof fetchExpenseAndUpsert === 'function') {
+                    await fetchExpenseAndUpsert(id);
+                } else {
+                    location.reload();
+                }
             }
             $('#expenseModal').modal('hide');
             showToast(data.message || 'Expense saved', 'success');
@@ -802,7 +806,7 @@ function deleteExpense(expenseId) {
         headers: { 'X-CSRF-TOKEN': CSRF_TOKEN },
     }).done(function(response){
         if (response && response.success){
-            const tr = getExpenseRowById(expenseId);
+            const tr = document.querySelector(`#expensesTable tbody tr[data-expense-id="${expenseId}"]`);
             if (tr && expensesDT){ expensesDT.row(tr).remove().draw(false); }
             $('#confirmDeleteModal').modal('hide');
             showToast(response.message || 'Expense deleted successfully!', 'success');
