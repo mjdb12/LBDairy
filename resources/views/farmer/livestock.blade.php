@@ -129,7 +129,7 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="livestockTable">
-                    <thead>
+                    <thead class="thead-light">
                         <tr>
                             <th>Livestock ID</th>
                             <th>Type</th>
@@ -398,7 +398,7 @@
             </div>
 
             <!-- Body -->
-            <div class="modal-body">
+            <div class="modal-body" style="overflow-x: auto;">
                 <div id="livestockDetailsContent" class="detail-wrapper">
                     <!-- Dynamic details will be injected here -->
                 </div>
@@ -506,9 +506,20 @@ $(document).ready(function() {
                 ordering: true,
                 lengthChange: false,
                 pageLength: 10,
-                autoWidth: false,
-                scrollX: true,
+                autoWidth: true,
+                scrollX: false,
                 order: [[0, 'asc']],
+                columnDefs: [
+                    { width: '100px', targets: 0 }, // Livestock ID
+                    { width: '120px', targets: 1 }, // Type
+                    { width: '140px', targets: 2 }, // Breed
+                    { width: '100px', targets: 3 }, // Age
+                    { width: '120px', targets: 4 }, // Weight
+                    { width: '140px', targets: 5 }, // Health Status
+                    { width: '140px', targets: 6 }, // Registration Date
+                    { width: '220px', targets: 7, orderable: false }, // Actions
+                    { targets: '_all', className: 'text-center align-middle' }
+                ],
                 buttons: [
                     {
                         extend: 'csvHtml5',
@@ -551,6 +562,7 @@ $(document).ready(function() {
                     }
                 }
             });
+            livestockTable.columns.adjust();
             
             // Hide default DataTables elements
             $('.dataTables_filter').hide();
@@ -958,6 +970,28 @@ function loadLivestockDetails(livestockId) {
                 </tbody>
             </table>
         </div>
+        <div class="smart-table table-responsive mt-3" style="display:block; max-width:100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom:8px;">
+            <table class="table table-sm table-bordered align-middle mb-0" style="min-width: 1800px !important; table-layout: auto; width: max-content !important;">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Partner</th>
+                        <th>Pregnancy</th>
+                        <th>Success</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="breedingRecordsTable">
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle"></i>
+                            No breeding records found.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="text-right mt-3">
             <button class="btn-action btn-action-ok" onclick="addBreedingRecord('${livestock.id}')">
                 <i class="fas fa-plus"></i> Add Breeding Record
@@ -969,8 +1003,10 @@ function loadLivestockDetails(livestockId) {
 
                 `);
                 
-                // Load production records
+                // Load records for tabs
                 loadProductionRecords(livestockId);
+                loadHealthRecords(livestockId);
+                loadBreedingRecords(livestockId);
                 
                 // Automatically check QR code status
                 setTimeout(() => {
@@ -1184,6 +1220,18 @@ function calculateAge(birthDate) {
     return `${age} year${age > 1 ? 's' : ''}`;
 }
 
+// Ensure pagination and info are left-aligned; guard errors
+function forcePaginationLeft() {
+    try {
+        const wrapper = $('#livestockTable').closest('.dataTables_wrapper');
+        if (!wrapper.length) return;
+        wrapper.find('.dataTables_length').hide();
+        wrapper.find('.dataTables_filter').hide();
+        wrapper.find('.dataTables_paginate').css({ 'float': 'left', 'text-align': 'left' });
+        wrapper.find('.dataTables_info').css({ 'float': 'left', 'text-align': 'left', 'margin-left': '10px' });
+    } catch (e) {}
+}
+
 function loadProductionRecords(livestockId) {
     $.ajax({
         url: `/farmer/livestock/${livestockId}/production-records`,
@@ -1194,13 +1242,22 @@ function loadProductionRecords(livestockId) {
                 tbody.innerHTML = '';
                 
                 response.data.forEach(record => {
+                    // attempt to derive type from notes if not provided
+                    let pType = record.production_type || '';
+                    if (!pType && record.notes) {
+                        const m = record.notes.match(/\[type:\s*([^\]]+)\]/i);
+                        if (m) pType = m[1];
+                    }
+                    // strip type tag from notes display
+                    let noteText = record.notes || '';
+                    noteText = noteText.replace(/\[type:\s*[^\]]+\]\s*/i, '').trim();
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${new Date(record.production_date).toLocaleDateString()}</td>
-                        <td>${record.production_type || 'N/A'}</td>
+                        <td>${pType || 'Milk'}</td>
                         <td>${record.quantity || 'N/A'}</td>
                         <td>${record.quality || 'N/A'}</td>
-                        <td>${record.notes || 'N/A'}</td>
+                        <td>${noteText || 'N/A'}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -1208,6 +1265,57 @@ function loadProductionRecords(livestockId) {
         },
         error: function() {
             // Keep the default "no records" message
+        }
+    });
+}
+
+function loadHealthRecords(livestockId) {
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/health-records`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                const tbody = document.getElementById('healthRecordsTable');
+                tbody.innerHTML = '';
+                response.data.forEach(r => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
+                        <td>${r.status || 'N/A'}</td>
+                        <td>${r.treatment || 'N/A'}</td>
+                        <td>${r.veterinarian || 'N/A'}</td>
+                        <td>${r.notes || 'N/A'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        }
+    });
+}
+
+function loadBreedingRecords(livestockId) {
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/breeding-records`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                const tbody = document.getElementById('breedingRecordsTable');
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    response.data.forEach(r => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="white-space: nowrap;">${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.type || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.partner || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.pregnancy || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.success || 'N/A'}</td>
+                            <td style="white-space: nowrap; min-width: 800px;">${r.notes || 'N/A'}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+            }
         }
     });
 }
@@ -1304,11 +1412,23 @@ function saveProductionRecord(livestockId) {
     const form = document.getElementById('productionRecordForm');
     const formData = new FormData(form);
     
+    // Map fields to backend expectations
+    const qualityMap = { excellent: 10, good: 8, fair: 6, poor: 4 };
+    const quality = formData.get('quality');
+    const qty = formData.get('quantity');
+    if (qty !== null) formData.append('milk_quantity', qty);
+    if (quality) formData.append('milk_quality_score', qualityMap[quality] || '');
+    // Include production type as a tag in notes so we can display it later
+    const pType = formData.get('production_type');
+    const userNotes = (formData.get('notes') || '').toString().trim();
+    const combinedNotes = `[type: ${pType || 'milk'}] ${userNotes}`.trim();
+    formData.set('notes', combinedNotes);
+    
     // Add livestock ID to form data
     formData.append('livestock_id', livestockId);
     
     $.ajax({
-        url: '/farmer/production-records',
+        url: '/farmer/production',
         method: 'POST',
         data: formData,
         processData: false,
@@ -1400,6 +1520,14 @@ function addHealthRecord(livestockId) {
                                         <textarea class="form-control" id="treatment" name="treatment" rows="3"></textarea>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="veterinarian_id">Veterinarian</label>
+                                        <select class="form-control" id="veterinarian_id" name="veterinarian_id">
+                                            <option value="">Select Veterinarian</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -1422,6 +1550,41 @@ function addHealthRecord(livestockId) {
     
     // Show modal
     $('#healthRecordModal').modal('show');
+
+    // Populate veterinarian dropdown
+    $.ajax({
+        url: '/farmer/admins',
+        method: 'GET',
+        success: function(res) {
+            if (res && res.success && Array.isArray(res.data)) {
+                const sel = document.querySelector('#healthRecordModal #veterinarian_id');
+                if (sel) {
+                    if (res.data.length === 0) {
+                        const opt = document.createElement('option');
+                        opt.value = '';
+                        opt.textContent = 'No admins found';
+                        sel.appendChild(opt);
+                    } else {
+                        res.data.forEach(a => {
+                            const opt = document.createElement('option');
+                            opt.value = a.id;
+                            opt.textContent = a.name;
+                            sel.appendChild(opt);
+                        });
+                    }
+                }
+            }
+        },
+        error: function() {
+            const sel = document.querySelector('#healthRecordModal #veterinarian_id');
+            if (sel && sel.children.length === 1) { // only the default option
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'Unable to load admins';
+                sel.appendChild(opt);
+            }
+        }
+    });
 }
 
 function saveHealthRecord(livestockId) {
@@ -1432,7 +1595,7 @@ function saveHealthRecord(livestockId) {
     formData.append('livestock_id', livestockId);
     
     $.ajax({
-        url: '/farmer/health-records',
+        url: `/farmer/livestock/${livestockId}/health`,
         method: 'POST',
         data: formData,
         processData: false,
@@ -1444,8 +1607,10 @@ function saveHealthRecord(livestockId) {
             if (response.success) {
                 showNotification('Health record added successfully!', 'success');
                 $('#healthRecordModal').modal('hide');
-                // Refresh livestock data to update health status
-                location.reload();
+                // Refresh health records table if details modal is open
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadHealthRecords(livestockId);
+                }
             } else {
                 showNotification('Error adding health record: ' + (response.message || 'Unknown error'), 'danger');
             }
@@ -1567,7 +1732,7 @@ function saveBreedingRecord(livestockId) {
     formData.append('livestock_id', livestockId);
     
     $.ajax({
-        url: '/farmer/breeding-records',
+        url: `/farmer/livestock/${livestockId}/breeding`,
         method: 'POST',
         data: formData,
         processData: false,
@@ -1579,6 +1744,9 @@ function saveBreedingRecord(livestockId) {
             if (response.success) {
                 showNotification('Breeding record added successfully!', 'success');
                 $('#breedingRecordModal').modal('hide');
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadBreedingRecords(livestockId);
+                }
             } else {
                 showNotification('Error adding breeding record: ' + (response.message || 'Unknown error'), 'danger');
             }

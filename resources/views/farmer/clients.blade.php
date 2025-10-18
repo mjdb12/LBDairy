@@ -1750,8 +1750,8 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead class="thead-light">
                             <tr>
                                 <th>Client Name</th>
                                 <th>Contact</th>
@@ -2165,8 +2165,8 @@ document.addEventListener('DOMContentLoaded', function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        autoWidth: false,
-        scrollX: true,
+        autoWidth: true,
+        scrollX: false,
         buttons: [
             { extend: 'csvHtml5', title: 'Farmer_Clients_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
             { extend: 'pdfHtml5', title: 'Farmer_Clients_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
@@ -2189,9 +2189,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     { width: '120px', targets: 2 }, // Type
                     { width: '120px', targets: 3 }, // Status
                     { width: '140px', targets: 4 }, // Total Orders
-                    { width: '180px', targets: 5, orderable: false } // Action
+                    { width: '220px', targets: 5, orderable: false }, // Action
+                    { targets: '_all', className: 'text-center align-middle' }
                 ]
             });
+            clientsDT.columns.adjust();
         } catch (e) {
             console.error('Failed to initialize Client Directory table:', e);
         }

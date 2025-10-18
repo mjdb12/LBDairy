@@ -93,6 +93,35 @@
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+/* Consistent table alignment and header styling */
+#productionTable,
+#topProducersTable {
+    width: 100% !important;
+    min-width: 1280px;
+}
+
+#productionTable th,
+#productionTable td,
+#topProducersTable th,
+#topProducersTable td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    white-space: normal;
+}
+
+#productionTable thead th,
+#topProducersTable thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+}
 /* Search and button group alignment */
     .search-controls {
         display: flex;
@@ -1303,8 +1332,8 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
+                    <table class="table table-bordered table-hover" id="topProducersTable">
+                        <thead class="thead-light">
                             <tr>
                                 <th>Rank</th>
                                 <th>Livestock</th>
@@ -1386,8 +1415,8 @@
                 </div>
             </div>
         <div class="table-responsive">
-            <table class="table table-bordered" id="productionTable">
-                <thead>
+            <table class="table table-bordered table-hover" id="productionTable">
+                <thead class="thead-light">
                     <tr>
                         <th>Date</th>
                         <th>Livestock</th>
@@ -1648,8 +1677,8 @@ $(document).ready(function() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        autoWidth: false,
-        scrollX: true,
+        autoWidth: true,
+        scrollX: false,
         buttons: [
             { extend: 'csvHtml5', title: 'Farmer_Production_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
             { extend: 'pdfHtml5', title: 'Farmer_Production_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
@@ -1669,9 +1698,11 @@ $(document).ready(function() {
                     { width: '140px', targets: 2 },
                     { width: '140px', targets: 3 },
                     { width: '260px', targets: 4 },
-                    { width: '160px', targets: 5, orderable: false }
+                    { width: '220px', targets: 5, orderable: false },
+                    { targets: '_all', className: 'text-center align-middle' }
                 ]
             });
+            productionDT.columns.adjust();
         } catch (e) {
             console.error('Failed to initialize Production DataTable:', e);
         }

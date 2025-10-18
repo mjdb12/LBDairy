@@ -16,6 +16,7 @@ use App\Models\ProductionRecord;
 use App\Models\Sale;
 use App\Models\Expense;
 use App\Models\Inventory;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class FarmerController extends Controller
@@ -48,6 +49,88 @@ class FarmerController extends Controller
         }
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
+
+    /**
+     * Get health records parsed from livestock remarks.
+     */
+    public function getLivestockHealthRecords($id)
+    {
+        $user = Auth::user();
+        $livestock = Livestock::whereHas('farm', function($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
+
+        $remarks = (string)($livestock->remarks ?? '');
+        $lines = preg_split('/\r?\n/', $remarks);
+        $records = [];
+        foreach ($lines as $line) {
+            if (strpos($line, '[Health]') === 0) {
+                $entry = ['date' => null, 'status' => null, 'treatment' => null, 'veterinarian' => null, 'notes' => null];
+                // Extract key:value pairs
+                $parts = array_map('trim', explode('|', substr($line, 8)));
+                foreach ($parts as $p) {
+                    if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
+                    if (stripos($p, 'Status:') === 0) $entry['status'] = trim(substr($p, 7));
+                    if (stripos($p, 'Treatment:') === 0) $entry['treatment'] = trim(substr($p, 10));
+                    if (stripos($p, 'Veterinarian:') === 0) $entry['veterinarian'] = trim(substr($p, 13));
+                    if (stripos($p, 'Symptoms:') === 0) {
+                        $entry['notes'] = isset($entry['notes']) && $entry['notes']
+                            ? ($entry['notes'] . '; ' . trim(substr($p, 9)))
+                            : trim(substr($p, 9));
+                    }
+                }
+                if (!$entry['status']) $entry['status'] = $livestock->health_status;
+                $records[] = $entry;
+            }
+        }
+
+        return response()->json(['success' => true, 'data' => $records]);
+    }
+
+    /**
+     * Get breeding records parsed from livestock remarks.
+     */
+    public function getLivestockBreedingRecords($id)
+    {
+        $user = Auth::user();
+        $livestock = Livestock::whereHas('farm', function($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
+
+        $remarks = (string)($livestock->remarks ?? '');
+        $lines = preg_split('/\r?\n/', $remarks);
+        $records = [];
+        foreach ($lines as $line) {
+            if (strpos($line, '[Breeding]') === 0) {
+                $entry = ['date' => null, 'type' => null, 'partner' => null, 'pregnancy' => null, 'success' => null, 'notes' => null];
+                $parts = array_map('trim', explode('|', substr($line, 10)));
+                foreach ($parts as $p) {
+                    if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
+                    if (stripos($p, 'Type:') === 0) $entry['type'] = trim(substr($p, 5));
+                    if (stripos($p, 'Partner:') === 0) $entry['partner'] = trim(substr($p, 8));
+                    if (stripos($p, 'Expected Birth:') === 0) {
+                        $val = trim(substr($p, 15));
+                        $entry['notes'] = isset($entry['notes']) && $entry['notes']
+                            ? ($entry['notes'] . '; Expected: ' . $val)
+                            : ('Expected: ' . $val);
+                    }
+                    if (stripos($p, 'Pregnancy:') === 0) $entry['pregnancy'] = trim(substr($p, 10));
+                    if (stripos($p, 'Success:') === 0) $entry['success'] = trim(substr($p, 8));
+                    if (stripos($p, 'Notes:') === 0) {
+                        $val = trim(substr($p, 6));
+                        $entry['notes'] = isset($entry['notes']) && $entry['notes']
+                            ? ($entry['notes'] . '; ' . $val)
+                            : $val;
+                    }
+                }
+                $records[] = $entry;
+            }
+        }
+
+        return response()->json(['success' => true, 'data' => $records]);
     }
 
     /**
@@ -255,7 +338,7 @@ class FarmerController extends Controller
                 $query->where('owner_id', $user->id);
             })
             ->whereHas('issuedBy', function($query) {
-                $query->where('role', 'admin');
+                $query->whereIn('role', ['admin','superadmin']);
             })
             ->where('status', 'active')
             ->orderBy('alert_date', 'desc')
@@ -297,6 +380,27 @@ class FarmerController extends Controller
             'resolvedIssues',
             'scheduledInspections'
         ));
+    }
+
+    /**
+     * List admins/superadmins for veterinarian dropdown.
+     */
+    public function listAdmins()
+    {
+        try {
+            $admins = User::whereIn('role', ['admin','superadmin'])
+                ->orderBy('name')
+                ->get(['id','name','email']);
+            $data = $admins->map(function($u){
+                return [
+                    'id' => $u->id,
+                    'name' => $u->name ?: $u->email,
+                ];
+            })->values();
+            return response()->json(['success' => true, 'data' => $data]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load admins'], 500);
+        }
     }
 
     /**
@@ -1218,6 +1322,137 @@ class FarmerController extends Controller
     }
 
     /**
+     * Return production records for a specific livestock (used by livestock details modal).
+     */
+    public function getLivestockProductionRecords($id)
+    {
+        $user = Auth::user();
+        // Ensure livestock belongs to current farmer
+        $livestock = Livestock::whereHas('farm', function($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })->findOrFail($id);
+
+        $records = ProductionRecord::whereHas('farm', function($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            })
+            ->where('livestock_id', $livestock->id)
+            ->orderBy('production_date', 'desc')
+            ->take(25)
+            ->get()
+            ->map(function ($r) {
+                $type = null;
+                if (!empty($r->notes) && preg_match('/\[type:\s*([^\]]+)\]/i', $r->notes, $m)) {
+                    $type = ucfirst(strtolower(trim($m[1])));
+                }
+                return [
+                    'production_date' => optional($r->production_date)->format('Y-m-d'),
+                    'production_type' => $type ?: 'Milk',
+                    'quantity' => (string) $r->milk_quantity,
+                    'quality' => $r->milk_quality_score,
+                    'notes' => $r->notes,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $records,
+        ]);
+    }
+
+    /**
+     * Store a health update for the specified livestock (minimal history-free version).
+     */
+    public function storeHealthRecord(Request $request, $id)
+    {
+        $request->validate([
+            'health_date' => 'nullable|date',
+            'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
+            'weight' => 'nullable|numeric|min:0',
+            'temperature' => 'nullable|numeric',
+            'symptoms' => 'nullable|string',
+            'treatment' => 'nullable|string',
+            'veterinarian_id' => 'nullable|exists:users,id',
+        ]);
+
+        $user = Auth::user();
+        $livestock = Livestock::whereHas('farm', function($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
+
+        // Append a simple note into remarks to avoid adding new tables
+        $noteParts = [];
+        $noteParts[] = 'Status: ' . $request->health_status;
+        if ($request->health_date) $noteParts[] = 'Date: ' . $request->health_date;
+        if ($request->temperature !== null) $noteParts[] = 'Temp: ' . $request->temperature . '°C';
+        if ($request->symptoms) $noteParts[] = 'Symptoms: ' . $request->symptoms;
+        if ($request->treatment) $noteParts[] = 'Treatment: ' . $request->treatment;
+        // Veterinarian mapping
+        if ($request->filled('veterinarian_id')) {
+            $vet = User::where('id', $request->veterinarian_id)
+                ->whereIn('role', ['admin','superadmin'])
+                ->first();
+            if ($vet) {
+                $noteParts[] = 'Veterinarian: ' . ($vet->name ?: $vet->email);
+            }
+        }
+        $appended = trim(($livestock->remarks ? $livestock->remarks . "\n" : '') . '[Health] ' . implode(' | ', $noteParts));
+
+        $livestock->update([
+            'health_status' => $request->health_status,
+            'weight' => $request->weight !== null ? $request->weight : $livestock->weight,
+            'remarks' => $appended,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Health record saved.',
+        ]);
+    }
+
+    /**
+     * Store a breeding update for the specified livestock (minimal history-free version).
+     */
+    public function storeBreedingRecord(Request $request, $id)
+    {
+        $request->validate([
+            'breeding_date' => 'nullable|date',
+            'breeding_type' => 'nullable|string|max:50',
+            'partner_livestock_id' => 'nullable|string|max:255',
+            'expected_birth_date' => 'nullable|date',
+            'pregnancy_status' => 'nullable|in:unknown,pregnant,not_pregnant',
+            'breeding_success' => 'nullable|in:unknown,successful,unsuccessful',
+            'notes' => 'nullable|string',
+        ]);
+
+        $user = Auth::user();
+        $livestock = Livestock::whereHas('farm', function($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
+
+        // Append a simple note into remarks to avoid adding new tables
+        $noteParts = [];
+        if ($request->breeding_date) $noteParts[] = 'Date: ' . $request->breeding_date;
+        if ($request->breeding_type) $noteParts[] = 'Type: ' . ucfirst(str_replace('_',' ', $request->breeding_type));
+        if ($request->partner_livestock_id) $noteParts[] = 'Partner: ' . $request->partner_livestock_id;
+        if ($request->expected_birth_date) $noteParts[] = 'Expected Birth: ' . $request->expected_birth_date;
+        if ($request->pregnancy_status) $noteParts[] = 'Pregnancy: ' . str_replace('_',' ', $request->pregnancy_status);
+        if ($request->breeding_success) $noteParts[] = 'Success: ' . $request->breeding_success;
+        if ($request->notes) $noteParts[] = 'Notes: ' . $request->notes;
+        $appended = trim(($livestock->remarks ? $livestock->remarks . "\n" : '') . '[Breeding] ' . implode(' | ', $noteParts));
+
+        $livestock->update([
+            'remarks' => $appended,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Breeding record saved.',
+        ]);
+    }
+
+    /**
      * Display the farmer's expenses.
      */
     public function expenses()
@@ -1644,6 +1879,7 @@ class FarmerController extends Controller
                 'receipt_number' => $expense->receipt_number,
                 'notes' => $expense->notes,
                 'farm_id' => $expense->farm_id,
+                'farm_name' => $expense->farm ? $expense->farm->name : 'Unknown',
             ]
         ]);
     }
@@ -2642,7 +2878,21 @@ class FarmerController extends Controller
 
         return response()->json([
             'success' => true,
-            'sale' => $sale
+            'sale' => [
+                'id' => $sale->id,
+                'sale_id' => 'SALE-' . str_pad((string)$sale->id, 5, '0', STR_PAD_LEFT),
+                'sale_date' => $sale->sale_date ? \Carbon\Carbon::parse($sale->sale_date)->format('Y-m-d') : null,
+                'customer_name' => $sale->customer_name,
+                'customer_phone' => $sale->customer_phone,
+                'customer_email' => $sale->customer_email,
+                'quantity' => (float) $sale->quantity,
+                'unit_price' => (float) $sale->unit_price,
+                'amount' => (float) $sale->total_amount,
+                'payment_status' => $sale->payment_status,
+                'payment_method' => $sale->payment_method,
+                'notes' => $sale->notes,
+                'farm_id' => $sale->farm_id,
+            ]
         ]);
     }
 
@@ -2658,7 +2908,6 @@ class FarmerController extends Controller
             'customer_email' => 'nullable|email|max:255',
             'quantity' => 'required|numeric|min:0',
             'unit_price' => 'required|numeric|min:0',
-            'sale_date' => 'required|date',
             'payment_method' => 'nullable|string',
             'payment_status' => 'nullable|in:pending,paid,partial',
             'notes' => 'nullable|string'
@@ -2684,7 +2933,6 @@ class FarmerController extends Controller
                 'total_amount' => $totalAmount,
                 'payment_status' => $request->payment_status ?? $sale->payment_status,
                 'payment_method' => $request->payment_method ?? $sale->payment_method,
-                'sale_date' => $request->sale_date,
                 'notes' => $request->notes,
             ]);
 

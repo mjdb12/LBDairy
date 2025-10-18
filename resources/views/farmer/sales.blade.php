@@ -1627,7 +1627,7 @@
                     <input id="csvInput" type="file" accept=".csv" style="display:none" onchange="importCSV(event)">
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="salesTable" width="100%" cellspacing="0">
-                        <thead >
+                        <thead class="thead-light">
                             <tr>
                                 <th>Sale ID</th>
                                 <th>Date</th>
@@ -2037,8 +2037,8 @@ $(document).ready(function () {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        autoWidth: false,
-        scrollX: true,
+        autoWidth: true,
+        scrollX: false,
         buttons: [
             { extend: 'csvHtml5', title: 'Farmer_Sales_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } } },
             { extend: 'pdfHtml5', title: 'Farmer_Sales_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5,6], modifier: { page: 'all' } } },
@@ -2066,6 +2066,7 @@ $(document).ready(function () {
                     { width: '220px', targets: 7, orderable: false } // Actions
                 ]
             });
+            salesDT.columns.adjust();
         } catch (e) {
             console.error('Failed to initialize sales DataTable:', e);
         }

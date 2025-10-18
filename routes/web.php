@@ -113,6 +113,14 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/livestock-analysis', [App\Http\Controllers\FarmerController::class, 'livestockAnalysis'])->name('livestock-analysis');
         Route::get('/livestock/{id}/analysis', [App\Http\Controllers\FarmerController::class, 'getLivestockAnalysis'])->name('livestock.analysis');
         Route::get('/livestock/{id}/history', [App\Http\Controllers\FarmerController::class, 'getLivestockHistory'])->name('livestock.history');
+        // Livestock auxiliary endpoints used by farmer/livestock view modals
+        Route::get('/livestock/{id}/production-records', [FarmerController::class, 'getLivestockProductionRecords'])->name('livestock.production-records');
+        Route::get('/livestock/{id}/health-records', [FarmerController::class, 'getLivestockHealthRecords'])->name('livestock.health-records');
+        Route::get('/livestock/{id}/breeding-records', [FarmerController::class, 'getLivestockBreedingRecords'])->name('livestock.breeding-records');
+        Route::post('/livestock/{id}/health', [FarmerController::class, 'storeHealthRecord'])->name('livestock.health.store');
+        Route::post('/livestock/{id}/breeding', [FarmerController::class, 'storeBreedingRecord'])->name('livestock.breeding.store');
+        // Admins list for veterinarian dropdown
+        Route::get('/admins', [FarmerController::class, 'listAdmins'])->name('admins.list');
         Route::get('/clients', [App\Http\Controllers\FarmerController::class, 'clients'])->name('clients');
         Route::get('/inventory', [App\Http\Controllers\FarmerController::class, 'inventory'])->name('inventory');
         // Static routes before parameterized routes
