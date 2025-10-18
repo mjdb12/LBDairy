@@ -759,7 +759,7 @@
     </div>
     <div class="card-body">
         <div class="search-controls mb-3 d-flex flex-column flex-md-row justify-content-between align-items-md-end">
-            <div class="input-group mb-2 mb-md-0" style="max-width: 300px;">
+            <div class="input-group mb-2 mb-md-0" style="max-width: 300px;">  
                 <div class="input-group-prepend">
                     <span class="input-group-text">
                         <i class="fas fa-search"></i>
@@ -767,14 +767,10 @@
                 </div>
                 <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
             </div>
-<<<<<<< HEAD
             <div class="d-flex flex-column flex-sm-row align-items-center">
                 <button class="btn-action btn-action-print" onclick="printLivestockTable()">
                     <i class="fas fa-print"></i> Print
                 </button>
-=======
-            <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
->>>>>>> d2c2ffadaa96913b98e84c97cc51b9aa29f48392
                 <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
@@ -843,15 +839,9 @@
                             <span class="badge badge-{{ $statusClass }}">{{ $breedingStatus }}</span>
                         </td>
                         <td>
-<<<<<<< HEAD
                             <div class="action-buttons">
                                 <button class="btn-action btn-action-ok" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis">
                                     <i class="fas fa-chart-line"></i> Analysis
-=======
-                            <div class="btn-group">
-                                <button class="btn-action btn-action-ok" id="viewbtn" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis" style="background-color: #fca700 !important; border-color: #fca700 !important; color: white !important;">
-                                    <i class="fas fa-chart-line"></i>Analysis</span>
->>>>>>> d2c2ffadaa96913b98e84c97cc51b9aa29f48392
                                 </button>
                                 <button class="btn-action btn-action-edit" onclick="viewLivestockHistory('{{ $animal['id'] ?? $loop->iteration }}')" title="History">
                                     <i class="fas fa-history"></i> History

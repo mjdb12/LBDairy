@@ -2183,11 +2183,7 @@ html body #saveAdminBtn.btn-primary:focus,
         <!-- Footer -->
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-<<<<<<< HEAD
           <button type="submit" class="btn-modern btn-ok" id="updateAdminBtn">Update Admin</button>
-=======
-          <button type="submit" class="btn-modern btn-ok"><i class="fas fa-save"></i> Update Admin</button>
->>>>>>> 5932f9c88aa173c10f4b72ddd96ad0cc9f7a3533
         </div>
 
       </form>
