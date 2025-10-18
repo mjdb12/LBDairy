@@ -1415,25 +1415,55 @@ class SuperAdminController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'phone' => ['nullable', 'regex:/^\d{11}$/'],
                 'address' => 'nullable|string|max:500',
+                'barangay' => 'nullable|string|max:255',
                 'password' => 'required|string|min:8|confirmed',
+                // Farm fields
+                'farm_name' => 'required|string|max:255',
+                'farm_location' => 'nullable|string|max:500',
+                'farm_size' => 'nullable|numeric|min:0',
+                'farm_description' => 'nullable|string|max:1000',
             ]);
 
+            // Split full name into first and last names for proper accessor compatibility
+            $fullName = trim((string) $request->name);
+            $firstName = $fullName;
+            $lastName = '';
+            if (strpos($fullName, ' ') !== false) {
+                $parts = preg_split('/\s+/', $fullName);
+                $firstName = array_shift($parts);
+                $lastName = trim(implode(' ', $parts));
+            }
+
             $farmer = User::create([
-                'name' => $request->name,
+                'name' => $fullName,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
                 'username' => $request->username,
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'address' => $request->address,
-                'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+                'barangay' => $request->barangay,
+                'password' => Hash::make($request->password),
                 'role' => 'farmer',
                 'is_active' => true,
                 'status' => 'approved',
             ]);
 
+            // Create a default farm for the new farmer
+            $farm = Farm::create([
+                'name' => $request->farm_name,
+                'description' => $request->farm_description,
+                'location' => $request->farm_location,
+                'size' => $request->farm_size,
+                'owner_id' => $farmer->id,
+                'status' => 'active',
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Farmer created successfully!',
-                'farmer' => $farmer
+                'farmer' => $farmer,
+                'farm' => $farm,
             ]);
         } catch (\Illuminate\Validation\ValidationException $ve) {
             return response()->json([

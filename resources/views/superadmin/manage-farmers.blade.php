@@ -1531,6 +1531,30 @@ html body #updateFarmerBtn.btn-primary:focus,
             </div>
             </div>
 
+            <!-- Farm Name -->
+            <div class="col-md-6">
+              <label for="userFarmName" class="fw-semibold">Farm Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="userFarmName" name="farm_name" placeholder="Enter farm name" required>
+            </div>
+
+            <!-- Farm Location -->
+            <div class="col-md-6">
+              <label for="userFarmLocation" class="fw-semibold">Farm Location</label>
+              <input type="text" class="form-control" id="userFarmLocation" name="farm_location" placeholder="Enter farm location (optional)">
+            </div>
+
+            <!-- Farm Size -->
+            <div class="col-md-6">
+              <label for="userFarmSize" class="fw-semibold">Farm Size (hectares)</label>
+              <input type="number" step="0.01" min="0" class="form-control" id="userFarmSize" name="farm_size" placeholder="e.g. 1.50">
+            </div>
+
+            <!-- Farm Description -->
+            <div class="col-md-6">
+              <label for="userFarmDescription" class="fw-semibold">Farm Description</label>
+              <textarea class="form-control" id="userFarmDescription" name="farm_description" placeholder="Describe the farm (optional)"></textarea>
+            </div>
+
           </div>
 
           <div id="userFormNotification" class="mt-3 text-center" style="display: none;"></div>
@@ -2180,34 +2204,73 @@ $(document).ready(function() {
             return;
         }
         
-        if (password.length < 6) {
-            showNotification('Password must be at least 6 characters long!', 'warning');
+        if (password.length < 8) {
+            showNotification('Password must be at least 8 characters long!', 'warning');
             return;
         }
         
-        // Collect form data
-        const formData = {
+        // Collect form data required by backend
+        const payload = {
             name: $('#userName').val(),
             email: $('#userEmail').val(),
-            phone: $('#userPhone').val(),
-            barangay: $('#userBarangay').val(),
+            phone: $('#userPhone').val(), // optional
             username: $('#userUsername').val(),
-            status: $('#userStatus').val(),
-            password: password
+            barangay: $('#userBarangay').val(), // optional
+            // address not present in form (optional in backend)
+            password: password,
+            password_confirmation: confirmPassword,
+            // farm fields
+            farm_name: $('#userFarmName').val(),
+            farm_location: $('#userFarmLocation').val(),
+            farm_size: $('#userFarmSize').val(),
+            farm_description: $('#userFarmDescription').val()
         };
-        
-        // Here you would typically send the data to your backend
-        console.log('Form data:', formData);
-        
-        // Show success message
-        showNotification('User added successfully!', 'success');
-        
-        // Close modal and reset form
-        $('#addUserModal').modal('hide');
-        $('#addUserForm')[0].reset();
-        
-        // Optionally refresh the table
-        // refreshFarmers();
+
+        // Front-end required check for farm name
+        if (!payload.farm_name || payload.farm_name.trim() === '') {
+            showNotification('Farm Name is required.', 'danger');
+            return;
+        }
+
+        const $btn = $('#updateAdminBtn');
+        const originalText = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+
+        $.ajax({
+            url: '{{ route("superadmin.farmers.store") }}',
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: payload,
+            success: function(response){
+                if (response && response.success){
+                    showNotification(response.message || 'User added successfully!', 'success');
+                    $('#addUserModal').modal('hide');
+                    $('#addUserForm')[0].reset();
+                    // Table is server-rendered; reload to show new user
+                    location.reload();
+                } else {
+                    showNotification((response && response.message) || 'Failed to add user.', 'danger');
+                }
+            },
+            error: function(xhr){
+                if (xhr && xhr.responseJSON){
+                    const r = xhr.responseJSON;
+                    if (r.errors){
+                        const msgs = Object.values(r.errors).flat().join('<br>');
+                        showNotification(msgs, 'danger');
+                    } else if (r.message){
+                        showNotification(r.message, 'danger');
+                    } else {
+                        showNotification('Failed to add user. Please try again.', 'danger');
+                    }
+                } else {
+                    showNotification('Failed to add user. Please try again.', 'danger');
+                }
+            },
+            complete: function(){
+                $btn.prop('disabled', false).html(originalText);
+            }
+        });
     });
 });
 

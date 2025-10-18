@@ -2178,10 +2178,12 @@ html body #saveAdminBtn.btn-primary:focus,
           </div>
         </div>
 
+        <div id="editAdminFormNotification" class="mt-3 text-center" style="display: none;"></div>
+
         <!-- Footer -->
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-modern btn-ok">Update Admin</button>
+          <button type="submit" class="btn-modern btn-ok" id="updateAdminBtn">Update Admin</button>
         </div>
 
       </form>
