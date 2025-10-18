@@ -2269,7 +2269,7 @@
                 <!-- Footer Buttons -->
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-ok" id="inspectionSubmitBtn" title="Schedule Inspection" >Schedule</button>
+                    <button type="submit" class="btn-modern btn-ok" id="inspectionSubmitBtn" title="Schedule Inspection"><i class="fas fa-save"></i> Schedule</button>
                 </div>
             </form>
         </div>
@@ -2294,7 +2294,7 @@
 
             <!-- Body -->
             <div class="modal-body">
-                <div id="inspectionDetailsContent" class="detail-wrapper">
+                <div id="inspectionDetailsContent" >
                     <!-- Personal & Farm Info -->
                 </div>
             </div>
@@ -2324,7 +2324,7 @@
 
             <!-- Body -->
             <div class="modal-body">
-                <div id="farmerDetailsContent" class="detail-wrapper">
+                <div id="farmerDetailsContent">
                     <!-- Personal & Farm Info -->
                 </div>
             </div>
@@ -2412,7 +2412,7 @@
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">
-            Update Inspection
+            <i class="fas fa-save"></i> Update Inspection
           </button>
         </div>
       </form>
@@ -2448,7 +2448,7 @@
           Cancel
         </button>
         <button type="button" class="btn-modern btn-delete" id="confirmCancelInspectionBtn">
-          Yes, Cancel
+          <i class="fas fa-trash"></i> Yes, Cancel
         </button>
       </div>
     </div>

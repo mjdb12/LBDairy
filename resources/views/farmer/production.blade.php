@@ -2198,11 +2198,31 @@ function refreshProductionTable(){
 }
 
 $(document).ready(function(){
-    if (sessionStorage.getItem('showRefreshNotificationProduction') === 'true'){
+    if (sessionStorage.getItem('showRefreshNotificationProduction') === 'true') {
         sessionStorage.removeItem('showRefreshNotificationProduction');
-        setTimeout(()=>showAlert('success', 'Data refreshed successfully!'), 400);
+        setTimeout(() => {
+            showNotification('Production data refreshed successfully!', 'success');
+        }, 500);
     }
 });
+
+function showNotification(message, type) {
+    const notification = $(`
+        <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    `);
+    
+    $('body').append(notification);
+    
+    setTimeout(() => {
+        notification.alert('close');
+    }, 5000);
+}
 
 function exportHistory() {
     // Export quarterly table to CSV

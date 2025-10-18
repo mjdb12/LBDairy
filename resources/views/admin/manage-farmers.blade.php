@@ -1435,7 +1435,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="farmerDetails" class="detail-wrapper">
+        <div id="farmerDetails" >
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -1445,7 +1445,7 @@
         <div class="modal-footer justify-content-center mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="openContactModal()">
-                Contact Farmer
+                <i class="fas fa-envelope"></i> Contact Farmer
             </button>
         </div>
 
@@ -1507,7 +1507,7 @@
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
-                        Send Message
+                        <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </div>
             </form>
@@ -1548,7 +1548,7 @@
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-delete">
-                        Reject Registration
+                        <i class="fas fa-times"></i> Reject Registration
                     </button>
                 </div>
             </form>
@@ -1580,7 +1580,7 @@
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-delete">
-                        Deactivate
+                        <i class="fas fa-user-slash"></i> Deactivate
                     </button>
                 </div>
             </form>
@@ -1612,7 +1612,7 @@
                 <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-approve">
-                        Approve
+                        <i class="fas fa-check-circle"></i> Approve
                     </button>
                 </div>
             </form>
@@ -1679,7 +1679,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-calendar-check"></i> Schedule Inspection
+                        <i class="fas fa-save"></i> <i class="fas fa-calendar-check"></i> Schedule Inspection
                     </button>
                 </div>
             </form>
