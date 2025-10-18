@@ -739,6 +739,53 @@
 /* ============================
    FORM ELEMENT STYLES
    ============================ */
+#addSupplierLedgerEntryModal form {
+  text-align: left;
+}
+
+#addSupplierLedgerEntryModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#addSupplierLedgerEntryModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#addSupplierLedgerEntryModal .form-control,
+#addSupplierLedgerEntryModal select.form-control,
+#addSupplierLedgerEntryModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#addSupplierLedgerEntryModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#addSupplierLedgerEntryModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
 #addLivestockDetailsModal form {
   text-align: left;
 }
@@ -774,60 +821,13 @@
 }
 
 /* Keep textarea resizable but visually aligned */
-#addLivestockDetailsModal textarea.form-control {
+#supplierLaddLivestockDetailsModaledgerEntryForm textarea.form-control {
   min-height: 100px;
   height: auto;                /* flexible height for textarea */
 }
 
 /* Focus state */
 #addLivestockDetailsModal .form-control:focus {
-  border-color: #198754;
-  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
-}
-
-
-#supplierLedgerEntryForm form {
-  text-align: left;
-}
-
-#supplierLedgerEntryForm .form-group {
-  width: 100%;
-  margin-bottom: 1.2rem;
-}
-
-#supplierLedgerEntryForm label {
-  font-weight: 600;            /* make labels bold */
-  color: #18375d;              /* consistent primary blue */
-  display: inline-block;
-  margin-bottom: 0.5rem;
-}
-
-/* Unified input + select + textarea styles */
-#supplierLedgerEntryForm .form-control,
-#supplierLedgerEntryForm select.form-control,
-#supplierLedgerEntryForm textarea.form-control {
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  padding: 12px 15px;          /* consistent padding */
-  font-size: 15px;             /* consistent font */
-  line-height: 1.5;
-  transition: all 0.2s ease;
-  width: 100%;
-  height: 46px;                /* unified height */
-  box-sizing: border-box;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  background-color: #fff;
-}
-
-/* Keep textarea resizable but visually aligned */
-#supplierLedgerEntryForm textarea.form-control {
-  min-height: 100px;
-  height: auto;                /* flexible height for textarea */
-}
-
-/* Focus state */
-#supplierLedgerEntryForm .form-control:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
@@ -2322,6 +2322,21 @@
         width: auto !important;
     }
 }
+.client-info-card.hover-shadow {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.client-info-card.hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+.icon-circle-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    margin-right: 1.1rem;
+}
 </style>
 @endpush
 @section('content')
@@ -2460,7 +2475,7 @@
                                 <td>{{ $supplier['name'] }}</td>
                                 <td>{{ $supplier['address'] }}</td>
                                 <td>{{ $supplier['contact'] }}</td>
-                                <td><span class="status-badge {{ $supplier['status_badge'] }}">{{ $supplier['status_label'] }}</span></td>
+                                <td><span class="status-badge badge badge-success">Active</span></td>
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn-action btn-action-ok" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
@@ -2515,34 +2530,41 @@
                 <div class="form-wrapper">
 
                     <!-- Supplier Info Card -->
-                    <div class="client-info-card smart-detail p-3 mb-4 rounded-3 shadow-sm">
-                        <div class="d-flex flex-wrap align-items-center gap-3">
-                            <div class="icon-circle-sm d-flex align-items-center justify-content-center me-3">
-                                <i class="fas fa-user fa-lg text-primary"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-1" id="ledgerSupplierName">Supplier Name</h6>
-                                <div class="row small mb-2">
-                                    <div class="col-md-4 col-sm-6">
-                                        <span class="text-muted d-block">Supplier ID:</span>
-                                        <span id="supplierInfoId" class="fw-medium text-dark">SP001</span>
-                                    </div>
-                                    <div class="col-md-8 col-sm-6">
-                                        <span class="text-muted d-block">Address:</span>
-                                        <span id="supplierInfoAddress" class="fw-medium text-dark">Supplier Address</span>
-                                    </div>
+                    <div class="client-info-card smart-detail p-3 mb-4 rounded-3 shadow-sm hover-shadow">
+                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                            
+                            <!-- Supplier Info -->
+                            <div class="d-flex align-items-start align-items-md-center gap-7 flex-grow-1">
+                        <div class="icon-circle-sm d-flex align-items-center justify-content-center bg-success text-white me-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="flex-grow-1 text-start text-md-left">
+                            <h6 class="fw-bold mb-1" id="ledgerSupplierName">Supplier Name</h6>
+                            <div class="row small mb-0">
+                                <div class="col-md-4 col-sm-6 mb-1 mb-md-0">
+                                    <span class="text-muted d-block">Supplier ID:</span>
+                                    <span id="supplierInfoId" class="fw-medium text-dark">SP001</span>
                                 </div>
-                                <button class="btn-modern btn-ok btn-sm mt-2" onclick="showAddSupplierLedgerEntryForm()">
-                                    <i class="fas fa-plus me-2"></i> Add Entry
-                                </button>
+                                <div class="col-md-8 col-sm-6">
+                                    <span class="text-muted d-block">Address:</span>
+                                    <span id="supplierInfoAddress" class="fw-medium text-dark">Supplier Address</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
+
+        <!-- Add Entry Button -->
+        <button class="btn-action btn-action-ok btn-sm mt-2 mt-md-0" data-toggle="modal" data-target="#addSupplierLedgerEntryModal">
+            <i class="fas fa-plus me-2"></i> Add Entry
+        </button>
+    </div>
+</div>
+
                     <!-- Ledger Table -->
                     <div class="table-responsive mb-4">
                         <table class="table table-hover table-bordered align-middle" id="supplierLedgerTable" width="100%">
-                            <thead class="table-light">
+                            <thead class="table-light text-center">
                                 <tr>
                                     <th>Date</th>
                                     <th>Type</th>
@@ -2550,7 +2572,7 @@
                                     <th>Paid (₱)</th>
                                     <th>Due (₱)</th>
                                     <th>Status</th>
-                                    <th class="text-center">Actions</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2558,81 +2580,89 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- Add Entry Form (Modern Pattern) -->
-                    <div id="supplierLedgerEntryForm" class="smart-form text-center p-4 mt-4" style="display: none;">
-                        <!-- Icon + Header -->
-                        <div class="d-flex flex-column align-items-center mb-4">
-                            <div class="icon-circle">
-                                <i class="fas fa-plus-circle fa-2x"></i>
-                            </div>
-                            <h5 class="fw-bold mb-1">Add New Ledger Entry</h5>
-                            <p class="text-muted mb-0 small">
-                                Fill out the details below to record a new supplier transaction.
-                            </p>
-                        </div>
-
-                        <!-- Form Fields -->
-                        <form id="addLedgerEntryFormInner">
-                            <div class="row g-3 text-start">
-                                <div class="col-md-6">
-                                    <label for="purchaseDate" class="fw-semibold">Date <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control" id="purchaseDate" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="purchaseType" class="fw-semibold">Type <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="purchaseType" required>
-                                        <option value="" disabled selected>Select</option>
-                                        <option value="Feed">Feed</option>
-                                        <option value="Medicine">Medicine</option>
-                                        <option value="Equipment">Equipment</option>
-                                        <option value="Livestock">Livestock</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="payableAmount" class="fw-semibold">Payable (₱)</label>
-                                    <input type="number" class="form-control" id="payableAmount" min="0" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="paidAmount" class="fw-semibold">Paid (₱)</label>
-                                    <input type="number" class="form-control" id="paidAmount" min="0" required>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <label for="paymentStatus" class="fw-semibold">Status</label>
-                                    <select class="form-control" id="paymentStatus" required>
-                                        <option value="Unpaid">Unpaid</option>
-                                        <option value="Partial">Partial</option>
-                                        <option value="Paid">Paid</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Footer Buttons -->
-                            <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
-                                <button type="button" class="btn-modern btn-cancel" onclick="hideAddSupplierLedgerEntryForm()">Cancel</button>
-                                <button type="submit" class="btn-modern btn-ok">
-                                    <i class="fas fa-save me-1"></i> Save Entry
-                                </button>
-                            </div>
-                        </form>
-                    </div>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer justify-content-center mt-4">
-                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <div class="modal-footer justify-content-center mt-3">
+                <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+                    Close
+                </button>
             </div>
 
         </div>
     </div>
 </div>
 
+<!-- ADD SUPPLIER LEDGER ENTRY MODAL -->
+<div class="modal fade admin-modal" id="addSupplierLedgerEntryModal" tabindex="-1" role="dialog" aria-labelledby="addSupplierLedgerEntryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-form p-4">
+
+            <!-- Header -->
+            <div class="d-flex flex-column align-items-center mb-4 text-center">
+                <div class="icon-circle mb-2">
+                    <i class="fas fa-plus-circle fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Add New Ledger Entry</h5>
+                <p class="text-muted small mb-0">
+                    Fill out the form below to record a new supplier transaction.
+                </p>
+            </div>
+
+            <!-- Body -->
+            <form id="addLedgerEntryFormInner" onsubmit="supplierLedgerEntryForm(event)">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="purchaseDate" class="fw-semibold">Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control mt-1" id="purchaseDate" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="purchaseType" class="fw-semibold">Type <span class="text-danger">*</span></label>
+                        <select class="form-control mt-1" id="purchaseType" required>
+                            <option value="" disabled selected>Select Type</option>
+                            <option value="Feed">Feed</option>
+                            <option value="Medicine">Medicine</option>
+                            <option value="Equipment">Equipment</option>
+                            <option value="Livestock">Livestock</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="payableAmount" class="fw-semibold">Payable (₱)</label>
+                        <input type="number" class="form-control mt-1" id="payableAmount" min="0" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="paidAmount" class="fw-semibold">Paid (₱)</label>
+                        <input type="number" class="form-control mt-1" id="paidAmount" min="0" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="paymentStatus" class="fw-semibold">Payment Status</label>
+                        <select class="form-control mt-1" id="paymentStatus" required>
+                            <option value="Unpaid">Unpaid</option>
+                            <option value="Partial">Partial</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-modern btn-ok">
+                        <i class="fas fa-save me-1"></i> Save Entry
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
@@ -2895,6 +2925,7 @@ function hideAddSupplierLedgerEntryForm() {
     const c = document.getElementById('supplierLedgerEntryForm');
     if (c) c.style.display = 'none';
 }
+// To sh
 
 // Add Supplier form submission -> add a new row to the DataTable
 $(document).ready(function(){
@@ -2924,16 +2955,16 @@ $(document).ready(function(){
 
         const statusCell = '<span class="status-badge badge badge-success">Active</span>';
         const actionCell = `
-            <div class="action-buttons">
-                <button class="btn-action btn-action-ledger" onclick="viewLedger('${safeName.replace(/'/g, '&#39;')}')" title="View Ledger">
-                    <i class="fas fa-book"></i>
-                    <span>Ledger</span>
-                </button>
-                <button class="btn-action btn-action-view" onclick="viewDetails('${safeName.replace(/'/g, '&#39;')}')" title="View Details">
+            <div class="btn-group">
+                <button class="btn-action btn-action-ok" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
                     <i class="fas fa-eye"></i>
                     <span>View</span>
                 </button>
-                <button class="btn-action btn-action-delete" onclick="confirmDelete('${safeName.replace(/'/g, '&#39;')}')" title="Delete">
+                <button class="btn-action btn-action-edit" onclick="viewLedger('{{ $supplier['name'] }}')" title="View Ledger">
+                    <i class="fas fa-book"></i>
+                    <span>Ledger</span>
+                </button>
+                <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $supplier['name'] }}','{{ $supplier['expense_type'] }}')" title="Delete">
                     <i class="fas fa-trash"></i>
                     <span>Delete</span>
                 </button>
@@ -3058,26 +3089,44 @@ function deleteLedgerEntry(index) {
 // Handle Add Ledger Entry form submission
 $(document).on('submit', '#addLedgerEntryFormInner', function(e){
     e.preventDefault();
-    const supplierName = $('#supplierLedgerModal').data('currentSupplier') || document.getElementById('ledgerSupplierName')?.textContent?.trim();
-    if (!supplierName) { showNotification('No supplier selected.', 'error'); return; }
+
+    const supplierName = $('#supplierLedgerModal').data('currentSupplier') || 
+                         document.getElementById('ledgerSupplierName')?.textContent?.trim();
+
+    if (!supplierName) {
+        showNotification('No supplier selected.', 'error');
+        return;
+    }
+
     const dateVal = ($('#purchaseDate').val() || '').trim();
     const typeVal = ($('#purchaseType').val() || '').trim();
     const payableVal = parseFloat($('#payableAmount').val());
     const paidVal = parseFloat($('#paidAmount').val());
     const statusVal = ($('#paymentStatus').val() || '').trim();
+
     if (!dateVal || !typeVal || isNaN(payableVal) || isNaN(paidVal) || !statusVal) {
         showNotification('Please fill all required fields.', 'error');
         return;
     }
+
     const dueVal = Math.max(0, payableVal - paidVal);
     const entry = { date: dateVal, type: typeVal, payable: payableVal, paid: paidVal, due: dueVal, status: statusVal };
+
     if (!supplierLedgers[supplierName]) supplierLedgers[supplierName] = [];
     supplierLedgers[supplierName].push(entry);
+
+    // Re-render ledger table
     renderSupplierLedgerTable(supplierName);
-    hideAddSupplierLedgerEntryForm();
+
+    // Hide the **new modal**
+    $('#addSupplierLedgerEntryModal').modal('hide');
+
+    // Reset the form
     this.reset();
+
     showNotification('Ledger entry saved.', 'success');
 });
+
 
 // Utilities
 function formatCurrency(n){
