@@ -1587,7 +1587,7 @@ html body #updateAdminBtn.btn-primary:focus,
         <!-- Footer -->
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-modern btn-ok">Save User</button>
+          <button type="submit" class="btn-modern btn-ok"><i class="fas fa-save"></i> Save</button>
         </div>
       </form>
     </div>
@@ -1725,7 +1725,7 @@ html body #updateAdminBtn.btn-primary:focus,
         <!-- Footer -->
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="submit" id="updateAdminBtn" class="btn-modern btn-ok">Update User</button>
+          <button type="submit" id="updateAdminBtn" class="btn-modern btn-ok"><i class="fas fa-save"></i> Update User</button>
         </div>
       </form>
 
@@ -1753,7 +1753,7 @@ html body #updateAdminBtn.btn-primary:focus,
             <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                 <button type="button" id="confirmDeleteBtn" class="btn-modern btn-delete">
-                    Yes, Delete
+                    <i class="fas fa-trash"></i> Yes, Delete
                 </button>
             </div>
         </div>
@@ -1776,7 +1776,7 @@ html body #updateAdminBtn.btn-primary:focus,
 
             <!-- Body -->
              <div class="modal-body">
-                <div id="userDetails" class="detail-wrapper text-start">
+                <div id="userDetails" >
                     <!-- Example user detail layout -->
                     <div class="detail-row">
                         <span class="detail-label">Full Name:</span>
@@ -2176,8 +2176,9 @@ function editUser(userId) {
             showNotification(errorMessage, 'danger');
         },
         complete: function() {
-            submitBtn.prop('disabled', false).html('Update User');
-        }
+    submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Update User');
+}
+
     });
 }
 

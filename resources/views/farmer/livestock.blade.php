@@ -583,10 +583,11 @@ $(document).ready(function() {
             setTimeout(forcePaginationLeft, 500);
             setTimeout(forcePaginationLeft, 1000);
             
-            // Connect custom search to DataTables (keyup + input for mobile/IME)
-            $('#livestockSearch').on('input keyup', function() {
-                livestockTable.search(this.value).draw();
-            });
+            $('#livestockSearch').on('keyup', function() {
+        if ($.fn.DataTable.isDataTable('#livestockTable')) {
+            $('#livestockTable').DataTable().search(this.value).draw();
+        }
+    });
         } catch (error) {
             console.error('DataTables initialization error:', error);
         }

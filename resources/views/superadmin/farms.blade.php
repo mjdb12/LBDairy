@@ -1369,7 +1369,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="farmDetails" class="detail-wrapper">
+        <div id="farmDetails">
           <!-- Dynamic details injected here -->
         </div>
       </div>
@@ -1491,7 +1491,7 @@
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">
-            Save Farm
+            <i class="fas fa-save"></i> Update Farm
           </button>
         </div>
       </form>
