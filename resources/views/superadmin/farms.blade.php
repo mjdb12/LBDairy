@@ -1754,7 +1754,7 @@ function deleteFarm(farmId) {
         success: function(response) {
             loadFarms();
             updateStats();
-            showNotification('Farm deleted successfully', 'success');
+            showNotification('Farm deleted successfully!', 'success');
         },
         error: function(xhr) {
             showNotification('Error deleting farm', 'danger');

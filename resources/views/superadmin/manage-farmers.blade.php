@@ -2095,7 +2095,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         location.reload();
                         
                         // Show success notification
-                        alert('Farmer updated successfully!');
+                        showNotification('Farmer updated successfully!', 'success');
                     } else {
                         notification.innerHTML = `
                             <div class="alert alert-danger">
@@ -2165,11 +2165,11 @@ function showFarmerDetails(farmerId) {
                 $('#farmerDetailsContent').html(detailsHtml);
                 $('#farmerDetailsModal').modal('show');
             } else {
-                alert('Error loading farmer details');
+                showNotification('Error loading farmer details', 'danger');
             }
         },
         error: function() {
-            alert('Error loading farmer details');
+            showNotification('Error loading farmer details', 'danger');
         }
     });
 }

@@ -1419,56 +1419,12 @@
   }
 }
 
-/* SMART DETAIL MODAL TEMPLATE */
-.smart-detail .modal-content {
-    border-radius: 1.5rem;
-    border: none;
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
-    background-color: #fff;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Center alignment for header section */
-.smart-detail .modal-header,
-.smart-detail .modal-footer {
-    text-align: center;
-}
-
-/* Icon Header */
-.smart-detail .icon-circle {
-    width: 60px;
-    height: 60px;
-    background-color: #e8f0fe;
-    color: #18375d;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-}
-
-/* Titles & Paragraphs */
-.smart-detail h5 {
-    color: #18375d;
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.5px;
-}
-
-.smart-detail p {
-    color: #6b7280;
-    font-size: 1rem;
-    margin-bottom: 1.8rem;
-    line-height: 1.6;
-    text-align: left; /* ensures proper centering */
-}
-
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 3rem 3.5rem; /* more spacious layout */
+    padding: 5rem 5rem; /* More spacious layout */
     border-radius: 1rem;
-    max-height: 88vh; /* taller for longer content */
+    max-height: 130vh; /* Extended vertical height */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
@@ -1476,18 +1432,18 @@
 
 /* Wider modal container */
 .smart-detail .modal-dialog {
-    max-width: 92%; /* slightly wider modal */
+    max-width: 98%; /* Extended width for large screens */
     width: 100%;
-    margin: 1.75rem auto;
+    margin: 2.5rem auto;
 }
 
 /* Detail Section */
 .smart-detail .detail-wrapper {
     background: #f9fafb;
     border-radius: 1.25rem;
-    padding: 2.25rem; /* more inner padding */
-    font-size: 1rem;
-    line-height: 1.65;
+    padding: 3.5rem; /* Increased inner spacing */
+    font-size: 1.05rem;
+    line-height: 1.8;
 }
 
 /* Detail Rows */
@@ -1496,7 +1452,7 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px dashed #ddd;
-    padding: 0.6rem 0;
+    padding: 1rem 0; /* Taller row spacing */
 }
 
 .smart-detail .detail-row:last-child {
@@ -1506,47 +1462,77 @@
 .smart-detail .detail-label {
     font-weight: 600;
     color: #1b3043;
+    flex: 1;
 }
 
 .smart-detail .detail-value {
     color: #333;
     text-align: right;
+    flex: 1;
 }
 
 /* Footer */
 #livestockDetailsModal .modal-footer {
     text-align: center;
     border-top: 1px solid #e5e7eb;
-    padding-top: 1.5rem;
-    margin-top: 2rem;
+    padding-top: 2rem;
+    margin-top: 2.5rem;
 }
 
 /* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 1200px) {
+    .smart-detail .modal-dialog {
+        max-width: 97%;
+    }
+
+    .smart-detail .modal-body {
+        padding: 4rem;
+        max-height: 125vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 2.5rem;
+        font-size: 1rem;
+    }
+}
+
 @media (max-width: 992px) {
+    .smart-detail .modal-body {
+        padding: 3rem;
+        max-height: 200vh;
+    }
+
+    .smart-detail .detail-wrapper {
+        padding: 2rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
     .smart-detail .modal-dialog {
         max-width: 95%;
     }
 
     .smart-detail .modal-body {
         padding: 2rem;
-        max-height: 82vh;
+        max-height: 200vh;
     }
 
     .smart-detail .detail-wrapper {
-        padding: 1.5rem;
-        font-size: 0.95rem;
+        padding: 1.75rem;
+        line-height: 1.7;
     }
 
     .smart-detail p {
-        text-align: center;
+        text-align: left;
         font-size: 0.95rem;
     }
 }
 
 @media (max-width: 576px) {
     .smart-detail .modal-body {
-        padding: 0.5rem;
-        max-height: 95vh;
+        padding: 1.5rem;
+        max-height: 200vh;
     }
 
     .smart-detail .detail-wrapper {
@@ -1555,14 +1541,210 @@
 
     .smart-detail .detail-row {
         flex-direction: column;
+        align-items: flex-start;
         text-align: left;
-        gap: 0.3rem;
+        gap: 0.4rem;
     }
 
     .smart-detail .detail-value {
         text-align: left;
+        width: 100%;
     }
 }
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* LIVESTOCK DETAILS MODAL (Specific Styling) */
+#livestockDetailsModal .modal-dialog {
+    max-width: 80%; /* Wider for large screens */
+    width: 100%;
+    margin: 2.5rem auto;
+}
+
+#livestockDetailsModal .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    background: #fefefe;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+}
+
+#livestockDetailsModal .modal-header {
+    background: linear-gradient(135deg, #18375d, #1e4976);
+    color: #fff;
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    text-align: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+#livestockDetailsModal .modal-header h5 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+#livestockDetailsModal .modal-body {
+    background: #ffffff;
+    padding: 5rem 5rem; /* Spacious layout */
+    border-radius: 1rem;
+    max-height: 130vh; /* Extended vertical space */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Scrollbar styling */
+#livestockDetailsModal .modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+#livestockDetailsModal .modal-body::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 5px;
+}
+
+/* Section Wrapper */
+#livestockDetailsModal .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1.25rem;
+    padding: 3.5rem;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+/* Detail Rows */
+#livestockDetailsModal .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #d1d5db;
+    padding: 1rem 0;
+}
+
+#livestockDetailsModal .detail-row:last-child {
+    border-bottom: none;
+}
+
+#livestockDetailsModal .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+    flex: 1;
+}
+
+#livestockDetailsModal .detail-value {
+    color: #333;
+    text-align: right;
+    flex: 1;
+}
+
+/* QR Section */
+#livestockDetailsModal .qr-section {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+#livestockDetailsModal .qr-section img {
+    max-width: 130px;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+
+#livestockDetailsModal .qr-section .btn-action {
+    margin-top: 0.5rem;
+}
+
+/* Footer */
+#livestockDetailsModal .modal-footer {
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 2rem;
+    margin-top: 2.5rem;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1200px) {
+    #livestockDetailsModal .modal-dialog {
+        max-width: 97%;
+    }
+
+    #livestockDetailsModal .modal-body {
+        padding: 4rem;
+        max-height: 125vh;
+    }
+
+    #livestockDetailsModal .detail-wrapper {
+        padding: 2.75rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    #livestockDetailsModal .modal-body {
+        padding: 3rem;
+        max-height: 120vh;
+    }
+
+    #livestockDetailsModal .detail-wrapper {
+        padding: 2rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #livestockDetailsModal .modal-dialog {
+        max-width: 95%;
+    }
+
+    #livestockDetailsModal .modal-body {
+        padding: 2rem;
+        max-height: 115vh;
+    }
+
+    #livestockDetailsModal .detail-wrapper {
+        padding: 1.75rem;
+        line-height: 1.7;
+    }
+
+    #livestockDetailsModal p {
+        text-align: left;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    #livestockDetailsModal .modal-body {
+        padding: 1.5rem;
+        max-height: 115vh;
+    }
+
+    #livestockDetailsModal .detail-wrapper {
+        padding: 1.25rem;
+    }
+
+    #livestockDetailsModal .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 0.4rem;
+    }
+
+    #livestockDetailsModal .detail-value {
+        text-align: left;
+        width: 100%;
+    }
+
+    #livestockDetailsModal .qr-section img {
+        max-width: 110px;
+    }
+}
+
 /* QR Code Modal Specific Adjustments */
 #qrCodeModal .modal-body {
     background: #ffffff;
@@ -1964,12 +2146,12 @@
                     <i class="fas fa-user fa-2x"></i>
                 </div>
                 <h5 class="fw-bold mb-1">Livestock Details </h5>
-                <p class="text-muted mb-0 small">Below are the complete details of the selected livestock.</p>
+                <p class="text-muted text-center mb-0 small">Below are the complete details of the selected livestock.</p>
             </div>
 
       <!-- Body -->
       <div class="modal-body">
-        <div id="livestockDetailsContent" >
+        <div id="livestockDetailsContent">
           <!-- Dynamic details injected here -->
         </div>
       </div>
