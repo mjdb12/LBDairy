@@ -16,11 +16,14 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}" style="background-color: #18375d !important; border-bottom: 2px solid #18375d !important;">
         <div class="sidebar-brand-icon">
-            <img src="{{ asset('img/Lucban.png') }}" alt="LBDAIRY" width="55" height="55">
+            <img src="{{ asset('img/Lucban.png') }}" alt="LBDAIRY" width="50" height="50">
+        </div>
+        <div class="sidebar-brand-text mx-2">
+            <img src="{{ asset('img/LBDairyText.png') }}" alt="LBDAIRY" style="height: 70px; width: auto; object-fit: contain;">
         </div>
     </a>
 
- <!-- Divider -->
+  <!-- Divider -->
             <hr class="sidebar-divider">
 
             <!-- Heading -->
@@ -30,7 +33,6 @@
 
     @auth
         @if(auth()->user()->isFarmer())
-
             <!-- Farmer Navigation -->
             <li class="nav-item {{ isCurrentRoute('farmer.dashboard') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.dashboard') }}" data-toggle="tooltip" data-placement="right" data-original-title="Dashboard">
@@ -55,14 +57,14 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.issues') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.issues') }}" data-toggle="tooltip" data-placement="right" data-original-title="Manage Issues">
-                    <i class="fa fa-flag"></i>
+                    <i class="fa fa-exclamation-triangle"></i>
                     <span>Manage Issues</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.issue-alerts') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.issue-alerts') }}" data-toggle="tooltip" data-placement="right" data-original-title="Issues Alerts">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fa fa-exclamation-triangle"></i>
                     <span>Issues Alerts</span>
                 </a>
             </li>
@@ -76,7 +78,7 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.livestock-analysis') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.livestock-analysis') }}" data-toggle="tooltip" data-placement="right" data-original-title="Livestock Analysis">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-fw fa-database"></i>
                     <span>Livestock Analysis</span>
                 </a>
             </li>
@@ -98,7 +100,7 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.clients') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.clients') }}" data-toggle="tooltip" data-placement="right" data-original-title="Clients">
-                    <i class="fas fa-user-friends"></i>
+                    <i class="fas fa-fw fa-users"></i>
                     <span>Clients</span>
                 </a>
             </li>
@@ -119,14 +121,14 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.expenses') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.expenses') }}" data-toggle="tooltip" data-placement="right" data-original-title="Expenses">
-                    <i class="fas fa-receipt"></i>
+                    <i class="fas fa-fw fa-donate"></i>
                     <span>Expenses</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.inventory') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.inventory') }}" data-toggle="tooltip" data-placement="right" data-original-title="Inventory">
-                    <i class="fas fa-boxes"></i>
+                    <i class="fa fa-list"></i>
                     <span>Inventory</span>
                 </a>
             </li>
@@ -164,7 +166,7 @@
             <!-- Admin Navigation -->
             <li class="nav-item {{ isCurrentRoute('admin.dashboard') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.dashboard') }}" data-toggle="tooltip" data-placement="right" data-original-title="Dashboard">
-                    <i class="fas fa-fw fa-home"></i>
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
@@ -232,7 +234,6 @@
                     <span>Logs</span>
                 </a>
             </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -308,7 +309,6 @@
                     <span>Audit Logs</span>
                 </a>
             </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -343,6 +343,4 @@
     </div>
 
 </ul>
-@push('styles')
-<style></style>
 <!-- End of Sidebar -->

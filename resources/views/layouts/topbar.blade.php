@@ -301,33 +301,52 @@ function showMessageModal(notificationId, title, message) {
     
     // Create modal HTML
     const modalHtml = `
-        <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header" style="background: #18375d !important; color: white !important;">
-                        <h5 class="modal-title" style="color: white !important;">
-                            <i class="fas fa-envelope mr-2"></i>${title}
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="padding: 2rem;">
-                        <div class="mb-3">
-                            <h6 style="color: #18375d; font-weight: 600; border-bottom: 2px solid #e3e6f0; padding-bottom: 0.5rem;">Subject</h6>
-                            <p style="margin-bottom: 1.5rem; color: #333; font-weight: 500;">${subject}</p>
-                        </div>
-                        <div>
-                            <h6 style="color: #18375d; font-weight: 600; border-bottom: 2px solid #e3e6f0; padding-bottom: 0.5rem;">Message</h6>
-                            <p style="margin-bottom: 0; color: #333; line-height: 1.6;">${content}</p>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+        <!-- Smart Detail Modal -->
+<div class="modal fade admin-modal" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content smart-detail p-4">
+
+        <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-envelope fa-2x"></i>
                 </div>
+                <h5 class="fw-bold mb-1">${title}</h5>
             </div>
+
+      <!-- Body -->
+<div class="modal-body" style="padding: 1.5rem; background-color: #f9fafc;">
+  <!-- Subject Section -->
+  <div class="mb-4">
+    <h6 style="color: #18375d; font-weight: 600; border-bottom: 2px solid #e3e6f0; padding-bottom: 0.5rem; margin-bottom: 0.75rem; ">
+      Subject
+    </h6>
+    <p style="margin: 0; color: #333; font-weight: 500; font-size: 1rem; text-align: justify;">
+      ${subject}
+    </p>
+  </div>
+
+  <!-- Message Section -->
+  <div class="mb-2">
+    <h6 style="color: #18375d; font-weight: 600; border-bottom: 2px solid #e3e6f0; padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+      Message
+    </h6>
+    <p style="margin: 0; color: #333; line-height: 1.7; font-size: 0.95rem; text-align: justify;">
+      ${content}
+    </p>
+  </div>
+</div>
+
+
+      <!-- Footer -->
+
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+            <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
         </div>
+
+    </div>
+  </div>
+</div>
     `;
     
     // Remove existing modal if any
@@ -594,6 +613,83 @@ function testNotificationSystem() {
 .icon-circle.bg-info {
     box-shadow: #18375d;
 }
+/* SMART DETAIL MODAL TEMPLATE */
+.smart-detail .modal-content {
+    border-radius: 1.5rem;
+    border: none;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Icon Header */
+.smart-detail .icon-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e8f0fe;
+    color: #18375d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Titles & Paragraphs */
+.smart-detail h5 {
+    color: #18375d;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.smart-detail p {
+    color: #6b7280;
+    font-size: 0.96rem;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* MODAL BODY */
+.smart-detail .modal-body {
+    background: #ffffff;
+    padding: 1.75rem 2rem;
+    border-radius: 1rem;
+    max-height: 70vh; /* ensures content scrolls on smaller screens */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Detail Section */
+.smart-detail .detail-wrapper {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.smart-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding: 0.5rem 0;
+}
+
+.smart-detail .detail-row:last-child {
+    border-bottom: none;
+}
+
+.smart-detail .detail-label {
+    font-weight: 600;
+    color: #1b3043;
+}
+
+.smart-detail .detail-value {
+    color: #333;
+    text-align: right;
+}
+
 </style>
 @endif
 

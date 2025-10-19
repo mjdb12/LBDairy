@@ -2279,33 +2279,22 @@ function sendMessage(event) {
             message: message
         },
         success: function(response) {
-            const recipient = (name && name.trim().length) ? name : 'farmer';
-            document.getElementById('messageNotification').innerHTML = `
-                <div class="alert alert-success alert-dismissible fade show">
-                    <i class="fas fa-check-circle mr-2"></i>
-                   Message sent to <strong>&nbsp;${recipient}&nbsp;</strong> successfully!
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span>&times;</span>
-                    </button>
-                </div>
-            `;
-            document.getElementById('messageNotification').style.display = 'block';
+    // Show success notification
+    showNotification(`Message sent to <strong>&nbsp;Farmer&nbsp;</strong> successfully!`, 'success');
 
-            document.getElementById('messageSubject').value = '';
-            document.getElementById('messageBody').value = '';
-        },
-        error: function(xhr) {
-            document.getElementById('messageNotification').innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    Error sending message. Please try again.
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span>&times;</span>
-                    </button>
-                </div>
-            `;
-            document.getElementById('messageNotification').style.display = 'block';
-        }
+    // Clear input fields
+    document.getElementById('messageSubject').value = '';
+    document.getElementById('messageBody').value = '';
+},
+
+error: function(xhr) {
+    // Show error notification
+    showNotification(
+        `<i class="fas fa-exclamation-circle"></i> Error sending message. Please try again.`,
+        'danger'
+    );
+}
+
     });
 }
 

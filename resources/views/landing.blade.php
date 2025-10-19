@@ -844,6 +844,7 @@ section {
 .custom-modal-content p {
     font-size: 16px;
     line-height: 1.6;
+     text-align: justify;
     margin-bottom: 0.5rem;
 }
 
@@ -868,12 +869,14 @@ section {
     font-weight: 600;
     transition: all 0.3s ease;
     cursor: pointer;
+    margin-bottom: 0.5rem;
 }
 
 .btn-modern:hover {
     background: #fca700;
     color: #ffffff;
     border-color: #fca700;
+    margin-bottom: 0.5rem;
 }
 
 /* ===== Responsive ===== */
@@ -915,6 +918,8 @@ section {
     .btn-modern {
         padding: 6px 20px;
         font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        
     }
 }
 
@@ -1300,12 +1305,17 @@ section {
     </div>
     <h3>About Us</h3>
     <p class="text-muted">
-      A team of BS Information Technology students, led by Mark James Bondoc, developed LBDAIRY for the Lucban Agriculture Office to address the operational constraints of traditional, paper-based livestock record-keeping. The system integrates QR code technology to optimize livestock monitoring, guarantee reliable data recording, and facilitate prompt, data-informed decision-making.
+  &nbsp;&nbsp;&nbsp;&nbsp;A team of BS Information Technology students developed LBDAIRY for the Lucban Agriculture Office to address the operational constraints of traditional, paper-based livestock record-keeping. The system integrates QR code technology to optimize livestock monitoring, guarantee reliable data recording, and facilitate prompt, data-informed decision-making.
+</p>
 
-Throughout its development, LBDAIRY has reached key milestones, including the integration of QR code tagging, the development of an extensive data management interface, and the implementation of productivity analysis capabilities. These advancements underscore the system’s capacity to modernize and enhance livestock management operations.
+<p class="text-muted">
+  &nbsp;&nbsp;&nbsp;&nbsp;Throughout its development, LBDAIRY has reached key milestones, including the integration of QR code tagging, the development of an extensive data management interface, and the implementation of productivity analysis capabilities. These advancements underscore the system’s capacity to modernize and enhance livestock management operations. Our mission is to deliver a reliable, data-driven solution that strengthens local livestock management and supports sustainable agricultural development in Lucban.
+</p>
 
-Our mission is to deliver a reliable, data-driven solution that strengthens local livestock management and supports sustainable agricultural development in Lucban.
-    </p>
+<p class="text-muted">
+  &nbsp;&nbsp;&nbsp;&nbsp;The development team includes Mark James Bondoc (Project Leader), Laihra Mae Corod (UI/UX Designer & Documentation), and Isabelita Valerie Benzal (Documentation).
+</p>
+
     <button class="btn-modern mt-4" onclick="closeModal('aboutUsModal')">
       Got It
     </button>
