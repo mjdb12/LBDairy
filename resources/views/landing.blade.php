@@ -922,6 +922,45 @@ section {
         
     }
 }
+/* Base modal styling */
+.custom-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.custom-modal-content {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  width: 90%;
+  margin: auto;
+}
+
+/* Responsive large modal sizing */
+@media (min-width: 992px) {
+  .modal-lg .custom-modal-content {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal-lg .custom-modal-content {
+    max-width: 1140px;
+  }
+}
 
     </style>
 </head>
@@ -1131,7 +1170,7 @@ section {
     </div>
     <h3>About LB Dairy</h3>
     <p class="text-muted text-align">
-      LBDAIRY is a web-based platform designed to improve dairy livestock monitoring and management through QR code tagging. It enables effective tracking of animal records and integrates productivity analysis to support data-driven decision-making for the Lucban Agriculture Office.
+      &nbsp;&nbsp;&nbsp;&nbsp;This study focuses on addressing the challenges related with traditional paper-based livestock record management, which often leads to data inaccuracies, inefficiencies, and delayed decision-making. These limitations restrict the capability of agricultural offices to properly manage livestock activities. In response, the study seeks to develop a modern, technology-driven solution developed to improve livestock monitoring and support data-driven decision-making within the Lucban Agriculture Office. The proposed system, LBDAIRY, is a web-based application that utilizes QR code technology as a key component for efficient livestock tracking and management. This allows accurate livestock identification, real-time monitoring of productivity and breeding activities, and centralized access to essential data. The implementation of QR code technology greatly improves the accuracy, accessibility, and timeliness of livestock records, enabling more efficient and organized operational processes. Ultimately, the LBDAIRY system demonstrates the potential of digital innovations to transform traditional agricultural management practices. By providing a reliable and data-driven platform, it promotes sustainable livestock development and strengthens the decision-making capabilities of both local agricultural offices and farmers in Lucban.
     </p>
     <button class="btn-modern mt-4" onclick="closeModal('aboutModal')">
       Got It
@@ -1147,11 +1186,14 @@ section {
       <i class="fas fa-star fa-2x"></i>
     </div>
     <h3>Features of LB Dairy</h3>
-    <p class="text-muted">
-      LB Dairy offers real-time livestock monitoring, production tracking, analytics dashboards, 
-      and reporting tools — helping farmers make data-driven decisions for increased productivity 
-      and sustainability.
-    </p>
+    <p><strong>Livestock Management:</strong> This feature allows users to record and manage essential animal information, including breed, age, and unique QR code IDs. Authorized personnel can update records in real time, ensuring accurate tracking and centralized oversight for efficient herd management.</p>
+
+<p><strong>Production Tracking:</strong> Users can monitor milk production, breeding performance, and overall productivity. Real-time data and automated reporting reduce errors, highlight trends, and support informed decision-making for resource allocation and farm planning.</p>
+
+<p><strong>Health Monitoring:</strong> This feature ensures animal well-being by tracking medical treatments, vaccinations, and veterinary checkups. Early detection of health issues helps maintain healthier herds, improve productivity, and support sustainable farm operations.</p>
+
+<p><strong>Financial Reports:</strong> Users can access clear and structured reports on expenses, revenues, and operational costs. The system simplifies analysis, supports budgeting, strategic planning, and data-driven decision-making, enhancing overall farm management efficiency.</p>
+
     <button class="btn-modern mt-4" onclick="closeModal('featureModal')">
       Got It
     </button>
@@ -1166,10 +1208,20 @@ section {
       <i class="fas fa-envelope fa-2x"></i>
     </div>
     <h3>Contact Us</h3>
-    <p class="text-muted">
-      Have questions or feedback? Reach out to LB Dairy via email at <a href="mailto:info@lbdairy.com">info@lbdairy.com</a> 
-      or call us at +63 912 345 6789. We're here to help you optimize your farming operations.
-    </p>
+<p>For inquiries, concerns, or requests related to this Privacy Policy, please contact:</p>
+
+<p><strong>LOCAL GOVERNMENT UNIT OF LUCBAN</strong><br>
+Address:&nbsp;Municipal Bldg., Quezon Ave. cor. Rizal Ave., Brgy. 8, Lucban, Philippines<br>
+Email:&nbsp;lucbanquezonofficial@gmail.com<br>
+Contact Number:&nbsp;<br>
+Office Hours:&nbsp;</p>
+
+<p><strong>IT Team – LBDAIRY System Support</strong><br>
+Email:&nbsp;it_support@lbda.gov.ph<br>
+Contact Number:&nbsp;<br>
+Office Hours:&nbsp;</p>
+
+
     <button class="btn-modern mt-4" onclick="closeModal('contactModal')">
       Got It
     </button>
@@ -1185,8 +1237,8 @@ section {
       <i class="fas fa-book fa-2x"></i>
     </div>
     <h3>Documentation</h3>
-    <p class="text-muted">
-      Access detailed guides and manuals to get the most out of LB Dairy features.
+    <p class="text-muted text-align">
+      &nbsp;&nbsp;&nbsp;&nbsp;This study focuses on addressing the challenges related with traditional paper-based livestock record management, which often leads to data inaccuracies, inefficiencies, and delayed decision-making. These limitations restrict the capability of agricultural offices to properly manage livestock activities. In response, the study seeks to develop a modern, technology-driven solution developed to improve livestock monitoring and support data-driven decision-making within the Lucban Agriculture Office. The proposed system, LBDAIRY, is a web-based application that utilizes QR code technology as a key component for efficient livestock tracking and management. This allows accurate livestock identification, real-time monitoring of productivity and breeding activities, and centralized access to essential data. The implementation of QR code technology greatly improves the accuracy, accessibility, and timeliness of livestock records, enabling more efficient and organized operational processes. Ultimately, the LBDAIRY system demonstrates the potential of digital innovations to transform traditional agricultural management practices. By providing a reliable and data-driven platform, it promotes sustainable livestock development and strengthens the decision-making capabilities of both local agricultural offices and farmers in Lucban.
     </p>
     <button class="btn-modern mt-4" onclick="closeModal('documentationModal')">
       Got It
@@ -1202,9 +1254,14 @@ section {
       <i class="fas fa-headset fa-2x"></i>
     </div>
     <h3>Help Center</h3>
-    <p class="text-muted">
-      Get support for technical issues or farm management questions from our expert team.
-    </p>
+    <p class="text-muted text-align">
+    &nbsp;&nbsp;&nbsp;&nbsp;This study focuses on addressing the challenges of traditional paper-based livestock record management, which often leads to data inaccuracies, inefficiencies, and delayed decision-making. These limitations hinder the ability of agricultural offices to effectively manage livestock activities. In response, the study aims to develop a modern, technology-driven solution to improve livestock monitoring and support data-driven decision-making within the Lucban Agriculture Office. The proposed system, LBDAIRY, is a web-based application that uses QR code technology as a key tool for efficient livestock tracking and management.
+</p>
+
+<p class="text-muted text-align">
+    &nbsp;&nbsp;&nbsp;&nbsp;With QR code integration, the system enables accurate livestock identification, real-time monitoring of productivity and breeding activities, and centralized access to essential data. This significantly enhances the accuracy, accessibility, and timeliness of livestock records, allowing for more efficient and organized operational processes. Ultimately, LBDAIRY demonstrates the potential of digital innovations to transform traditional agricultural management, providing a reliable platform that promotes sustainable livestock development and strengthens decision-making for both local agricultural offices and farmers in Lucban.
+</p>
+
     <button class="btn-modern mt-4" onclick="closeModal('helpModal')">
       Got It
     </button>
@@ -1233,11 +1290,11 @@ section {
   <div class="custom-modal-overlay" onclick="closeModal('livestockModal')"></div>
   <div class="custom-modal-content">
     <div class="icon-wrapper mb-4 text-primary">
-      <i class="fas fa-dog fa-2x"></i>
+      <i class="fas fa-cow fa-2x"></i>
     </div>
     <h3>Livestock Management</h3>
     <p class="text-muted">
-      Monitor your animals in real-time, track feeding schedules, health, and location to optimize farm operations.
+      &nbsp;&nbsp;&nbsp;&nbsp;The Livestock Management feature provides an organized platform to record and manage essential information about each animal. Users can register livestock details such as breed, age, and unique identification through QR code tagging for easy monitoring. This ensures accurate tracking of animals, minimizing errors that commonly occur in paper-based systems. The system allows authorized personnel to update records in real time, keeping data consistent and reliable. Through this centralized approach, farmers and agriculture offices can efficiently oversee herd performance and maintain better operational control.
     </p>
     <button class="btn-modern mt-4" onclick="closeModal('livestockModal')">
       Got It
@@ -1254,7 +1311,8 @@ section {
     </div>
     <h3>Production Tracking</h3>
     <p class="text-muted">
-      Track milk, eggs, or meat production efficiently and get detailed analytics to improve output.
+      &nbsp;&nbsp;&nbsp;&nbsp;The Production Tracking provides users the ability to record and analyze data on milk production, breeding performance, and overall productivity of livestock. This feature provides real-time findings that help identify trends, allowing farmers and officials to make informed decisions on resource allocation. Through the automation of production records, it removes manual counting and reduces errors in reporting. The system also generates clear reports that can support future planning and forecasting. It helps to improve the productivity of the farm through data-driven strategies.
+
     </p>
     <button class="btn-modern mt-4" onclick="closeModal('productionModal')">
       Got It
@@ -1271,7 +1329,8 @@ section {
     </div>
     <h3>Health Monitoring</h3>
     <p class="text-muted">
-      Keep track of livestock health, vaccinations, and illnesses to prevent disease and losses.
+      &nbsp;&nbsp;&nbsp;&nbsp;The Health Monitoring element emphasizes on ensuring animal well-being through accurate and timely health records. It allows users to effectively monitor medical treatments, vaccination schedules, and veterinary checkups for each head of livestock. Through constantly tracking these critical data points, early signs of illnesses and possible health risks can be detected, managed, and addressed immediately. This proactive approach contributes to healthier herds, improved productivity, enhanced biosecurity, and reduced mortality rates. In general, the system ensures that animal health remains prioritized, supporting long-term, sustainable farm operations.
+
     </p>
     <button class="btn-modern mt-4" onclick="closeModal('healthModal')">
       Got It
@@ -1288,7 +1347,8 @@ section {
     </div>
     <h3>Financial Reports</h3>
     <p class="text-muted">
-      Analyze farm expenses, revenue, and profits with comprehensive reporting tools.
+      &nbsp;&nbsp;&nbsp;&nbsp;Financial Reports allows users with a comprehensive and easy-to-understand overview of farm-related expenses and revenues. This component consistently organizes and classifies financial data into clear, structured reports, making it easier to analyze profitability, cash flow, and operational costs. It also supports informed budgeting, strategic planning, and resource allocation by highlighting key financial patterns and trends over time. Users can conveniently generate accurate reports with just a few clicks, removing the complexity of manual computations. With this advanced tool, decision-making is transformed as more transparent, efficient, and data-driven.
+
     </p>
     <button class="btn-modern mt-4" onclick="closeModal('financialModal')">
       Got It
@@ -1323,16 +1383,21 @@ section {
 </div>
 
 <!-- Privacy Policy Modal -->
-<div id="privacyModal" class="custom-modal">
+<div id="privacyModal" class="custom-modal modal-lg">
   <div class="custom-modal-overlay" onclick="closeModal('privacyModal')"></div>
   <div class="custom-modal-content">
     <div class="icon-wrapper mb-4 text-primary">
       <i class="fas fa-user-shield fa-2x"></i>
     </div>
     <h3>Privacy Policy</h3>
-    <p class="text-muted">
-      Review our Privacy Policy to understand how we protect your data and ensure security.
-    </p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;The LBDAIRY System is the official platform of the Lucban Municipal Agriculture Office for monitoring, managing, and analyzing dairy livestock operations. By using the system, users consent to the collection and processing of information in accordance with government data protection regulations. LBDAIRY may collect personal information (such as name, contact details, and login credentials), livestock records (including QR tags, breed, and production data), and system access details (like logs and device information). All collected data are used solely for official purposes and are not shared with unauthorized parties.</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;Information may be disclosed only to relevant government agencies for legitimate functions or as required by law. Strict security measures, including encrypted storage, role-based access, and regular audits, are implemented to protect both user and livestock data. Records are retained only as long as necessary and are securely disposed of when no longer needed. Users have the right to access, review, and correct their information, and are responsible for safeguarding their login credentials.</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;This Privacy Policy may be updated to comply with legal or operational changes. For any questions or concerns, users should contact the Lucban Municipal Agriculture Office through official communication channels.</p>
+
+
     <button class="btn-modern mt-4" onclick="closeModal('privacyModal')">
       Got It
     </button>
@@ -1347,9 +1412,13 @@ section {
       <i class="fas fa-file-contract fa-2x"></i>
     </div>
     <h3>Terms of Service</h3>
-    <p class="text-muted">
-      Read our Terms of Service to know the rules and regulations of using LB Dairy solutions.
-    </p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;By accessing and using the LBDAIRY system, users agree to comply with all applicable rules, regulations, and security measures set by the Lucban Municipal Agriculture Office. Access is strictly limited to authorized personnel, and all activities within the system must be for official and lawful purposes only.</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;Users are responsible for protecting their login credentials and maintaining the accuracy of the information they provide. Any misuse, tampering, or unauthorized access may result in suspension, termination, or legal action.</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;Continued use of the system signifies acceptance of these terms and any future updates.</p>
+
     <button class="btn-modern mt-4" onclick="closeModal('termsModal')">
       Got It
     </button>

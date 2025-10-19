@@ -175,6 +175,7 @@ class AnalysisController extends Controller
             $farmer->delete();
             
             return redirect()->route('admin.analysis.index')->with('success', 'Farmer deleted successfully');
+            
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to delete farmer');
         }

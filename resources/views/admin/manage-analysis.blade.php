@@ -73,6 +73,29 @@
             </div>
         </div>
     </div>
+@if (session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('{{ session('success') }}', 'success');
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('{{ session('error') }}', 'error');
+        });
+    </script>
+@endif
+
+@if (session('warning'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('{{ session('warning') }}', 'warning');
+        });
+    </script>
+@endif
 
     <div class="card shadow mb-4 fade-in">
         <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
@@ -1817,10 +1840,23 @@ function viewFarmerDetails(farmerId) {
 
 
 function deleteFarmer(farmerId) {
-    document.getElementById('deleteFarmerId').textContent = 'F' + String(farmerId).padStart(3, '0');
-    document.getElementById('deleteFarmerForm').action = `{{ route('admin.analysis.delete-farmer', ':id') }}`.replace(':id', farmerId);
-    $('#confirmDeleteModal').modal('show');
+    try {
+        // Set farmer ID display and form action
+        document.getElementById('deleteFarmerId').textContent = 'F' + String(farmerId).padStart(3, '0');
+        document.getElementById('deleteFarmerForm').action = `{{ route('admin.analysis.delete-farmer', ':id') }}`.replace(':id', farmerId);
+        
+        // Show confirmation modal
+        $('#confirmDeleteModal').modal('show');
+        
+        // Notify user (info message)
+        showNotification(`Preparing to delete Farmer ID: F${String(farmerId).padStart(3, '0')}`, 'info');
+    } catch (error) {
+        // In case of unexpected error
+        console.error(error);
+        showNotification('Error displaying delete confirmation. Please try again.', 'warning');
+    }
 }
+
 
 // Export functions
 function exportCSV() {

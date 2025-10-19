@@ -1833,7 +1833,7 @@
    #issueAlertModal .form-control {
     font-size: 14px;
   }
-
+}
   /* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
     border-radius: 1.5rem;
@@ -1843,47 +1843,12 @@
     transition: all 0.3s ease-in-out;
 }
 
-/* Center alignment for header section */
-.smart-detail .modal-header,
-.smart-detail .modal-footer {
-    text-align: center;
-}
-
-/* Icon Header */
-.smart-detail .icon-circle {
-    width: 60px;
-    height: 60px;
-    background-color: #e8f0fe;
-    color: #18375d;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-}
-
-/* Titles & Paragraphs */
-.smart-detail h5 {
-    color: #18375d;
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.5px;
-}
-
-.smart-detail p {
-    color: #6b7280;
-    font-size: 1rem;
-    margin-bottom: 1.8rem;
-    line-height: 1.6;
-    text-align: left; /* ensures proper centering */
-}
-
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
-    padding: 3rem 3.5rem; /* more spacious layout */
+    padding: 2rem 2.5rem;
     border-radius: 1rem;
-    max-height: 88vh; /* taller for longer content */
+    max-height: 88vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
@@ -1891,64 +1856,24 @@
 
 /* Wider modal container */
 .smart-detail .modal-dialog {
-    max-width: 92%; /* slightly wider modal */
+    max-width: 96%;
     width: 100%;
     margin: 1.75rem auto;
 }
 
-/* Detail Section */
-.smart-detail .detail-wrapper {
-    background: #f9fafb;
-    border-radius: 1.25rem;
-    padding: 2.25rem; /* more inner padding */
-    font-size: 1rem;
-    line-height: 1.65;
-}
-
-/* Detail Rows */
-.smart-detail .detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px dashed #ddd;
-    padding: 0.6rem 0;
-}
-
-.smart-detail .detail-row:last-child {
-    border-bottom: none;
-}
-
-.smart-detail .detail-label {
-    font-weight: 600;
-    color: #1b3043;
-}
-
-.smart-detail .detail-value {
-    color: #333;
-    text-align: right;
-}
-
-/* Footer */
-#livestockDetailsModal .modal-footer {
-    text-align: center;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 1.5rem;
-    margin-top: 2rem;
-}
-
-/* RESPONSIVE ADJUSTMENTS */
+/* Responsive Adjustments */
 @media (max-width: 992px) {
     .smart-detail .modal-dialog {
-        max-width: 95%;
+        max-width: 98%;
     }
 
     .smart-detail .modal-body {
-        padding: 2rem;
+        padding: 1.5rem 2rem;
         max-height: 82vh;
     }
 
     .smart-detail .detail-wrapper {
-        padding: 1.5rem;
+        padding: 1.25rem 1.75rem;
         font-size: 0.95rem;
     }
 
@@ -1958,14 +1883,26 @@
     }
 }
 
+/* MOBILE VIEW (phones) */
 @media (max-width: 576px) {
+    .smart-detail .modal-dialog {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .smart-detail .modal-content {
+        border-radius: 0;
+        height: 100vh; /* make modal full height */
+    }
+
     .smart-detail .modal-body {
-        padding: 1.5rem;
-        max-height: 80vh;
+        padding: 1rem 1.25rem; /* less side padding */
+        max-height: 100vh;
     }
 
     .smart-detail .detail-wrapper {
-        padding: 1.25rem;
+        padding: 1rem;
     }
 
     .smart-detail .detail-row {
@@ -1978,6 +1915,7 @@
         text-align: left;
     }
 }
+
     .action-toolbar {
     flex-wrap: nowrap !important;
     gap: 0.5rem;
@@ -2003,6 +1941,212 @@
         width: auto !important;
     }
 }
+/* ========== CALENDAR CONTAINER ========== */
+#farmerCalendar {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+#farmerCalendar:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== TOOLBAR ========== */
+.fc-toolbar {
+  background: #ffff;
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #ffff;
+}
+
+.fc-toolbar-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #18375d;
+}
+
+.fc-button {
+  background: #ffffff;
+  border: 2px solid #18375d;
+  color: #18375d;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.fc-button:hover {
+  background: #18375d;
+  color: #fff;
+}
+
+/* Active view button */
+.fc-button-active {
+  background: #18375d !important;
+  color: #fff !important;
+  border-color: #18375d !important;
+}
+
+/* ========== DAYS GRID ========== */
+.fc-daygrid-day {
+  background: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+.fc-day-today {
+  background-color: #e6f0ff !important;
+  border-left: 3px solid #007bff !important;
+}
+
+.fc-daygrid-day:hover {
+  background: #f8f9fa;
+}
+
+/* ========== EVENTS ========== */
+.fc-event {
+  border-radius: 6px !important;
+  border: none !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 3px 5px;
+  transition: transform 0.1s ease;
+}
+
+.fc-event:hover {
+  transform: scale(1.03);
+  opacity: 0.9;
+}
+
+/* Category-based color samples (you can change these as needed) */
+.fc-event.feeding {
+  background-color: #28a745 !important;
+  color: #fff !important;
+}
+.fc-event.health {
+  background-color: #007bff !important;
+  color: #fff !important;
+}
+.fc-event.maintenance {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+.fc-event.milking {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
+}
+.fc-event.breeding {
+  background-color: #20c997 !important;
+  color: #fff !important;
+}
+.fc-event.other {
+  background-color: #6c757d !important;
+  color: #fff !important;
+}
+
+/* ========== LIST VIEW ========== */
+.fc-list {
+  border-radius: 8px;
+}
+
+.fc-list-event:hover {
+  background: #f1f4f9;
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 768px) {
+  #calendar {
+    padding: 0px;
+  }
+  .fc-toolbar {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+/* Navigation arrows (prev/next) */
+.fc-prev-button,
+.fc-next-button {
+  border-radius: 20% !important;
+  width: 36px;
+  height: 36px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  border: 2px solid #ffffff !important;
+  background: #ffffff !important;
+  color: #18375d !important;
+  transition: all 0.2s ease;
+}
+
+.fc-prev-button:hover,
+.fc-next-button:hover {
+  background: #18375d !important;
+  color: #ffffff !important;
+}
+/* ======== RIGHT TOOLBAR BUTTONS ======== */
+.fc-toolbar-chunk:last-child .fc-button-group .fc-button {
+  background: #ffffff;
+  border: 2px solid #fff;
+  color: #18375d;
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 6px 12px;
+  margin-left: 4px;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.fc-toolbar-chunk:last-child .fc-button-group .fc-button:hover {
+  background: #18375d;
+  color: #fff;
+}
+
+/* Active view (selected button) */
+.fc-toolbar-chunk:last-child .fc-button-group .fc-button-active {
+  background: #fff !important;
+  color: #18375d !important;
+  border-color: #18375d !important;
+  box-shadow: 0 0 0 3px rgba(24, 55, 93, 0.15);
+}
+
+/* Remove weird focus outline */
+.fc-toolbar-chunk:last-child .fc-button-group .fc-button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+/* ======== LEFT TOOLBAR - TODAY BUTTON ======== */
+.fc-toolbar-chunk:first-child .fc-today-button {
+  background: #ffffff;
+  border: 2px solid #18375d; /* Green accent */
+  color: #18375d;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 6px 14px;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.fc-toolbar-chunk:first-child .fc-today-button:hover {
+  background: #18375d;
+  color: #ffffff;
+}
+
+/* Disabled state (when already on today) */
+.fc-toolbar-chunk:first-child .fc-today-button:disabled {
+  background: #fff !important;
+  color: #18375d !important;
+  border-color: #18375d !important;
+  box-shadow: 0 0 0 3px rgba(24, 55, 93, 0.15);
+}
+
+/* Remove unwanted focus outline */
+.fc-toolbar-chunk:first-child .fc-today-button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 </style>
 @endpush
 
@@ -2412,7 +2556,7 @@
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn-modern btn-ok">
-            <i class="fas fa-save"></i> Update Inspection
+            <i class="fas fa-save"></i> Update 
           </button>
         </div>
       </form>
@@ -2770,7 +2914,7 @@ function viewFarmerDetails(farmerId) {
                             // Create calendar HTML with inspections
                             const calendarHtml = `
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farmer Information</h6>
                                     <p class="text-left"><strong>Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
                                     <p class="text-left"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
@@ -2783,9 +2927,9 @@ function viewFarmerDetails(farmerId) {
                                         </span>
                                     </p>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Scheduled Inspections Calendar</h6>
-                                    <div id="farmerCalendar" class="border rounded" style="height: 400px;">
+                                    <div id="farmerCalendar" style="min-height: 600px;">
                                     </div>
                                 </div>
                             </div>
@@ -3716,11 +3860,7 @@ function initializeFarmerCalendar(inspections) {
             eventClick: function(info) {
                 const inspection = info.event;
                 const details = `
-                    <strong>Farm Inspection</strong><br>
-                    <strong>Priority:</strong> ${inspection.extendedProps.priority}<br>
-                    <strong>Status:</strong> ${inspection.extendedProps.status}<br>
-                    <strong>Scheduled By:</strong> ${inspection.extendedProps.scheduledBy}<br>
-                    ${inspection.extendedProps.notes ? `<strong>Notes:</strong> ${inspection.extendedProps.notes}` : ''}
+                    <strong>Status:</strong>&nbsp; ${inspection.extendedProps.status}<br>
                 `;
                 showNotification(details, 'info');
             },
