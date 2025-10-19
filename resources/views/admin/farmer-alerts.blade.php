@@ -160,7 +160,7 @@
 
 
 <!-- Smart Detail Modal -->
-<div class="modal fade admin-modal" id="alertDetailsModal" tabindex="-1" role="dialog" aria-labelledby="alertDetailsLabel" aria-hidden="true">
+<div class="modal fade" id="alertDetailsModal" tabindex="-1" role="dialog" aria-labelledby="alertDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content smart-detail p-4">
 
@@ -859,6 +859,7 @@ function showNotification(message, type) {
 
 @push('styles')
 <style>
+    
         .action-toolbar {
     flex-wrap: nowrap !important;
     gap: 0.5rem;

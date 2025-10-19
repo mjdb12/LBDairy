@@ -1442,7 +1442,7 @@
 
       <!-- Footer -->
 
-        <div class="modal-footer justify-content-center mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
             <button type="button" class="btn-modern btn-ok" onclick="openContactModal()">
                 <i class="fas fa-envelope"></i> Contact Farmer
@@ -1504,7 +1504,7 @@
                 <div id="messageNotification" class="mt-3 text-center" style="display: none;"></div>
 
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-ok">
                         <i class="fas fa-paper-plane"></i> Send Message
@@ -1545,10 +1545,10 @@
 
 
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-delete">
-                        <i class="fas fa-times"></i> Reject Registration
+                        <i class="fas fa-times"></i> Reject 
                     </button>
                 </div>
             </form>
@@ -1577,7 +1577,7 @@
                 <input type="hidden" id="deactivateFarmerIdHidden">
 
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-delete">
                         <i class="fas fa-user-slash"></i> Deactivate
@@ -1609,7 +1609,7 @@
                 <input type="hidden" id="farmerIdHiddenApprove">
 
                 <!-- Buttons -->
-                <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-modern btn-approve">
                         <i class="fas fa-check-circle"></i> Approve
@@ -1676,10 +1676,10 @@
                         <textarea class="form-control" id="inspectionNotes" rows="3" placeholder="Enter any specific notes or instructions for the inspection..."></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save"></i> <i class="fas fa-calendar-check"></i> Schedule Inspection
+                        <i class="fas fa-save"></i> Schedule Inspection
                     </button>
                 </div>
             </form>

@@ -149,7 +149,7 @@
                                 </div>
 
                                 <button type="submit"  class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300">
-                                    Sign In
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                                 </button>
                             </form>
 

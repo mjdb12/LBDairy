@@ -61,7 +61,7 @@
     <div class="card shadow mb-4" id="livestockCard" style="display: none;">
         <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
-                <i class="fas fa-user-tie"></i>Select Livestock for: <span id="selectedFarmerName" class="font-weight-bold"></span>
+                <i class="fas fa-user-tie"></i>Farmer: <span id="selectedFarmerName" class="font-weight-bold"></span>
             </h6>
         </div>
         <div class="card-body">
