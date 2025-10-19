@@ -150,12 +150,17 @@ class User extends Authenticatable
     /**
      * Get the user's full name.
      */
-    public function getNameAttribute()
+    public function getNameAttribute($value)
     {
-        if ($this->first_name && $this->last_name) {
-            return $this->first_name . ' ' . $this->last_name;
+        // Prefer the stored 'name' column when set
+        if (!empty($value)) {
+            return $value;
         }
-        return $this->first_name ?: $this->last_name ?: '';
+        // Fallback to first_name/last_name if available
+        if (!empty($this->first_name) || !empty($this->last_name)) {
+            return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+        }
+        return '';
     }
 
 }

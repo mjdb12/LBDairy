@@ -1156,26 +1156,7 @@ SMART FORM - Enhanced Version
 @endpush
 
 @section('content')
-<!-- Success/Error Messages -->
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="fas fa-check-circle mr-2"></i>
-    {{ session('success') }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-@endif
-
-@if(session('error'))
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <i class="fas fa-exclamation-triangle mr-2"></i>
-    {{ session('error') }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-@endif
+<!-- Success/Error messages handled by global top-right toast -->
 
 @if($errors->any())
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -1633,8 +1614,7 @@ document.querySelector('#editProfileForm').addEventListener('submit', function (
         return;
     }
 
-    // Optional: show a "Saving..." spinner message
-    showNotification('Updating your profile...', 'info');
+    // Removed transient info toast to avoid intrusive alerts during submit
 });
 
 // Handle Change Password form submission
@@ -1662,8 +1642,7 @@ document.querySelector('#changePasswordForm').addEventListener('submit', functio
         return;
     }
 
-    // Optional: show a temporary info message
-    showNotification('Changing your password...', 'info');
+    // Removed transient info toast to avoid intrusive alerts during submit
 });
 
 </script>

@@ -48,6 +48,10 @@ class FarmerController extends Controller
             $user->farms->first()->update(['name' => $request->farm_name]);
         }
 
+        // Refresh the authenticated user so the view reflects new values immediately
+        $user->refresh();
+        Auth::setUser($user);
+
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 
@@ -733,34 +737,150 @@ class FarmerController extends Controller
         $user = Auth::user();
         $livestock = Livestock::whereHas('farm', function($query) use ($user) {
             $query->where('owner_id', $user->id);
-        })->findOrFail($id);
+        })
+        ->with(['farm','owner'])
+        ->findOrFail($id);
 
-        // Get related data
+        // Related data
         $farm = $livestock->farm;
         $owner = $livestock->owner;
-        
-        // Get production records for this livestock
+
+        // Production records (most recent first, expanded for printing)
         $productionRecords = $livestock->productionRecords()
             ->orderBy('production_date', 'desc')
-            ->take(15)
+            ->take(60)
             ->get();
-            
-        // Mock data for growth records (you can replace with actual data when available)
-        $growthRecords = collect([
-            [
-                'date' => $livestock->birth_date ? \Carbon\Carbon::parse($livestock->birth_date)->format('Y-m-d') : 'N/A',
-                'weight' => $livestock->weight ?? 'N/A',
-                'height' => 'N/A',
-                'heart_girth' => 'N/A',
-                'body_length' => 'N/A'
-            ]
-        ]);
-        
-        // Mock data for breeding records (you can replace with actual data when available)
-        $breedingRecords = collect([]);
-        
-        // Mock data for calving records (you can replace with actual data when available)
-        $calvingRecords = collect([]);
+
+        // Parse records from remarks if present
+        $remarks = (string)($livestock->remarks ?? '');
+        $lines = preg_split('/\r?\n/', $remarks);
+
+        // Health records mapping to print table columns
+        $healthRecords = collect();
+        // Breeding/AI records mapping to print table columns
+        $breedingRecords = collect();
+        // Calving records mapping to print table columns
+        $calvingRecords = collect();
+        // Growth records
+        $growthRecords = collect();
+
+        foreach ($lines as $line) {
+            $trim = trim($line);
+            if ($trim === '') { continue; }
+            if (strpos($trim, '[Health]') === 0) {
+                $entry = [
+                    'date' => null,
+                    'observations' => null,
+                    'test' => null,
+                    'diagnosis' => null,
+                    'drugs' => null,
+                    'signature' => null,
+                ];
+                $parts = array_map('trim', explode('|', substr($trim, 8)));
+                foreach ($parts as $p) {
+                    $pLower = strtolower($p);
+                    if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
+                    if (stripos($pLower, 'observations:') === 0) $entry['observations'] = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($pLower, 'symptoms:') === 0) $entry['observations'] = isset($entry['observations']) && $entry['observations']
+                        ? ($entry['observations'] . '; ' . trim(substr($p, 9)))
+                        : trim(substr($p, 9));
+                    if (stripos($pLower, 'test performed:') === 0 || stripos($pLower, 'test:') === 0) $entry['test'] = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($p, 'Status:') === 0) $entry['diagnosis'] = trim(substr($p, 7));
+                    if (stripos($p, 'Treatment:') === 0) $entry['drugs'] = trim(substr($p, 10));
+                    if (stripos($pLower, 'veterinarian:') === 0 || stripos($pLower, 'signature:') === 0) $entry['signature'] = trim(substr($p, strpos($p, ':')+1));
+                }
+                if (!$entry['diagnosis'] && isset($livestock->health_status)) {
+                    $entry['diagnosis'] = $livestock->health_status;
+                }
+                $healthRecords->push($entry);
+            }
+            if (strpos($trim, '[Breeding]') === 0) {
+                $entry = [
+                    'service_date' => null,
+                    'bcs' => null,
+                    'vo' => null,
+                    'ut' => null,
+                    'md' => null,
+                    'bull_id' => null,
+                    'bull_name' => null,
+                    'pd_date' => null,
+                    'pd_result' => null,
+                    'signature' => null,
+                ];
+                $parts = array_map('trim', explode('|', substr($trim, 10)));
+                foreach ($parts as $p) {
+                    $label = strtolower(substr($p, 0, strpos($p, ':') !== false ? strpos($p, ':') : 0));
+                    $val = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($p, 'Date:') === 0 || stripos($p, 'Service Date:') === 0) $entry['service_date'] = $val;
+                    if (stripos($p, 'BCS:') === 0) $entry['bcs'] = $val;
+                    if (stripos($p, 'VO:') === 0) $entry['vo'] = $val;
+                    if (stripos($p, 'UT:') === 0) $entry['ut'] = $val;
+                    if (stripos($p, 'MD:') === 0) $entry['md'] = $val;
+                    if (stripos($pLower ?? '', 'bull id') === 0 || stripos($pLower ?? '', 'id no') === 0) $entry['bull_id'] = $val;
+                    if (stripos($pLower ?? '', 'bull name') === 0 || stripos($pLower ?? '', 'name:') === 0) $entry['bull_name'] = $val;
+                    if (stripos($pLower ?? '', 'partner:') === 0 && !$entry['bull_name']) $entry['bull_name'] = $val;
+                    if (stripos($pLower ?? '', 'pd date') === 0) $entry['pd_date'] = $val;
+                    if (stripos($pLower ?? '', 'pd result') === 0) $entry['pd_result'] = $val;
+                    if (stripos($pLower ?? '', 'pregnancy') === 0 || stripos($pLower ?? '', 'success') === 0) $entry['pd_result'] = $val;
+                    if (stripos($pLower ?? '', 'ai tech') === 0 || stripos($pLower ?? '', 'signature') === 0) $entry['signature'] = $val;
+                }
+                $breedingRecords->push($entry);
+            }
+            if (strpos($trim, '[Calving]') === 0) {
+                $entry = [
+                    'date_of_calving' => null,
+                    'calf_id' => null,
+                    'sex' => null,
+                    'breed' => null,
+                    'sire_id' => null,
+                    'milk_production' => null,
+                    'dim' => null,
+                ];
+                $parts = array_map('trim', explode('|', substr($trim, 9)));
+                foreach ($parts as $p) {
+                    $label = strtolower(substr($p, 0, strpos($p, ':') !== false ? strpos($p, ':') : 0));
+                    $val = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($pLower = strtolower($p), 'date of calving:') === 0 || stripos($pLower, 'date:') === 0) $entry['date_of_calving'] = $val;
+                    if (stripos($pLower, 'calf id') === 0 || stripos($pLower, 'calf:') === 0) $entry['calf_id'] = $val;
+                    if (stripos($pLower, 'sex:') === 0) $entry['sex'] = ucfirst(strtolower($val));
+                    if (stripos($pLower, 'breed:') === 0) $entry['breed'] = $val;
+                    if (stripos($pLower, 'sire id') === 0) $entry['sire_id'] = $val;
+                    if (stripos($pLower, 'milk') === 0) $entry['milk_production'] = $val;
+                    if (stripos($pLower, 'dim') === 0 || stripos($pLower, 'days in milk') === 0) $entry['dim'] = $val;
+                }
+                $calvingRecords->push($entry);
+            }
+            if (strpos($trim, '[Growth]') === 0) {
+                $entry = [
+                    'date' => null,
+                    'weight' => null,
+                    'height' => null,
+                    'heart_girth' => null,
+                    'body_length' => null,
+                ];
+                $parts = array_map('trim', explode('|', substr($trim, 8)));
+                foreach ($parts as $p) {
+                    $pl = strtolower($p);
+                    if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
+                    if (stripos($pl, 'weight:') === 0) $entry['weight'] = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($pl, 'height:') === 0) $entry['height'] = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($pl, 'heart') === 0) $entry['heart_girth'] = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($pl, 'body length') === 0 || stripos($pl, 'length:') === 0) $entry['body_length'] = trim(substr($p, strpos($p, ':')+1));
+                }
+                $growthRecords->push($entry);
+            }
+        }
+
+        // Ensure at least one growth entry from basic info
+        if ($growthRecords->isEmpty()) {
+            $growthRecords->push([
+                'date' => $livestock->birth_date ? \Carbon\Carbon::parse($livestock->birth_date)->format('Y-m-d') : null,
+                'weight' => $livestock->weight,
+                'height' => null,
+                'heart_girth' => null,
+                'body_length' => null,
+            ]);
+        }
 
         return view('farmer.livestock-print', compact(
             'livestock',
@@ -769,7 +889,8 @@ class FarmerController extends Controller
             'productionRecords',
             'growthRecords',
             'breedingRecords',
-            'calvingRecords'
+            'calvingRecords',
+            'healthRecords'
         ));
     }
 

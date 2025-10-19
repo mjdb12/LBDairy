@@ -330,91 +330,91 @@
                 <div class="form-row">
                     <div class="form-group wide">
                         <label>Owned by:</label>
-                        <input type="text" value="Sample Owner Name" readonly>
+                        <input type="text" value="{{ $owner->name ?? ($owner->email ?? 'N/A') }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group wide">
                         <label>Dispersal From:</label>
-                        <input type="text" value="Sample Farm Name" readonly>
+                        <input type="text" value="{{ $livestock->dispersal_from ?? ($farm->name ?? '') }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Registry ID Number:</label>
-                        <input type="text" value="REG001" readonly>
+                        <input type="text" value="{{ $livestock->registry_id ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Date of Birth:</label>
-                        <input type="text" value="2022-01-15" readonly>
+                        <input type="text" value="{{ $livestock->birth_date ?? '' }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Tag ID Number:</label>
-                        <input type="text" value="TAG001" readonly>
+                        <input type="text" value="{{ $livestock->tag_number ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Sex:</label>
-                        <input type="text" value="Female" readonly>
+                        <input type="text" value="{{ isset($livestock->gender) ? ucfirst($livestock->gender) : '' }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Name:</label>
-                        <input type="text" value="Bella" readonly>
+                        <input type="text" value="{{ $livestock->name ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Breed:</label>
-                        <input type="text" value="Holstein" readonly>
+                        <input type="text" value="{{ isset($livestock->breed) ? ucfirst($livestock->breed) : '' }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Sire - Registry ID Number:</label>
-                        <input type="text" value="SIRE001" readonly>
+                        <input type="text" value="{{ $livestock->sire_id ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Name:</label>
-                        <input type="text" value="Thunder" readonly>
+                        <input type="text" value="{{ $livestock->sire_name ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Breed:</label>
-                        <input type="text" value="Holstein" readonly>
+                        <input type="text" value="{{ $livestock->sire_breed ?? '' }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Dam - Registry ID Number:</label>
-                        <input type="text" value="DAM001" readonly>
+                        <input type="text" value="{{ $livestock->dam_id ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Name:</label>
-                        <input type="text" value="Rosie" readonly>
+                        <input type="text" value="{{ $livestock->dam_name ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Breed:</label>
-                        <input type="text" value="Holstein" readonly>
+                        <input type="text" value="{{ $livestock->dam_breed ?? '' }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group full-width">
                         <label>Distinct Characteristics:</label>
-                        <input type="text" value="White markings on face" readonly style="flex: 1;">
+                        <input type="text" value="{{ $livestock->description ?? '' }}" readonly style="flex: 1;">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group full-width">
                         <label>Natural marks:</label>
-                        <input type="text" value="Small scar on left flank" readonly style="flex: 1;">
+                        <input type="text" value="{{ $livestock->natural_marks ?? '' }}" readonly style="flex: 1;">
                     </div>
                 </div>
                 
@@ -439,18 +439,18 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Property No.:</label>
-                        <input type="text" value="PROP001" readonly>
+                        <input type="text" value="{{ $livestock->property_no ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Name of Cooperator:</label>
-                        <input type="text" value="John Farmer" readonly>
+                        <input type="text" value="{{ $livestock->owned_by ?? ($owner->name ?? '') }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Date acquired:</label>
-                        <input type="text" value="2024-01-15" readonly>
+                        <input type="text" value="{{ $livestock->acquisition_date ?? '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Date released:</label>
@@ -461,36 +461,36 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Acquisition Cost:</label>
-                        <input type="text" value="₱50,000" readonly>
+                        <input type="text" value="{{ $livestock->acquisition_cost ? '₱'.number_format((float)$livestock->acquisition_cost, 2) : '' }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Cooperative:</label>
-                        <input type="text" value="LDRA" readonly>
+                        <input type="text" value="{{ $farm->name ?? '' }}" readonly>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group full-width">
                         <label>Source / Origin:</label>
-                        <input type="text" value="Local farm" readonly style="flex: 1;">
+                        <input type="text" value="{{ $livestock->dispersal_from ?? '' }}" readonly style="flex: 1;">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group full-width">
                         <label>Address:</label>
-                        <input type="text" value="123 Farm Road, Luban" readonly style="flex: 1;">
+                        <input type="text" value="{{ $owner->address ?? ($farm->location ?? '') }}" readonly style="flex: 1;">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Remarks:</label>
-                        <textarea readonly>Healthy and active animal. Good milk producer.</textarea>
+                        <textarea readonly>{{ $livestock->remarks ?? '' }}</textarea>
                     </div>
                     <div class="form-group">
                         <label>Contact No.:</label>
-                        <input type="text" value="0912-345-6789" readonly>
+                        <input type="text" value="{{ $owner->phone ?? ($owner->contact_number ?? '') }}" readonly>
                     </div>
                 </div>
                 
@@ -516,45 +516,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><input type="text" value="2024-01-15" readonly></td>
-                                <td><input type="text" value="Normal behavior" readonly></td>
-                                <td><input type="text" value="Physical exam" readonly></td>
-                                <td><input type="text" value="Healthy" readonly></td>
-                                <td><input type="text" value="Vitamins" readonly></td>
-                                <td><input type="text" value="Dr. Cruz" readonly></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" value="2024-02-15" readonly></td>
-                                <td><input type="text" value="Good appetite" readonly></td>
-                                <td><input type="text" value="Weight check" readonly></td>
-                                <td><input type="text" value="Normal weight" readonly></td>
-                                <td><input type="text" value="None" readonly></td>
-                                <td><input type="text" value="Dr. Cruz" readonly></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" value="2024-03-15" readonly></td>
-                                <td><input type="text" value="Active" readonly></td>
-                                <td><input type="text" value="Vaccination" readonly></td>
-                                <td><input type="text" value="Vaccinated" readonly></td>
-                                <td><input type="text" value="FMD vaccine" readonly></td>
-                                <td><input type="text" value="Dr. Cruz" readonly></td>
-                            </tr>
-                            <!-- Empty rows -->
-                            <script>
-                                for (let i = 0; i < 18; i++) {
-                                    document.write(`
-                                        <tr>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                        </tr>
-                                    `);
-                                }
-                            </script>
+                            @php $healthLimit = 21; $hc = isset($healthRecords) ? $healthRecords->count() : 0; @endphp
+                            @if(isset($healthRecords) && $hc)
+                                @foreach($healthRecords->take($healthLimit) as $h)
+                                    <tr>
+                                        <td><input type="text" value="{{ $h['date'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $h['observations'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $h['test'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $h['diagnosis'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $h['drugs'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $h['signature'] ?? '' }}" readonly></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6"><div style="text-align:center;">No health records</div></td>
+                                </tr>
+                            @endif
+                            @for($i = 0; $i < max(0, $healthLimit - min($hc, $healthLimit)); $i++)
+                                <tr>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                </tr>
+                            @endfor
                         </tbody>
                     </table>
                 </div>
@@ -581,19 +569,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <script>
-                                for (let i = 0; i < 12; i++) {
-                                    document.write(`
-                                        <tr>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                        </tr>
-                                    `);
-                                }
-                            </script>
+                            @php $growthLimit = 12; $gc = isset($growthRecords) ? $growthRecords->count() : 0; @endphp
+                            @if(isset($growthRecords) && $gc)
+                                @foreach($growthRecords->take($growthLimit) as $g)
+                                    <tr>
+                                        <td><input type="text" value="{{ $g['date'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $g['weight'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $g['height'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $g['heart_girth'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $g['body_length'] ?? '' }}" readonly></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="5"><div style="text-align:center;">No growth records</div></td>
+                                </tr>
+                            @endif
+                            @for($i = 0; $i < max(0, $growthLimit - min($gc, $growthLimit)); $i++)
+                                <tr>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                </tr>
+                            @endfor
                         </tbody>
                     </table>
                 </div>
@@ -622,24 +622,41 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <script>
-                                for (let i = 0; i < 12; i++) {
-                                    document.write(`
-                                        <tr>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                            <td><input type="text" value="" readonly></td>
-                                        </tr>
-                                    `);
-                                }
-                            </script>
+                            @php $breedLimit = 12; $bc = isset($breedingRecords) ? $breedingRecords->count() : 0; @endphp
+                            @if(isset($breedingRecords) && $bc)
+                                @foreach($breedingRecords->take($breedLimit) as $b)
+                                    <tr>
+                                        <td><input type="text" value="{{ $b['service_date'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['bcs'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['vo'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['ut'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['md'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['bull_id'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['bull_name'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['pd_date'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['pd_result'] ?? '' }}" readonly></td>
+                                        <td><input type="text" value="{{ $b['signature'] ?? '' }}" readonly></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="10"><div style="text-align:center;">No breeding/AI records</div></td>
+                                </tr>
+                            @endif
+                            @for($i = 0; $i < max(0, $breedLimit - min($bc, $breedLimit)); $i++)
+                                <tr>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                    <td><input type="text" value="" readonly></td>
+                                </tr>
+                            @endfor
                         </tbody>
                     </table>
                 </div>
@@ -661,21 +678,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <script>
-                            for (let i = 0; i < 8; i++) {
-                                document.write(`
-                                    <tr>
-                                        <td><input type="text" value="" readonly></td>
-                                        <td><input type="text" value="" readonly></td>
-                                        <td><input type="text" value="" readonly></td>
-                                        <td><input type="text" value="" readonly></td>
-                                        <td><input type="text" value="" readonly></td>
-                                        <td><input type="text" value="" readonly></td>
-                                        <td><input type="text" value="" readonly></td>
-                                    </tr>
-                                `);
-                            }
-                        </script>
+                        @php $calvingLimit = 8; $cc = isset($calvingRecords) ? $calvingRecords->count() : 0; @endphp
+                        @if(isset($calvingRecords) && $cc)
+                            @foreach($calvingRecords->take($calvingLimit) as $c)
+                                <tr>
+                                    <td><input type="text" value="{{ $c['date_of_calving'] ?? '' }}" readonly></td>
+                                    <td><input type="text" value="{{ $c['calf_id'] ?? '' }}" readonly></td>
+                                    <td><input type="text" value="{{ $c['sex'] ?? '' }}" readonly></td>
+                                    <td><input type="text" value="{{ $c['breed'] ?? '' }}" readonly></td>
+                                    <td><input type="text" value="{{ $c['sire_id'] ?? '' }}" readonly></td>
+                                    <td><input type="text" value="{{ $c['milk_production'] ?? '' }}" readonly></td>
+                                    <td><input type="text" value="{{ $c['dim'] ?? '' }}" readonly></td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="7"><div style="text-align:center;">No calving records</div></td>
+                            </tr>
+                        @endif
+                        @for($i = 0; $i < max(0, $calvingLimit - min($cc, $calvingLimit)); $i++)
+                            <tr>
+                                <td><input type="text" value="" readonly></td>
+                                <td><input type="text" value="" readonly></td>
+                                <td><input type="text" value="" readonly></td>
+                                <td><input type="text" value="" readonly></td>
+                                <td><input type="text" value="" readonly></td>
+                                <td><input type="text" value="" readonly></td>
+                                <td><input type="text" value="" readonly></td>
+                            </tr>
+                        @endfor
                     </tbody>
                 </table>
             </div>
@@ -700,6 +731,46 @@
             </div>
         </div>
     </div>
+
+    @php $prodChunks = isset($productionRecords) ? $productionRecords->chunk(30) : collect([]); @endphp
+    @foreach($prodChunks as $chunk)
+    <div class="page">
+        <div class="print-header">
+            <h1>MILK PRODUCTION RECORDS</h1>
+            <h2>{{ $livestock->name ? ($livestock->name . ' - ' . ($livestock->tag_number ?? '')) : ($livestock->tag_number ?? '') }}</h2>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Date</th>
+                        <th style="width: 20%;">Quantity (L)</th>
+                        <th style="width: 20%;">Quality</th>
+                        <th style="width: 40%;">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($chunk as $pr)
+                        <tr>
+                            <td><input type="text" value="{{ optional($pr->production_date)->format('Y-m-d') }}" readonly></td>
+                            <td><input type="text" value="{{ isset($pr->milk_quantity) ? number_format((float)$pr->milk_quantity, 2) : '' }}" readonly></td>
+                            <td><input type="text" value="{{ $pr->milk_quality_score ?? '' }}" readonly></td>
+                            <td><input type="text" value="{{ $pr->notes ?? '' }}" readonly></td>
+                        </tr>
+                    @endforeach
+                    @for($i = $chunk->count(); $i < 30; $i++)
+                        <tr>
+                            <td><input type="text" value="" readonly></td>
+                            <td><input type="text" value="" readonly></td>
+                            <td><input type="text" value="" readonly></td>
+                            <td><input type="text" value="" readonly></td>
+                        </tr>
+                    @endfor
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endforeach
 
     <script>
         // Simple drawing function for the animal outlines

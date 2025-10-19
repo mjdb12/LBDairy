@@ -32,6 +32,8 @@ class AdminController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'phone' => ['nullable', 'regex:/^\d{11}$/'],
             'address' => 'nullable|string|max:500',
+            'barangay' => 'required|string|max:255',
+            'position' => 'nullable|string|max:255',
         ]);
 
         $user->update([
@@ -39,7 +41,13 @@ class AdminController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
+            'barangay' => $request->barangay,
+            'position' => $request->position,
         ]);
+
+        // Refresh the authenticated user so the view reflects new values immediately
+        $user->refresh();
+        Auth::setUser($user);
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }

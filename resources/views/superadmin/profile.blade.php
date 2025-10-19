@@ -931,26 +931,7 @@ SMART FORM - Enhanced Version
     <p>Manage your administrative profile and system settings</p>
 </div>
 
-<!-- Success/Error Messages -->
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="fas fa-check-circle mr-2"></i>
-    {{ session('success') }}
-    <button type="button" class="close" data-dismiss="alert">
-        <span>&times;</span>
-    </button>
-</div>
-@endif
-
-@if(session('error'))
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <i class="fas fa-exclamation-circle mr-2"></i>
-    {{ session('error') }}
-    <button type="button" class="close" data-dismiss="alert">
-        <span>&times;</span>
-    </button>
-</div>
-@endif
+<!-- Success/Error messages handled by global top-right toast -->
 
 @if($errors->any())
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -1049,11 +1030,7 @@ SMART FORM - Enhanced Version
                     <input type="file" id="uploadProfilePicture" accept="image/*" style="display:none;" onchange="changeProfilePicture(event)">
                 </div>
 
-                @php
-                    $headerUser = \App\Models\User::find(auth()->id());
-                    $headerName = !empty($headerUser->name) ? $headerUser->name : 'Super Admin';
-                @endphp
-                <h3 class="mt-3 mb-1 font-weight-bold">{{ $headerName }}</h3>
+                <h3 class="mt-3 mb-1 font-weight-bold">Super Admin</h3>
                 <p class="text-muted mb-2">{{ auth()->user()->email }}</p>
                 <!-- Action Buttons -->
             <div class="btn-group d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
@@ -1485,11 +1462,15 @@ SMART FORM - Enhanced Version
                 // Close the modal
                 $('#editProfileModal').modal('hide');
                 
-                // Force a small delay to ensure the modal is fully hidden
-                setTimeout(() => {
-                    // Force a reload of the page to ensure all data is in sync
-                    window.location.reload();
-                }, 500);
+                // Show top-right toast (fallback if unavailable)
+                if (typeof showTopRightAlert === 'function') {
+                    showTopRightAlert(data.message || 'Profile updated successfully!', 'success');
+                } else if (typeof showNotification === 'function') {
+                    showNotification(data.message || 'Profile updated successfully!', 'success');
+                } else {
+                    try { console.log('Profile updated successfully!'); } catch(e){}
+                }
+                setTimeout(() => { window.location.reload(); }, 1800);
             } else {
                 throw new Error(data.message || 'Failed to update profile');
             }

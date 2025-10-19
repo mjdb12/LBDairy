@@ -391,6 +391,33 @@
         });
     </script>
     
+    <script>
+        // Global helper for top-right alerts (Bootstrap 5.x)
+        function showTopRightAlert(message, type) {
+            try {
+                var icon = (type === 'success') ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : (type === 'info' ? 'info-circle' : 'exclamation-circle'));
+                var $n = $(
+                    '<div class="alert alert-' + type + ' alert-dismissible fade show refresh-notification" role="alert">\
+                        <i class="fas fa-' + icon + ' me-2"></i>' + message + '\
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>\
+                    </div>'
+                );
+                $('body').append($n);
+                setTimeout(function(){ try { var alertIns = new bootstrap.Alert($n[0]); alertIns.close(); } catch(e){ $n.alert('close'); } }, 5000);
+            } catch (e) { console.warn('showTopRightAlert error', e); }
+        }
+
+        // Trigger on Laravel session flashes for all admin pages
+        document.addEventListener('DOMContentLoaded', function(){
+            @if(session('success'))
+                showTopRightAlert(@json(session('success')), 'success');
+            @endif
+            @if(session('error'))
+                showTopRightAlert(@json(session('error')), 'danger');
+            @endif
+        });
+    </script>
+    
     @stack('scripts')
     
     @include('layouts.logout-modal')

@@ -1298,6 +1298,22 @@
         }
     </style>
     
+    <style>
+        /* Global top-right alert positioning */
+        .refresh-notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+    
     @stack('styles')
 </head>
 
@@ -1331,19 +1347,7 @@
                         }
                     </style>
 
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    @endif
+                    <!-- Success/Error messages handled globally by top-right toast -->
 
                     @if($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -1663,6 +1667,36 @@
     </style>
     
     @stack('scripts')
+    
+    <script>
+    // Global helper for top-right alerts (Bootstrap 4.x)
+    function showTopRightAlert(message, type) {
+        try {
+            var icon = (type === 'success') ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : (type === 'info' ? 'info-circle' : 'times-circle'));
+            var $n = $(`
+                <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
+                    <i class="fas fa-${icon} mr-2"></i>
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `);
+            $('body').append($n);
+            setTimeout(function(){ $n.alert('close'); }, 5000);
+        } catch (e) { console.warn('showTopRightAlert error', e); }
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        // Trigger on Laravel session flashes
+        @if(session('success'))
+            showTopRightAlert(@json(session('success')), 'success');
+        @endif
+        @if(session('error'))
+            showTopRightAlert(@json(session('error')), 'danger');
+        @endif
+    });
+    </script>
     
     <!-- Toast Container -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
