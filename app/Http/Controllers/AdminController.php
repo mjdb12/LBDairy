@@ -15,6 +15,7 @@ use App\Models\Expense;
 use App\Models\AuditLog;
 use App\Models\LivestockAlert;
 use App\Models\Inventory;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -1720,7 +1721,27 @@ class AdminController extends Controller
                 'message' => 'required|string|max:1000',
             ]);
 
-            // Placeholder: integrate actual messaging/notification later
+            $farmer = User::where('role', 'farmer')->findOrFail($request->farmer_id);
+
+            Notification::create([
+                'type' => 'message',
+                'title' => 'Message from Admin',
+                'message' => $request->subject . ' - ' . $request->message,
+                'icon' => 'fas fa-envelope',
+                'action_url' => '#',
+                'severity' => 'info',
+                'is_read' => false,
+                'recipient_id' => $farmer->id,
+                'metadata' => [
+                    'sender_id' => Auth::id(),
+                    'sender_name' => Auth::user()->name,
+                    'subject' => $request->subject,
+                    'message_type' => 'contact_farmer'
+                ]
+            ]);
+
+            $this->logAuditAction('contact_farmer', 'users', $farmer->id, 'Subject: ' . $request->subject);
+
             return response()->json(['success' => true, 'message' => 'Message sent to farmer successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to send message'], 500);

@@ -75,7 +75,7 @@
 </nav>
 <!-- End of Topbar -->
 
-@if(Auth::user() && in_array(Auth::user()->role, ['superadmin', 'admin']))
+@if(Auth::user() && in_array(Auth::user()->role, ['superadmin', 'admin', 'farmer']))
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Load notifications on page load
@@ -140,7 +140,10 @@ function loadNotifications() {
     });
 
     // Race between fetch and timeout
-    const notificationUrl = '{{ Auth::user()->role === "superadmin" ? "/superadmin/notifications" : "/admin/notifications" }}';
+    const userRole = '{{ Auth::user()->role }}';
+    const notificationUrl = userRole === 'superadmin'
+        ? '/superadmin/notifications'
+        : (userRole === 'admin' ? '/admin/notifications' : '/farmer/notifications');
     Promise.race([
         fetch(notificationUrl, {
             method: 'GET',
@@ -391,7 +394,10 @@ function markNotificationAsRead(notificationId) {
         notificationItem.style.pointerEvents = 'none';
     }
     
-    const markReadUrl = '{{ Auth::user()->role === "superadmin" ? "/superadmin/notifications/mark-read" : "/admin/notifications/mark-read" }}';
+    const userRole = '{{ Auth::user()->role }}';
+    const markReadUrl = userRole === 'superadmin'
+        ? '/superadmin/notifications/mark-read'
+        : (userRole === 'admin' ? '/admin/notifications/mark-read' : '/farmer/notifications/mark-read');
     fetch(markReadUrl, {
         method: 'POST',
         headers: {
@@ -445,7 +451,10 @@ function markAllAsRead() {
     markAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Marking...';
     markAllBtn.style.pointerEvents = 'none';
     
-    const markAllReadUrl = '{{ Auth::user()->role === "superadmin" ? "/superadmin/notifications/mark-all-read" : "/admin/notifications/mark-all-read" }}';
+    const userRole = '{{ Auth::user()->role }}';
+    const markAllReadUrl = userRole === 'superadmin'
+        ? '/superadmin/notifications/mark-all-read'
+        : (userRole === 'admin' ? '/admin/notifications/mark-all-read' : '/farmer/notifications/mark-all-read');
     fetch(markAllReadUrl, {
         method: 'POST',
         headers: {

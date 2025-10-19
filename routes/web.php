@@ -141,6 +141,11 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::post('/tasks', [App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
         Route::put('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('tasks.update');
         Route::delete('/tasks/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
+
+        // Notification routes for farmer
+        Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'getNotifications'])->name('notifications');
+        Route::post('/notifications/mark-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+        Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
     });
     
     // Admin routes

@@ -265,15 +265,28 @@ class LivestockController extends Controller
     /**
      * Remove the specified livestock from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             $livestock = Livestock::findOrFail($id);
             $livestock->delete();
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Livestock deleted successfully!'
+                ]);
+            }
+
             return redirect()->route('admin.livestock.index')
                 ->with('success', 'Livestock deleted successfully!');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete livestock. Please try again.'
+                ], 500);
+            }
             return redirect()->back()
                 ->with('error', 'Failed to delete livestock. Please try again.');
         }

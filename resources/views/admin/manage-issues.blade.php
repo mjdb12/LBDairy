@@ -2327,6 +2327,16 @@ $(document).ready(function() {
                     $('#editIssueType').val(issue.issue_type);
                     $('#editPriority').val(issue.priority);
                     $('#editStatus').val(issue.status);
+                    // Ensure reported date is retained by pre-filling the date input
+                    if (issue.date_reported) {
+                        // Use value directly if already in YYYY-MM-DD, otherwise convert
+                        const dr = (typeof issue.date_reported === 'string' && issue.date_reported.match(/^\d{4}-\d{2}-\d{2}$/))
+                            ? issue.date_reported
+                            : new Date(issue.date_reported).toISOString().slice(0,10);
+                        $('#editDateReported').val(dr);
+                    } else {
+                        $('#editDateReported').val('');
+                    }
                     $('#editDescription').val(issue.description);
                     $('#editNotes').val(issue.notes);
                     

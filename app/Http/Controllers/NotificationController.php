@@ -29,7 +29,7 @@ class NotificationController extends Controller
                 'timestamp' => now()->toISOString()
             ]);
             
-            if (!$user || !in_array($user->role, ['superadmin', 'admin'])) {
+            if (!$user || !in_array($user->role, ['superadmin', 'admin', 'farmer'])) {
                 Log::warning('Unauthorized notifications access attempt', [
                     'user_id' => $user ? $user->id : null,
                     'user_role' => $user ? $user->role : null
@@ -401,7 +401,7 @@ class NotificationController extends Controller
             ]);
 
             $user = Auth::user();
-            if (!$user || !in_array($user->role, ['superadmin', 'admin'])) {
+            if (!$user || !in_array($user->role, ['superadmin', 'admin', 'farmer'])) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -443,7 +443,7 @@ class NotificationController extends Controller
     {
         try {
             $user = Auth::user();
-            if (!$user || !in_array($user->role, ['superadmin', 'admin'])) {
+            if (!$user || !in_array($user->role, ['superadmin', 'admin', 'farmer'])) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
