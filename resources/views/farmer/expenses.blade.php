@@ -926,8 +926,76 @@ function exportPNG() {
 }
 
 function printExpenses() {
-    try { window.printElement('#expensesTable'); }
-    catch(e){ console.error('printExpenses error:', e); window.print(); }
+    try {
+        const tableId = 'expensesTable';
+        const tableEl = document.getElementById(tableId);
+        const dt = (typeof $.fn !== 'undefined' && $.fn.DataTable && $.fn.DataTable.isDataTable('#' + tableId))
+            ? $('#' + tableId).DataTable()
+            : (typeof expensesDT !== 'undefined' ? expensesDT : null);
+
+        // Collect headers excluding last Actions column
+        const headerTexts = [];
+        if (tableEl) {
+            const ths = tableEl.querySelectorAll('thead th');
+            ths.forEach((th, idx) => { if (idx < ths.length - 1) headerTexts.push((th.innerText || '').trim()); });
+        }
+
+        // Collect rows excluding last column
+        const rows = [];
+        if (dt) {
+            dt.data().toArray().forEach(row => {
+                const cleaned = [];
+                for (let i = 0; i < row.length - 1; i++) {
+                    const div = document.createElement('div');
+                    div.innerHTML = row[i];
+                    cleaned.push((div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim());
+                }
+                rows.push(cleaned);
+            });
+        } else if (tableEl) {
+            tableEl.querySelectorAll('tbody tr').forEach(tr => {
+                const tds = tr.querySelectorAll('td');
+                if (tds.length) {
+                    const cleaned = [];
+                    for (let i = 0; i < tds.length - 1; i++) cleaned.push((tds[i].innerText || '').replace(/\s+/g, ' ').trim());
+                    rows.push(cleaned);
+                }
+            });
+        }
+
+        if (!rows.length) { showToast && showToast('No data available to print', 'warning'); return; }
+
+        // Build print content: header + table with strong borders
+        let html = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style=\"color:#18375d; margin-bottom:5px;\">Expenses Report</h1>
+                    <p style=\"color:#666; margin:0;\">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border=\"3\" style=\"border-collapse: collapse; width:100%; border:3px solid #000;\">
+                    <thead><tr>`;
+        headerTexts.forEach(h => { html += `<th style=\"border:3px solid #000; padding:10px; background:#f2f2f2; text-align:left;\">${h}</th>`; });
+        html += `</tr></thead><tbody>`;
+        rows.forEach(r => {
+            html += '<tr>';
+            r.forEach(c => { html += `<td style=\"border:3px solid #000; padding:10px; text-align:left;\">${c}</td>`; });
+            html += '</tr>';
+        });
+        html += `</tbody></table></div>`;
+
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div'); container.innerHTML = html; window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(html, 'Expenses Report');
+        } else {
+            const w = window.open('', '_blank');
+            if (w) { w.document.open(); w.document.write(`<html><head><title>Print</title></head><body>${html}</body></html>`); w.document.close(); w.focus(); w.print(); w.close(); }
+            else { window.print(); }
+        }
+    } catch(e){
+        console.error('printExpenses error:', e);
+        try { $('#' + 'expensesTable').DataTable().button('.buttons-print').trigger(); } catch (_) {}
+    }
 }
 
 function refreshExpenses(){

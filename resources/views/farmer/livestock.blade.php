@@ -1814,10 +1814,75 @@ function exportToPDF() {
 
 function printTable() {
     try {
-        window.printElement('#livestockTable');
+        const tableId = 'livestockTable';
+        const tableEl = document.getElementById(tableId);
+        const dt = ($.fn.DataTable && $.fn.DataTable.isDataTable('#' + tableId)) ? $('#' + tableId).DataTable() : null;
+
+        const headerTexts = [];
+        if (tableEl) {
+            const ths = tableEl.querySelectorAll('thead th');
+            ths.forEach((th, idx) => { if (idx < ths.length - 1) headerTexts.push((th.innerText || '').trim()); });
+        }
+
+        const rows = [];
+        if (dt) {
+            dt.data().toArray().forEach(row => {
+                const cleaned = [];
+                for (let i = 0; i < row.length - 1; i++) {
+                    const div = document.createElement('div');
+                    div.innerHTML = row[i];
+                    cleaned.push((div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim());
+                }
+                rows.push(cleaned);
+            });
+        } else if (tableEl) {
+            tableEl.querySelectorAll('tbody tr').forEach(tr => {
+                const tds = tr.querySelectorAll('td');
+                if (tds.length) {
+                    const cleaned = [];
+                    for (let i = 0; i < tds.length - 1; i++) cleaned.push((tds[i].innerText || '').replace(/\s+/g, ' ').trim());
+                    rows.push(cleaned);
+                }
+            });
+        }
+
+        if (!rows.length) { if (typeof showNotification === 'function') showNotification('No data available to print', 'warning'); return; }
+
+        let printContent = `
+            <div style="font-family: Arial, sans-serif; margin: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #18375d; margin-bottom: 5px;">Livestock Inventory Report</h1>
+                    <p style="color: #666; margin: 0;">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border="3" style="border-collapse: collapse; width: 100%; border: 3px solid #000;">
+                    <thead>
+                        <tr>`;
+        headerTexts.forEach(h => { printContent += `<th style="border: 3px solid #000; padding: 10px; background-color: #f2f2f2; text-align: left;">${h}</th>`; });
+        printContent += `</tr>
+                    </thead>
+                    <tbody>`;
+        rows.forEach(r => {
+            printContent += '<tr>';
+            r.forEach(cell => { printContent += `<td style=\"border: 3px solid #000; padding: 10px; text-align: left;\">${cell}</td>`; });
+            printContent += '</tr>';
+        });
+        printContent += `
+                    </tbody>
+                </table>
+            </div>`;
+
+        if (typeof window.printElement === 'function') {
+            const container = document.createElement('div'); container.innerHTML = printContent; window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'Livestock Inventory Report');
+        } else {
+            const w = window.open('', '_blank');
+            if (w) { w.document.open(); w.document.write(`<html><head><title>Print</title></head><body>${printContent}</body></html>`); w.document.close(); w.focus(); w.print(); w.close(); }
+            else { window.print(); }
+        }
     } catch (error) {
         console.error('Print error:', error);
-        try { window.print(); } catch (_) {}
+        try { $('#' + 'livestockTable').DataTable().button('.buttons-print').trigger(); } catch (_) {}
     }
 }
 

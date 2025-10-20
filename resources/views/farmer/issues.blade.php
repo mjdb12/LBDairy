@@ -1006,7 +1006,51 @@ function exportToPNG() {
 }
 
 function printTable() {
-    try { window.printElement('#issuesTable'); } catch (e) { console.error('printTable error:', e); window.print(); }
+    try {
+        const tableId = 'issuesTable';
+        const el = document.getElementById(tableId);
+        const dt = ($.fn.DataTable && $.fn.DataTable.isDataTable('#' + tableId)) ? $('#' + tableId).DataTable() : null;
+
+        const headers = [];
+        if (el) {
+            const ths = el.querySelectorAll('thead th');
+            ths.forEach((th, i) => { if (i < ths.length - 1) headers.push((th.innerText||'').trim()); });
+        }
+
+        const rows = [];
+        if (dt) {
+            dt.data().toArray().forEach(r => {
+                const arr = [];
+                for (let i = 0; i < r.length - 1; i++) { const d = document.createElement('div'); d.innerHTML = r[i]; arr.push((d.textContent||d.innerText||'').replace(/\s+/g,' ').trim()); }
+                rows.push(arr);
+            });
+        } else if (el) {
+            el.querySelectorAll('tbody tr').forEach(tr => {
+                const tds = tr.querySelectorAll('td'); if (!tds.length) return;
+                const arr = []; for (let i = 0; i < tds.length - 1; i++) arr.push((tds[i].innerText||'').replace(/\s+/g,' ').trim());
+                rows.push(arr);
+            });
+        }
+
+        if (!rows.length) return;
+
+        let html = `
+            <div style=\"font-family: Arial, sans-serif; margin: 20px;\">
+                <div style=\"text-align: center; margin-bottom: 20px;\">
+                    <h1 style=\"color:#18375d; margin-bottom:5px;\">Issues Report</h1>
+                    <p style=\"color:#666; margin:0;\">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border=\"3\" style=\"border-collapse: collapse; width:100%; border:3px solid #000;\">
+                    <thead><tr>`;
+        headers.forEach(h => { html += `<th style=\"border:3px solid #000; padding:10px; background:#f2f2f2; text-align:left;\">${h}</th>`; });
+        html += `</tr></thead><tbody>`;
+        rows.forEach(r => { html += '<tr>'; r.forEach(c => { html += `<td style=\"border:3px solid #000; padding:10px; text-align:left;\">${c}</td>`; }); html += '</tr>'; });
+        html += `</tbody></table></div>`;
+
+        if (typeof window.printElement === 'function') { const container = document.createElement('div'); container.innerHTML = html; window.printElement(container); }
+        else if (typeof window.openPrintWindow === 'function') { window.openPrintWindow(html, 'Issues Report'); }
+        else { const w = window.open('', '_blank'); if (w) { w.document.open(); w.document.write(`<html><head><title>Print</title></head><body>${html}</body></html>`); w.document.close(); w.focus(); w.print(); w.close(); } else { window.print(); } }
+    } catch (e) { console.error('printTable error:', e); try { $('#' + 'issuesTable').DataTable().button('.buttons-print').trigger(); } catch(_){} }
 }
 
 function showToast(message, type = 'info') {
@@ -1218,12 +1262,81 @@ function exportInspectionsToPNG() {
 }
 
 function printInspectionsTable() {
-    try { window.printElement('#inspectionsTable'); } catch (e) { console.error('printInspectionsTable error:', e); window.print(); }
+    try {
+        const tableId = 'inspectionsTable';
+        const el = document.getElementById(tableId);
+        const dt = ($.fn.DataTable && $.fn.DataTable.isDataTable('#' + tableId)) ? $('#' + tableId).DataTable() : null;
+
+        const headers = [];
+        if (el) { el.querySelectorAll('thead th').forEach((th, i, arr) => { if (i < arr.length - 1) headers.push((th.innerText||'').trim()); }); }
+
+        const rows = [];
+        if (dt) {
+            dt.data().toArray().forEach(r => {
+                const arr = []; for (let i = 0; i < r.length - 1; i++) { const d = document.createElement('div'); d.innerHTML = r[i]; arr.push((d.textContent||d.innerText||'').replace(/\s+/g,' ').trim()); }
+                rows.push(arr);
+            });
+        } else if (el) {
+            el.querySelectorAll('tbody tr').forEach(tr => {
+                const tds = tr.querySelectorAll('td'); if (!tds.length) return; const arr = [];
+                for (let i = 0; i < tds.length - 1; i++) arr.push((tds[i].innerText||'').replace(/\s+/g,' ').trim());
+                rows.push(arr);
+            });
+        }
+
+        if (!rows.length) return;
+
+        let html = `
+            <div style=\"font-family: Arial, sans-serif; margin: 20px;\">
+                <div style=\"text-align: center; margin-bottom: 20px;\">
+                    <h1 style=\"color:#18375d; margin-bottom:5px;\">Inspections Report</h1>
+                    <p style=\"color:#666; margin:0;\">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border=\"3\" style=\"border-collapse: collapse; width:100%; border:3px solid #000;\"><thead><tr>`;
+        headers.forEach(h => { html += `<th style=\"border:3px solid #000; padding:10px; background:#f2f2f2; text-align:left;\">${h}</th>`; });
+        html += `</tr></thead><tbody>`; rows.forEach(r => { html += '<tr>'; r.forEach(c => { html += `<td style=\"border:3px solid #000; padding:10px; text-align:left;\">${c}</td>`; }); html += '</tr>'; });
+        html += `</tbody></table></div>`;
+
+        if (typeof window.printElement === 'function') { const container = document.createElement('div'); container.innerHTML = html; window.printElement(container); }
+        else if (typeof window.openPrintWindow === 'function') { window.openPrintWindow(html, 'Inspections Report'); }
+        else { const w = window.open('', '_blank'); if (w) { w.document.open(); w.document.write(`<html><head><title>Print</title></head><body>${html}</body></html>`); w.document.close(); w.focus(); w.print(); w.close(); } else { window.print(); } }
+    } catch (e) { console.error('printInspectionsTable error:', e); try { $('#' + 'inspectionsTable').DataTable().button('.buttons-print').trigger(); } catch(_){} }
 }
 
 // Trigger DataTables print for Livestock Alerts table
 function printAlertsTable() {
-    try { window.printElement('#alertsTable'); } catch (e) { console.error('printAlertsTable error:', e); window.print(); }
+    try {
+        const tableId = 'alertsTable';
+        const el = document.getElementById(tableId);
+        const dt = ($.fn.DataTable && $.fn.DataTable.isDataTable('#' + tableId)) ? $('#' + tableId).DataTable() : null;
+
+        const headers = [];
+        if (el) { el.querySelectorAll('thead th').forEach((th, i, arr) => { if (i < arr.length - 1) headers.push((th.innerText||'').trim()); }); }
+
+        const rows = [];
+        if (dt) {
+            dt.data().toArray().forEach(r => { const arr = []; for (let i = 0; i < r.length - 1; i++) { const d = document.createElement('div'); d.innerHTML = r[i]; arr.push((d.textContent||d.innerText||'').replace(/\s+/g,' ').trim()); } rows.push(arr); });
+        } else if (el) {
+            el.querySelectorAll('tbody tr').forEach(tr => { const tds = tr.querySelectorAll('td'); if (!tds.length) return; const arr = []; for (let i = 0; i < tds.length - 1; i++) arr.push((tds[i].innerText||'').replace(/\s+/g,' ').trim()); rows.push(arr); });
+        }
+
+        if (!rows.length) return;
+
+        let html = `
+            <div style=\"font-family: Arial, sans-serif; margin: 20px;\">
+                <div style=\"text-align: center; margin-bottom: 20px;\">
+                    <h1 style=\"color:#18375d; margin-bottom:5px;\">Livestock Alerts Report</h1>
+                    <p style=\"color:#666; margin:0;\">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border=\"3\" style=\"border-collapse: collapse; width:100%; border:3px solid #000;\"><thead><tr>`;
+        headers.forEach(h => { html += `<th style=\"border:3px solid #000; padding:10px; background:#f2f2f2; text-align:left;\">${h}</th>`; });
+        html += `</tr></thead><tbody>`; rows.forEach(r => { html += '<tr>'; r.forEach(c => { html += `<td style=\"border:3px solid #000; padding:10px; text-align:left;\">${c}</td>`; }); html += '</tr>'; });
+        html += `</tbody></table></div>`;
+
+        if (typeof window.printElement === 'function') { const container = document.createElement('div'); container.innerHTML = html; window.printElement(container); }
+        else if (typeof window.openPrintWindow === 'function') { window.openPrintWindow(html, 'Livestock Alerts Report'); }
+        else { const w = window.open('', '_blank'); if (w) { w.document.open(); w.document.write(`<html><head><title>Print</title></head><body>${html}</body></html>`); w.document.close(); w.focus(); w.print(); w.close(); } else { window.print(); } }
+    } catch (e) { console.error('printAlertsTable error:', e); try { $('#' + 'alertsTable').DataTable().button('.buttons-print').trigger(); } catch(_){} }
 }
 
 // Alerts export helpers

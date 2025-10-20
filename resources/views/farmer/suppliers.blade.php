@@ -3273,8 +3273,54 @@ function exportHistory() {
 
 // Print suppliers table using DataTables
 function printSuppliersTable(){
-    try { window.printElement('#suppliersTable'); }
-    catch(e){ console.error('printSuppliersTable error:', e); window.print(); }
+    try {
+        const tableId = 'suppliersTable';
+        const tableEl = document.getElementById(tableId);
+        const dt = ($.fn.DataTable && $.fn.DataTable.isDataTable('#' + tableId)) ? $('#' + tableId).DataTable() : null;
+
+        // Headers excluding last column (Actions)
+        const headers = [];
+        if (tableEl) {
+            const ths = tableEl.querySelectorAll('thead th');
+            ths.forEach((th, i) => { if (i < ths.length - 1) headers.push((th.innerText||'').trim()); });
+        }
+
+        // Rows excluding last column
+        const rows = [];
+        if (dt) {
+            dt.data().toArray().forEach(r => {
+                const arr = [];
+                for (let i = 0; i < r.length - 1; i++) { const d = document.createElement('div'); d.innerHTML = r[i]; arr.push((d.textContent||d.innerText||'').replace(/\s+/g,' ').trim()); }
+                rows.push(arr);
+            });
+        } else if (tableEl) {
+            tableEl.querySelectorAll('tbody tr').forEach(tr => {
+                const tds = tr.querySelectorAll('td'); if (!tds.length) return;
+                const arr = []; for (let i = 0; i < tds.length - 1; i++) arr.push((tds[i].innerText||'').replace(/\s+/g,' ').trim());
+                rows.push(arr);
+            });
+        }
+
+        if (!rows.length) return;
+
+        // Build print html
+        let html = `
+            <div style=\"font-family: Arial, sans-serif; margin: 20px;\">
+                <div style=\"text-align: center; margin-bottom: 20px;\">
+                    <h1 style=\"color:#18375d; margin-bottom:5px;\">Suppliers Report</h1>
+                    <p style=\"color:#666; margin:0;\">Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+                <table border=\"3\" style=\"border-collapse: collapse; width:100%; border:3px solid #000;\">
+                    <thead><tr>`;
+        headers.forEach(h => { html += `<th style=\"border:3px solid #000; padding:10px; background:#f2f2f2; text-align:left;\">${h}</th>`; });
+        html += `</tr></thead><tbody>`;
+        rows.forEach(r => { html += '<tr>'; r.forEach(c => { html += `<td style=\"border:3px solid #000; padding:10px; text-align:left;\">${c}</td>`; }); html += '</tr>'; });
+        html += `</tbody></table></div>`;
+
+        if (typeof window.printElement === 'function') { const container = document.createElement('div'); container.innerHTML = html; window.printElement(container); }
+        else if (typeof window.openPrintWindow === 'function') { window.openPrintWindow(html, 'Suppliers Report'); }
+        else { const w = window.open('', '_blank'); if (w) { w.document.open(); w.document.write(`<html><head><title>Print</title></head><body>${html}</body></html>`); w.document.close(); w.focus(); w.print(); w.close(); } else { window.print(); } }
+    } catch(e){ console.error('printSuppliersTable error:', e); try { $('#' + 'suppliersTable').DataTable().button('.buttons-print').trigger(); } catch(_){} }
 }
 
 // Refresh suppliers table
