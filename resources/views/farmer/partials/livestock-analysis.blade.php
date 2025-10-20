@@ -736,7 +736,7 @@
                                         <i class="{{ $insight['icon'] }} fa-2x mr-0 mr-sm-3 mb-2 mb-sm-0"></i>
                                         <div>
                                             <h6 class="alert-heading mb-1">{{ $insight['title'] }}</h6>
-                                            <p class="mb-0">{{ $insight['message'] }}</p>
+                                            <p class="text-white mb-0">{{ $insight['message'] }}</p>
                                         </div>
                                     </div>
                                 </div>

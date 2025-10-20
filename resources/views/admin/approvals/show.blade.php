@@ -30,7 +30,7 @@
             <!-- Section: Basic Information -->
             <div class="row">
                 <div class="col-md-6">
-                    <h6><i class="fas fa-user me-2"></i> Basic Information</h6>
+                    <h6><i class="fas fa-user me-2"></i><i class="fas fa-clipboard-list me-2"></i> Basic Information</h6>
                     <p class="text-left"><strong>Full Name:</strong> {{ $user->first_name }} {{ $user->last_name }}</p>
                     <p class="text-left"><strong>Username:</strong> {{ $user->username }}</p>
                     <p class="text-left"><strong>Email Address:</strong> {{ $user->email }}</p>
@@ -41,7 +41,7 @@
                     <p class="text-left"><strong>Barangay:</strong> {{ $user->barangay }}</p>
                 </div>
                 <div class="col-md-6">
-                    <h6><i class="fas fa-user-shield me-2"></i> Admin Details</h6>
+                    <h6><i class="fas fa-user-shield me-2"></i><i class="fas fa-id-card me-2"></i> Admin Details</h6>
                     <p class="text-left"><strong>Admin Code:</strong> {{ $user->admin_code }}</p>
                     <p class="text-left"><strong>Position:</strong> {{ $user->position }}</p>
                     <p class="text-left"><strong>Farmer Code:</strong> {{ $user->farmer_code }}</p>

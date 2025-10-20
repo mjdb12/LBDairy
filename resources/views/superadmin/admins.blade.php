@@ -2654,14 +2654,14 @@ function showAdminDetails(adminId) {
                 const details = `
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Personal Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-info-circle me-2"></i> Personal Information</h6>
                             <p><strong>Full Name:</strong> ${displayName}</p>
                             <p><strong>Email:</strong> ${admin.email}</p>
                             <p><strong>Username:</strong> ${admin.username}</p>
                             <p><strong>Contact Number:</strong> ${admin.phone || 'N/A'}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Account Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-clipboard-list me-2"></i> Account Information</h6>
                             <p><strong>Role:</strong> <span class="badge badge-${getRoleBadgeClass(admin.role)}">${admin.role}</span></p>
                             <p><strong>Status:</strong> <span class="badge badge-${getStatusBadgeClass(admin.status)}">${admin.status}</span></p>
                             <p><strong>Barangay:</strong> ${admin.barangay || 'N/A'}</p>

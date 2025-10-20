@@ -652,7 +652,7 @@
                                         <tr>
                                             <td>{{ $record->production_date->format('M d, Y') }}</td>
                                             <td>
-                                                <span class="font-weight-bold text-primary">
+                                                <span class="font-weight-bold ">
                                                     {{ $record->milk_quantity }} L
                                                 </span>
                                             </td>

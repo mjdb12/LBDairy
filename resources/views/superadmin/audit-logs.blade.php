@@ -2079,14 +2079,14 @@ function openLogDetails(logId) {
     const logDetailsHtml = `
         <div class="row">
             <div class="col-md-6">
-                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Log Information</h6>
+                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-info-circle me-2"></i> Log Information</h6>
                 <p><strong>Log ID:</strong> ${cleanData[0]}</p>
                 <p><strong>Timestamp:</strong> ${cleanData[1]}</p>
                 <p><strong>User:</strong> ${cleanData[2]}</p>
                 <p><strong>Action:</strong> ${cleanData[3]}</p>
             </div>
             <div class="col-md-6">
-                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
+                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-clipboard-list me-2"></i> Additional Details</h6>
                 <p><strong>Severity:</strong> <span class="badge badge-${getSeverityBadgeClass(cleanData[7])}">${cleanData[7]}</span></p>
                 <p><strong>IP Address:</strong> ${cleanData[6]}</p>
                 <p><strong>Details:</strong> ${cleanData[5] || 'No additional details available'}</p>
@@ -2142,14 +2142,14 @@ function investigateLog(logId) {
                 const html = `
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Log Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-info-circle me-2"></i> Log Information</h6>
                             <p><strong>Log ID:</strong> ${log.id}</p>
                             <p><strong>Timestamp:</strong> ${log.created_at ?? ''}</p>
                             <p><strong>User:</strong> ${(log.user && (log.user.name || (log.user.first_name + ' ' + log.user.last_name))) || 'N/A'}</p>
                             <p><strong>Action:</strong> ${log.action ?? 'N/A'}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Additional Details</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-clipboard-list me-2"></i> Additional Details</h6>
                             <p><strong>Severity:</strong> <span class="badge badge-${badgeClass}">${log.severity ?? 'N/A'}</span></p>
                             <p><strong>IP Address:</strong> ${log.ip_address ?? 'N/A'}</p>
                             <p><strong>Details:</strong> ${log.description ?? 'No additional details available'}</p>
@@ -2213,13 +2213,13 @@ function investigateAlert(alertId) {
             const html = `
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Security Alert</h6>
+                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-info-circle me-2"></i> Security Alert</h6>
                         <p><strong>Timestamp:</strong> ${timestamp}</p>
                         <p><strong>User:</strong> ${user}</p>
                         <p><strong>Event:</strong> ${event}</p>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Details</h6>
+                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-clipboard-list me-2"></i> Details</h6>
                         <p><strong>Severity:</strong> <span class="badge badge-${badgeClass}">${severityText || 'N/A'}</span></p>
                         <p><strong>Details:</strong> ${details || 'No additional details available'}</p>
                     </div>

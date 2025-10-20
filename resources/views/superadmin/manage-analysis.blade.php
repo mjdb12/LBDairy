@@ -3308,7 +3308,7 @@ function showFarmDetails(farmId) {
                     <div class="row">
                         <!-- Farm Information -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farm Information
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-tractor me-2"></i> Farm Information
                             </h6>
                             <p class="text-left"><strong>Farm ID:</strong> ${farm.id || 'N/A'}</p>
                             <p class="text-left"><strong>Farm Name:</strong> ${farm.name || 'N/A'}</p>
@@ -3326,7 +3326,7 @@ function showFarmDetails(farmId) {
 
                         <!-- Production Metrics -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Production Metrics
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-industry me-2"></i> Production Metrics
                             </h6>
                             <p class="text-left"><strong>Livestock Count:</strong> ${livestockCount || 0}</p>
                             <p class="text-left"><strong>Monthly Production:</strong> ${monthlyProduction ? monthlyProduction + ' L' : '0 L'}</p>
@@ -3339,7 +3339,7 @@ function showFarmDetails(farmId) {
                     <!-- Performance Analysis -->
                     <div class="row mt-4">
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Performance Analysis
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-chart-line me-2"></i> Performance Analysis
                             </h6>
                             <div class="progress mb-2" style="height: 15px;">
                                 <div class="progress-bar bg-${performanceColor}" 
@@ -3364,7 +3364,7 @@ function showFarmDetails(farmId) {
 
                     <!-- Recommendations -->
                         <div class="col-12 col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Recommendations</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-clipboard-list me-2"></i> Recommendations</h6>
                             <div class="recommendations p-3 rounded shadow-sm bg-white">
 
                                 <!-- Dynamic Recommendation Message -->
@@ -3434,7 +3434,7 @@ function showFarmDetails(farmId) {
                     <!-- Timeline -->
                     <div class="row mt-4">
                         <div class="col-12">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Timeline
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-calendar me-2"></i> Timeline
                             </h6>
                             <div class="timeline">
                                 <div class="timeline-item mb-2">

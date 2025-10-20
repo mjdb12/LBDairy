@@ -768,9 +768,6 @@
                 <input type="text" class="form-control" placeholder="Search livestock..." id="livestockSearch">
             </div>
             <div class="d-flex flex-column flex-sm-row align-items-center">
-                <button class="btn-action btn-action-print" onclick="printLivestockTable()">
-                    <i class="fas fa-print"></i> Print
-                </button>
                 <button class="btn-action btn-action-refresh" onclick="refreshLivestockData()">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
@@ -839,7 +836,7 @@
                             <span class="badge badge-{{ $statusClass }}">{{ $breedingStatus }}</span>
                         </td>
                         <td>
-                            <div class="action-buttons">
+                            <div class="btn-group">
                                 <button class="btn-action btn-action-ok" onclick="viewLivestockAnalysis('{{ $animal['id'] ?? $loop->iteration }}')" title="Analysis">
                                     <i class="fas fa-chart-line"></i> Analysis
                                 </button>
