@@ -2915,7 +2915,7 @@ function viewFarmerDetails(farmerId) {
                             const calendarHtml = `
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farmer Information</h6>
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-info-circle me-2"></i> Farmer Information</h6>
                                     <p class="text-left"><strong>Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
                                     <p class="text-left"><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
                                     <p class="text-left"><strong>Phone:</strong> ${farmer.phone || 'N/A'}</p>
@@ -2928,7 +2928,7 @@ function viewFarmerDetails(farmerId) {
                                     </p>
                                 </div>
                                 <div class="col-md-12">
-                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Scheduled Inspections Calendar</h6>
+                                    <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-calendar me-2"></i> Scheduled Inspections Calendar</h6>
                                     <div id="farmerCalendar" style="min-height: 600px;">
                                     </div>
                                 </div>
@@ -3103,7 +3103,7 @@ function viewInspectionDetails(inspectionId) {
                 $('#inspectionDetailsContent').html(`
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Inspection Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-id-card me-2"></i> Inspection Information</h6>
                             <p class="text-left"><strong>Date:</strong> ${inspection.inspection_date || 'N/A'}</p>
                             <p class="text-left"><strong>Time:</strong> ${inspection.inspection_time || 'N/A'}</p>
                             <p class="text-left"><strong>Status:</strong> 
@@ -3123,7 +3123,7 @@ function viewInspectionDetails(inspectionId) {
                             <p class="text-left"><strong>Scheduled By:</strong> ${inspection.scheduled_by?.name || 'Admin'}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farmer Information</h6>
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-info-circle me-2"></i> Farmer Information</h6>
                             <p class="text-left"><strong>Name:</strong> ${inspection.farmer?.first_name || ''} ${inspection.farmer?.last_name || ''}</p>
                             <p class="text-left"><strong>Email:</strong> ${inspection.farmer?.email || 'N/A'}</p>
                             <p class="text-left"><strong>Contact:</strong> ${inspection.farmer?.phone || 'N/A'}</p>
@@ -3135,7 +3135,7 @@ function viewInspectionDetails(inspectionId) {
                     ${inspection.notes ? `
                     <div class="row mt-3">
                         <div class="col-12">
-                            <h6 class="text-primary">Notes</h6>
+                            <h6 class="text-primary"><i class="fas fa-clipboard-list me-2"></i> Notes</h6>
                             <p>${inspection.notes}</p>
                         </div>
                     </div>
@@ -3143,7 +3143,7 @@ function viewInspectionDetails(inspectionId) {
                     ${inspection.findings ? `
                     <div class="row mt-3">
                         <div class="col-12">
-                            <h6 class="text-primary">Findings</h6>
+                            <h6 class="text-primary"><i class="fas fa-clipboard-list me-2"></i> Findings</h6>
                             <p>${inspection.findings}</p>
                         </div>
                     </div>

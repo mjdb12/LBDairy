@@ -195,7 +195,7 @@
 <!-- SMART DETAIL MODAL - Livestock Details -->
 <div class="modal fade admin" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-    <div class="modal-content smart-detail p-4">
+    <div class="modal-content smart-details p-4">
 
       <!-- Header -->
       <div class="d-flex flex-column align-items-center mb-4">
@@ -392,7 +392,7 @@
 
 
 <!-- How to Use Modal -->
-<div class="modal fade admin-modal" id="howToUseModal" tabindex="-1" role="dialog" aria-labelledby="howToUseModalLabel" aria-hidden="true">
+<div class="modal fade " id="howToUseModal" tabindex="-1" role="dialog" aria-labelledby="howToUseModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content smart-detail p-4">
 
@@ -796,16 +796,16 @@
 /* ============================
    FORM ELEMENT STYLES
    ============================ */
-#issueAlertModal form {
+#addLivestockModal form {
   text-align: left;
 }
 
-#issueAlertModal .form-group {
+#addLivestockModal .form-group {
   width: 100%;
   margin-bottom: 1.2rem;
 }
 
-#issueAlertModal label {
+#addLivestockModal label {
   font-weight: 600;            /* make labels bold */
   color: #18375d;              /* consistent primary blue */
   display: inline-block;
@@ -813,9 +813,9 @@
 }
 
 /* Unified input + select + textarea styles */
-#issueAlertModal .form-control,
-#issueAlertModal select.form-control,
-#issueAlertModal textarea.form-control {
+#addLivestockModal .form-control,
+#addLivestockModal select.form-control,
+#addLivestockModal textarea.form-control {
   border-radius: 12px;
   border: 1px solid #d1d5db;
   padding: 12px 15px;          /* consistent padding */
@@ -831,13 +831,13 @@
 }
 
 /* Keep textarea resizable but visually aligned */
-#issueAlertModal textarea.form-control {
+#addLivestockModal textarea.form-control {
   min-height: 100px;
   height: auto;                /* flexible height for textarea */
 }
 
 /* Focus state */
-#issueAlertModal .form-control:focus {
+#addLivestockModal .form-control:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
@@ -990,14 +990,14 @@
 }
 
 /* Titles & Paragraphs */
-.smart-detail h5 {
+.smart-details h5 {
     color: #18375d;
     font-weight: 700;
     margin-bottom: 0.4rem;
     letter-spacing: 0.5px;
 }
 
-.smart-detail p {
+.smart-details p {
     color: #6b7280;
     font-size: 1rem;
     margin-bottom: 1.8rem;
@@ -1006,7 +1006,7 @@
 }
 
 /* MODAL BODY */
-.smart-detail .modal-body {
+.smart-details .modal-body {
     background: #ffffff;
     padding: 3rem 3.5rem; /* more spacious layout */
     border-radius: 1rem;
@@ -1017,14 +1017,14 @@
 }
 
 /* Wider modal container */
-.smart-detail .modal-dialog {
+.smart-details .modal-dialog {
     max-width: 92%; /* slightly wider modal */
     width: 100%;
     margin: 1.75rem auto;
 }
 
 /* Detail Section */
-.smart-detail .detail-wrapper {
+.smart-details .detail-wrapper {
     background: #f9fafb;
     border-radius: 1.25rem;
     padding: 2.25rem; /* more inner padding */
@@ -1033,7 +1033,7 @@
 }
 
 /* Detail Rows */
-.smart-detail .detail-row {
+.smart-details .detail-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1041,16 +1041,16 @@
     padding: 0.6rem 0;
 }
 
-.smart-detail .detail-row:last-child {
+.smart-details .detail-row:last-child {
     border-bottom: none;
 }
 
-.smart-detail .detail-label {
+.smart-details .detail-label {
     font-weight: 600;
     color: #1b3043;
 }
 
-.smart-detail .detail-value {
+.smart-details .detail-value {
     color: #333;
     text-align: right;
 }
@@ -1065,43 +1065,43 @@
 
 /* RESPONSIVE ADJUSTMENTS */
 @media (max-width: 992px) {
-    .smart-detail .modal-dialog {
+    .smart-details .modal-dialog {
         max-width: 95%;
     }
 
-    .smart-detail .modal-body {
+    .smart-details .modal-body {
         padding: 2rem;
         max-height: 82vh;
     }
 
-    .smart-detail .detail-wrapper {
+    .smart-details .detail-wrapper {
         padding: 1.5rem;
         font-size: 0.95rem;
     }
 
-    .smart-detail p {
+    .smart-details p {
         text-align: center;
         font-size: 0.95rem;
     }
 }
 
 @media (max-width: 576px) {
-    .smart-detail .modal-body {
+    .smart-details .modal-body {
         padding: 0.5rem;
         max-height: 95vh;
     }
 
-    .smart-detail .detail-wrapper {
+    .smart-details .detail-wrapper {
         padding: 1.25rem;
     }
 
-    .smart-detail .detail-row {
+    .smart-details .detail-row {
         flex-direction: column;
         text-align: left;
         gap: 0.3rem;
     }
 
-    .smart-detail .detail-value {
+    .smart-details .detail-value {
         text-align: left;
     }
 }
@@ -1629,14 +1629,15 @@
 
 /* Icon Header */
 .smart-detail .icon-circle {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     background-color: #e8f0fe;
     color: #18375d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto 1rem;
 }
 
 /* Titles & Paragraphs */
@@ -1692,68 +1693,6 @@
 .smart-detail .detail-value {
     color: #333;
     text-align: right;
-}
-/* RESPONSIVE ADJUSTMENTS */
-@media (max-width: 992px) {
-    .smart-detail .modal-dialog {
-        max-width: 95%;
-    }
-
-    .smart-detail .modal-body {
-        padding: 2rem;
-        max-height: 85vh; /* slightly taller */
-    }
-
-    .smart-detail .detail-wrapper {
-        padding: 1.5rem;
-        font-size: 0.95rem;
-    }
-
-    .smart-detail p {
-        text-align: center;
-        font-size: 0.95rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .smart-detail .modal-dialog {
-        max-width: 100%;
-        margin: 0.75rem;
-    }
-
-    .smart-detail .modal-content {
-        border-radius: 14px;
-        min-height: 100vh; /* make modal longer on mobile */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .smart-detail .modal-body {
-        padding: 1rem 1.25rem;
-        max-height: 95vh; /* increased vertical space */
-        overflow-y: auto; /* allows scroll if content exceeds screen */
-    }
-
-    .smart-detail .detail-wrapper {
-        padding: 1.25rem;
-        font-size: 0.95rem;
-    }
-
-    .smart-detail .detail-row {
-        flex-direction: column;
-        text-align: left;
-        gap: 0.4rem;
-    }
-
-    .smart-detail .detail-value {
-        text-align: left;
-    }
-
-    .smart-detail .modal-footer {
-        padding-bottom: 1.25rem;
-        margin-top: auto;
-    }
 }
 
 

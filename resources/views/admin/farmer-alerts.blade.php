@@ -684,7 +684,7 @@ function loadAlertDetails(alertId) {
                     <div class="row">
                         <!-- 🔹 Alert Information -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Alert Information</h6>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;"><i class="fas fa-id-card me-2"></i> Alert Information</h6>
                             <p class="text-left"><strong>Topic:</strong> ${alert.topic || 'N/A'}</p>
                             <p class="text-left"><strong>Status:</strong> 
                                 <span class="badge badge-${alert.status_badge_class || 'secondary'}">
@@ -707,7 +707,7 @@ function loadAlertDetails(alertId) {
 
                         <!-- 🔹 Farmer Information -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Farmer Information</h6>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;"><i class="fas fa-info-circle me-2"></i> Farmer Information</h6>
                             <p class="text-left"><strong>Name:</strong> ${alert.issued_by ? alert.issued_by.name : 'N/A'}</p>
                             <p class="text-left"><strong>Email:</strong> ${alert.issued_by ? alert.issued_by.email : 'N/A'}</p>
                             <p class="text-left"><strong>Phone:</strong> ${alert.issued_by ? alert.issued_by.phone : 'N/A'}</p>
@@ -720,7 +720,7 @@ function loadAlertDetails(alertId) {
                     <div class="row mt-3">
                         <!-- 🔹 Livestock Information -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Livestock Information</h6>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;"><i class="fas fa-tractor me-2"></i> Livestock Information</h6>
                             <p class="text-left"><strong>ID:</strong> ${alert.livestock ? alert.livestock.livestock_id : 'N/A'}</p>
                             <p class="text-left"><strong>Type:</strong> ${alert.livestock ? alert.livestock.type : 'N/A'}</p>
                             <p class="text-left"><strong>Breed:</strong> ${alert.livestock ? alert.livestock.breed : 'N/A'}</p>
@@ -734,7 +734,7 @@ function loadAlertDetails(alertId) {
 
                         <!-- 🔹 Alert Details -->
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;">Alert Details</h6>
+                            <h6 class="mb-3" style="color: #18375d !important; font-weight: 600;"><i class="fas fa-clipboard-list me-2"></i> Alert Details</h6>
                             <p class="text-left"><strong>Description:</strong> ${alert.description || 'No description provided.'}</p>
                             ${alert.resolution_notes ? `
                             <p class="text-left"><strong>Resolution Notes:</strong> ${alert.resolution_notes}</p>

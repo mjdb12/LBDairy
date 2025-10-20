@@ -453,6 +453,102 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 <style>
+/* Cancel Button */
+.action-toolbar .btn-action-ok {
+  border: none;
+}
+
+/* Delete Button */
+.action-toolbar .btn-action-refresh {
+  color: #fff;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.action-toolbar .btn-action-tools {
+  color: #fff;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Mobile Behavior: stay side-by-side */
+@media (max-width: 576px) {
+  .action-toolbar {
+    flex-direction: row !important;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .action-toolbar .btn-modern {
+    flex: 1 1 auto;
+    min-width: 40%;
+    text-align: center;
+  }
+}
+
+    /* Modal Footer Layout */
+.modal-footer {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem;
+  border-top: none;
+  flex-wrap: nowrap !important;
+}
+
+/* Cancel Button */
+.btn-cancel {
+  background-color: #e9ecef;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-cancel:hover {
+  background-color: #d6d8db;
+}
+
+/* Confirm Delete Button */
+#confirmDeleteBtn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+#confirmDeleteBtn:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Keep in one line even on mobile */
+@media (max-width: 576px) {
+  .modal-footer {
+    flex-direction: row !important;
+    justify-content: space-evenly;
+    gap: 8px;
+  }
+
+  #confirmDeleteBtn,
+  .btn-cancel {
+    flex: 1 1 auto;
+    min-width: 40%;
+  }
+}
+
     .action-toolbar {
     flex-wrap: nowrap !important;
     gap: 0.5rem;
@@ -1029,14 +1125,6 @@ SMART FORM - Enhanced Version
 .smart-detail .detail-value {
     color: #333;
     text-align: right;
-}
-
-/* Footer */
-#livestockDetailsModal .modal-footer {
-    text-align: center;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 1.5rem;
-    margin-top: 2rem;
 }
 
 /* RESPONSIVE ADJUSTMENTS */
