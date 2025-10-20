@@ -1441,7 +1441,7 @@ SMART FORM - Enhanced Version
         </div>
 
         <!-- Footer Buttons -->
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
             Cancel
           </button>
@@ -1520,7 +1520,7 @@ SMART FORM - Enhanced Version
         </div>
 
         <!-- Footer Buttons -->
-        <div class="modal-footer d-flex gap-2 justify-content-center flex-wrap mt-4">
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
           <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
             Cancel
           </button>

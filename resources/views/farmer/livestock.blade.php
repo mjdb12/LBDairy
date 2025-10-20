@@ -6,7 +6,7 @@
     <!-- Page Header -->
     <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
-            <i class="fas fa-horse"></i>
+            <i class="fas fa-list"></i>
             Livestock Management
         </h1>
         <p>Manage your livestock inventory, health records, and productivity data</p>
@@ -405,7 +405,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap mt-4">
+             <div class="modal-footer justify-content-center mt-4">
                 <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">
                     Close
                 </button>

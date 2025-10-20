@@ -1628,14 +1628,14 @@ function openDetailsModal(farmId) {
             const details = `
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farm Information</h6>
+                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-tractor me-2"></i> Farm Information</h6>
                         <p><strong>Farm ID:</strong> ${farm.farm_id}</p>
                         <p><strong>Farm Name:</strong> ${farm.name || 'N/A'}</p>
                         <p><strong>Barangay:</strong> ${farm.barangay || ''}</p>
                         <p><strong>Status:</strong> <span class="badge badge-${farm.status === 'active' ? 'success' : 'danger'}">${farm.status}</span></p>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Owner Information</h6>
+                        <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-id-card me-2"></i> Owner Information</h6>
                         <p><strong>Owner Name:</strong> ${farm.owner?.name || ''}</p>
                         <p><strong>Email:</strong> ${farm.owner?.email || ''}</p>
                         <p><strong>Contact Number:</strong> ${farm.owner?.phone || ''}</p>

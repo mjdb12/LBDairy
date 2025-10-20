@@ -3060,7 +3060,7 @@ $(document).ready(function () {
                     $('#livestockDetailsContent').html(`
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Basic Information</h6>
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-id-card me-2"></i> Basic Information</h6>
                                 <p class="text-left" ><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
                                 <p class="text-left" ><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
                                 <p class="text-left" ><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
@@ -3069,7 +3069,7 @@ $(document).ready(function () {
                             </div>
 
                             <div class="col-md-6">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Farm Information</h6>
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-tractor me-2"></i> Farm Information</h6>
                                 <p class="text-left"><strong>Farm:</strong> ${livestock.farm ? livestock.farm.name : 'N/A'}</p>
                                 <p class="text-left"><strong>Status:</strong> 
                                     <span class="badge badge-${livestock.status === 'active' ? 'success' : 'danger'}">
@@ -3093,7 +3093,7 @@ $(document).ready(function () {
                         ` : ''}
 
                         <div class="col-md-12">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;">QR Code</h6>
+                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-qrcode me-2"></i> QR Code</h6>
                                 ${livestock.qr_code_generated ? `
                                     <div class="text-center">
                                         <img src="${livestock.qr_code_url}" alt="QR Code" class="img-fluid mb-3" style="max-width: 115px;">

@@ -2093,15 +2093,22 @@ function showFarmerDetails(farmerId) {
                 const details = `
                     <div class="row">
                         <div class="col-md-6">
+<<<<<<< HEAD
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Personal Information</h6>
                             <p><strong>Full Name:</strong> ${escapeHtml(farmer.first_name || '')} ${escapeHtml(farmer.last_name || '')}</p>
                             <p><strong>Email:</strong> ${escapeHtml(farmer.email || 'N/A')}</p>
                             <p><strong>Username:</strong> ${escapeHtml(farmer.username || 'N/A')}</p>
                             <p><strong>Contact Number:</strong> ${escapeHtml(farmer.phone || 'N/A')}</p>
+=======
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-user-circle me-2"></i> Personal Information</h6>
+                            <p><strong>Full Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
+                            <p><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
+                            <p><strong>Username:</strong> ${farmer.username || 'N/A'}</p>
+                            <p><strong>Contact Number:</strong> ${farmer.phone || 'N/A'}</p>
+>>>>>>> 39d86e5c0b61cbd7900f5a19378647da905ab156
                         </div>
                         <div class="col-md-6">
-                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Account Information</h6>
-                            
+                            <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-id-card me-2"></i> Account Information</h6>
                             <p><strong>Role:</strong> <span class="badge badge-success">Farmer</span></p>
                             <p><strong>Status:</strong> <span class="badge badge-${farmer.status === 'active' || farmer.status === 'approved' ? 'success' : 'warning'}">${escapeHtml(farmer.status)}</span></p>
                             <p><strong>Barangay:</strong> ${escapeHtml(farmer.barangay || 'N/A')}</p>
