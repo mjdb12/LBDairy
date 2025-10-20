@@ -35,7 +35,7 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.5rem 1rem; min-height: 4.375rem;">
-                <span class="mr-3 d-none d-lg-inline text-gray-600 small font-weight-bold">{{ Auth::user()->name ?? 'User' }}</span>
+                <span class="mr-3 d-none d-lg-inline text-gray-600 small font-weight-bold">{{ Auth::user()->role === 'superadmin' ? 'Super Admin' : (Auth::user()->name ?? 'User') }}</span>
                 <img class="img-profile rounded-circle navbar-profile-img" src="{{ asset('img/' . (Auth::user()->profile_image ?? 'ronaldo.png')) }}?t={{ time() }}" alt="Profile Picture">
             </a>
             <!-- Dropdown - User Information -->

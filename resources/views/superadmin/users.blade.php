@@ -1894,6 +1894,17 @@ let usersTable;
 let userToDelete = null;
 let downloadCounter = 1;
 
+function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/\//g, '&#x2F;');
+}
+
 $(document).ready(function () {
     // Initialize DataTables
     initializeDataTables();
@@ -2001,10 +2012,10 @@ function loadUsers() {
                     
                     const rowData = [
                         `<a href="#" class="user-id-link" onclick="showUserDetails('${user.id}')">${user.id}</a>`,
-                        displayName,
-                        user.email,
-                        `<span class="badge badge-${getRoleBadgeClass(user.role)}">${user.role}</span>`,
-                        `<span class="badge badge-${getStatusBadgeClass(user.status)}">${user.status}</span>`,
+                        escapeHtml(displayName),
+                        escapeHtml(user.email),
+                        `<span class="badge badge-${getRoleBadgeClass(user.role)}">${escapeHtml(user.role)}</span>`,
+                        `<span class="badge badge-${getStatusBadgeClass(user.status)}">${escapeHtml(user.status)}</span>`,
                         new Date(user.created_at).toLocaleDateString(),
                         getLastLoginDisplay(user),
                         `<div class="btn-group">
@@ -2437,16 +2448,16 @@ function showUserDetails(userId) {
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Personal Information</h6>
-                            <p><strong>Full Name:</strong> ${displayName}</p>
-                            <p><strong>Email:</strong> ${user.email}</p>
-                            <p><strong>Username:</strong> ${user.username}</p>
-                            <p><strong>Contact Number:</strong> ${user.phone || 'N/A'}</p>
+                            <p><strong>Full Name:</strong> ${escapeHtml(displayName)}</p>
+                            <p><strong>Email:</strong> ${escapeHtml(user.email)}</p>
+                            <p><strong>Username:</strong> ${escapeHtml(user.username)}</p>
+                            <p><strong>Contact Number:</strong> ${escapeHtml(user.phone || 'N/A')}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Account Information</h6>
-                            <p><strong>Role:</strong> <span class="badge badge-${getRoleBadgeClass(user.role)}">${user.role}</span></p>
-                            <p><strong>Status:</strong> <span class="badge badge-${getStatusBadgeClass(user.status)}">${user.status}</span></p>
-                            <p><strong>Barangay:</strong> ${user.barangay || 'N/A'}</p>
+                            <p><strong>Role:</strong> <span class="badge badge-${getRoleBadgeClass(user.role)}">${escapeHtml(user.role)}</span></p>
+                            <p><strong>Status:</strong> <span class="badge badge-${getStatusBadgeClass(user.status)}">${escapeHtml(user.status)}</span></p>
+                            <p><strong>Barangay:</strong> ${escapeHtml(user.barangay || 'N/A')}</p>
                             <p><strong>Registration Date:</strong> ${new Date(user.created_at).toLocaleDateString()}</p>
                             <p><strong>Last Login:</strong> ${user.last_login_at ? formatLastLogin(user.last_login_at) : 'Never'}${user.is_online ? ' <span class="badge badge-success badge-sm" title="Currently Online"><i class="fas fa-circle"></i> Online</span>' : ''}</p>
                         </div>

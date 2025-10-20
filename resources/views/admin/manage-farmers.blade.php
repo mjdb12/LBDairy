@@ -1710,6 +1710,17 @@ let pendingFarmersTable;
 let activeFarmersTable;
 let downloadCounter = 1;
 
+function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/\//g, '&#x2F;');
+}
+
 $(document).ready(function () {
     // Initialize DataTables
     initializeDataTables();
@@ -2083,17 +2094,17 @@ function showFarmerDetails(farmerId) {
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Personal Information</h6>
-                            <p><strong>Full Name:</strong> ${farmer.first_name || ''} ${farmer.last_name || ''}</p>
-                            <p><strong>Email:</strong> ${farmer.email || 'N/A'}</p>
-                            <p><strong>Username:</strong> ${farmer.username || 'N/A'}</p>
-                            <p><strong>Contact Number:</strong> ${farmer.phone || 'N/A'}</p>
+                            <p><strong>Full Name:</strong> ${escapeHtml(farmer.first_name || '')} ${escapeHtml(farmer.last_name || '')}</p>
+                            <p><strong>Email:</strong> ${escapeHtml(farmer.email || 'N/A')}</p>
+                            <p><strong>Username:</strong> ${escapeHtml(farmer.username || 'N/A')}</p>
+                            <p><strong>Contact Number:</strong> ${escapeHtml(farmer.phone || 'N/A')}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="mb-3" style="color: #18375d; font-weight: 600;">Account Information</h6>
                             
                             <p><strong>Role:</strong> <span class="badge badge-success">Farmer</span></p>
-                            <p><strong>Status:</strong> <span class="badge badge-${farmer.status === 'active' || farmer.status === 'approved' ? 'success' : 'warning'}">${farmer.status}</span></p>
-                            <p><strong>Barangay:</strong> ${farmer.barangay || 'N/A'}</p>
+                            <p><strong>Status:</strong> <span class="badge badge-${farmer.status === 'active' || farmer.status === 'approved' ? 'success' : 'warning'}">${escapeHtml(farmer.status)}</span></p>
+                            <p><strong>Barangay:</strong> ${escapeHtml(farmer.barangay || 'N/A')}</p>
                             <p><strong>Registration Date:</strong> ${farmer.created_at ? new Date(farmer.created_at).toLocaleDateString() : 'N/A'}</p>
                             <p><strong>Last Updated:</strong> ${farmer.updated_at ? new Date(farmer.updated_at).toLocaleDateString() : 'N/A'}</p>
                         </div>
@@ -2334,7 +2345,7 @@ function showNotification(message, type) {
     const notification = $(`
         <div class="alert alert-${type} alert-dismissible fade show refresh-notification">
             <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
-            ${message}
+            ${escapeHtml(message)}
             <button type="button" class="close" data-dismiss="alert">
                 <span>&times;</span>
             </button>

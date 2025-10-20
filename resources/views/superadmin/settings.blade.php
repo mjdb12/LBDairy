@@ -401,6 +401,16 @@ $(document).ready(function () {
     // Load system logs
     loadSystemLogs();
 });
+function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/\//g, '&#x2F;');
+}
 
 function loadCurrentSettings() {
     // Load current system settings via AJAX
@@ -618,10 +628,10 @@ function loadSystemLogs() {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${new Date(log.created_at).toLocaleString()}</td>
-                    <td><span class="badge badge-${getLogLevelBadgeClass(log.level)}">${log.level}</span></td>
-                    <td>${log.message}</td>
-                    <td>${log.user ? log.user.name : 'System'}</td>
-                    <td>${log.ip_address || 'N/A'}</td>
+                    <td><span class="badge badge-${getLogLevelBadgeClass(log.level)}">${escapeHtml(log.level)}</span></td>
+                    <td>${escapeHtml(log.message || '')}</td>
+                    <td>${log.user ? escapeHtml(log.user.name) : 'System'}</td>
+                    <td>${escapeHtml(log.ip_address || 'N/A')}</td>
                 `;
                 logsTableBody.appendChild(row);
             });
@@ -679,7 +689,7 @@ function showNotification(message, type) {
     notification.className = `alert alert-${type} alert-dismissible fade show`;
     notification.innerHTML = `
         <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
-        ${message}
+        ${escapeHtml(message)}
         <button type="button" class="close" onclick="this.parentElement.style.display='none'">
             <span>&times;</span>
         </button>
