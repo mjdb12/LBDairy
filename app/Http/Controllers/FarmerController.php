@@ -671,6 +671,17 @@ class FarmerController extends Controller
             'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
             'status' => 'required|in:active,inactive',
             'acquisition_date' => 'nullable|date',
+            'owned_by' => 'nullable|string|max:255',
+            'registry_id' => 'nullable|string|max:255',
+            'natural_marks' => 'nullable|string|max:255',
+            'property_no' => 'nullable|string|max:255',
+            'acquisition_cost' => 'nullable|numeric|min:0',
+            'sire_id' => 'nullable|string|max:255',
+            'sire_name' => 'nullable|string|max:255',
+            'dam_id' => 'nullable|string|max:255',
+            'dam_name' => 'nullable|string|max:255',
+            'dispersal_from' => 'nullable|string|max:255',
+            'remarks' => 'nullable|string|max:1000',
         ]);
 
         try {
@@ -697,6 +708,17 @@ class FarmerController extends Controller
                 'farm_id' => $farm->id,
                 'owner_id' => $user->id,
                 'acquisition_date' => $request->acquisition_date,
+                'registry_id' => $request->registry_id,
+                'natural_marks' => $request->natural_marks,
+                'property_no' => $request->property_no,
+                'acquisition_cost' => $request->acquisition_cost,
+                'sire_id' => $request->sire_id,
+                'sire_name' => $request->sire_name,
+                'dam_id' => $request->dam_id,
+                'dam_name' => $request->dam_name,
+                'dispersal_from' => $request->dispersal_from,
+                'owned_by' => $request->owned_by ?? $user->name,
+                'remarks' => $request->remarks,
             ]);
 
             return response()->json([
@@ -719,9 +741,11 @@ class FarmerController extends Controller
     public function showLivestock($id)
     {
         $user = Auth::user();
-        $livestock = Livestock::whereHas('farm', function($query) use ($user) {
-            $query->where('owner_id', $user->id);
-        })->findOrFail($id);
+        $livestock = Livestock::with(['farm', 'owner'])
+            ->whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
 
         return response()->json([
             'success' => true,

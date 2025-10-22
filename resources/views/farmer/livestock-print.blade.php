@@ -486,7 +486,15 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Remarks:</label>
-                        <textarea readonly>{{ $livestock->remarks ?? '' }}</textarea>
+                        @php
+                            $rawRemarks = (string)($livestock->remarks ?? '');
+                            $lines = preg_split('/\r?\n/', $rawRemarks);
+                            $cleanLines = array_filter($lines, function($line) {
+                                return !preg_match('/^\s*\[(Health|Breeding|Calving|Growth|Production)\]/i', $line);
+                            });
+                            $cleanedRemarks = trim(implode("\n", $cleanLines));
+                        @endphp
+                        <textarea readonly>{{ $cleanedRemarks }}</textarea>
                     </div>
                     <div class="form-group">
                         <label>Contact No.:</label>
