@@ -1211,10 +1211,11 @@ function printLivestockRecord() {
             weight: (l && (l.weight ?? '')),
             farm_name: farmName
         };
-        const basicTitle = `<h3 style="margin:12px 0 6px 0;color:#18375d;">Basic Information</h3>`;
-        const prodTitle = `<h3 style="margin:16px 0 6px 0;color:#18375d;">Production</h3>`;
-        const healthTitle = `<h3 style="margin:16px 0 6px 0;color:#18375d;">Health</h3>`;
-        const breedingTitle = `<h3 style="margin:16px 0 6px 0;color:#18375d;">Breeding</h3>`;
+        // Removed large section titles (H3) to avoid duplicates with table headers in print output.
+        const basicTitle = ``;
+        const prodTitle = ``;
+        const healthTitle = ``;
+        const breedingTitle = ``;
 
         const detailsReq = $.ajax({ url: `/farmer/livestock/${currentLivestockId}`, method: 'GET' });
         const editReq = $.ajax({ url: `/farmer/livestock/${currentLivestockId}/edit`, method: 'GET' });
@@ -1437,7 +1438,7 @@ function printLivestockRecord() {
                 </table>`;
 
             const title = `
-                <div style="margin-bottom:10px;">
+                <div style="margin-bottom:10px; text-align:center;">
                     <h3 style="margin:0 0 6px 0;color:#18375d;">Individual Animal Record</h3>
                     <div style="font-size:12px;color:#333;">Generated: ${new Date().toLocaleString()}</div>
                 </div>`;
@@ -1452,16 +1453,17 @@ function printLivestockRecord() {
                 </style>`;
 
             const container = document.createElement('div');
-            container.innerHTML = tableCss + `<div>${title}${basicTitle}${basicInfo}${prodTitle}${productionTbl}${healthTitle}${healthTbl}${breedingTitle}${breedingTbl}</div>`;
+            // Exclude large H3 titles; rely on table headers only.
+            container.innerHTML = tableCss + `<div>${title}${basicInfo}${productionTbl}${healthTbl}${breedingTbl}</div>`;
             if (typeof window.printElement === 'function') {
                 window.printElement(container);
             } else if (typeof window.openPrintWindow === 'function') {
-                window.openPrintWindow(container.innerHTML, 'Livestock Record');
+                window.openPrintWindow(container.innerHTML, '');
             } else {
                 const w = window.open('', '_blank');
                 if (w) {
                     w.document.open();
-                    w.document.write(`<html><head><title>Livestock Record</title></head><body>${container.innerHTML}</body></html>`);
+                    w.document.write(`<html><head><title></title></head><body>${container.innerHTML}</body></html>`);
                     w.document.close();
                     try { w.focus(); } catch(_){}
                     try { w.print(); } catch(_){}

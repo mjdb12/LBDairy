@@ -1417,11 +1417,16 @@
                 } else if (el) {
                     printArea.appendChild(el.cloneNode(true));
                 }
+                // Temporarily set a blank title so browsers don't print a header title
+                const __prevTitle = document.title;
+                document.title = '';
                 document.body.classList.add('print-element-only');
                 window.print();
                 setTimeout(function(){
                     printArea.innerHTML='';
                     document.body.classList.remove('print-element-only');
+                    // Restore original title
+                    document.title = __prevTitle;
                 }, 300);
             } catch (e) {
                 window.print();
@@ -1445,7 +1450,7 @@
                 }
                 var doc = win.document;
                 doc.open();
-                doc.write('<!doctype html><html><head><meta charset="utf-8"><title>' + (title || 'Print') + '</title>');
+                doc.write('<!doctype html><html><head><meta charset="utf-8"><title>' + (typeof title === 'string' ? title : 'Print') + '</title>');
                 doc.write('<style>@page{size:auto;margin:12mm;}html,body{background:#fff!important;color:#000;} .btn,.dropdown,.dataTables_wrapper,.table-responsive{display:none!important;} table{width:100%;border-collapse:collapse;} th,td{border:3px solid #000;padding:10px;text-align:left;} thead th{background:#f2f2f2;color:#18375d;}</style>');
                 doc.write('</head><body>');
                 doc.write(html);
@@ -1652,9 +1657,7 @@
             display: block !important;
             width: 100% !important;
         }
-        /* Hide Actions column and interactive controls when printing a section */
-        #__print_area__ table th:last-child,
-        #__print_area__ table td:last-child,
+        /* Hide interactive controls when printing a section (do not hide last table column globally) */
         #__print_area__ .action-buttons,
         #__print_area__ .btn-group,
         #__print_area__ .btn-action,
