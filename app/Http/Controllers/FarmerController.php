@@ -18,6 +18,8 @@ use App\Models\Expense;
 use App\Models\Inventory;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Models\HealthRecord;
+use App\Models\BreedingRecord;
 
 class FarmerController extends Controller
 {
@@ -56,7 +58,7 @@ class FarmerController extends Controller
     }
 
     /**
-     * Get health records parsed from livestock remarks.
+     * Get health records (prefer DB records; fallback to parsed remarks).
      */
     public function getLivestockHealthRecords($id)
     {
@@ -66,13 +68,34 @@ class FarmerController extends Controller
             })
             ->findOrFail($id);
 
+        // Try DB-backed health records first
+        $dbRecords = HealthRecord::with('veterinarian')
+            ->where('livestock_id', $livestock->id)
+            ->orderByDesc('health_date')
+            ->orderByDesc('id')
+            ->take(25)
+            ->get()
+            ->map(function($r){
+                return [
+                    'date' => optional($r->health_date)->format('Y-m-d'),
+                    'status' => $r->health_status,
+                    'treatment' => $r->treatment,
+                    'veterinarian' => $r->veterinarian ? ($r->veterinarian->name ?: $r->veterinarian->email) : null,
+                    'notes' => $r->notes ?: $r->symptoms,
+                ];
+            });
+
+        if ($dbRecords->count() > 0) {
+            return response()->json(['success' => true, 'data' => $dbRecords]);
+        }
+
+        // Fallback: parse from remarks (legacy)
         $remarks = (string)($livestock->remarks ?? '');
         $lines = preg_split('/\r?\n/', $remarks);
         $records = [];
         foreach ($lines as $line) {
             if (strpos($line, '[Health]') === 0) {
                 $entry = ['date' => null, 'status' => null, 'treatment' => null, 'veterinarian' => null, 'notes' => null];
-                // Extract key:value pairs
                 $parts = array_map('trim', explode('|', substr($line, 8)));
                 foreach ($parts as $p) {
                     if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
@@ -94,7 +117,7 @@ class FarmerController extends Controller
     }
 
     /**
-     * Get breeding records parsed from livestock remarks.
+     * Get breeding records (prefer DB records; fallback to parsed remarks).
      */
     public function getLivestockBreedingRecords($id)
     {
@@ -104,6 +127,28 @@ class FarmerController extends Controller
             })
             ->findOrFail($id);
 
+        // Try DB-backed breeding records first
+        $dbRecords = BreedingRecord::where('livestock_id', $livestock->id)
+            ->orderByDesc('breeding_date')
+            ->orderByDesc('id')
+            ->take(25)
+            ->get()
+            ->map(function($r){
+                return [
+                    'date' => optional($r->breeding_date)->format('Y-m-d'),
+                    'type' => $r->breeding_type ? ucfirst(str_replace('_',' ', $r->breeding_type)) : null,
+                    'partner' => $r->partner_livestock_id,
+                    'pregnancy' => $r->pregnancy_status ? str_replace('_',' ', $r->pregnancy_status) : null,
+                    'success' => $r->breeding_success,
+                    'notes' => $r->notes,
+                ];
+            });
+
+        if ($dbRecords->count() > 0) {
+            return response()->json(['success' => true, 'data' => $dbRecords]);
+        }
+
+        // Fallback: parse from remarks (legacy)
         $remarks = (string)($livestock->remarks ?? '');
         $lines = preg_split('/\r?\n/', $remarks);
         $records = [];
@@ -1525,6 +1570,24 @@ class FarmerController extends Controller
             })
             ->findOrFail($id);
 
+        // Also persist to dedicated table (non-breaking; legacy remarks retained)
+        try {
+            HealthRecord::create([
+                'livestock_id' => $livestock->id,
+                'health_date' => $request->health_date ?: now()->toDateString(),
+                'health_status' => $request->health_status,
+                'weight' => $request->weight,
+                'temperature' => $request->temperature,
+                'symptoms' => $request->symptoms,
+                'treatment' => $request->treatment,
+                'veterinarian_id' => $request->veterinarian_id,
+                'notes' => $request->symptoms,
+                'recorded_by' => $user->id,
+            ]);
+        } catch (\Exception $e) {
+            \Log::warning('HealthRecord DB insert failed: ' . $e->getMessage());
+        }
+
         // Append a simple note into remarks to avoid adding new tables
         $noteParts = [];
         $noteParts[] = 'Status: ' . $request->health_status;
@@ -1575,6 +1638,23 @@ class FarmerController extends Controller
                 $q->where('owner_id', $user->id);
             })
             ->findOrFail($id);
+
+        // Also persist to dedicated table (non-breaking; legacy remarks retained)
+        try {
+            BreedingRecord::create([
+                'livestock_id' => $livestock->id,
+                'breeding_date' => $request->breeding_date ?: now()->toDateString(),
+                'breeding_type' => $request->breeding_type,
+                'partner_livestock_id' => $request->partner_livestock_id,
+                'expected_birth_date' => $request->expected_birth_date,
+                'pregnancy_status' => $request->pregnancy_status,
+                'breeding_success' => $request->breeding_success,
+                'notes' => $request->notes,
+                'recorded_by' => $user->id,
+            ]);
+        } catch (\Exception $e) {
+            \Log::warning('BreedingRecord DB insert failed: ' . $e->getMessage());
+        }
 
         // Append a simple note into remarks to avoid adding new tables
         $noteParts = [];

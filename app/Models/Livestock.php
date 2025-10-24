@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\HealthRecord;
+use App\Models\BreedingRecord;
 
 class Livestock extends Model
 {
@@ -71,6 +73,22 @@ class Livestock extends Model
     public function productionRecords()
     {
         return $this->hasMany(ProductionRecord::class);
+    }
+
+    /**
+     * Get the health records for the livestock.
+     */
+    public function healthRecords()
+    {
+        return $this->hasMany(HealthRecord::class);
+    }
+
+    /**
+     * Get the breeding records for the livestock.
+     */
+    public function breedingRecords()
+    {
+        return $this->hasMany(BreedingRecord::class);
     }
 
     /**

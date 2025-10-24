@@ -493,6 +493,8 @@ let currentLivestockId = null;
 let downloadCounter = 1;
 let livestockTable;
 let currentLivestockData = null;
+let currentLivestockRemarksMeta = '';
+let currentLivestockPrintBasic = null;
 
 
 $(document).ready(function() {
@@ -650,6 +652,7 @@ function openAddLivestockModal() {
     $('#livestockForm').attr('method', 'POST');
     // Remove any previous method override (e.g., from Edit)
     $('#livestockForm').find('input[name="_method"]').remove();
+    currentLivestockRemarksMeta = '';
     // Default Owned By to current farmer
     if (typeof CURRENT_FARMER_NAME !== 'undefined') {
         $('#owned_by').val(CURRENT_FARMER_NAME);
@@ -726,7 +729,19 @@ function loadLivestockData(livestockId) {
                 $('#dam_name').val(livestock.dam_name);
                 $('#dispersal_from').val(livestock.dispersal_from);
                 $('#owned_by').val(livestock.owned_by || '');
-                $('#remarks').val(livestock.remarks || '');
+                const rawRemarksEdit = (livestock.remarks || '').toString();
+                const metaLines = rawRemarksEdit
+                    .split(/\r?\n/)
+                    .filter(line => /^\s*\[(Health|Breeding|Calving|Growth|Production)\]/i.test(line))
+                    .join('\n')
+                    .trim();
+                const cleanedEdit = rawRemarksEdit
+                    .split(/\r?\n/)
+                    .filter(line => !/^\s*\[(Health|Breeding|Calving|Growth|Production)\]/i.test(line))
+                    .join('\n')
+                    .trim();
+                currentLivestockRemarksMeta = metaLines;
+                $('#remarks').val(cleanedEdit);
             }
         },
         error: function() {
@@ -741,8 +756,21 @@ function loadLivestockDetails(livestockId) {
         method: 'GET',
         success: function(response) {
             if (response.success) {
-                const livestock = response.livestock;
+                const livestock = response.livestock || response.data || (response.data && response.data.livestock) || response;
                 currentLivestockData = livestock;
+                // Build a normalized basic info snapshot for reliable printing
+                currentLivestockPrintBasic = {
+                    tag_number: (livestock && (livestock.tag_number || livestock.livestock_id || livestock.tagNumber)) || '',
+                    name: (livestock && (livestock.name || livestock.livestock_name)) || '',
+                    type: (livestock && livestock.type) || '',
+                    breed: (livestock && livestock.breed) || '',
+                    gender: (livestock && livestock.gender) || '',
+                    birth_date: (livestock && (livestock.birth_date || livestock.birthDate)) || '',
+                    status: (livestock && livestock.status) || '',
+                    health_status: (livestock && (livestock.health_status || livestock.healthStatus)) || '',
+                    weight: (livestock && (livestock.weight ?? '')),
+                    farm_name: (livestock && livestock.farm && (livestock.farm.name || livestock.farm.farm_name)) || ''
+                };
                 
                 // Calculate age from birth date
                 const age = livestock.birth_date ? calculateAge(livestock.birth_date) : 'Unknown';
@@ -923,7 +951,7 @@ function loadLivestockDetails(livestockId) {
                         <th>Production Type</th>
                         <th>Quantity</th>
                         <th>Quality</th>
-                        <th>Notes</th>
+                        <th style="text-align: left !important;">Notes</th>
                     </tr>
                 </thead>
                 <tbody id="productionRecordsTable">
@@ -953,7 +981,7 @@ function loadLivestockDetails(livestockId) {
                         <th>Health Status</th>
                         <th>Treatment</th>
                         <th>Veterinarian</th>
-                        <th>Notes</th>
+                        <th style="text-align: left !important;">Notes</th>
                     </tr>
                 </thead>
                 <tbody id="healthRecordsTable">
@@ -987,7 +1015,7 @@ function loadLivestockDetails(livestockId) {
             </table>
         </div>
         <div class="smart-table table-responsive mt-3" style="display:block; max-width:100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom:8px;">
-            <table class="table table-sm table-bordered align-middle mb-0" style="min-width: 1800px !important; table-layout: auto; width: max-content !important;">
+            <table class="table table-sm table-bordered align-middle mb-0" style="min-width: 1200px !important; table-layout: auto; width: 100% !important;">
                 <thead class="thead-light">
                     <tr>
                         <th>Date</th>
@@ -995,7 +1023,7 @@ function loadLivestockDetails(livestockId) {
                         <th>Partner</th>
                         <th>Pregnancy</th>
                         <th>Success</th>
-                        <th>Notes</th>
+                        <th style="text-align: left !important;">Notes</th>
                     </tr>
                 </thead>
                 <tbody id="breedingRecordsTable">
@@ -1050,9 +1078,15 @@ function submitLivestockForm() {
         console.log(key + ': ' + value);
     }
     
-    // Add method override for PUT requests
     if (method === 'POST' && $('#livestockForm').find('input[name="_method"]').length > 0) {
         formData.append('_method', 'PUT');
+    }
+    if ($('#livestockForm').find('input[name="_method"]').length > 0) {
+        let editedRemarks = formData.get('remarks') || '';
+        if (currentLivestockRemarksMeta) {
+            const merged = (editedRemarks ? editedRemarks.toString().trim() + '\n' : '') + currentLivestockRemarksMeta;
+            formData.set('remarks', merged.trim());
+        }
     }
     
     $.ajax({
@@ -1157,32 +1191,197 @@ function printLivestockRecord() {
             try { const x = new Date(d); if (!isNaN(x)) return x.toLocaleDateString(); } catch(e) {}
             const s = String(d); return s.length >= 10 ? s.slice(0,10) : s;
         };
-        const farmName = (l.farm && l.farm.name) ? l.farm.name : '';
-        const basicInfo = `
-            <table>
-                <thead><tr><th colspan="2">Basic Information</th></tr></thead>
-                <tbody>
-                    <tr><td>Tag Number</td><td>${l.tag_number || ''}</td></tr>
-                    <tr><td>Name</td><td>${l.name || ''}</td></tr>
-                    <tr><td>Type</td><td>${l.type ? l.type.charAt(0).toUpperCase() + l.type.slice(1) : ''}</td></tr>
-                    <tr><td>Breed</td><td>${l.breed ? l.breed.replace('_',' ').replace(/\b\w/g, c=>c.toUpperCase()) : ''}</td></tr>
-                    <tr><td>Gender</td><td>${l.gender ? l.gender.charAt(0).toUpperCase() + l.gender.slice(1) : ''}</td></tr>
-                    <tr><td>Birth Date</td><td>${fmt(l.birth_date)}</td></tr>
-                    <tr><td>Status</td><td>${l.status ? l.status.charAt(0).toUpperCase() + l.status.slice(1) : ''}</td></tr>
-                    <tr><td>Health Status</td><td>${l.health_status ? l.health_status.charAt(0).toUpperCase() + l.health_status.slice(1) : ''}</td></tr>
-                    <tr><td>Weight (kg)</td><td>${l.weight ?? ''}</td></tr>
-                    <tr><td>Farm</td><td>${farmName}</td></tr>
-                </tbody>
-            </table>`;
+        // Safe getter to handle varying API payload shapes
+        const v = (obj, keys) => {
+            for (const k of keys) {
+                if (obj && obj[k] !== undefined && obj[k] !== null && obj[k] !== '') return obj[k];
+            }
+            return '';
+        };
+        const farmName = (l.farm && (l.farm.name || l.farm.farm_name)) ? (l.farm.name || l.farm.farm_name) : '';
+        const b = currentLivestockPrintBasic || {
+            tag_number: (l && (l.tag_number || l.livestock_id || l.tagNumber)) || '',
+            name: (l && (l.name || l.livestock_name)) || '',
+            type: (l && l.type) || '',
+            breed: (l && l.breed) || '',
+            gender: (l && l.gender) || '',
+            birth_date: (l && (l.birth_date || l.birthDate)) || '',
+            status: (l && l.status) || '',
+            health_status: (l && (l.health_status || l.healthStatus)) || '',
+            weight: (l && (l.weight ?? '')),
+            farm_name: farmName
+        };
+        const basicTitle = `<h3 style="margin:12px 0 6px 0;color:#18375d;">Basic Information</h3>`;
+        const prodTitle = `<h3 style="margin:16px 0 6px 0;color:#18375d;">Production</h3>`;
+        const healthTitle = `<h3 style="margin:16px 0 6px 0;color:#18375d;">Health</h3>`;
+        const breedingTitle = `<h3 style="margin:16px 0 6px 0;color:#18375d;">Breeding</h3>`;
 
+        const detailsReq = $.ajax({ url: `/farmer/livestock/${currentLivestockId}`, method: 'GET' });
+        const editReq = $.ajax({ url: `/farmer/livestock/${currentLivestockId}/edit`, method: 'GET' });
         const prodReq = $.ajax({ url: `/farmer/livestock/${currentLivestockId}/production-records`, method: 'GET' });
         const healthReq = $.ajax({ url: `/farmer/livestock/${currentLivestockId}/health-records`, method: 'GET' });
         const breedReq = $.ajax({ url: `/farmer/livestock/${currentLivestockId}/breeding-records`, method: 'GET' });
 
-        $.when(prodReq, healthReq, breedReq).done(function(pRes, hRes, bRes) {
+        $.when(detailsReq, prodReq, healthReq, breedReq, editReq).done(function(dRes, pRes, hRes, brRes, eRes) {
+            const fresh = dRes && dRes[0] ? (dRes[0].livestock || dRes[0].data || (dRes[0].data && dRes[0].data.livestock) || null) : null;
+            const fallbackEdit = eRes && eRes[0] ? (eRes[0].livestock || eRes[0].data || null) : null;
+            const ll = fresh || fallbackEdit || l || {};
+            const farm2 = (ll.farm && (ll.farm.name || ll.farm.farm_name)) ? (ll.farm.name || ll.farm.farm_name) : farmName;
+            const getDomBasicValue = (label) => {
+                const norm = (s) => (s || '')
+                    .toString()
+                    .replace(/\s*:\s*$/, '')
+                    .trim()
+                    .toLowerCase();
+                const synonyms = {
+                    'tag number': ['tag number', 'tag id number', 'livestock id'],
+                    'name': ['name', 'livestock name'],
+                    'type': ['type'],
+                    'breed': ['breed'],
+                    'gender': ['gender', 'sex'],
+                    'birth date': ['birth date', 'date of birth'],
+                    'status': ['status', 'activity'],
+                    'health status': ['health status'],
+                    'weight': ['weight', 'weight (kg)'],
+                    'farm': ['farm', 'cooperative']
+                };
+                const wanted = norm(label);
+                const accepted = new Set(synonyms[wanted] || [wanted]);
+                try {
+                    const container = document.getElementById('livestockDetailsContent');
+                    if (!container) return '';
+                    const nodes = container.querySelectorAll('small.text-muted');
+                    for (const sm of nodes) {
+                        const lbl = norm(sm.textContent || '');
+                        if (accepted.has(lbl)) {
+                            const p = sm.parentElement ? sm.parentElement.querySelector('p') : null;
+                            const val = (p && p.textContent) ? p.textContent.trim() : '';
+                            if (val && val !== 'N/A') return val;
+                        }
+                    }
+                    const basicRows = container.querySelectorAll('#basicForm table tbody tr');
+                    for (const row of basicRows) {
+                        const th = row.querySelector('th');
+                        const td = row.querySelector('td');
+                        if (!th || !td) continue;
+                        const thLabel = norm(th.textContent || '');
+                        if (accepted.has(thLabel)) {
+                            const val = (td.textContent || '').trim();
+                            if (val && !/^not\s+recorded$/i.test(val) && val !== 'N/A') return val;
+                        }
+                    }
+                } catch (_) {}
+                return '';
+            };
+            const bb = {
+                tag_number: (ll.tag_number || ll.livestock_id || ll.tagNumber || b.tag_number || getDomBasicValue('Tag Number') || ''),
+                name: (ll.name || ll.livestock_name || b.name || getDomBasicValue('Name') || ''),
+                type: (ll.type || b.type || getDomBasicValue('Type') || ''),
+                breed: (ll.breed || b.breed || getDomBasicValue('Breed') || ''),
+                gender: (ll.gender || b.gender || getDomBasicValue('Gender') || ''),
+                birth_date: (ll.birth_date || ll.birthDate || b.birth_date || getDomBasicValue('Birth Date') || getDomBasicValue('Date of Birth') || ''),
+                status: (ll.status || b.status || getDomBasicValue('Status') || ''),
+                health_status: (ll.health_status || ll.healthStatus || b.health_status || getDomBasicValue('Health Status') || ''),
+                weight: ((ll.weight ?? b.weight) ?? getDomBasicValue('Weight') ?? getDomBasicValue('Weight (kg)') ?? ''),
+                farm_name: farm2 || b.farm_name || getDomBasicValue('Farm') || ''
+            };
+
+            const ensureFilled = (primary, fallback) => {
+                const out = { ...primary };
+                const keys = ['tag_number','name','type','breed','gender','birth_date','status','health_status','weight','farm_name'];
+                keys.forEach(k => {
+                    const v = out[k];
+                    if (v === undefined || v === null || (typeof v === 'string' && v.trim() === '')) {
+                        const fv = fallback && fallback[k] !== undefined && fallback[k] !== null ? fallback[k] : '';
+                        out[k] = fv;
+                    }
+                });
+                return out;
+            };
+            const bbSafe = ensureFilled(bb, b);
+
+            const money = (n) => {
+                if (n === undefined || n === null || n === '') return '';
+                const num = Number(n);
+                if (isNaN(num)) return '';
+                return '₱' + num.toFixed(2);
+            };
+            const up1 = (s) => (s || '').replace(/^\w/, m=>m.toUpperCase());
+            const upWords = (s) => (s || '').replace('_',' ').replace(/\b\w/g, c=>c.toUpperCase());
+            const ageStr = ll.birth_date ? (typeof calculateAge === 'function' ? calculateAge(ll.birth_date) : (function(bd){
+                try {
+                    if (!bd) return '';
+                    const d = new Date(bd); const t = new Date();
+                    let y = t.getFullYear() - d.getFullYear();
+                    const m = t.getMonth() - d.getMonth();
+                    if (m < 0 || (m === 0 && t.getDate() < d.getDate())) y--;
+                    return y > 0 ? `${y} year${y>1?'s':''}` : '';
+                } catch(_) { return ''; }
+            })(ll.birth_date)) : '';
+            const registry = ll.registry_id || '';
+            const naturalMarks = ll.natural_marks || '';
+            const propertyNo = ll.property_no || '';
+            const acqDate = fmt(ll.acquisition_date || ll.acquisitionDate || '');
+            const acqCost = money(ll.acquisition_cost);
+            const remarksClean = (() => {
+                const raw = (ll.remarks || '').toString();
+                return raw.split(/\r?\n/).filter(line => !/^\s*\[(Health|Breeding|Calving|Growth|Production)\]/i.test(line)).join('\n').trim();
+            })();
+            const createdAt = fmt(ll.created_at || ll.createdAt || '');
+
+            const typeDisp = upWords(bbSafe.type);
+            const breedDisp = upWords(bbSafe.breed);
+            const genderDisp = up1(bbSafe.gender);
+            const statusDisp = up1(bbSafe.status);
+            const healthDisp = up1(bbSafe.health_status);
+
+            const weightDisp = bbSafe.weight !== undefined && bbSafe.weight !== null && bbSafe.weight !== '' ? bbSafe.weight : '';
+
+            const basicInfo = `
+                <table>
+                    <thead><tr><th colspan="2">Basic Information</th></tr></thead>
+                    <tbody>
+                        <tr><td>Tag Number</td><td>${bbSafe.tag_number || ''}</td></tr>
+                        <tr><td>Name</td><td>${bbSafe.name || ''}</td></tr>
+                        <tr><td>Type</td><td>${typeDisp}</td></tr>
+                        <tr><td>Breed</td><td>${breedDisp}</td></tr>
+                        <tr><td>Date of Birth</td><td>${fmt(bbSafe.birth_date)}</td></tr>
+                        <tr><td>Age</td><td>${ageStr}</td></tr>
+                        <tr><td>Gender</td><td>${genderDisp}</td></tr>
+                        <tr><td>Weight</td><td>${weightDisp}</td></tr>
+                        <tr><td>Health Status</td><td>${healthDisp}</td></tr>
+                        <tr><td>Status</td><td>${statusDisp}</td></tr>
+                        <tr><td>Farm</td><td>${bbSafe.farm_name || ''}</td></tr>
+                        <tr><td>Registry ID</td><td>${registry}</td></tr>
+                        <tr><td>Natural Marks</td><td>${naturalMarks}</td></tr>
+                        <tr><td>Property Number</td><td>${propertyNo}</td></tr>
+                        <tr><td>Acquisition Date</td><td>${acqDate}</td></tr>
+                        <tr><td>Acquisition Cost</td><td>${acqCost}</td></tr>
+                        <tr><td>Remarks</td><td>${remarksClean}</td></tr>
+                        <tr><td>Created</td><td>${createdAt}</td></tr>
+                    </tbody>
+                </table>`;
+
+            try {
+                const core = [bbSafe.tag_number, bbSafe.name, bbSafe.type, bbSafe.breed, bbSafe.gender, bbSafe.birth_date, bbSafe.status, bbSafe.health_status, bbSafe.farm_name];
+                const allBlank = core.every(v => (v === undefined || v === null || String(v).trim() === ''));
+                if (allBlank) {
+                    const el = document.getElementById('livestockDetailsContent');
+                    if (el) {
+                        if (typeof window.printElement === 'function') {
+                            window.printElement('#livestockDetailsContent');
+                        } else {
+                            const w = window.open('', '_blank');
+                            if (w) { w.document.write(el.outerHTML); w.document.close(); try{w.print();}catch(_){} }
+                        }
+                    }
+                    return;
+                }
+            } catch(_) {}
+
             const pData = (pRes && pRes[0] && pRes[0].success) ? (pRes[0].data || []) : [];
             const hData = (hRes && hRes[0] && hRes[0].success) ? (hRes[0].data || []) : [];
-            const bData = (bRes && bRes[0] && bRes[0].success) ? (bRes[0].data || []) : [];
+            const bData = (brRes && brRes[0] && brRes[0].success) ? (brRes[0].data || []) : [];
 
             const prodRows = pData.map(r => {
                 // Derive type from notes if not provided
@@ -1253,11 +1452,23 @@ function printLivestockRecord() {
                 </style>`;
 
             const container = document.createElement('div');
-            container.innerHTML = tableCss + `<div>${title}${basicInfo}${productionTbl}${healthTbl}${breedingTbl}</div>`;
+            container.innerHTML = tableCss + `<div>${title}${basicTitle}${basicInfo}${prodTitle}${productionTbl}${healthTitle}${healthTbl}${breedingTitle}${breedingTbl}</div>`;
             if (typeof window.printElement === 'function') {
                 window.printElement(container);
+            } else if (typeof window.openPrintWindow === 'function') {
+                window.openPrintWindow(container.innerHTML, 'Livestock Record');
             } else {
-                window.print();
+                const w = window.open('', '_blank');
+                if (w) {
+                    w.document.open();
+                    w.document.write(`<html><head><title>Livestock Record</title></head><body>${container.innerHTML}</body></html>`);
+                    w.document.close();
+                    try { w.focus(); } catch(_){}
+                    try { w.print(); } catch(_){}
+                    try { w.close(); } catch(_){}
+                } else {
+                    window.print();
+                }
             }
         }).fail(function(){
             const tableCss = `
@@ -1272,7 +1483,21 @@ function printLivestockRecord() {
             container.innerHTML = tableCss + `<div>${basicInfo}</div>`;
             if (typeof window.printElement === 'function') {
                 window.printElement(container);
-            } else { window.print(); }
+            } else if (typeof window.openPrintWindow === 'function') {
+                window.openPrintWindow(container.innerHTML, 'Livestock Record');
+            } else {
+                const w = window.open('', '_blank');
+                if (w) {
+                    w.document.open();
+                    w.document.write(`<html><head><title>Livestock Record</title></head><body>${container.innerHTML}</body></html>`);
+                    w.document.close();
+                    try { w.focus(); } catch(_){}
+                    try { w.print(); } catch(_){}
+                    try { w.close(); } catch(_){}
+                } else {
+                    window.print();
+                }
+            }
         });
     }
 }
@@ -1396,7 +1621,7 @@ function loadProductionRecords(livestockId) {
                         <td>${pType || 'Milk'}</td>
                         <td>${record.quantity || 'N/A'}</td>
                         <td>${record.quality || 'N/A'}</td>
-                        <td>${noteText || 'N/A'}</td>
+                        <td style="text-align: left !important; white-space: normal; word-break: break-word;">${noteText || 'N/A'}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -1423,7 +1648,7 @@ function loadHealthRecords(livestockId) {
                         <td>${r.status || 'N/A'}</td>
                         <td>${r.treatment || 'N/A'}</td>
                         <td>${r.veterinarian || 'N/A'}</td>
-                        <td>${r.notes || 'N/A'}</td>
+                        <td style="text-align: left !important; white-space: normal; word-break: break-word;">${r.notes || 'N/A'}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -1449,7 +1674,7 @@ function loadBreedingRecords(livestockId) {
                             <td style="white-space: nowrap;">${r.partner || 'N/A'}</td>
                             <td style="white-space: nowrap;">${r.pregnancy || 'N/A'}</td>
                             <td style="white-space: nowrap;">${r.success || 'N/A'}</td>
-                            <td style="white-space: nowrap; min-width: 800px;">${r.notes || 'N/A'}</td>
+                            <td style="white-space: normal; min-width: 320px; word-break: break-word;">${r.notes || 'N/A'}</td>
                         `;
                         tbody.appendChild(row);
                     });
@@ -1535,7 +1760,7 @@ function addProductionRecord(livestockId) {
                 <!-- Footer -->
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn-modern btn-ok" onclick="saveProductionRecord()">
+                    <button type="button" class="btn-modern btn-ok" onclick="saveProductionRecord('${livestockId}')">
                         <i class="fas fa-save"></i> Save Record
                     </button>
                 </div>
@@ -1557,6 +1782,8 @@ function addProductionRecord(livestockId) {
 }
 
 function saveProductionRecord(livestockId) {
+    livestockId = livestockId || currentLivestockId;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
     const form = document.getElementById('productionRecordForm');
     const formData = new FormData(form);
     
@@ -1572,7 +1799,6 @@ function saveProductionRecord(livestockId) {
     const combinedNotes = `[type: ${pType || 'milk'}] ${userNotes}`.trim();
     formData.set('notes', combinedNotes);
     
-    // Add livestock ID to form data
     formData.append('livestock_id', livestockId);
     
     $.ajax({
@@ -1652,8 +1878,8 @@ function addHealthRecord(livestockId) {
 
                         <!-- Weight -->
                         <div class="col-md-6 ">
-                            <label for="weight" class="fw-semibold">Weight (kg)</label>
-                            <input type="number" class="form-control mt-1" id="weight" name="weight" min="0" step="0.1">
+                            <label for="health_weight" class="fw-semibold">Weight (kg)</label>
+                            <input type="number" class="form-control mt-1" id="health_weight" name="weight" min="0" step="0.1">
                         </div>
 
                         <!-- Temperature -->
@@ -1687,7 +1913,7 @@ function addHealthRecord(livestockId) {
                 <!-- Footer -->
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn-modern btn-ok" onclick="saveHealthRecord()">
+                    <button type="button" class="btn-modern btn-ok" onclick="saveHealthRecord('${livestockId}')">
                         <i class="fas fa-save"></i> Save Record
                     </button>
                 </div>
@@ -1744,6 +1970,8 @@ function addHealthRecord(livestockId) {
 }
 
 function saveHealthRecord(livestockId) {
+    livestockId = livestockId || currentLivestockId;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
     const form = document.getElementById('healthRecordForm');
     const formData = new FormData(form);
     
@@ -1869,7 +2097,7 @@ function addBreedingRecord(livestockId) {
                 <!-- Footer -->
                 <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
                     <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn-modern btn-ok" onclick="saveBreedingRecord()">
+                    <button type="button" class="btn-modern btn-ok" onclick="saveBreedingRecord('${livestockId}')">
                         <i class="fas fa-save"></i> Save Record
                     </button>
                 </div>
@@ -1891,6 +2119,8 @@ function addBreedingRecord(livestockId) {
 }
 
 function saveBreedingRecord(livestockId) {
+    livestockId = livestockId || currentLivestockId;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
     const form = document.getElementById('breedingRecordForm');
     const formData = new FormData(form);
     
@@ -2607,6 +2837,12 @@ function showToast(message, type = 'info') {
     min-width: 90px; /* prevent too tiny buttons */
     text-align: center;
 }
+
+  /* Ensure breeding Notes column is left-aligned regardless of global table centering */
+  #breedingForm table thead th:nth-child(6),
+  #breedingForm table tbody td:nth-child(6) {
+    text-align: left !important;
+  }
 
         /* ============================
    SMART FORM - Enhanced Version
