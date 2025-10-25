@@ -691,7 +691,7 @@
                                             <th>Date</th>
                                             <th>Health Status</th>
                                             <th>Notes</th>
-                                            <th>Actions</th>
+                                            <th class="text-left">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -716,7 +716,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ $record['notes'] }}</td>
-                                            <td>
+                                            <td class="text-left">
                                                 <button class="btn-action btn-action-ok btn-sm" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </button>

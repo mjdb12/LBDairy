@@ -2136,21 +2136,21 @@
 
 
 <!-- Smart Detail Modal -->
-<div class="modal fade admin-modal" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+<div class="modal fade admin-modal livestock-modal" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content smart-detail p-4">
 
         <!-- Icon + Header -->
             <div class="d-flex flex-column align-items-center mb-4">
                 <div class="icon-circle">
-                    <i class="fas fa-user fa-2x"></i>
+                    <i class="fas fa-eye fa-2x"></i>
                 </div>
-                <h5 class="fw-bold mb-1">Livestock Details </h5>
-                <p class="text-muted text-center mb-0 small">Below are the complete details of the selected livestock.</p>
+                <h5 class="fw-bold mb-1">Livestock Details</h5>
+                <p class="text-muted mb-0 small text-center">Below are the complete details of the selected livestock.</p>
             </div>
 
       <!-- Body -->
-      <div class="modal-body">
+      <div class="modal-body" style="overflow-x: auto;">
         <div id="livestockDetailsContent">
           <!-- Dynamic details injected here -->
         </div>
@@ -2160,6 +2160,9 @@
 
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+            <button type="button" class="btn-modern btn-edit" onclick="printAdminLivestockRecord()">
+                <i class="fas fa-print"></i> Print Record
+            </button>
             <button type="button" class="btn-modern btn-ok" onclick="openLivestockEditModal()">
                 <i class="fas fa-edit"></i> Edit 
             </button>
@@ -2571,6 +2574,53 @@
     .border-left-primary { border-left: 0.25rem solid #18375d !important; }
     
     .gap-2 { gap: 0.5rem !important; }
+
+    .smart-card { border-radius: 15px; background: #fff; transition: all 0.3s ease; }
+    .smart-card:hover { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+    .smart-card-header { border-radius: 15px 15px 0 0; padding: 0.75rem 1rem; }
+    .smart-card-body { padding: 1.25rem; }
+    .smart-card h6 { color: #18375d; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
+    .smart-card i { color: #18375d; }
+
+    .smart-tabs .nav-link { border: none; color: #555; font-weight: 500; }
+    .smart-tabs .nav-link.active { border-bottom: 3px solid #28a745; color: #28a745; }
+
+    .smart-table th { width: 40%; background: #f8f9fa; font-weight: 600; }
+    .smart-table td { background: #fff; }
+
+    .smart-detail .modal-content, .modal-content.smart-detail { border-radius: 1.5rem; border: none; box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12); background-color: #fff; transition: all 0.3s ease-in-out; max-width: 90vw; margin: auto; }
+    .smart-detail .icon-circle { width: 70px; height: 70px; background-color: #e8f0fe; color: #18375d; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0rem; }
+    .smart-detail h5 { color: #18375d; font-weight: 700; margin-bottom: 0.75rem; letter-spacing: 0.5px; }
+    .smart-detail p { color: #6b7280; font-size: 0.96rem; margin-bottom: 1.5rem; line-height: 1.6; }
+    .smart-detail .modal-body { background: #ffffff; padding: 2.5rem 1rem; border-radius: 1.25rem; max-height: 80vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+
+    #breedingForm table thead th:nth-child(6),
+    #breedingForm table tbody td:nth-child(6) { text-align: left !important; }
+
+    @media (max-width: 768px) {
+      #livestockTab { display: flex; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; gap: 4px; }
+      #livestockTab::-webkit-scrollbar { height: 6px; }
+      #livestockTab::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
+      #livestockTab .nav-item { flex: 0 0 auto; }
+      #livestockTab .nav-link { font-size: 0.9rem; padding: 8px 10px; }
+      #livestockTab .nav-link i { margin-right: 4px; font-size: 0.9rem; }
+    }
+
+    /* Ensure details modal uses scrolling (override broader admin-modal rule) */
+    #livestockDetailsModal .modal-body { 
+      overflow-y: auto !important; 
+      overflow-x: auto !important; 
+      max-height: 80vh !important; 
+      padding: 2.5rem 1rem !important;
+    }
+    /* Left align content inside details tables regardless of global table alignment */
+    #livestockDetailsModal table thead th, 
+    #livestockDetailsModal table tbody td { 
+      text-align: left !important; 
+      vertical-align: middle !important; 
+    }
+    #livestockDetailsModal .badge { font-weight: 600; }
+    #livestockDetailsModal .smart-card-header { background: transparent !important; }
 </style>
 @endpush
 
@@ -2594,6 +2644,8 @@
     let selectedFarmerId = null;
     let selectedFarmerName = '';
     let selectedLivestockId = null;
+    let currentAdminLivestockData = null;
+    let currentAdminLivestockPrintBasic = null;
 
    $(document).ready(function() {
         console.log('Document ready, loading farmers...');
@@ -3056,70 +3108,593 @@ $(document).ready(function () {
             method: 'GET',
             success: function(response) {
                 if (response.success) {
-                    const livestock = response.data;
+                    const livestock = response.data || {};
+                    currentAdminLivestockData = livestock;
+                    currentAdminLivestockPrintBasic = {
+                        tag_number: livestock.tag_number || '',
+                        name: livestock.name || '',
+                        type: livestock.type || '',
+                        breed: livestock.breed || '',
+                        gender: livestock.gender || '',
+                        birth_date: livestock.birth_date || '',
+                        status: livestock.status || '',
+                        health_status: livestock.health_status || '',
+                        weight: (livestock.weight ?? ''),
+                        farm_name: (livestock.farm && livestock.farm.name) ? livestock.farm.name : ''
+                    };
+
+                    // Calculate age and dates
+                    const age = livestock.birth_date ? calculateAge(livestock.birth_date) : 'Unknown';
+                    const birthDate = livestock.birth_date ? new Date(livestock.birth_date).toLocaleDateString() : 'Not recorded';
+                    const createdDate = livestock.created_at ? new Date(livestock.created_at).toLocaleDateString() : 'Not recorded';
+                    const updatedDate = livestock.updated_at ? new Date(livestock.updated_at).toLocaleDateString() : 'Not recorded';
+
+                    const rawRemarks = (livestock.remarks || '').toString();
+                    const cleanedRemarks = rawRemarks
+                        .split(/\r?\n/)
+                        .filter(line => !/^\s*\[(Health|Breeding|Calving|Growth|Production)\]/i.test(line))
+                        .join('\n')
+                        .trim();
+
+                    // Build UI similar to farmer view
                     $('#livestockDetailsContent').html(`
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-id-card me-2"></i> Basic Information</h6>
-                                <p class="text-left" ><strong>Tag Number:</strong> ${livestock.tag_number || 'N/A'}</p>
-                                <p class="text-left" ><strong>Type:</strong> ${livestock.type || 'N/A'}</p>
-                                <p class="text-left" ><strong>Breed:</strong> ${livestock.breed || 'N/A'}</p>
-                                <p class="text-left" ><strong>Gender:</strong> ${livestock.gender || 'N/A'}</p>
-                                <p class="text-left" ><strong>Birth Date:</strong> ${livestock.birth_date ? formatDateForInput(livestock.birth_date) : 'N/A'}</p>
+                        <div id="livestockPrintContainer" style="display:none;"></div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="smart-card shadow-sm h-100">
+                                    <div class="smart-card-header text-#18375d d-flex align-items-center">
+                                        <i class="fas fa-qrcode mr-2"></i>
+                                        <h6 class="mb-0 fw-bold">QR Code Status</h6>
+                                    </div>
+                                    <div class="smart-card-body text-center p-3">
+                                        <div id="qrCodeContainer" class="mb-3">
+                                            ${livestock.qr_code_generated && livestock.qr_code_url ? `
+                                                <img src="${livestock.qr_code_url}" alt="QR Code" class="img-fluid mb-3" style="max-width: 150px;">
+                                                <p class="text-center text-muted small mb-2">Generated by: ${livestock.qr_code_generator ? livestock.qr_code_generator.name : 'Unknown'}</p>
+                                                <p class="text-center text-muted small mb-3">Generated on: ${livestock.qr_code_generated_at ? new Date(livestock.qr_code_generated_at).toLocaleDateString() : 'Unknown'}</p>
+                                                <button class="btn-action btn-action-ok btn-sm" onclick="downloadQRCodeFromDetails('${livestock.qr_code_url}', '${livestock.tag_number}')">
+                                                    <i class="fas fa-download"></i> Download QR Code
+                                                </button>
+                                            ` : `
+                                                <p class="text-center text-muted">No QR code generated yet</p>
+                                                <button class="btn-action btn-action-ok btn-sm" onclick="generateQRCodeFromDetails('${livestock.id}')">
+                                                    <i class="fas fa-qrcode"></i> Generate QR Code
+                                                </button>
+                                            `}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-tractor me-2"></i> Farm Information</h6>
-                                <p class="text-left"><strong>Farm:</strong> ${livestock.farm ? livestock.farm.name : 'N/A'}</p>
-                                <p class="text-left"><strong>Status:</strong> 
-                                    <span class="badge badge-${livestock.status === 'active' ? 'success' : 'danger'}">
-                                        ${livestock.status || 'N/A'}
-                                    </span>
-                                </p>
-                                <p class="text-left"><strong>Health Status:</strong> ${livestock.health_status || 'N/A'}</p>
-                                <p class="text-left"><strong>Weight:</strong> ${livestock.weight ? livestock.weight + ' kg' : 'N/A'}</p>
-                                <p class="text-left"><strong>Registration Date:</strong> ${livestock.created_at ? new Date(livestock.created_at).toLocaleDateString() : 'N/A'}</p>
+                            <div class="col-md-6 mb-3">
+                                <div class="smart-card shadow-sm h-100">
+                                    <div class="smart-card-header text-#18375d d-flex align-items-center">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        <h6 class="mb-0 fw-bold">Quick Info</h6>
+                                    </div>
+                                    <div class="smart-card-body p-3">
+                                        <div class="row">
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Tag Number</small>
+                                                <p class="fw-bold mb-0">${livestock.tag_number || 'N/A'}</p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Name</small>
+                                                <p class="fw-bold mb-0">${livestock.name || 'N/A'}</p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Type</small>
+                                                <p class="fw-bold mb-0">${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'N/A'}</p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Breed</small>
+                                                <p class="fw-bold mb-0">${livestock.breed ? livestock.breed.replace('_',' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Age</small>
+                                                <p class="fw-bold mb-0">${age}</p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Previous Weight</small>
+                                                <p class="fw-bold mb-0">${livestock.previous_weight ? livestock.previous_weight + ' kg' : 'N/A'}</p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Previous Weight Date</small>
+                                                <p class="fw-bold mb-0">${livestock.previous_weight_date ? new Date(livestock.previous_weight_date).toLocaleDateString() : 'N/A'}</p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <small class="text-muted">Status</small>
+                                                <p class="fw-bold mb-0"><span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'N/A'}</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
 
-                        ${livestock.description ? `
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <h6 class="text-primary">Description</h6>
-                                <p>${livestock.description}</p>
+                        <ul class="nav nav-tabs smart-tabs mb-3" id="livestockTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basicForm" role="tab">Basic Info</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="production-tab" data-toggle="tab" href="#productionForm" role="tab">Production</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab">Health</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="breeding-tab" data-toggle="tab" href="#breedingForm" role="tab">Breeding</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="livestockTabContent">
+                            <div class="tab-pane fade show active" id="basicForm" role="tabpanel">
+                                <div class="smart-table table-responsive">
+                                    <table class="table table-sm table-bordered align-middle mb-0">
+                                        <tbody>
+                                            <tr><th>Tag Number</th><td>${livestock.tag_number || 'Not assigned'}</td></tr>
+                                            <tr><th>Name</th><td>${livestock.name || 'Not assigned'}</td></tr>
+                                            <tr><th>Type</th><td>${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'Not recorded'}</td></tr>
+                                            <tr><th>Breed</th><td>${livestock.breed ? livestock.breed.replace('_',' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not recorded'}</td></tr>
+                                            <tr><th>Date of Birth</th><td>${birthDate}</td></tr>
+                                            <tr><th>Age</th><td>${age}</td></tr>
+                                            <tr><th>Gender</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
+                                            <tr><th>Weight</th><td>${livestock.weight ? livestock.weight + ' kg' : 'Not recorded'}</td></tr>
+                                            <tr><th>Previous Weight</th><td>${livestock.previous_weight ? livestock.previous_weight + ' kg' : 'Not recorded'}</td></tr>
+                                            <tr><th>Previous Weight Date</th><td>${livestock.previous_weight_date ? new Date(livestock.previous_weight_date).toLocaleDateString() : 'Not recorded'}</td></tr>
+                                            <tr><th>Health Status</th><td><span class="badge badge-${livestock.health_status === 'healthy' ? 'success' : livestock.health_status === 'sick' ? 'danger' : 'warning'}">${livestock.health_status ? livestock.health_status.charAt(0).toUpperCase() + livestock.health_status.slice(1) : 'Not recorded'}</span></td></tr>
+                                            <tr><th>Status</th><td><span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'Not recorded'}</span></td></tr>
+                                            <tr><th>Farm</th><td>${livestock.farm ? livestock.farm.name : 'Not assigned'}</td></tr>
+                                            <tr><th>Registry ID</th><td>${livestock.registry_id || 'Not assigned'}</td></tr>
+                                            <tr><th>Natural Marks</th><td>${livestock.natural_marks || 'None recorded'}</td></tr>
+                                            <tr><th>Property Number</th><td>${livestock.property_no || 'Not assigned'}</td></tr>
+                                            <tr><th>Acquisition Date</th><td>${livestock.acquisition_date ? new Date(livestock.acquisition_date).toLocaleDateString() : 'Not recorded'}</td></tr>
+                                            <tr><th>Acquisition Cost</th><td>${livestock.acquisition_cost ? '₱' + parseFloat(livestock.acquisition_cost).toFixed(2) : 'Not recorded'}</td></tr>
+                                            <tr><th>Remarks</th><td>${cleanedRemarks || 'None'}</td></tr>
+                                            <tr><th>Created</th><td>${createdDate}</td></tr>
+                                            <tr><th>Last Updated</th><td>${updatedDate}</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="productionForm" role="tabpanel">
+                                <div class="smart-table table-responsive">
+                                    <table class="table table-sm table-bordered align-middle mb-0">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Production Type</th>
+                                                <th>Quantity</th>
+                                                <th>Quality</th>
+                                                <th style="text-align: left !important;">Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="productionRecordsTable">
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted py-3">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    No production records found.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="healthForm" role="tabpanel">
+                                <div class="smart-table table-responsive">
+                                    <table class="table table-sm table-bordered align-middle mb-0">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Health Status</th>
+                                                <th>Treatment</th>
+                                                <th>Veterinarian</th>
+                                                <th style="text-align: left !important;">Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="healthRecordsTable">
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted py-3">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    No health records found.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="breedingForm" role="tabpanel">
+                                <div class="smart-table table-responsive">
+                                    <table class="table table-sm table-bordered align-middle mb-0">
+                                        <tbody>
+                                            <tr><th>Sire ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
+                                            <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
+                                            <tr><th>Dam ID</th><td>${livestock.dam_id || 'Not recorded'}</td></tr>
+                                            <tr><th>Dam Name</th><td>${livestock.dam_name || 'Not recorded'}</td></tr>
+                                            <tr><th>Dispersal From</th><td>${livestock.dispersal_from || 'Not recorded'}</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="smart-table table-responsive mt-3" style="display:block; max-width:100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom:8px;">
+                                    <table class="table table-sm table-bordered align-middle mb-0" style="min-width: 1200px !important; table-layout: auto; width: 100% !important;">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Type</th>
+                                                <th>Partner</th>
+                                                <th>Pregnancy</th>
+                                                <th>Success</th>
+                                                <th style="text-align: left !important;">Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="breedingRecordsTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-3">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    No breeding records found.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                        ` : ''}
-
-                        <div class="col-md-12">
-                                <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-qrcode me-2"></i> QR Code</h6>
-                                ${livestock.qr_code_generated ? `
-                                    <div class="text-center">
-                                        <img src="${livestock.qr_code_url}" alt="QR Code" class="img-fluid mb-3" style="max-width: 115px;">
-                                        <p class="text-center text-muted small mb-2">Generated by: ${livestock.qr_code_generator ? livestock.qr_code_generator.name : 'Unknown'}</p>
-                                        <p class="text-center text-muted small mb-3">Generated on: ${livestock.qr_code_generated_at ? new Date(livestock.qr_code_generated_at).toLocaleDateString() : 'Unknown'}</p>
-                                        <button class="btn-action btn-action-ok btn-sm" onclick="downloadQRCodeFromDetails('${livestock.qr_code_url}', '${livestock.tag_number}')">
-                                            <i class="fas fa-download"></i> Download QR Code
-                                        </button>
-                                    </div>
-                                ` : `
-                                    <div class="text-center">
-                                        <p class="text-center text-muted">No QR code generated yet</p>
-                                        <button class="btn-action btn-action-ok btn-sm" onclick="generateQRCodeFromDetails('${livestock.id}')">
-                                            <i class="fas fa-qrcode"></i> Generate QR Code
-                                        </button>
-                                    </div>
-                                `}
-                            </div>
                     `);
-                    $('#livestockDetailsModal').modal('show');
+
+                    // Load records for tabs
+                    loadAdminProductionRecords(livestockId);
+                    loadAdminHealthRecords(livestockId);
+                    loadAdminBreedingRecords(livestockId);
+
+                    const $m = $('#livestockDetailsModal');
+                    if (!$m.parent().is('body')) { $m.appendTo('body'); }
+                    $m.modal({ backdrop: true, keyboard: true });
+                    $m.modal('show');
                 } else {
                     showNotification('Error loading livestock details', 'danger');
                 }
             },
             error: function() {
                 showNotification('Error loading livestock details', 'danger');
+            }
+        });
+    }
+
+    // Helpers mirrored from farmer view
+    function calculateAge(birthDate) {
+        try {
+            const birth = new Date(birthDate);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            if (age === 0) {
+                const monthAge = today.getMonth() - birth.getMonth();
+                if (monthAge <= 0) {
+                    const dayAge = today.getDate() - birth.getDate();
+                    return dayAge <= 0 ? 'Less than 1 day' : `${dayAge} day${dayAge > 1 ? 's' : ''}`;
+                }
+                return `${monthAge} month${monthAge > 1 ? 's' : ''}`;
+            }
+            return `${age} year${age > 1 ? 's' : ''}`;
+        } catch (_) { return 'Unknown'; }
+    }
+
+    function loadAdminProductionRecords(livestockId) {
+        $.ajax({
+            url: `{{ route("admin.livestock.production-records", ":id") }}`.replace(':id', livestockId),
+            method: 'GET',
+            success: function(response) {
+                if (response.success && response.data && response.data.length > 0) {
+                    const tbody = document.getElementById('productionRecordsTable');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    response.data.forEach(r => {
+                        let pType = r.production_type || '';
+                        if (!pType && r.notes) {
+                            const m = r.notes.match(/\[type:\s*([^\]]+)\]/i);
+                            if (m) pType = m[1];
+                        }
+                        let noteText = r.notes || '';
+                        noteText = noteText.replace(/\[type:\s*[^\]]+\]\s*/i, '').trim();
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${r.production_date ? new Date(r.production_date).toLocaleDateString() : 'N/A'}</td>
+                            <td>${pType || 'Milk'}</td>
+                            <td>${r.quantity ?? 'N/A'}</td>
+                            <td>${r.quality ?? 'N/A'}</td>
+                            <td style="text-align:left; white-space: normal; word-break: break-word;">${noteText || 'N/A'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+        });
+    }
+
+    function loadAdminHealthRecords(livestockId) {
+        $.ajax({
+            url: `{{ route("admin.livestock.health-records", ":id") }}`.replace(':id', livestockId),
+            method: 'GET',
+            success: function(response) {
+                if (response.success && response.data && response.data.length > 0) {
+                    const tbody = document.getElementById('healthRecordsTable');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    response.data.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
+                            <td>${r.status || 'N/A'}</td>
+                            <td>${r.treatment || 'N/A'}</td>
+                            <td>${r.veterinarian || 'N/A'}</td>
+                            <td style="text-align:left; white-space: normal; word-break: break-word;">${r.notes || 'N/A'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+        });
+    }
+
+    function loadAdminBreedingRecords(livestockId) {
+        $.ajax({
+            url: `{{ route("admin.livestock.breeding-records", ":id") }}`.replace(':id', livestockId),
+            method: 'GET',
+            success: function(response) {
+                if (response.success && response.data && response.data.length > 0) {
+                    const tbody = document.getElementById('breedingRecordsTable');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    response.data.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="white-space: nowrap;">${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.type || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.partner || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.pregnancy || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.success || 'N/A'}</td>
+                            <td style="white-space: normal; min-width: 320px; word-break: break-word;">${r.notes || 'N/A'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+        });
+    }
+
+    function printAdminLivestockRecord() {
+        if (!selectedLivestockId) { showNotification('No livestock selected.', 'warning'); return; }
+        const l = currentAdminLivestockData || {};
+        const fmt = (d) => {
+            if (!d) return '';
+            try { const x = new Date(d); if (!isNaN(x)) return x.toLocaleDateString(); } catch(e) {}
+            const s = String(d); return s.length >= 10 ? s.slice(0,10) : s;
+        };
+        const farmName = (l.farm && (l.farm.name)) ? l.farm.name : '';
+        const b = currentAdminLivestockPrintBasic || {
+            tag_number: (l.tag_number || ''),
+            name: (l.name || ''),
+            type: (l.type || ''),
+            breed: (l.breed || ''),
+            gender: (l.gender || ''),
+            birth_date: (l.birth_date || ''),
+            status: (l.status || ''),
+            health_status: (l.health_status || ''),
+            weight: (l.weight ?? ''),
+            farm_name: farmName
+        };
+
+        const detailsReq = $.ajax({ url: `{{ route('admin.livestock.details', ':id') }}`.replace(':id', selectedLivestockId), method: 'GET' });
+        const prodReq = $.ajax({ url: `{{ route('admin.livestock.production-records', ':id') }}`.replace(':id', selectedLivestockId), method: 'GET' });
+        const healthReq = $.ajax({ url: `{{ route('admin.livestock.health-records', ':id') }}`.replace(':id', selectedLivestockId), method: 'GET' });
+        const breedReq = $.ajax({ url: `{{ route('admin.livestock.breeding-records', ':id') }}`.replace(':id', selectedLivestockId), method: 'GET' });
+
+        $.when(detailsReq, prodReq, healthReq, breedReq).done(function(dRes, pRes, hRes, brRes){
+            const fresh = dRes && dRes[0] ? (dRes[0].data || null) : null;
+            const ll = fresh || l || {};
+            const farm2 = (ll.farm && ll.farm.name) ? ll.farm.name : farmName;
+
+            const ensureFilled = (primary, fallback) => {
+                const out = { ...primary };
+                const keys = ['tag_number','name','type','breed','gender','birth_date','status','health_status','weight','farm_name'];
+                keys.forEach(k => {
+                    const v = out[k];
+                    if (v === undefined || v === null || (typeof v === 'string' && v.trim() === '')) {
+                        const fv = fallback && fallback[k] !== undefined && fallback[k] !== null ? fallback[k] : '';
+                        out[k] = fv;
+                    }
+                });
+                return out;
+            };
+            const bbSafe = ensureFilled({
+                tag_number: (ll.tag_number || b.tag_number || ''),
+                name: (ll.name || b.name || ''),
+                type: (ll.type || b.type || ''),
+                breed: (ll.breed || b.breed || ''),
+                gender: (ll.gender || b.gender || ''),
+                birth_date: (ll.birth_date || b.birth_date || ''),
+                status: (ll.status || b.status || ''),
+                health_status: (ll.health_status || b.health_status || ''),
+                weight: ((ll.weight ?? b.weight) ?? ''),
+                farm_name: (farm2 || b.farm_name || '')
+            }, b);
+
+            const money = (n) => {
+                if (n === undefined || n === null || n === '') return '';
+                const num = Number(n);
+                if (isNaN(num)) return '';
+                return '₱' + num.toFixed(2);
+            };
+            const up1 = (s) => (s || '').replace(/^\w/, m=>m.toUpperCase());
+            const upWords = (s) => (s || '').replace('_',' ').replace(/\b\w/g, c=>c.toUpperCase());
+            const ageStr = ll.birth_date ? calculateAge(ll.birth_date) : '';
+            const registry = ll.registry_id || '';
+            const naturalMarks = ll.natural_marks || '';
+            const propertyNo = ll.property_no || '';
+            const acqDate = fmt(ll.acquisition_date || '');
+            const acqCost = money(ll.acquisition_cost);
+            const remarksClean = (() => {
+                const raw = (ll.remarks || '').toString();
+                return raw.split(/\r?\n/).filter(line => !/^\s*\[(Health|Breeding|Calving|Growth|Production)\]/i.test(line)).join('\n').trim();
+            })();
+            const createdAt = fmt(ll.created_at || '');
+
+            const typeDisp = upWords(bbSafe.type);
+            const breedDisp = upWords(bbSafe.breed);
+            const genderDisp = up1(bbSafe.gender);
+            const statusDisp = up1(bbSafe.status);
+            const healthDisp = up1(bbSafe.health_status);
+            const weightDisp = bbSafe.weight !== undefined && bbSafe.weight !== null && bbSafe.weight !== '' ? bbSafe.weight : '';
+
+            const basicInfo = `
+                <table>
+                    <thead><tr><th colspan="2">Basic Information</th></tr></thead>
+                    <tbody>
+                        <tr><td>Tag Number</td><td>${bbSafe.tag_number || ''}</td></tr>
+                        <tr><td>Name</td><td>${bbSafe.name || ''}</td></tr>
+                        <tr><td>Type</td><td>${typeDisp}</td></tr>
+                        <tr><td>Breed</td><td>${breedDisp}</td></tr>
+                        <tr><td>Date of Birth</td><td>${fmt(bbSafe.birth_date)}</td></tr>
+                        <tr><td>Age</td><td>${ageStr}</td></tr>
+                        <tr><td>Gender</td><td>${genderDisp}</td></tr>
+                        <tr><td>Weight</td><td>${weightDisp}</td></tr>
+                        <tr><td>Health Status</td><td>${healthDisp}</td></tr>
+                        <tr><td>Status</td><td>${statusDisp}</td></tr>
+                        <tr><td>Farm</td><td>${bbSafe.farm_name || ''}</td></tr>
+                        <tr><td>Registry ID</td><td>${registry}</td></tr>
+                        <tr><td>Natural Marks</td><td>${naturalMarks}</td></tr>
+                        <tr><td>Property Number</td><td>${propertyNo}</td></tr>
+                        <tr><td>Acquisition Date</td><td>${acqDate}</td></tr>
+                        <tr><td>Acquisition Cost</td><td>${acqCost}</td></tr>
+                        <tr><td>Remarks</td><td>${remarksClean}</td></tr>
+                        <tr><td>Created</td><td>${createdAt}</td></tr>
+                    </tbody>
+                </table>`;
+
+            const pData = (pRes && pRes[0] && pRes[0].success) ? (pRes[0].data || []) : [];
+            const hData = (hRes && hRes[0] && hRes[0].success) ? (hRes[0].data || []) : [];
+            const bData = (brRes && brRes[0] && brRes[0].success) ? (brRes[0].data || []) : [];
+
+            const prodRows = pData.map(r => {
+                let pType = r.production_type || '';
+                if (!pType && r.notes) {
+                    const m = r.notes.match(/\[type:\s*([^\]]+)\]/i); if (m) pType = m[1];
+                }
+                let noteText = r.notes || '';
+                noteText = noteText.replace(/\[type:\s*[^\]]+\]\s*/i, '').trim();
+                return `<tr>
+                    <td>${r.production_date ? new Date(r.production_date).toLocaleDateString() : ''}</td>
+                    <td>${pType || 'Milk'}</td>
+                    <td>${r.quantity ?? ''}</td>
+                    <td>${r.quality ?? ''}</td>
+                    <td>${noteText || ''}</td>
+                </tr>`;
+            }).join('');
+            const productionTbl = `
+                <table>
+                    <thead><tr><th colspan="5">Production Records</th></tr><tr><th>Date</th><th>Type</th><th>Quantity</th><th>Quality</th><th>Notes</th></tr></thead>
+                    <tbody>${prodRows || '<tr><td colspan="5">No production records found.</td></tr>'}</tbody>
+                </table>`;
+
+            const healthRows = hData.map(r => `
+                <tr>
+                    <td>${r.date ? new Date(r.date).toLocaleDateString() : ''}</td>
+                    <td>${r.status || ''}</td>
+                    <td>${r.treatment || ''}</td>
+                    <td>${r.veterinarian || ''}</td>
+                    <td>${r.notes || ''}</td>
+                </tr>
+            `).join('');
+            const healthTbl = `
+                <table>
+                    <thead><tr><th colspan="5">Health Records</th></tr><tr><th>Date</th><th>Status</th><th>Treatment</th><th>Veterinarian</th><th>Notes</th></tr></thead>
+                    <tbody>${healthRows || '<tr><td colspan="5">No health records found.</td></tr>'}</tbody>
+                </table>`;
+
+            const breedingRows = bData.map(r => `
+                <tr>
+                    <td>${r.date ? new Date(r.date).toLocaleDateString() : ''}</td>
+                    <td>${r.type || ''}</td>
+                    <td>${r.partner || ''}</td>
+                    <td>${r.pregnancy || ''}</td>
+                    <td>${r.success || ''}</td>
+                    <td>${r.notes || ''}</td>
+                </tr>
+            `).join('');
+            const breedingTbl = `
+                <table>
+                    <thead><tr><th colspan="6">Breeding Records</th></tr><tr><th>Date</th><th>Type</th><th>Partner</th><th>Pregnancy</th><th>Success</th><th>Notes</th></tr></thead>
+                    <tbody>${breedingRows || '<tr><td colspan="6">No breeding records found.</td></tr>'}</tbody>
+                </table>`;
+
+            const title = `
+                <div style="margin-bottom:10px; text-align:center;">
+                    <h3 style="margin:0 0 6px 0;color:#18375d;">Individual Animal Record</h3>
+                    <div style="font-size:12px;color:#333;">Generated: ${new Date().toLocaleString()}</div>
+                </div>`;
+
+            const tableCss = `
+                <style>
+                @page{size:auto;margin:12mm;}
+                html,body{background:#fff!important;color:#000;}
+                table{width:100%;border-collapse:collapse;margin:0 0 12px 0;}
+                th,td{border:3px solid #000;padding:10px;text-align:left;}
+                thead th{background:#f2f2f2;color:#18375d;}
+                </style>`;
+
+            const container = document.createElement('div');
+            container.innerHTML = tableCss + `<div>${title}${basicInfo}${productionTbl}${healthTbl}${breedingTbl}</div>`;
+            if (typeof window.printElement === 'function') {
+                window.printElement(container);
+            } else if (typeof window.openPrintWindow === 'function') {
+                window.openPrintWindow(container.innerHTML, '');
+            } else {
+                const w = window.open('', '_blank');
+                if (w) {
+                    w.document.open();
+                    w.document.write(`<html><head><title></title></head><body>${container.innerHTML}</body></html>`);
+                    w.document.close();
+                    try { w.focus(); } catch(_){ }
+                    try { w.print(); } catch(_){ }
+                    try { w.close(); } catch(_){ }
+                } else {
+                    window.print();
+                }
+            }
+        }).fail(function(){
+            const tableCss = `
+                <style>
+                @page{size:auto;margin:12mm;}
+                html,body{background:#fff!important;color:#000;}
+                table{width:100%;border-collapse:collapse;margin:0 0 12px 0;}
+                th,td{border:3px solid #000;padding:10px;text-align:left;}
+                thead th{background:#f2f2f2;color:#18375d;}
+                </style>`;
+            const container = document.createElement('div');
+            container.innerHTML = tableCss + `<div></div>`;
+            if (typeof window.printElement === 'function') {
+                window.printElement(container);
+            } else if (typeof window.openPrintWindow === 'function') {
+                window.openPrintWindow(container.innerHTML, 'Livestock Record');
+            } else {
+                const w = window.open('', '_blank');
+                if (w) {
+                    w.document.open();
+                    w.document.write(`<html><head><title>Livestock Record</title></head><body>${container.innerHTML}</body></html>`);
+                    w.document.close();
+                    try { w.focus(); } catch(_){ }
+                    try { w.print(); } catch(_){ }
+                    try { w.close(); } catch(_){ }
+                } else {
+                    window.print();
+                }
             }
         });
     }

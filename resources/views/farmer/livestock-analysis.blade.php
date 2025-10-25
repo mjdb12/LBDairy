@@ -892,9 +892,6 @@
             <button type="button" class="btn-modern btn-approves" onclick="printLivestockAnalysis()">
                 <i class="fas fa-print"></i> Print Analysis
             </button>
-            <button type="button" class="btn-modern btn-ok" onclick="exportLivestockAnalysis()">
-                <i class="fas fa-download"></i> Export
-            </button>
         </div>
 
     </div>
@@ -927,15 +924,27 @@
         <button type="button" class="btn-modern btn-approves" onclick="printLivestockHistory()">
           <i class="fas fa-print"></i> Print History
         </button>
-        <button type="button" class="btn-modern btn-ok" onclick="exportLivestockHistory()">
-          <i class="fas fa-download"></i> Export History
-        </button>
       </div>
 
     </div>
   </div>
 </div>
 
+
+<div class="modal fade" id="healthRecordModal" tabindex="-1" role="dialog" aria-labelledby="healthRecordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="healthRecordLabel">Health Record Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body" id="healthRecordModalBody"></div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+  </div>
 
 <!-- Toast Container -->
 <div class="toast-container position-fixed bottom-0 right-0 p-3" style="z-index: 1050;">
@@ -1596,7 +1605,15 @@ function viewLivestockAnalysis(livestockId) {
         success: function(response) {
             if (response.success) {
                 $('#livestockAnalysisContent').html(response.html);
-                $('#livestockAnalysisModal').modal('show');
+                // Ensure modal is attached to body and show it
+                const $m = $('#livestockAnalysisModal');
+                if (!$m.parent().is('body')) { $m.appendTo('body'); }
+                $m.modal({ backdrop: true, keyboard: true });
+                $m.modal('show');
+                // Initialize charts using response data
+                setTimeout(function(){
+                    initializeIndividualAnalysisChartsFromResponse(response.data || {});
+                }, 0);
             } else {
                 showToast('Failed to load livestock analysis', 'error');
             }
@@ -1607,6 +1624,167 @@ function viewLivestockAnalysis(livestockId) {
     });
 }
 
+// Keep references to destroy/recreate between openings
+let individualProductionChartInstance = null;
+let individualProductionPieInstance = null;
+let livestockHistoryChartInstance = null;
+
+function initializeIndividualAnalysisChartsFromResponse(data) {
+    try {
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js not loaded');
+            return;
+        }
+        // Normalize production data to labels and values
+        const prodObj = (data && data.production_data) ? data.production_data : {};
+        const labels = Array.isArray(prodObj)
+            ? prodObj.map((_, idx) => String(idx + 1))
+            : Object.keys(prodObj || {});
+        // Sort labels if they look like YYYY-MM
+        const sortedLabels = labels.slice().sort();
+        const values = sortedLabels.map(k => {
+            const v = Array.isArray(prodObj) ? prodObj[Number(k)] : prodObj[k];
+            return typeof v === 'number' ? v : parseFloat(v) || 0;
+        });
+        const hasLineData = values.some(v => v > 0);
+
+        // Destroy previous instances
+        if (individualProductionChartInstance) { individualProductionChartInstance.destroy(); individualProductionChartInstance = null; }
+        if (individualProductionPieInstance) { individualProductionPieInstance.destroy(); individualProductionPieInstance = null; }
+
+        // Line chart
+        const lineCanvas = document.getElementById('individualProductionChart');
+        if (lineCanvas) {
+            const container = lineCanvas.parentElement;
+            const msgId = 'individualProductionChartEmptyMsg';
+            const ensureMsg = (show) => {
+                let m = document.getElementById(msgId);
+                if (show) {
+                    if (!m) {
+                        m = document.createElement('div');
+                        m.id = msgId;
+                        m.className = 'text-center text-muted small mt-2';
+                        m.textContent = 'No production data available';
+                        container.appendChild(m);
+                    }
+                } else if (m) {
+                    m.remove();
+                }
+            };
+            if (!hasLineData) {
+                lineCanvas.style.display = 'none';
+                ensureMsg(true);
+            } else {
+                lineCanvas.style.display = '';
+                ensureMsg(false);
+                const ctx = lineCanvas.getContext('2d');
+                individualProductionChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: sortedLabels,
+                        datasets: [{
+                            label: 'Monthly Average Production (L/day)',
+                            data: values,
+                            borderColor: '#4e73df',
+                            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Pie chart buckets
+        const high = values.filter(v => v > 20).length;
+        const mid = values.filter(v => v >= 10 && v <= 20).length;
+        const low = values.filter(v => v < 10).length;
+        const pieCanvas = document.getElementById('individualProductionPie');
+        if (pieCanvas) {
+            const container = pieCanvas.parentElement;
+            const msgId = 'individualProductionPieEmptyMsg';
+            const ensureMsg = (show) => {
+                let m = document.getElementById(msgId);
+                if (show) {
+                    if (!m) {
+                        m = document.createElement('div');
+                        m.id = msgId;
+                        m.className = 'text-center text-muted small mt-2';
+                        m.textContent = 'No production distribution data available';
+                        container.appendChild(m);
+                    }
+                } else if (m) {
+                    m.remove();
+                }
+            };
+            if ((high + mid + low) === 0) {
+                pieCanvas.style.display = 'none';
+                ensureMsg(true);
+            } else {
+                pieCanvas.style.display = '';
+                ensureMsg(false);
+                const ctx2 = pieCanvas.getContext('2d');
+                individualProductionPieInstance = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['High Production', 'Medium Production', 'Low Production'],
+                        datasets: [{
+                            data: [high, mid, low],
+                            backgroundColor: ['#b2f0d9ff', '#f7e2b0ff', '#fdc6c1ff'],
+                            hoverBackgroundColor: ['#b2f0d9ff', '#f7e2b0ff', '#fdc6c1ff'],
+                            hoverBorderColor: 'rgba(234, 236, 244, 1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, position: 'bottom' } },
+                        cutout: '60%'
+                    }
+                });
+            }
+        }
+    } catch (e) {
+        console.error('initializeIndividualAnalysisChartsFromResponse error:', e);
+    }
+}
+
+// Cleanup on modal hide to avoid memory leaks
+$(document).on('hidden.bs.modal', '#livestockAnalysisModal', function(){
+    try {
+        if (individualProductionChartInstance) { individualProductionChartInstance.destroy(); individualProductionChartInstance = null; }
+        if (individualProductionPieInstance) { individualProductionPieInstance.destroy(); individualProductionPieInstance = null; }
+    } catch (_) {}
+});
+
+$(document).on('hidden.bs.modal', '#livestockHistoryModal', function(){
+    try {
+        if (livestockHistoryChartInstance) { livestockHistoryChartInstance.destroy(); livestockHistoryChartInstance = null; }
+    } catch (_) {}
+});
+
+// Ensure body scroll state remains correct when closing nested modals (e.g., healthRecordModal)
+$(document).on('hidden.bs.modal', '#healthRecordModal', function(){
+    if ($('#livestockHistoryModal').hasClass('show')) {
+        $('body').addClass('modal-open');
+    }
+});
+$(document).on('shown.bs.modal', '#healthRecordModal', function(){
+    if ($('#livestockHistoryModal').hasClass('show')) {
+        $('body').addClass('modal-open');
+    }
+});
+
 function viewLivestockHistory(livestockId) {
     // Load livestock history
     $.ajax({
@@ -1615,7 +1793,118 @@ function viewLivestockHistory(livestockId) {
         success: function(response) {
             if (response.success) {
                 $('#livestockHistoryContent').html(response.html);
-                $('#livestockHistoryModal').modal('show');
+                const $m = $('#livestockHistoryModal');
+                if (!$m.parent().is('body')) { $m.appendTo('body'); }
+                $m.modal({ backdrop: true, keyboard: true });
+                $m.modal('show');
+                setTimeout(function(){
+                    try {
+                        if (typeof Chart !== 'undefined') {
+                            if (typeof livestockHistoryChartInstance !== 'undefined' && livestockHistoryChartInstance) { livestockHistoryChartInstance.destroy(); livestockHistoryChartInstance = null; }
+                            const canvas = document.getElementById('productionHistoryChart');
+                            if (canvas) {
+                                const ctx = canvas.getContext('2d');
+                                const arr = (response.data && response.data.production_history) ? response.data.production_history : [];
+                                const entries = Array.isArray(arr) ? arr.map(function(it){ var d = it.production_date || it.date || ''; var dt = new Date(d); var key = isNaN(dt) ? String(d) : dt.toISOString(); var label = isNaN(dt) ? String(d) : dt.toLocaleDateString(undefined, { month:'short', day:'2-digit' }); var qty = parseFloat(it.milk_quantity) || 0; return { key:key, label:label, qty:qty }; }) : [];
+                                entries.sort(function(a,b){ return a.key.localeCompare(b.key); });
+                                const labels = entries.map(function(e){ return e.label; });
+                                const values = entries.map(function(e){ return e.qty; });
+                                livestockHistoryChartInstance = new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: labels,
+                                        datasets: [{
+                                            label: 'Daily Milk Production (L)',
+                                            data: values,
+                                            borderColor: '#4e73df',
+                                            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                                            borderWidth: 2,
+                                            fill: true,
+                                            tension: 0.4
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: { legend: { display: true } },
+                                        scales: {
+                                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                                            x: { grid: { display: false } }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    } catch (_) {}
+                    try {
+                        if ($ && $.fn && $.fn.DataTable) {
+                            if (!$.fn.DataTable.isDataTable('#productionHistoryTable')) {
+                                $('#productionHistoryTable').DataTable({
+                                    pageLength: 10,
+                                    order: [[0,'desc']],
+                                    responsive: true,
+                                    language: { search: 'Search records:', lengthMenu: 'Show _MENU_ records per page', info: 'Showing _START_ to _END_ of _TOTAL_ records' }
+                                });
+                            }
+                            if (!$.fn.DataTable.isDataTable('#healthHistoryTable')) {
+                                $('#healthHistoryTable').DataTable({
+                                    pageLength: 10,
+                                    order: [[0,'desc']],
+                                    responsive: true,
+                                    columnDefs: [ { targets: -1, className: 'text-left' } ],
+                                    language: { search: 'Search records:', lengthMenu: 'Show _MENU_ records per page', info: 'Showing _START_ to _END_ of _TOTAL_ records' }
+                                });
+                            } else {
+                                // Ensure last column stays left-aligned on re-init
+                                $('#healthHistoryTable').find('th:last-child, td:last-child').addClass('text-left');
+                            }
+                        }
+                    } catch (_) {}
+                    try {
+                        // Delegated handler for Health tab View buttons
+                        $(document).off('click', '#healthHistoryTable .btn-action-ok').on('click', '#healthHistoryTable .btn-action-ok', function(e){
+                            e.preventDefault();
+                            const toText = function(html){ var div = document.createElement('div'); div.innerHTML = html || ''; return (div.textContent || div.innerText || '').replace(/\s+/g,' ').trim(); };
+                            let date = '', status = '', notes = '';
+                            try {
+                                if ($ && $.fn && $.fn.DataTable && $.fn.DataTable.isDataTable('#healthHistoryTable')) {
+                                    const dt = $('#healthHistoryTable').DataTable();
+                                    const $tr = $(this).closest('tr');
+                                    const row = dt.row($tr.hasClass('child') ? $tr.prev() : $tr);
+                                    const data = row.data();
+                                    if (Array.isArray(data)) {
+                                        date = toText(data[0] || '');
+                                        status = toText(data[1] || '');
+                                        notes = toText(data[2] || '');
+                                    } else if (data) {
+                                        date = toText(data.date || '');
+                                        status = toText(data.status || '');
+                                        notes = toText(data.notes || '');
+                                    }
+                                } else {
+                                    const $cells = $(this).closest('tr').find('td');
+                                    date = ($cells.eq(0).text() || '').trim();
+                                    status = ($cells.eq(1).text() || '').trim();
+                                    notes = ($cells.eq(2).text() || '').trim();
+                                }
+                            } catch(_) {}
+
+                            const bodyHtml = `
+                                <table class="table table-sm table-bordered mb-0">
+                                    <tbody>
+                                        <tr><th>Date</th><td>${date}</td></tr>
+                                        <tr><th>Status</th><td>${status}</td></tr>
+                                        <tr><th>Notes</th><td>${notes}</td></tr>
+                                    </tbody>
+                                </table>`;
+                            $('#healthRecordModalBody').html(bodyHtml);
+                            const $hm = $('#healthRecordModal');
+                            if (!$hm.parent().is('body')) { $hm.appendTo('body'); }
+                            $hm.modal({ backdrop: true, keyboard: true });
+                            $hm.modal('show');
+                        });
+                    } catch (_) {}
+                }, 0);
             } else {
                 showToast('Failed to load livestock history', 'error');
             }
@@ -1627,11 +1916,141 @@ function viewLivestockHistory(livestockId) {
 }
 
 function printLivestockAnalysis() {
-    if (!document.getElementById('livestockAnalysisContent')) {
-        showToast('Nothing to print. Open the analysis first.', 'warning');
-        return;
+    try {
+        const container = document.getElementById('livestockAnalysisContent');
+        if (!container || !container.innerHTML.trim()) {
+            showToast('Nothing to print. Open the analysis first.', 'warning');
+            return;
+        }
+
+        // Extract header info
+        const headerTitleEl = container.querySelector('.smart-detail-header h5');
+        const headerTitle = headerTitleEl ? (headerTitleEl.textContent || '').replace(/\s*–.*$/, '').trim() : 'Individual Livestock Analysis';
+        const infoLineEl = container.querySelector('.smart-detail-header p');
+        const infoLine = infoLineEl ? (infoLineEl.textContent || '').replace(/\s+/g, ' ').trim() : '';
+        const parseField = (label) => {
+            const re = new RegExp(label + '\\s*:\\s*([^|]+)');
+            const m = infoLine.match(re);
+            return m ? m[1].trim() : '';
+        };
+        const tagId = parseField('Tag ID');
+        const type = parseField('Type');
+        const breed = parseField('Breed');
+        const age = parseField('Age');
+        const healthScoreText = (container.querySelector('.smart-detail-header .progress strong') || {}).textContent || '';
+
+        // Extract key metrics
+        const metrics = [];
+        container.querySelectorAll('.smart-metrics .metric-card').forEach(card => {
+            const label = (card.querySelector('.metric-label') || {}).textContent || '';
+            const value = (card.querySelector('.metric-value') || {}).textContent || '';
+            if (label && value) metrics.push([label.trim(), value.replace(/\s+/g, ' ').trim()]);
+        });
+
+        // Extract insights
+        const insights = [];
+        container.querySelectorAll('.card-body .alert').forEach(alert => {
+            const title = (alert.querySelector('.alert-heading') || {}).textContent || '';
+            const msg = (alert.querySelector('p') || {}).textContent || '';
+            if (title || msg) insights.push([title.trim(), msg.trim()]);
+        });
+
+        // Extract detailed info rows (any p with leading strong label)
+        const detailRows = [];
+        container.querySelectorAll('.card-body p').forEach(p => {
+            const strong = p.querySelector('strong');
+            if (strong) {
+                const label = (strong.textContent || '').replace(/:$/, '').trim();
+                const val = (p.textContent || '').replace(strong.textContent, '').replace(/^\s*[:\-]?\s*/, '').trim();
+                if (label && val) detailRows.push([label, val]);
+            }
+        });
+
+        // Build print CSS
+        const css = `
+            <style>
+            @page { size: auto; margin: 12mm; }
+            html, body { background: #fff !important; color: #000; font-family: Arial, sans-serif; }
+            h2, h3 { color: #18375d; margin: 0 0 6px 0; }
+            .meta { font-size: 12px; color: #333; margin-bottom: 12px; }
+            .section { margin-bottom: 14px; }
+            table { width: 100%; border-collapse: collapse; margin: 0 0 12px 0; }
+            th, td { border: 3px solid #000; padding: 10px; text-align: left; vertical-align: top; }
+            thead th { background: #f2f2f2; color: #18375d; }
+            .noborder td { border: 0; padding: 2px 0; }
+            .two-col { width: 50%; }
+            .w-30 { width: 30%; } .w-70 { width: 70%; }
+            .small { font-size: 12px; }
+            </style>`;
+
+        // Helpers
+        const row = (k, v) => `<tr><td class="w-30">${k}</td><td class="w-70">${v}</td></tr>`;
+        const rowsHtml = (arr) => arr.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
+
+        // Sections
+        const titleHtml = `
+            <div style="text-align:center;margin-bottom:10px;">
+                <h2>Individual Livestock Analysis</h2>
+                <div class="meta">Generated: ${new Date().toLocaleString()}</div>
+            </div>`;
+
+        const basicInfoTable = `
+            <table>
+                <thead><tr><th colspan="2">Basic Information</th></tr></thead>
+                <tbody>
+                    ${row('Name', headerTitle || '')}
+                    ${row('Tag ID', tagId)}
+                    ${row('Type', type)}
+                    ${row('Breed', breed)}
+                    ${row('Age', age)}
+                    ${row('Health Score', healthScoreText)}
+                </tbody>
+            </table>`;
+
+        const metricsTable = metrics.length ? `
+            <table>
+                <thead><tr><th colspan="2">Key Metrics</th></tr><tr><th>Metric</th><th>Value</th></tr></thead>
+                <tbody>${rowsHtml(metrics)}</tbody>
+            </table>` : '';
+
+        const insightsTable = insights.length ? `
+            <table>
+                <thead><tr><th colspan="2">Insights</th></tr><tr><th>Title</th><th>Details</th></tr></thead>
+                <tbody>${rowsHtml(insights)}</tbody>
+            </table>` : '';
+
+        // Consolidated details from the info section
+        const detailsTable = detailRows.length ? `
+            <table>
+                <thead><tr><th colspan="2">Detailed Information</th></tr><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>${rowsHtml(detailRows)}</tbody>
+            </table>` : '';
+
+        const html = css + `<div>${titleHtml}${basicInfoTable}${metricsTable}${insightsTable}${detailsTable}</div>`;
+
+        if (typeof window.printElement === 'function') {
+            const wrap = document.createElement('div');
+            wrap.innerHTML = html;
+            window.printElement(wrap);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(html, 'Livestock Analysis');
+        } else {
+            const w = window.open('', '_blank');
+            if (w) {
+                w.document.open();
+                w.document.write(`<html><head><title>Livestock Analysis</title></head><body>${html}</body></html>`);
+                w.document.close();
+                try { w.focus(); } catch(_){}
+                try { w.print(); } catch(_){}
+                try { w.close(); } catch(_){}
+            } else {
+                window.print();
+            }
+        }
+    } catch (e) {
+        console.error('printLivestockAnalysis error:', e);
+        if (typeof showToast === 'function') showToast('Failed to generate print view', 'danger');
     }
-    window.printElement('#livestockAnalysisContent');
 }
 
 function exportLivestockHistory() {
@@ -1879,11 +2298,121 @@ function forceCenterAlignment() {
 }
 
 function printLivestockHistory() {
-    if (!document.getElementById('livestockHistoryContent')) {
-        showToast('Nothing to print. Open the history first.', 'warning');
-        return;
+    try {
+        const container = document.getElementById('livestockHistoryContent');
+        if (!container || !container.innerHTML.trim()) {
+            showToast('Nothing to print. Open the history first.', 'warning');
+            return;
+        }
+
+        const headerTitleEl = container.querySelector('.smart-detail-header h5');
+        const headerTitle = headerTitleEl ? (headerTitleEl.textContent || '').replace(/\s*–.*$/, '').trim() : 'Livestock History';
+        const infoLineEl = container.querySelector('.smart-detail-header p');
+        let tagId = '', type = '', total = '';
+        if (infoLineEl) {
+            const t = (infoLineEl.textContent || '').replace(/\s+/g, ' ').trim();
+            const parseField = (label) => {
+                const re = new RegExp(label + '\\s*:\\s*([^|]+)');
+                const m = t.match(re);
+                return m ? m[1].trim() : '';
+            };
+            tagId = parseField('Tag ID');
+            type = parseField('Type');
+            total = parseField('Total Records');
+        }
+        const statusEl = container.querySelector('.status-display .badge');
+        const status = statusEl ? (statusEl.textContent || '').replace(/\s+/g, ' ').trim() : '';
+
+        const prodRows = [];
+        container.querySelectorAll('#productionHistoryTable tbody tr').forEach(function(tr){
+            const cells = tr.querySelectorAll('td');
+            if (cells && cells.length) {
+                const a = Array.from(cells).map(function(td){ return (td.textContent || '').replace(/\s+/g, ' ').trim(); });
+                if (a.length >= 4) prodRows.push([a[0], a[1], a[2], a[3]]);
+            }
+        });
+
+        const healthRows = [];
+        container.querySelectorAll('#healthHistoryTable tbody tr').forEach(function(tr){
+            const cells = tr.querySelectorAll('td');
+            if (cells && cells.length) {
+                const a = Array.from(cells).map(function(td){ return (td.textContent || '').replace(/\s+/g, ' ').trim(); });
+                if (a.length >= 3) healthRows.push([a[0], a[1], a[2]]);
+            }
+        });
+
+        const css = `
+            <style>
+            @page { size: auto; margin: 12mm; }
+            html, body { background: #fff !important; color: #000; font-family: Arial, sans-serif; }
+            h2, h3 { color: #18375d; margin: 0 0 6px 0; }
+            .meta { font-size: 12px; color: #333; margin-bottom: 12px; }
+            .section { margin-bottom: 14px; }
+            table { width: 100%; border-collapse: collapse; margin: 0 0 12px 0; }
+            th, td { border: 3px solid #000; padding: 10px; text-align: left; vertical-align: top; }
+            thead th { background: #f2f2f2; color: #18375d; }
+            .w-30 { width: 30%; } .w-70 { width: 70%; }
+            </style>`;
+
+        const row = (k, v) => `<tr><td class="w-30">${k}</td><td class="w-70">${v}</td></tr>`;
+        const rows4 = (arr) => arr.map((x) => `<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td>${x[3]}</td></tr>`).join('');
+        const rows3 = (arr) => arr.map((x) => `<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td></tr>`).join('');
+
+        const titleHtml = `
+            <div style="text-align:center;margin-bottom:10px;">
+                <h2>Livestock History</h2>
+                <div class="meta">Generated: ${new Date().toLocaleString()}</div>
+            </div>`;
+
+        const basicInfo = `
+            <table>
+                <thead><tr><th colspan="2">Basic Information</th></tr></thead>
+                <tbody>
+                    ${row('Name', headerTitle || '')}
+                    ${row('Tag ID', tagId)}
+                    ${row('Type', type)}
+                    ${row('Status', status)}
+                    ${row('Total Records', total)}
+                </tbody>
+            </table>`;
+
+        const prodTable = `
+            <table>
+                <thead><tr><th colspan="4">Production History</th></tr><tr><th>Date</th><th>Milk Quantity (L)</th><th>Quality</th><th>Notes</th></tr></thead>
+                <tbody>${rows4(prodRows)}</tbody>
+            </table>`;
+
+        const healthTable = `
+            <table>
+                <thead><tr><th colspan="3">Health History</th></tr><tr><th>Date</th><th>Status</th><th>Notes</th></tr></thead>
+                <tbody>${rows3(healthRows)}</tbody>
+            </table>`;
+
+        const html = css + `<div>${titleHtml}${basicInfo}${prodTable}${healthTable}</div>`;
+
+        if (typeof window.printElement === 'function') {
+            const wrap = document.createElement('div');
+            wrap.innerHTML = html;
+            window.printElement(wrap);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(html, 'Livestock History');
+        } else {
+            const w = window.open('', '_blank');
+            if (w) {
+                w.document.open();
+                w.document.write(`<html><head><title>Livestock History</title></head><body>${html}</body></html>`);
+                w.document.close();
+                try { w.focus(); } catch(_){}
+                try { w.print(); } catch(_){}
+                try { w.close(); } catch(_){}
+            } else {
+                window.print();
+            }
+        }
+    } catch (e) {
+        console.error('printLivestockHistory error:', e);
+        if (typeof showToast === 'function') showToast('Failed to generate print view', 'danger');
     }
-    window.printElement('#livestockHistoryContent');
 }
 
 // Export functions matching superadmin pattern

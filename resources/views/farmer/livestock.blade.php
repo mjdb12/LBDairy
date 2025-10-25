@@ -856,6 +856,16 @@ function loadLivestockDetails(livestockId) {
                     </div>
 
                     <div class="col-6 mb-2">
+                        <small class="text-muted">Previous Weight</small>
+                        <p class="fw-bold mb-0">${livestock.previous_weight ? livestock.previous_weight + ' kg' : 'N/A'}</p>
+                    </div>
+
+                    <div class="col-6 mb-2">
+                        <small class="text-muted">Previous Weight Date</small>
+                        <p class="fw-bold mb-0">${livestock.previous_weight_date ? new Date(livestock.previous_weight_date).toLocaleDateString() : 'N/A'}</p>
+                    </div>
+
+                    <div class="col-6 mb-2">
                         <small class="text-muted">Status</small>
                         <p class="fw-bold mb-0">
                             <span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">
@@ -911,6 +921,8 @@ function loadLivestockDetails(livestockId) {
                     <tr><th>Age</th><td>${age}</td></tr>
                     <tr><th>Gender</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
                     <tr><th>Weight</th><td>${livestock.weight ? livestock.weight + ' kg' : 'Not recorded'}</td></tr>
+                    <tr><th>Previous Weight</th><td>${livestock.previous_weight ? livestock.previous_weight + ' kg' : 'Not recorded'}</td></tr>
+                    <tr><th>Previous Weight Date</th><td>${livestock.previous_weight_date ? new Date(livestock.previous_weight_date).toLocaleDateString() : 'Not recorded'}</td></tr>
                     <tr>
                         <th>Health Status</th>
                         <td>

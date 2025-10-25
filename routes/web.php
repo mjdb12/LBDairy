@@ -308,6 +308,9 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         
         // New livestock management routes
         Route::get('/livestock/{id}/details', [App\Http\Controllers\LivestockController::class, 'details'])->name('livestock.details');
+        Route::get('/livestock/{id}/production-records', [App\Http\Controllers\LivestockController::class, 'getLivestockProductionRecords'])->name('livestock.production-records');
+        Route::get('/livestock/{id}/health-records', [App\Http\Controllers\LivestockController::class, 'getLivestockHealthRecords'])->name('livestock.health-records');
+        Route::get('/livestock/{id}/breeding-records', [App\Http\Controllers\LivestockController::class, 'getLivestockBreedingRecords'])->name('livestock.breeding-records');
         Route::get('/livestock/{id}/qr-code', [App\Http\Controllers\LivestockController::class, 'generateQRCode'])->name('livestock.qr-code');
         Route::post('/livestock/issue-alert', [App\Http\Controllers\LivestockController::class, 'issueAlert'])->name('livestock.issue-alert');
         

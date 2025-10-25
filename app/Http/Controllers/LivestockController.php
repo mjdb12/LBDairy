@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Livestock;
 use App\Models\Farm;
+use App\Models\ProductionRecord;
+use App\Models\HealthRecord;
+use App\Models\BreedingRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -557,16 +560,192 @@ class LivestockController extends Controller
     {
         try {
             $livestock = Livestock::with(['farm', 'qrCodeGenerator'])->findOrFail($id);
-            
+            // Attach previous weight info from latest health record that has weight
+            $prev = HealthRecord::where('livestock_id', $livestock->id)
+                ->whereNotNull('weight')
+                ->orderByDesc('health_date')
+                ->orderByDesc('id')
+                ->first();
+            $payload = $livestock->toArray();
+            $payload['previous_weight'] = $prev ? (string) $prev->weight : null;
+            $payload['previous_weight_date'] = ($prev && $prev->health_date) ? optional($prev->health_date)->format('Y-m-d') : null;
+
             return response()->json([
                 'success' => true,
-                'data' => $livestock
+                'data' => $payload
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Livestock not found'
             ], 404);
+        }
+    }
+
+    /**
+     * Get production records for a specific livestock (admin).
+     */
+    public function getLivestockProductionRecords($id)
+    {
+        try {
+            $livestock = Livestock::findOrFail($id);
+
+            $records = ProductionRecord::where('livestock_id', $livestock->id)
+                ->orderBy('production_date', 'desc')
+                ->take(25)
+                ->get()
+                ->map(function ($r) {
+                    $type = null;
+                    if (!empty($r->notes) && preg_match('/\[type:\s*([^\]]+)\]/i', $r->notes, $m)) {
+                        $type = ucfirst(strtolower(trim($m[1])));
+                    }
+                    return [
+                        'production_date' => optional($r->production_date)->format('Y-m-d'),
+                        'production_type' => $type ?: 'Milk',
+                        'quantity' => (string) $r->milk_quantity,
+                        'quality' => $r->milk_quality_score,
+                        'notes' => $r->notes,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $records,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch production records'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get health records for a specific livestock (admin).
+     */
+    public function getLivestockHealthRecords($id)
+    {
+        try {
+            $livestock = Livestock::findOrFail($id);
+
+            $dbRecords = HealthRecord::with('veterinarian')
+                ->where('livestock_id', $livestock->id)
+                ->orderByDesc('health_date')
+                ->orderByDesc('id')
+                ->take(25)
+                ->get()
+                ->map(function($r){
+                    return [
+                        'date' => optional($r->health_date)->format('Y-m-d'),
+                        'status' => $r->health_status,
+                        'treatment' => $r->treatment,
+                        'veterinarian' => $r->veterinarian ? ($r->veterinarian->name ?: $r->veterinarian->email) : null,
+                        'notes' => $r->notes ?: $r->symptoms,
+                    ];
+                });
+
+            if ($dbRecords->count() > 0) {
+                return response()->json(['success' => true, 'data' => $dbRecords]);
+            }
+
+            $remarks = (string)($livestock->remarks ?? '');
+            $lines = preg_split('/\r?\n/', $remarks);
+            $records = [];
+            foreach ($lines as $line) {
+                if (strpos($line, '[Health]') === 0) {
+                    $entry = ['date' => null, 'status' => null, 'treatment' => null, 'veterinarian' => null, 'notes' => null];
+                    $parts = array_map('trim', explode('|', substr($line, 8)));
+                    foreach ($parts as $p) {
+                        if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
+                        if (stripos($p, 'Status:') === 0) $entry['status'] = trim(substr($p, 7));
+                        if (stripos($p, 'Treatment:') === 0) $entry['treatment'] = trim(substr($p, 10));
+                        if (stripos($p, 'Veterinarian:') === 0) $entry['veterinarian'] = trim(substr($p, 13));
+                        if (stripos($p, 'Symptoms:') === 0) {
+                            $entry['notes'] = isset($entry['notes']) && $entry['notes']
+                                ? ($entry['notes'] . '; ' . trim(substr($p, 9)))
+                                : trim(substr($p, 9));
+                        }
+                    }
+                    if (!$entry['status'] && isset($livestock->health_status)) {
+                        $entry['status'] = $livestock->health_status;
+                    }
+                    $records[] = $entry;
+                }
+            }
+
+            return response()->json(['success' => true, 'data' => $records]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch health records'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get breeding records for a specific livestock (admin).
+     */
+    public function getLivestockBreedingRecords($id)
+    {
+        try {
+            $livestock = Livestock::findOrFail($id);
+
+            $dbRecords = BreedingRecord::where('livestock_id', $livestock->id)
+                ->orderByDesc('breeding_date')
+                ->orderByDesc('id')
+                ->take(25)
+                ->get()
+                ->map(function($r){
+                    return [
+                        'date' => optional($r->breeding_date)->format('Y-m-d'),
+                        'type' => $r->breeding_type ? ucfirst(str_replace('_',' ', $r->breeding_type)) : null,
+                        'partner' => $r->partner_livestock_id,
+                        'pregnancy' => $r->pregnancy_status ? str_replace('_',' ', $r->pregnancy_status) : null,
+                        'success' => $r->breeding_success,
+                        'notes' => $r->notes,
+                    ];
+                });
+
+            if ($dbRecords->count() > 0) {
+                return response()->json(['success' => true, 'data' => $dbRecords]);
+            }
+
+            $remarks = (string)($livestock->remarks ?? '');
+            $lines = preg_split('/\r?\n/', $remarks);
+            $records = [];
+            foreach ($lines as $line) {
+                if (strpos($line, '[Breeding]') === 0) {
+                    $entry = ['date' => null, 'type' => null, 'partner' => null, 'pregnancy' => null, 'success' => null, 'notes' => null];
+                    $parts = array_map('trim', explode('|', substr($line, 10)));
+                    foreach ($parts as $p) {
+                        if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
+                        if (stripos($p, 'Type:') === 0) $entry['type'] = trim(substr($p, 5));
+                        if (stripos($p, 'Partner:') === 0) $entry['partner'] = trim(substr($p, 8));
+                        if (stripos($p, 'Expected Birth:') === 0) {
+                            $val = trim(substr($p, 15));
+                            $entry['notes'] = isset($entry['notes']) && $entry['notes']
+                                ? ($entry['notes'] . '; Expected: ' . $val)
+                                : ('Expected: ' . $val);
+                        }
+                        if (stripos($p, 'Pregnancy:') === 0) $entry['pregnancy'] = trim(substr($p, 10));
+                        if (stripos($p, 'Success:') === 0) $entry['success'] = trim(substr($p, 8));
+                        if (stripos($p, 'Notes:') === 0) {
+                            $val = trim(substr($p, 6));
+                            $entry['notes'] = isset($entry['notes']) && $entry['notes']
+                                ? ($entry['notes'] . '; ' . $val)
+                                : $val;
+                        }
+                    }
+                    $records[] = $entry;
+                }
+            }
+
+            return response()->json(['success' => true, 'data' => $records]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch breeding records'
+            ], 500);
         }
     }
 

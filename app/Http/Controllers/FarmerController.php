@@ -792,9 +792,18 @@ class FarmerController extends Controller
             })
             ->findOrFail($id);
 
+        $prev = HealthRecord::where('livestock_id', $livestock->id)
+            ->whereNotNull('weight')
+            ->orderByDesc('health_date')
+            ->orderByDesc('id')
+            ->first();
+        $payload = $livestock->toArray();
+        $payload['previous_weight'] = $prev ? (string) $prev->weight : null;
+        $payload['previous_weight_date'] = ($prev && $prev->health_date) ? optional($prev->health_date)->format('Y-m-d') : null;
+
         return response()->json([
             'success' => true,
-            'livestock' => $livestock
+            'livestock' => $payload
         ]);
     }
 
