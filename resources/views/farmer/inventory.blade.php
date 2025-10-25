@@ -19,12 +19,12 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                             Total Items</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalItems }}</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        <i class="fas fa-boxes fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -36,12 +36,12 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                             In Stock</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $inStock }}</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        <i class="fas fa-check-circle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -53,12 +53,12 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                             Low Stock</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $lowStock }}</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        <i class="fas fa-exclamation-triangle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -70,12 +70,12 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                             Out of Stock</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $outOfStock }}</div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                        <i class="fas fa-times-circle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>

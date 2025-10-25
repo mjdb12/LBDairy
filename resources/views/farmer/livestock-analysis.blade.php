@@ -651,7 +651,7 @@
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLivestock }}</div>
                 </div>
                 <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                    <i class="fas fa-cow fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    <i class="fas fa-leaf fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>
@@ -681,7 +681,7 @@
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $breedingAge }}</div>
                 </div>
                 <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                    <i class="fas fa-baby fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    <i class="fas fa-dna fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                 </div>
             </div>
         </div>

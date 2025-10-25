@@ -2374,7 +2374,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeSuppliers }}</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                        <i class="fas fa-heart fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                        <i class="fas fa-solid fa-circle-check fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -2389,7 +2389,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($totalSpent) }}</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                        <i class="fas fa-exclamation-triangle fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                        <i class="fas fa-solid fa-wallet fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -2404,7 +2404,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($pendingPayments) }}</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                        <i class="fas fa-tint fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                        <i class="fas fa-solid fa-hourglass-half fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
