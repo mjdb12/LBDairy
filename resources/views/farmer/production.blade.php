@@ -1249,7 +1249,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalProduction) }}</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                        <i class="fas fa-solid fa-tint fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -1262,7 +1262,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($monthlyProduction) }}</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                        <i class="fas fa-solid fa-calendar-days fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -1275,7 +1275,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($averageDaily, 1) }}</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                        <i class="fas fa-solid fa-chart-line fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
@@ -1288,7 +1288,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($qualityScore, 1) }}/10</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
-                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                        <i class="fas fa-solid fa-gauge-high fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
