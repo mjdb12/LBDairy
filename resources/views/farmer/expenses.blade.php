@@ -19,16 +19,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                                 Total Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($totalExpenses, 2) }}</div>
-                            <div class="text-xs ">
-                                <i class="fas fa-arrow-up"></i>
-                                {{ $expenseChange }}% from last month
-                            </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                            <i class="fas fa-money-bill-wave fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                         </div>
                     </div>
                 </div>
@@ -40,16 +36,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                                 Feed Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($feedExpenses, 2) }}</div>
-                            <div class="text-xs ">
-                                <i class="fas fa-arrow-down"></i>
-                                {{ $feedChange }}% from last month
-                            </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-seedling fa-2x text-gray-300"></i>
+                            <i class="fas fa-seedling fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                         </div>
                     </div>
                 </div>
@@ -61,16 +53,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                                 Veterinary Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($veterinaryExpenses, 2) }}</div>
-                            <div class="text-xs ">
-                                <i class="fas fa-arrow-up"></i>
-                                {{ $veterinaryChange }}% from last month
-                            </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-stethoscope fa-2x text-gray-300"></i>
+                            <i class="fas fa-stethoscope fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                         </div>
                     </div>
                 </div>
@@ -82,16 +70,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
                                 Maintenance Expenses</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($maintenanceExpenses, 2) }}</div>
-                            <div class="text-xs ">
-                                <i class="fas fa-arrow-up"></i>
-                                {{ $maintenanceChange }}% from last month
-                            </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-tools fa-2x text-gray-300"></i>
+                            <i class="fas fa-tools fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
                         </div>
                     </div>
                 </div>
