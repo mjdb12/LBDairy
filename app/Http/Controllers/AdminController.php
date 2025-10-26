@@ -850,6 +850,24 @@ class AdminController extends Controller
         }
     }
 
+    public function listVeterinarians()
+    {
+        try {
+            $admins = User::whereIn('role', ['admin','superadmin'])
+                ->orderBy('name')
+                ->get(['id','name','email']);
+            $data = $admins->map(function($u){
+                return [
+                    'id' => $u->id,
+                    'name' => $u->name ?: $u->email,
+                ];
+            })->values();
+            return response()->json(['success' => true, 'data' => $data]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to load veterinarians'], 500);
+        }
+    }
+
     /**
      * Import sales from CSV
      */

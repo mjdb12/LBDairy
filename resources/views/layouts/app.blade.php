@@ -14,6 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="LB Dairy">
 
     <title>@yield('title', 'LBDAIRY')</title>
+    <link rel="preload" as="image" href="{{ asset('img/LBDairy.png') }}">
 
     <!-- Custom fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" type="text/css">
@@ -1295,6 +1296,40 @@
             body.dt-print-view .dataTables_wrapper,
             body.dt-print-view .btn,
             body.dt-print-view .dropdown { display: none !important; }
+
+            body::before,
+            body.dt-print-view::before {
+                content: '';
+                position: fixed;
+                top: 0; right: 0; bottom: 0; left: 0;
+                background: url('{{ asset('img/LBDairy.png') }}') center center no-repeat;
+                background-size: 60% auto;
+                opacity: 0.08;
+                z-index: 0;
+                pointer-events: none;
+            }
+
+            #__print_area__ { position: relative; z-index: 1; }
+            .print-watermark-img {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 60vw;
+                max-width: 900px;
+                opacity: 0.08;
+                z-index: 0;
+                pointer-events: none;
+            }
+
+            /* Force badge text visible in print (browsers often skip backgrounds) */
+            .badge,
+            #auditDataTable .badge,
+            .dt-print-view .badge {
+                color: #000 !important;
+                background: transparent !important;
+                border: 1px solid #000 !important;
+            }
         }
     </style>
     
@@ -1417,17 +1452,17 @@
                 } else if (el) {
                     printArea.appendChild(el.cloneNode(true));
                 }
+                var wm = document.createElement('img');
+                wm.src = '{{ asset('img/LBDairy.png') }}';
+                wm.className = 'print-watermark-img';
+                printArea.appendChild(wm);
                 // Temporarily set a blank title so browsers don't print a header title
                 const __prevTitle = document.title;
                 document.title = '';
                 document.body.classList.add('print-element-only');
-                window.print();
-                setTimeout(function(){
-                    printArea.innerHTML='';
-                    document.body.classList.remove('print-element-only');
-                    // Restore original title
-                    document.title = __prevTitle;
-                }, 300);
+                var done = false;
+                function doPrint(){ if (done) return; done = true; try { window.print(); } catch(_){} setTimeout(function(){ printArea.innerHTML=''; document.body.classList.remove('print-element-only'); document.title = __prevTitle; }, 300); }
+                if (wm.complete) { setTimeout(doPrint, 80); } else { wm.onload = function(){ setTimeout(doPrint, 80); }; setTimeout(doPrint, 900); }
             } catch (e) {
                 window.print();
             }
@@ -1451,13 +1486,13 @@
                 var doc = win.document;
                 doc.open();
                 doc.write('<!doctype html><html><head><meta charset="utf-8"><title>' + (typeof title === 'string' ? title : 'Print') + '</title>');
-                doc.write('<style>@page{size:auto;margin:12mm;}html,body{background:#fff!important;color:#000;} .btn,.dropdown,.dataTables_wrapper,.table-responsive{display:none!important;} table{width:100%;border-collapse:collapse;} th,td{border:3px solid #000;padding:10px;text-align:left;} thead th{background:#f2f2f2;color:#18375d;}</style>');
+                doc.write('<style>@page{size:auto;margin:12mm;}html,body{background:#fff!important;color:#000;} .btn,.dropdown,.dataTables_wrapper,.table-responsive{display:none!important;} table{width:100%;border-collapse:collapse;} th,td{border:3px solid #000;padding:10px;text-align:left;} thead th{background:#f2f2f2;color:#18375d;} .badge{color:#000!important;background:transparent!important;border:1px solid #000!important;} @media print { body::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'{{ asset('img/LBDairy.png') }}\') center center no-repeat;background-size:60% auto;opacity:0.08;z-index:0;pointer-events:none;} .print-watermark-img{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:60vw;max-width:900px;opacity:0.08;z-index:0;pointer-events:none;} }</style>');
                 doc.write('</head><body>');
+                doc.write('<img src="{{ asset('img/LBDairy.png') }}" class="print-watermark-img" />');
                 doc.write(html);
+                doc.write('<script>(function(){var img=document.querySelector(".print-watermark-img");function go(){try{window.focus();window.print();}catch(e){} setTimeout(function(){try{window.close();}catch(_){ }},200);} if(img && !img.complete){ img.onload=function(){ setTimeout(go,80); }; setTimeout(go,900); } else { setTimeout(go,120); }})();<\/script>');
                 doc.write('</body></html>');
                 doc.close();
-                win.focus();
-                setTimeout(function(){ win.print(); setTimeout(function(){ win.close(); }, 200); }, 200);
             } catch (e) {
                 try {
                     var printArea2 = document.getElementById('__print_area__') || (function(){ var d=document.createElement('div'); d.id='__print_area__'; document.body.appendChild(d); return d; })();
@@ -1670,6 +1705,47 @@
     </style>
     
     @stack('scripts')
+
+    <script>
+    (function initDtPrintWatermark(){
+      function applyPatch(){
+        try {
+          if (!window.jQuery || !$.fn || !$.fn.dataTable || !$.fn.dataTable.ext || !$.fn.dataTable.ext.buttons || !$.fn.dataTable.ext.buttons.print) return false;
+          var btn = $.fn.dataTable.ext.buttons.print;
+          if (btn.__lb_watermark_patched) return true;
+          var originalAction = btn.action;
+          btn.action = function (e, dt, node, config) {
+            config = config || {};
+            var origCustomize = config.customize;
+            var logo = '{{ asset('img/LBDairy.png') }}';
+            // avoid auto print; we'll trigger after watermark loads
+            config.autoPrint = false;
+            config.customize = function (win) {
+              try {
+                var doc = win.document;
+                var style = doc.createElement('style');
+                style.textContent = '@media print { body::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;background:url(' + JSON.stringify(logo).slice(1,-1) + ') center center no-repeat;background-size:60% auto;opacity:0.08;z-index:0;pointer-events:none;} .print-watermark-img{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:60vw;max-width:900px;opacity:0.08;z-index:0;pointer-events:none;} }';
+                doc.head.appendChild(style);
+                var img = doc.createElement('img');
+                img.src = logo;
+                img.className = 'print-watermark-img';
+                doc.body.insertBefore(img, doc.body.firstChild);
+                var done=false; function go(){ if(done) return; done=true; try{ win.focus(); win.print(); }catch(_){ } setTimeout(function(){ try{ win.close(); }catch(_){ } }, 200); }
+                if (img.complete) { setTimeout(go, 120); } else { img.onload = function(){ setTimeout(go, 120); }; setTimeout(go, 900); }
+              } catch(_){ }
+              if (typeof origCustomize === 'function') { try { origCustomize(win); } catch(_){ } }
+            };
+            return originalAction ? originalAction.call(this, e, dt, node, config) : $.fn.dataTable.ext.buttons.print.action.call(this, e, dt, node, config);
+          };
+          btn.__lb_watermark_patched = true;
+          return true;
+        } catch(_) { return false; }
+      }
+      if (!applyPatch()) {
+        var tries = 0; var timer = setInterval(function(){ if (applyPatch() || ++tries > 20) clearInterval(timer); }, 500);
+      }
+    })();
+    </script>
     
     <script>
     // Global helper for top-right alerts (Bootstrap 4.x)

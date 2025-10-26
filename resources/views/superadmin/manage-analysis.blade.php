@@ -1913,12 +1913,12 @@ function printFarmTable() {
             </div>`;
         
         // Open minimal print window to avoid background page showing
-        if (typeof window.openPrintWindow === 'function') {
-            window.openPrintWindow(printContent, 'SuperAdmin Farm Analysis Report');
-        } else if (typeof window.printElement === 'function') {
+        if (typeof window.printElement === 'function') {
             const container = document.createElement('div');
             container.innerHTML = printContent;
             window.printElement(container);
+        } else if (typeof window.openPrintWindow === 'function') {
+            window.openPrintWindow(printContent, 'SuperAdmin Farm Analysis Report');
         } else {
             window.print();
         }

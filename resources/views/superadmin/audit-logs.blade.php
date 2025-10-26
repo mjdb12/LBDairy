@@ -2931,10 +2931,10 @@ function printSystemLogsTable() {
                     </thead>
                     <tbody>`;
         
-        // Add data rows (excluding Actions column)
+        // Add data rows (include all columns; this table has no Actions column)
         tableData.forEach(row => {
             printContent += '<tr>';
-            for (let i = 0; i < row.length - 1; i++) { // Skip Actions column
+            for (let i = 0; i < row.length; i++) {
                 let cellText = '';
                 if (row[i]) {
                     // Remove HTML tags and get clean text

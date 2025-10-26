@@ -1672,9 +1672,6 @@ SMART FORM - Enhanced Version
                     <button class="btn-action btn-action-ok " data-toggle="modal" data-target="#addEventModal" type="button">
                         <i class="fas fa-plus"></i> Add Event
                     </button>
-                    <button class="btn-action btn-action-history " onclick="exportCalendar()" type="button">
-                        <i class="fas fa-download"></i> Export
-                    </button>
                 </div>
             </div>
             <div class="card-body p-0">

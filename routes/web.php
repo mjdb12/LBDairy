@@ -313,6 +313,12 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/livestock/{id}/breeding-records', [App\Http\Controllers\LivestockController::class, 'getLivestockBreedingRecords'])->name('livestock.breeding-records');
         Route::get('/livestock/{id}/qr-code', [App\Http\Controllers\LivestockController::class, 'generateQRCode'])->name('livestock.qr-code');
         Route::post('/livestock/issue-alert', [App\Http\Controllers\LivestockController::class, 'issueAlert'])->name('livestock.issue-alert');
+        // Admin add record routes (per-livestock)
+        Route::post('/livestock/{id}/production', [App\Http\Controllers\LivestockController::class, 'storeLivestockProductionRecord'])->name('livestock.production.store');
+        Route::post('/livestock/{id}/health', [App\Http\Controllers\LivestockController::class, 'storeLivestockHealthRecord'])->name('livestock.health.store');
+        Route::post('/livestock/{id}/breeding', [App\Http\Controllers\LivestockController::class, 'storeLivestockBreedingRecord'])->name('livestock.breeding.store');
+        // Veterinarian list for dropdowns
+        Route::get('/veterinarians', [App\Http\Controllers\AdminController::class, 'listVeterinarians'])->name('veterinarians.list');
         
         // Inspection management routes
         Route::post('/inspections/schedule', [App\Http\Controllers\AdminController::class, 'scheduleInspection'])->name('inspections.schedule');

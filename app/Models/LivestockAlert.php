@@ -49,10 +49,17 @@ class LivestockAlert extends Model
     public function getSeverityBadgeClassAttribute()
     {
         switch($this->severity) {
+            // New severity set
+            case 'acute': return 'warning';
+            case 'chronic': return 'info';
+            case 'severe': return 'danger';
+
+            // Backward compatibility for existing records
             case 'low': return 'info';
             case 'medium': return 'warning';
             case 'high': return 'danger';
             case 'critical': return 'dark';
+
             default: return 'secondary';
         }
     }

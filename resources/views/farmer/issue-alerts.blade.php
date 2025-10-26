@@ -138,7 +138,7 @@
                             </thead>
                             <tbody>
                                 @forelse($alerts as $alert)
-                                <tr class="{{ $alert->severity === 'critical' ? 'table-danger' : ($alert->severity === 'high' ? 'table-warning' : ($alert->status === 'resolved' ? 'table-success' : '')) }}">
+                                <tr class="{{ in_array($alert->severity, ['severe','high','critical']) ? 'table-danger' : (in_array($alert->severity, ['acute','medium']) ? 'table-warning' : ($alert->status === 'resolved' ? 'table-success' : '')) }}">
                                     <td>
                                         <strong>{{ $alert->livestock->livestock_id ?? 'N/A' }}</strong>
                                     </td>
@@ -228,10 +228,9 @@
                             </label>
                             <select class="form-control mt-1" id="severity" name="severity" required>
                                 <option value="">Select Severity</option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                                <option value="critical">Critical</option>
+                                <option value="acute">Acute</option>
+                                <option value="chronic">Chronic</option>
+                                <option value="severe">Severe</option>
                             </select>
                         </div>
 

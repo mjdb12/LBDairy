@@ -580,7 +580,7 @@ class FarmerController extends Controller
             'livestock_id' => 'required|exists:livestock,id',
             'topic' => 'required|string|max:255',
             'description' => 'required|string',
-            'severity' => 'required|in:low,medium,high,critical',
+            'severity' => 'required|in:acute,chronic,severe',
             'alert_date' => 'required|date',
         ]);
 
@@ -3261,7 +3261,7 @@ class FarmerController extends Controller
             ->groupBy('customer_name', 'customer_phone', 'customer_email')
             ->orderBy('total_spent', 'desc')
             ->get()
-            ->map(function ($client) {
+            ->map(function ($client, $index) {
                 // Determine client type based on total spent
                 $totalSpent = $client->total_spent;
                 if ($totalSpent >= 50000) {
@@ -3300,7 +3300,11 @@ class FarmerController extends Controller
                     $statusBadge = 'badge-secondary';
                 }
 
+                // Generate client ID similar to suppliers (e.g., CL001)
+                $clientId = 'CL' . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
+
                 return [
+                    'client_id' => $clientId,
                     'name' => $client->customer_name,
                     'phone' => $client->customer_phone,
                     'email' => $client->customer_email,

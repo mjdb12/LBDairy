@@ -1753,6 +1753,7 @@
                     <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                         <thead class="thead-light">
                             <tr>
+                                <th>Client ID</th>
                                 <th>Client Name</th>
                                 <th>Contact</th>
                                 <th>Type</th>
@@ -1764,14 +1765,10 @@
                         <tbody>
                             @forelse($clientsData as $client)
                             <tr data-client-name="{{ $client['name'] }}">
+                                <td>{{ $client['client_id'] }}</td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
-                                        <div>
-                                            <div class="font-weight-bold">{{ $client['name'] }}</div>
-                                            <small class="text-muted">{{ $client['type_label'] }}</small>
-                                        </div>
-                                    </div>
+                                    <div class="font-weight-bold">{{ $client['name'] }}</div>
+                                    <small class="text-muted">{{ $client['type_label'] }}</small>
                                 </td>
                                 <td>
                                     <div>{{ $client['phone'] ?? 'N/A' }}</div>
@@ -1984,7 +1981,6 @@
                         <div class="card border-left-primary h-100">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
-                                    <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="50">
                                     <div class="flex-grow-1">
                                         <div class="font-weight-bold ">{{ $client['name'] }}</div>
                                         <small class="text-muted">{{ $client['type'] }}</small>
@@ -2168,9 +2164,9 @@ document.addEventListener('DOMContentLoaded', function() {
         autoWidth: true,
         scrollX: false,
         buttons: [
-            { extend: 'csvHtml5', title: 'Farmer_Clients_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
-            { extend: 'pdfHtml5', title: 'Farmer_Clients_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } },
-            { extend: 'print', title: 'Farmer Clients Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4], modifier: { page: 'all' } } }
+            { extend: 'csvHtml5', title: 'Farmer_Clients_Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
+            { extend: 'pdfHtml5', title: 'Farmer_Clients_Report', orientation: 'landscape', pageSize: 'Letter', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } },
+            { extend: 'print', title: 'Farmer Clients Report', className: 'd-none', exportOptions: { columns: [0,1,2,3,4,5], modifier: { page: 'all' } } }
         ],
         language: {
             search: "",
@@ -2182,14 +2178,15 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             clientsDT = $('#dataTable').DataTable({
                 ...commonConfig,
-                order: [[0, 'asc']],
+                order: [[1, 'asc']],
                 columnDefs: [
-                    { width: '260px', targets: 0 }, // Client Name
-                    { width: '180px', targets: 1 }, // Contact
-                    { width: '120px', targets: 2 }, // Type
-                    { width: '120px', targets: 3 }, // Status
-                    { width: '140px', targets: 4 }, // Total Orders
-                    { width: '220px', targets: 5, orderable: false }, // Action
+                    { width: '100px', targets: 0 }, // Client ID
+                    { width: '260px', targets: 1 }, // Client Name
+                    { width: '180px', targets: 2 }, // Contact
+                    { width: '120px', targets: 3 }, // Type
+                    { width: '120px', targets: 4 }, // Status
+                    { width: '140px', targets: 5 }, // Total Orders
+                    { width: '220px', targets: 6, orderable: false }, // Action
                     { targets: '_all', className: 'text-center align-middle' }
                 ]
             });
@@ -2232,13 +2229,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const statusLabelMap = { active: 'Active', inactive: 'Inactive', pending: 'Pending' };
         const statusBadgeMap = { active: 'badge badge-success', inactive: 'badge badge-secondary', pending: 'badge badge-warning' };
 
+        const clientId = 'CL' + String((clientsDT ? clientsDT.data().length : (document.querySelectorAll('#dataTable tbody tr').length)) + 1).padStart(3, '0');
         const nameCell = `
-            <div class="d-flex align-items-center">
-                <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
-                <div>
-                    <div class="font-weight-bold">${name}</div>
-                    <small class="text-muted">${typeLabelMap[type] || 'N/A'}</small>
-                </div>
+            <div>
+                <div class="font-weight-bold">${name}</div>
+                <small class="text-muted">${typeLabelMap[type] || 'N/A'}</small>
             </div>`;
         const contactCell = `<div>${phone || 'N/A'}</div><small class="text-muted">${email || 'N/A'}</small>`;
         const typeCell = `<span class="${typeBadgeMap[type] || 'badge badge-secondary'}">${typeLabelMap[type] || 'N/A'}</span>`;
@@ -2246,25 +2241,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalOrdersCell = `0`;
         const actionCell = `
             <div class="btn-group">
-                <button class="btn-action btn-action-ok" onclick="viewClient('{{ $client['name'] }}')" title="View Details">
+                <button class="btn-action btn-action-ok" onclick="viewClient(${JSON.stringify(name)})" title="View Details">
                     <i class="fas fa-eye"></i>
                     <span>View</span>
                 </button>
-                <button class="btn-action btn-action-edits" onclick="editClient('{{ $client['name'] }}')" title="Edit">
+                <button class="btn-action btn-action-edits" onclick="editClient(${JSON.stringify(name)})" title="Edit">
                     <i class="fas fa-edit"></i>
                     <span>Edit</span>
                 </button>
             </div>`;
 
         if (clientsDT) {
-            const rowNode = clientsDT.row.add([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false).node();
+            const rowNode = clientsDT.row.add([clientId, nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false).node();
             if (rowNode) { rowNode.setAttribute('data-client-name', name); }
         } else {
             const tbody = document.querySelector('#dataTable tbody');
             if (tbody) {
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-client-name', name);
-                tr.innerHTML = `<td>${nameCell}</td><td>${contactCell}</td><td>${typeCell}</td><td>${statusCell}</td><td>${totalOrdersCell}</td><td>${actionCell}</td>`;
+                tr.innerHTML = `<td>${clientId}</td><td>${nameCell}</td><td>${contactCell}</td><td>${typeCell}</td><td>${statusCell}</td><td>${totalOrdersCell}</td><td>${actionCell}</td>`;
                 tbody.appendChild(tr);
             }
         }
@@ -2407,11 +2402,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function parseClientRow(tr){
         const tds = tr ? tr.querySelectorAll('td') : [];
         const name = (tr && tr.getAttribute('data-client-name')) || '';
-        const contactText = tds[1] ? tds[1].innerText.trim() : '';
+        const contactText = tds[2] ? tds[2].innerText.trim() : '';
         const [phoneLine, emailLine] = contactText.split('\n');
-        const type = tds[2] ? tds[2].innerText.trim() : '';
-        const status = tds[3] ? tds[3].innerText.trim() : '';
-        const totalOrders = tds[4] ? tds[4].innerText.trim() : '';
+        const type = tds[3] ? tds[3].innerText.trim() : '';
+        const status = tds[4] ? tds[4].innerText.trim() : '';
+        const totalOrders = tds[5] ? tds[5].innerText.trim() : '';
         return { name, phone: (phoneLine||'').trim(), email: (emailLine||'').trim(), type, status, totalOrders };
     }
 
@@ -2484,19 +2479,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const tr = getClientRowByName(editingClientOriginalName || name);
             if (!tr) { $('#editClientModal').modal('hide'); return; }
             const nameCell = `
-                <div class="d-flex align-items-center">
-                    <img class="img-profile rounded-circle mr-3" src="{{ asset('img/ronaldo.png') }}" width="40">
-                    <div>
-                        <div class="font-weight-bold">${name}</div>
-                        <small class="text-muted">${typeLabelMap[typeVal]||'N/A'}</small>
-                    </div>
+                <div>
+                    <div class="font-weight-bold">${name}</div>
+                    <small class="text-muted">${typeLabelMap[typeVal]||'N/A'}</small>
                 </div>`;
             const contactCell = `<div>${phone||'N/A'}</div><small class="text-muted">${email||'N/A'}</small>`;
             const typeCell = `<span class="${typeBadgeMap[typeVal]||'badge badge-secondary'}">${typeLabelMap[typeVal]||'N/A'}</span>`;
             const statusCell = `<span class="${statusBadgeMap[statusVal]||'badge badge-secondary'}">${statusLabelMap[statusVal]||'N/A'}</span>`;
-            const totalOrdersCell = clientsDT.row(tr).data()[4] || '0';
-            const actionCell = clientsDT.row(tr).data()[5] || '';
-            clientsDT.row(tr).data([nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false);
+            const totalOrdersCell = clientsDT.row(tr).data()[5] || '0';
+            const actionCell = clientsDT.row(tr).data()[6] || '';
+            const idCell = clientsDT.row(tr).data()[0] || '';
+            clientsDT.row(tr).data([idCell, nameCell, contactCell, typeCell, statusCell, totalOrdersCell, actionCell]).draw(false);
             tr.setAttribute('data-client-name', name);
             $('#editClientModal').modal('hide');
             showNotification('Client updated successfully!', 'success');

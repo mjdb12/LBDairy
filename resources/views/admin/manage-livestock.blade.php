@@ -3281,6 +3281,11 @@ $(document).ready(function () {
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="text-right mt-3">
+                                    <button class="btn-action btn-action-ok" onclick="adminAddProductionRecord('${livestock.id}')">
+                                        <i class="fas fa-plus"></i> Add Production Record
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="tab-pane fade" id="healthForm" role="tabpanel">
@@ -3304,6 +3309,11 @@ $(document).ready(function () {
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="text-right mt-3">
+                                    <button class="btn-action btn-action-ok" onclick="adminAddHealthRecord('${livestock.id}')">
+                                        <i class="fas fa-plus"></i> Add Health Record
+                                    </button>
                                 </div>
                             </div>
 
@@ -3340,6 +3350,11 @@ $(document).ready(function () {
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="text-right mt-3">
+                                    <button class="btn-action btn-action-ok" onclick="adminAddBreedingRecord('${livestock.id}')">
+                                        <i class="fas fa-plus"></i> Add Breeding Record
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -3466,6 +3481,189 @@ $(document).ready(function () {
                     });
                 }
             }
+        });
+    }
+
+    function adminAddProductionRecord(livestockId) {
+        if (typeof $.fn.modal === 'undefined') { showNotification('Modal is unavailable.', 'danger'); return; }
+        const modalHtml = `
+<div class="modal fade" id="adminProductionRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content smart-form text-center p-4">
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle"><i class="fas fa-chart-line fa-2x"></i></div>
+        <h5 class="fw-bold mb-1">Add Production Record</h5>
+        <p class="text-muted mb-0 small">Enter production details.</p>
+      </div>
+      <form id="adminProductionRecordForm" class="text-start mx-auto">
+        <div class="form-wrapper">
+          <div class="row g-3">
+            <div class="col-md-6"><label class="fw-semibold">Production Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="production_date" required></div>
+            <div class="col-md-6"><label class="fw-semibold">Production Type <span class="text-danger">*</span></label><select class="form-control mt-1" name="production_type" required><option value="">Select Type</option><option value="milk">Milk</option><option value="eggs">Eggs</option><option value="meat">Meat</option><option value="wool">Wool</option></select></div>
+            <div class="col-md-6"><label class="fw-semibold">Quantity <span class="text-danger">*</span></label><input type="number" class="form-control mt-1" name="quantity" min="0" step="0.1" required></div>
+            <div class="col-md-6"><label class="fw-semibold">Quality</label><select class="form-control mt-1" name="quality"><option value="">Select Quality</option><option value="excellent">Excellent</option><option value="good">Good</option><option value="fair">Fair</option><option value="poor">Poor</option></select></div>
+            <div class="col-12 mb-3"><label class="fw-semibold">Notes</label><textarea class="form-control mt-1" name="notes" rows="3" style="resize:none;"></textarea></div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-modern btn-ok" onclick="adminSaveProductionRecord('${livestockId}')"><i class="fas fa-save"></i> Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>`;
+        $('#adminProductionRecordModal').remove();
+        $('body').append(modalHtml);
+        $('#adminProductionRecordModal').modal('show');
+    }
+
+    function adminSaveProductionRecord(livestockId) {
+        livestockId = livestockId || selectedLivestockId;
+        if (!livestockId) { showNotification('Missing livestock ID.', 'danger'); return; }
+        const form = document.getElementById('adminProductionRecordForm');
+        const fd = new FormData(form);
+        const qualityMap = { excellent: 10, good: 8, fair: 6, poor: 4 };
+        const quality = fd.get('quality');
+        const qty = fd.get('quantity');
+        if (qty !== null) fd.append('milk_quantity', qty);
+        if (quality) fd.append('milk_quality_score', qualityMap[quality] || '');
+        const pType = fd.get('production_type');
+        const userNotes = (fd.get('notes') || '').toString().trim();
+        const combinedNotes = `[type: ${pType || 'milk'}] ${userNotes}`.trim();
+        fd.set('notes', combinedNotes);
+        $.ajax({
+            url: `{{ route('admin.livestock.production.store', ':id') }}`.replace(':id', livestockId),
+            method: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                if (res && res.success) {
+                    $('#adminProductionRecordModal').modal('hide');
+                    loadAdminProductionRecords(livestockId);
+                    showNotification('Production record added successfully!', 'success');
+                } else { showNotification('Error adding production record', 'danger'); }
+            },
+            error: function(xhr){ showNotification(xhr.responseJSON?.message || 'Error adding production record', 'danger'); }
+        });
+    }
+
+    function adminAddHealthRecord(livestockId) {
+        if (typeof $.fn.modal === 'undefined') { showNotification('Modal is unavailable.', 'danger'); return; }
+        const modalHtml = `
+<div class="modal fade" id="adminHealthRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content smart-form text-center p-4">
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle"><i class="fas fa-heartbeat fa-2x"></i></div>
+        <h5 class="fw-bold mb-1">Add Health Record</h5>
+        <p class="text-muted mb-0 small">Provide health details.</p>
+      </div>
+      <form id="adminHealthRecordForm" class="text-start mx-auto">
+        <div class="form-wrapper">
+          <div class="row g-3">
+            <div class="col-md-6"><label class="fw-semibold">Health Check Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="health_date" required></div>
+            <div class="col-md-6"><label class="fw-semibold">Health Status <span class="text-danger">*</span></label><select class="form-control mt-1" name="health_status" required><option value="">Select Status</option><option value="healthy">Healthy</option><option value="sick">Sick</option><option value="recovering">Recovering</option><option value="under_treatment">Under Treatment</option></select></div>
+            <div class="col-md-6"><label class="fw-semibold">Weight (kg)</label><input type="number" class="form-control mt-1" name="weight" min="0" step="0.1"></div>
+            <div class="col-md-6"><label class="fw-semibold">Temperature (°C)</label><input type="number" class="form-control mt-1" name="temperature" min="0" step="0.1"></div>
+            <div class="col-12 mb-3"><label class="fw-semibold">Symptoms / Observations</label><textarea class="form-control mt-1" name="symptoms" rows="3" style="resize:none;"></textarea></div>
+            <div class="col-12 mb-3"><label class="fw-semibold">Treatment Given</label><textarea class="form-control mt-1" name="treatment" rows="3" style="resize:none;"></textarea></div>
+            <div class="col-lg-6 col-md-6 mb-3"><label class="fw-semibold">Veterinarian</label><select class="form-control mt-1" name="veterinarian_id"><option value="">Select Veterinarian</option></select></div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-modern btn-ok" onclick="adminSaveHealthRecord('${livestockId}')"><i class="fas fa-save"></i> Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>`;
+        $('#adminHealthRecordModal').remove();
+        $('body').append(modalHtml);
+        $('#adminHealthRecordModal').modal('show');
+        $.ajax({ url: '{{ route("admin.veterinarians.list") }}', method: 'GET', success: function(res){ if (res && res.success) { const sel = document.querySelector('#adminHealthRecordModal select[name="veterinarian_id"]'); if (sel) { if ((res.data||[]).length === 0) { const opt=document.createElement('option'); opt.value=''; opt.textContent='No veterinarians found'; sel.appendChild(opt);} else { res.data.forEach(a=>{ const opt=document.createElement('option'); opt.value=a.id; opt.textContent=a.name; sel.appendChild(opt); }); } } } }});
+    }
+
+    function adminSaveHealthRecord(livestockId) {
+        livestockId = livestockId || selectedLivestockId;
+        if (!livestockId) { showNotification('Missing livestock ID.', 'danger'); return; }
+        const fd = new FormData(document.getElementById('adminHealthRecordForm'));
+        $.ajax({
+            url: `{{ route('admin.livestock.health.store', ':id') }}`.replace(':id', livestockId),
+            method: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                if (res && res.success) {
+                    $('#adminHealthRecordModal').modal('hide');
+                    loadAdminHealthRecords(livestockId);
+                    showNotification('Health record added successfully!', 'success');
+                } else { showNotification('Error adding health record', 'danger'); }
+            },
+            error: function(xhr){ showNotification(xhr.responseJSON?.message || 'Error adding health record', 'danger'); }
+        });
+    }
+
+    function adminAddBreedingRecord(livestockId) {
+        if (typeof $.fn.modal === 'undefined') { showNotification('Modal is unavailable.', 'danger'); return; }
+        const modalHtml = `
+<div class="modal fade" id="adminBreedingRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content smart-form text-center p-4">
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle"><i class="fas fa-heart fa-2x"></i></div>
+        <h5 class="fw-bold mb-1">Add Breeding Record</h5>
+        <p class="text-muted mb-0 small">Provide breeding details.</p>
+      </div>
+      <form id="adminBreedingRecordForm" class="text-start mx-auto">
+        <div class="form-wrapper">
+          <div class="row g-3">
+            <div class="col-md-6"><label class="fw-semibold">Breeding Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="breeding_date" required></div>
+            <div class="col-md-6"><label class="fw-semibold">Breeding Type <span class="text-danger">*</span></label><select class="form-control mt-1" name="breeding_type" required><option value="">Select Type</option><option value="natural">Natural Breeding</option><option value="artificial">Artificial Insemination</option><option value="embryo_transfer">Embryo Transfer</option></select></div>
+            <div class="col-md-6"><label class="fw-semibold">Partner Livestock ID</label><input type="text" class="form-control mt-1" name="partner_livestock_id"></div>
+            <div class="col-md-6"><label class="fw-semibold">Expected Birth Date</label><input type="date" class="form-control mt-1" name="expected_birth_date"></div>
+            <div class="col-md-6"><label class="fw-semibold">Pregnancy Status</label><select class="form-control mt-1" name="pregnancy_status"><option value="">Select Status</option><option value="unknown">Unknown</option><option value="pregnant">Pregnant</option><option value="not_pregnant">Not Pregnant</option></select></div>
+            <div class="col-md-6"><label class="fw-semibold">Breeding Success</label><select class="form-control mt-1" name="breeding_success"><option value="">Select Result</option><option value="unknown">Unknown</option><option value="successful">Successful</option><option value="unsuccessful">Unsuccessful</option></select></div>
+            <div class="col-12 mb-3"><label class="fw-semibold">Notes</label><textarea class="form-control mt-1" name="notes" rows="3" style="resize:none;"></textarea></div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-modern btn-ok" onclick="adminSaveBreedingRecord('${livestockId}')"><i class="fas fa-save"></i> Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>`;
+        $('#adminBreedingRecordModal').remove();
+        $('body').append(modalHtml);
+        $('#adminBreedingRecordModal').modal('show');
+    }
+
+    function adminSaveBreedingRecord(livestockId) {
+        livestockId = livestockId || selectedLivestockId;
+        if (!livestockId) { showNotification('Missing livestock ID.', 'danger'); return; }
+        const fd = new FormData(document.getElementById('adminBreedingRecordForm'));
+        $.ajax({
+            url: `{{ route('admin.livestock.breeding.store', ':id') }}`.replace(':id', livestockId),
+            method: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                if (res && res.success) {
+                    $('#adminBreedingRecordModal').modal('hide');
+                    loadAdminBreedingRecords(livestockId);
+                    showNotification('Breeding record added successfully!', 'success');
+                } else { showNotification('Error adding breeding record', 'danger'); }
+            },
+            error: function(xhr){ showNotification(xhr.responseJSON?.message || 'Error adding breeding record', 'danger'); }
         });
     }
 

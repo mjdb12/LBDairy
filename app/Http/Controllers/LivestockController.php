@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class LivestockController extends Controller
 {
@@ -35,6 +36,143 @@ class LivestockController extends Controller
             'inactiveLivestock',
             'totalFarms'
         ));
+    }
+
+    public function storeLivestockProductionRecord(Request $request, $id)
+    {
+        $request->validate([
+            'production_date' => 'required|date',
+            'milk_quantity' => 'required|numeric|min:0',
+            'milk_quality_score' => 'nullable|integer|min:1|max:10',
+            'notes' => 'nullable|string',
+        ]);
+
+        $livestock = Livestock::findOrFail($id);
+
+        $record = ProductionRecord::create([
+            'farm_id' => $livestock->farm_id,
+            'livestock_id' => $livestock->id,
+            'production_date' => $request->production_date,
+            'milk_quantity' => $request->milk_quantity,
+            'milk_quality_score' => $request->milk_quality_score,
+            'notes' => $request->notes,
+            'recorded_by' => Auth::id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Production record saved.',
+            'record' => $record,
+        ]);
+    }
+
+    public function storeLivestockHealthRecord(Request $request, $id)
+    {
+        $request->validate([
+            'health_date' => 'nullable|date',
+            'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
+            'weight' => 'nullable|numeric|min:0',
+            'temperature' => 'nullable|numeric',
+            'symptoms' => 'nullable|string',
+            'treatment' => 'nullable|string',
+            'veterinarian_id' => 'nullable|exists:users,id',
+        ]);
+
+        $livestock = Livestock::findOrFail($id);
+
+        // Persist to dedicated table
+        try {
+            HealthRecord::create([
+                'livestock_id' => $livestock->id,
+                'health_date' => $request->health_date ?: now()->toDateString(),
+                'health_status' => $request->health_status,
+                'weight' => $request->weight,
+                'temperature' => $request->temperature,
+                'symptoms' => $request->symptoms,
+                'treatment' => $request->treatment,
+                'veterinarian_id' => $request->veterinarian_id,
+                'notes' => $request->symptoms,
+                'recorded_by' => Auth::id(),
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('Admin HealthRecord insert failed: ' . $e->getMessage());
+        }
+
+        // Append a simple note into remarks for legacy display
+        $noteParts = [];
+        $noteParts[] = 'Status: ' . $request->health_status;
+        if ($request->health_date) $noteParts[] = 'Date: ' . $request->health_date;
+        if ($request->temperature !== null) $noteParts[] = 'Temp: ' . $request->temperature . '°C';
+        if ($request->symptoms) $noteParts[] = 'Symptoms: ' . $request->symptoms;
+        if ($request->treatment) $noteParts[] = 'Treatment: ' . $request->treatment;
+        if ($request->filled('veterinarian_id')) {
+            $vet = User::find($request->veterinarian_id);
+            if ($vet) {
+                $noteParts[] = 'Veterinarian: ' . ($vet->name ?: $vet->email);
+            }
+        }
+        $appended = trim(($livestock->remarks ? $livestock->remarks . "\n" : '') . '[Health] ' . implode(' | ', $noteParts));
+
+        $livestock->update([
+            'health_status' => $request->health_status,
+            'weight' => $request->weight !== null ? $request->weight : $livestock->weight,
+            'remarks' => $appended,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Health record saved.',
+        ]);
+    }
+
+    public function storeLivestockBreedingRecord(Request $request, $id)
+    {
+        $request->validate([
+            'breeding_date' => 'nullable|date',
+            'breeding_type' => 'nullable|string|max:50',
+            'partner_livestock_id' => 'nullable|string|max:255',
+            'expected_birth_date' => 'nullable|date',
+            'pregnancy_status' => 'nullable|in:unknown,pregnant,not_pregnant',
+            'breeding_success' => 'nullable|in:unknown,successful,unsuccessful',
+            'notes' => 'nullable|string',
+        ]);
+
+        $livestock = Livestock::findOrFail($id);
+
+        try {
+            BreedingRecord::create([
+                'livestock_id' => $livestock->id,
+                'breeding_date' => $request->breeding_date ?: now()->toDateString(),
+                'breeding_type' => $request->breeding_type,
+                'partner_livestock_id' => $request->partner_livestock_id,
+                'expected_birth_date' => $request->expected_birth_date,
+                'pregnancy_status' => $request->pregnancy_status,
+                'breeding_success' => $request->breeding_success,
+                'notes' => $request->notes,
+                'recorded_by' => Auth::id(),
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('Admin BreedingRecord insert failed: ' . $e->getMessage());
+        }
+
+        $noteParts = [];
+        if ($request->breeding_date) $noteParts[] = 'Date: ' . $request->breeding_date;
+        if ($request->breeding_type) $noteParts[] = 'Type: ' . ucfirst(str_replace('_',' ', $request->breeding_type));
+        if ($request->partner_livestock_id) $noteParts[] = 'Partner: ' . $request->partner_livestock_id;
+        if ($request->expected_birth_date) $noteParts[] = 'Expected Birth: ' . $request->expected_birth_date;
+        if ($request->pregnancy_status) $noteParts[] = 'Pregnancy: ' . str_replace('_',' ', $request->pregnancy_status);
+        if ($request->breeding_success) $noteParts[] = 'Success: ' . $request->breeding_success;
+        if ($request->notes) $noteParts[] = 'Notes: ' . $request->notes;
+        $appended = trim(($livestock->remarks ? $livestock->remarks . "\n" : '') . '[Breeding] ' . implode(' | ', $noteParts));
+
+        $livestock->update([
+            'remarks' => $appended,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Breeding record saved.',
+        ]);
     }
 
     /**

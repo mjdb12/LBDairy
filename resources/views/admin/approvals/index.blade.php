@@ -286,7 +286,7 @@ function initializeDataTables() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        processing: true,
+        processing: false,
         serverSide: false,
         language: {
             search: "",
@@ -451,6 +451,11 @@ function showNotification(message, type) {
 @endpush
 @push('styles')
 <style>
+    /* Hide DataTables processing overlay on this page */
+    #pendingTable_processing,
+    .dataTables_processing {
+        display: none !important;
+    }
      /* Role badge base styles */
     .role-badge {
         padding: 0.25rem 0.75rem;
