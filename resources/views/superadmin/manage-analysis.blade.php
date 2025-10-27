@@ -429,17 +429,54 @@
         transition: all 0.15s ease-in-out;
         white-space: nowrap;
     }
+/* ===== Edit Button ===== */
+.btn-action-edit {
+    background-color: white;
+    border: 1px solid #959595ff !important;
+    color: #18375d; /* blue text */
+}
 
-    .btn-action-oks {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    .btn-action-oks:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+.btn-action-edit:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-delete {
+    background-color: white !important;
+    border: 1px solid #959595ff !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-delete:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+    
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
 
      .btn-action-edits {
         background-color: #387057;
@@ -2274,27 +2311,19 @@ function showNotification(message, type) {
     #farmAnalysisTable .btn-action.btn-action-edit,
     .action-buttons .btn-action.btn-action-edit,
     .btn-action.btn-action-edit {
-        background-color: #18375d !important;
-        border-color: #18375d !important;
-        color: white !important;
+        background-color: white !important;
+    border: 1px solid #18375d !important;
+    color: #18375d !important; /* blue text */
     }
     
     #farmAnalysisTable .btn-action.btn-action-edit:hover,
     .action-buttons .btn-action.btn-action-edit:hover,
     .btn-action.btn-action-edit:hover {
-        background-color: #fca700 !important;
-        border-color: #fca700 !important;
-        color: white !important;
+        background-color: #18375d !important;/* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white !important;
     }
     
-    #farmAnalysisTable .btn-action.btn-action-edit:focus,
-    .action-buttons .btn-action.btn-action-edit:focus,
-    .btn-action.btn-action-edit:focus {
-        background-color: #2d5a47 !important;
-        border-color: #2d5a47 !important;
-        color: white !important;
-        box-shadow: 0 0 0 0.2rem rgba(56, 112, 87, 0.25) !important;
-    }
     
     .btn-action-add {
         background-color: #1cc88a;
@@ -2312,27 +2341,18 @@ function showNotification(message, type) {
     #farmAnalysisTable .btn-action.btn-action-delete,
     .action-buttons .btn-action.btn-action-delete,
     .btn-action.btn-action-delete {
-        background-color: #dc3545 !important;
-        border-color: #dc3545 !important;
-        color: white !important;
+        background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
     }
     
     #farmAnalysisTable .btn-action.btn-action-delete:hover,
     .action-buttons .btn-action.btn-action-delete:hover,
     .btn-action.btn-action-delete:hover {
-        background-color: #fca700 !important;
-        border-color: #fca700 !important;
-        color: white !important;
-    }
-    
-    #farmAnalysisTable .btn-action.btn-action-delete:focus,
-    .action-buttons .btn-action.btn-action-delete:focus,
-    .btn-action.btn-action-delete:focus {
-        background-color: #c82333 !important;
-        border-color: #c82333 !important;
-        color: white !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-    }
+       background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
     
     .btn-action-print {
         background-color: #6c757d !important;

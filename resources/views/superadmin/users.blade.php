@@ -328,39 +328,77 @@
         100% { opacity: 1; }
     }
     
-   /* Action buttons styling */
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        min-width: 200px;
-    }
-    
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        border-radius: 0.25rem;
-        text-decoration: none;
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: all 0.15s ease-in-out;
-        white-space: nowrap;
-    }
+  /* Action buttons styling */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-width: 200px;
+}
 
-     .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    white-space: nowrap;
+}
+
+/* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+    
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
 
      .btn-action-edit {
         background-color: #387057;
@@ -368,18 +406,6 @@
         color: white;
     }
     .btn-action-edit:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
         background-color: #fca700;
         border-color: #fca700;
         color: white;
@@ -420,18 +446,6 @@
         background-color: #e69500;
         border-color: #e69500;
         color: white;
-    }
-    
-    .btn-action-tools {
-        background-color: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-    }
-    
-    .btn-action-tools:hover {
-        background-color: #e2e6ea;
-        border-color: #cbd3da;
-        color: #495057;
     }
     
     /* Ensure table has enough space for actions column */
@@ -1396,7 +1410,7 @@ html body #updateAdminBtn.btn-primary:focus,
                     <input type="text" class="form-control" placeholder="Search users..." id="userSearch">
                 </div>
                 <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
-                    <button class="btn-action btn-action-ok" title="Add User" onclick="showAddUserModal()">
+                    <button class="btn-action btn-outline btn-action-ok" title="Add User" onclick="showAddUserModal()">
                         <i class="fas fa-user-plus"></i> Add User
                     </button>
                     <button class="btn-action btn-action-refresh" title="Refresh" onclick="refreshData()">

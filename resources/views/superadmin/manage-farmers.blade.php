@@ -314,29 +314,6 @@
         color: white !important;
     }
     
-    .btn-action-refresh {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-refresh:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
-    
-    .btn-action-tools {
-        background-color: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-    }
-    
-    .btn-action-tools:hover {
-        background-color: #e2e6ea;
-        border-color: #cbd3da;
-        color: #495057;
-    }
     
     /* Responsive design */
     @media (max-width: 768px) {
@@ -651,29 +628,54 @@
         color: white;
     }
 
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
+/* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
     
     /* Ensure table has enough space for actions column */
     .table th:last-child,

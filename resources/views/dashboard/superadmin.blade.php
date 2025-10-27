@@ -798,16 +798,18 @@ SMART FORM - Enhanced Version
         white-space: nowrap;
     }
 
-     .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+    .btn-action-ok {
+    background-color: white;
+    border: 1px solid #ccc; /* light gray border */
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #fca700; /* yellow on hover */
+    border-color: #fca700;
+    color: white;
+}
+
 
      .btn-action-edit {
         background-color: #387057;
@@ -1420,28 +1422,29 @@ html body #addTaskBtn.btn-primary:focus,
   white-space: nowrap;
 }
 
-/* ===== Edit Button ===== */
 .btn-action-ok {
-  background-color: #18375d;
-  border-color: #18375d;
+    background-color: white;
+    border: 1px solid #959595ff !important;
+    color: #18375d; /* blue text */
 }
 
 .btn-action-ok:hover {
-  background-color: #fca700;
-  border-color: #fca700;
-  transform: translateY(-2px);
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
 }
 
 /* ===== Delete Button ===== */
 .btn-action-deletes {
-  background-color: #d9534f;
-  border-color: #d9534f;
+    background-color: white !important;
+    border: 1px solid #959595ff !important;
+    color: #dc3545 !important; /* blue text */
 }
 
 .btn-action-deletes:hover {
-  background-color: #c9302c;
-  border-color: #c9302c;
-  transform: translateY(-2px);
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
 }
 
 /* ===== Mobile Responsive ===== */

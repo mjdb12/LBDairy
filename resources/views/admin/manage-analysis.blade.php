@@ -165,13 +165,13 @@
                             <td>{{ $farmer->phone ?? 'N/A' }}</td>
                             <td>{{ $farmer->location ?? 'N/A' }}</td>
                             <td>
-                                <span class="badge badge-{{ $farmer->status === 'active' ? 'success' : 'warning' }}">
+                                <span class="badge badges-{{ $farmer->status === 'active' ? 'success' : 'warning' }}">
                                     {{ ucfirst($farmer->status) }}
                                 </span>
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn-action btn-action-view-live" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="View Details">
+                                    <button class="btn-action btn-action-ok" onclick="viewFarmerDetails('{{ $farmer->id }}')" title="View Details">
                                         <i class="fas fa-eye"></i>
                                         <span>View</span>
                                     </button>
@@ -361,6 +361,26 @@
 
 @push('styles')
 <style>
+       /* ===== Badge Colors ===== */
+.badges-danger {
+    background-color: #dc3545; /* red for urgent */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-warning {
+    background-color: #fca700; /* yellow for high */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-info {
+    background-color: #17a2b8; /* blue for medium */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-success {
+    background-color: #28a745; /* green for low */
+    color: #ffffffff; /* better contrast on yellow */
+}
         .action-toolbar {
     flex-wrap: nowrap !important;
     gap: 0.5rem;
@@ -1308,23 +1328,53 @@
         color: white;
     }
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+  .btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-farmers, .btn-action-refresh-admins {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+.btn-action-refresh-farmers:hover, .btn-action-refresh-admins:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
     
     .btn-action-print {
         background-color: #6c757d !important;

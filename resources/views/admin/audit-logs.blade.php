@@ -99,10 +99,7 @@
                     </button>
 
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools dropdown-toggle" 
-                                title="Tools" 
-                                type="button" 
-                                data-toggle="dropdown">
+                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -874,23 +871,77 @@
         color: white;
     }
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+     .btn-action-apply {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
+}
 
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
+.btn-action-apply:hover {
+    background-color: #387057 !important; /* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
+}
+
+.btn-action-clear{
+       background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
     }
     
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
+    .btn-action-clear:hover {
+        background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
     }
+
+.btn-action-back {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-back:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-farmers, .btn-action-refresh-issues {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+    
+.btn-action-refresh-farmers:hover, .btn-action-refresh-issues:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
 
     .btn-action-apply {
         background-color: #387057;

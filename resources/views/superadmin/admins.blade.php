@@ -465,6 +465,55 @@
         white-space: nowrap;
     }
 
+    /* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+    
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
     .btn-action-approve {
         background-color: #387057;
         border-color: #387057;
@@ -489,17 +538,6 @@
         color: white;
     }
 
-     .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
 
      .btn-action-edit {
         background-color: #387057;
@@ -537,18 +575,6 @@
         color: white;
     }
 
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
     
     .btn-action-print {
         background-color: #6c757d !important;
@@ -562,29 +588,6 @@
         color: white !important;
     }
     
-    .btn-action-refresh {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-    .btn-action-refresh:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
-    
-    .btn-action-tools {
-        background-color: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-    }
-    
-    .btn-action-tools:hover {
-        background-color: #e2e6ea;
-        border-color: #cbd3da;
-        color: #495057;
-    }
     
     /* Table layout styling to match user directory */
 
