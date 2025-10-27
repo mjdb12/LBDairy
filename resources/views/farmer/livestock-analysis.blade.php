@@ -772,7 +772,7 @@
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
                 <div class="dropdown">
-                    <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                    <button class="btn-action btn-action-tool" type="button" data-toggle="dropdown">
                         <i class="fas fa-tools"></i> Tools
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
@@ -931,20 +931,36 @@
 </div>
 
 
-<div class="modal fade" id="healthRecordModal" tabindex="-1" role="dialog" aria-labelledby="healthRecordLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="healthRecordLabel">Health Record Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<!-- Health Record Modal -->
+<div class="modal fade livestock-modal" id="healthRecordModal" tabindex="-1" role="dialog" aria-labelledby="healthRecordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content smart-detail p-4">
+
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-notes-medical fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-1">Health Record Details</h5>
+        <p class="text-muted mb-0 small text-center">Below is the complete health record of the selected livestock.</p>
       </div>
-      <div class="modal-body" id="healthRecordModalBody"></div>
-      <div class="modal-footer justify-content-center">
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div id="healthRecordModalBody">
+          <!-- Dynamic health record details injected here -->
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer justify-content-center mt-4">
         <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
       </div>
+
     </div>
   </div>
-  </div>
+</div>
+
 
 <!-- Toast Container -->
 <div class="toast-container position-fixed bottom-0 right-0 p-3" style="z-index: 1050;">
@@ -1198,29 +1214,67 @@ html body #viewbtn.btn-primary:focus,
     border-color: #e69500 !important;
     color: white !important;
 }
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
+  /* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white !important;
+    border: 1px solid #18375d !important;
+    color: #18375d !important; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d !important; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white !important;
+}
+
+.btn-action-edit {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important; 
+}
+
+.btn-action-edit:hover {
+    background-color: #387057 !important; /* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tool {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tool:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
     .btn-action-print {
         background-color: #6c757d !important;
         border-color: #6c757d !important;

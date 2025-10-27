@@ -926,29 +926,89 @@
         border-color: #fca700;
         color: white;
     }
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
+ /* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white !important;
+    border: 1px solid #18375d !important;
+    color: #18375d !important;/* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d !important;/* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white !important;
+}
+
+.btn-action-edit {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
+}
+
+.btn-action-edit:hover {
+    background-color: #387057 !important;/* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-alerts {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+
+.btn-action-refresh-alerts:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+.btn-action-refresh-inspection {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+
+.btn-action-refresh-inspection:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tool {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tool:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
     .btn-action-print {
         background-color: #387057 ;
         border-color: #387057 ;
@@ -1391,7 +1451,7 @@
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <div class="dropdown">
-                        <button class="btn-action btn-action-tools" title="Tools" type="button" data-toggle="dropdown">
+                        <button class="btn-action btn-action-tool" title="Tools" type="button" data-toggle="dropdown">
                             <i class="fas fa-tools"></i> Tools
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -1443,7 +1503,7 @@
                             <button class="btn-action btn-action-ok" onclick="viewRecord({{ $record['id'] }})" title="View Details">
                                 <i class="fas fa-eye"></i> View
                             </button>
-                            <button class="btn-action btn-action-edits" onclick="editRecord({{ $record['id'] }})" title="Edit">
+                            <button class="btn-action btn-action-edit" onclick="editRecord({{ $record['id'] }})" title="Edit">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                             <button class="btn-action btn-action-deletes" onclick="confirmDelete({{ $record['id'] }})" title="Delete">
@@ -1881,7 +1941,7 @@ function buildProductionRowCells(record){
     const actions = `
         <div class="btn-group">
             <button class="btn-action btn-action-ok" onclick="viewRecord(${record.id})" title="View Details"><i class="fas fa-eye"></i></button>
-            <button class="btn-action btn-action-edits" onclick="editRecord(${record.id})" title="Edit"><i class="fas fa-edit"></i></button>
+            <button class="btn-action btn-action-edit" onclick="editRecord(${record.id})" title="Edit"><i class="fas fa-edit"></i></button>
             <button class="btn-action btn-action-deletes" onclick="confirmDelete(${record.id})" title="Delete"><i class="fas fa-trash"></i></button>
         </div>`;
     return [date, livestock, qty, scoreBadge, htmlEscape(notes), actions];
