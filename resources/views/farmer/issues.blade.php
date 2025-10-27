@@ -158,7 +158,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="issuesTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered " id="issuesTable" width="100%" cellspacing="0">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
@@ -281,7 +281,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered " id="alertsTable" width="100%" cellspacing="0">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
@@ -400,7 +400,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="inspectionsTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered " id="inspectionsTable" width="100%" cellspacing="0">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Inspection Date</th>
@@ -585,9 +585,7 @@
 
 @push('scripts')
 <!-- DataTables CSS and Core -->
-<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
@@ -597,6 +595,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- jsPDF and autoTable for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1944,28 +1943,78 @@ html body #viewbtn.btn-primary:focus,
         color: white;
     }
     
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
+    /* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white !important;
+    border: 1px solid #18375d !important;
+    color: #18375d !important;/* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d !important;/* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-alerts {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+
+.btn-action-refresh-alerts:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+.btn-action-refresh-inspection {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+
+.btn-action-refresh-inspection:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
 
 /* COMPREHENSIVE STYLING TO MATCH SUPERADMIN FARMS TABLE */
 
@@ -2582,6 +2631,11 @@ html body #viewbtn.btn-primary:focus,
     float: left !important;
 }
 
+.dataTables_wrapper .dataTables_paginate .pagination {
+    justify-content: flex-start !important;
+    margin: 0;
+}
+
 .dataTables_wrapper .dataTables_paginate .paginate_button {
     display: inline-block;
     min-width: 2.5rem;
@@ -2604,19 +2658,10 @@ html body #viewbtn.btn-primary:focus,
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-    color: #fff;
-    background-color: #18375d;
-    border-color: #18375d;
+   color:#fff;
+       background-color: #18375d;
+        border-color: #18375d;
 }
-
-.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-    color: #6c757d;
-    background-color: #fff;
-    border-color: #dee2e6;
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
 .dataTables_wrapper .dataTables_info {
     margin-top: 1rem;
     margin-bottom: 0.5rem;

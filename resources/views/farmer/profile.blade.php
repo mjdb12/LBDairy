@@ -126,41 +126,29 @@
         transition: all 0.15s ease-in-out;
         white-space: nowrap;
     }
-    
-    .btn-action-edit-profile {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-        .btn-action-edit-profile:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+      .btn-action-edit-profile {
+    background-color: white !important;
+    border: 1px solid #18375d !important;
+    color: #18375d !important;/* blue text */
+}
 
-    .btn-action-edit-pass {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    
-        .btn-action-edit-pass:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+  .btn-action-edit-profile:hover {
+    background-color: #18375d !important;/* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white !important;
+}
+     .btn-action-edit-pass {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important;/* blue text */
+}
 
-    .btn-action-oks {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    .btn-action-oks:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+  .btn-action-edit-pass:hover {
+    background-color: #fca700 !important;/* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+    
 
     /* Custom styles for admin profile */
     
@@ -351,39 +339,6 @@
     font-style: italic;
 }
 
-/* -------------------------
-   Custom Action Buttons (Details Header)
--------------------------- */
-    .btn-action {
-        font-size: 0.85rem;
-        padding: 0.35rem 0.75rem;
-        border-radius: 0.5rem;
-        transition: 0.2s;
-    }
-
-    .btn-action-edit-profile {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
-    
-    .btn-action-edit-profile:hover {
-    background-color: #fca700;
-    border-color: #fca700;
-    color: white;
-    }
-
-    .btn-action-edit-pass {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-
-    .btn-action-edit-pass:hover {
-    background-color: #fca700;
-    border-color: #fca700;
-    color: white;
-    }
 
 .btn-action:hover {
     opacity: 0.85;
