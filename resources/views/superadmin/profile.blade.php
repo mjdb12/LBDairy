@@ -309,28 +309,29 @@
         border-color: #387057 !important;
         color: white !important;
     }
+
     .btn-action-edit-profile {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
+        background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
     }
     
         .btn-action-edit-profile:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
+        background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
     }
 
     .btn-action-edit-pass {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
+        background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
     }
     
         .btn-action-edit-pass:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
+        background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
     }
     
     .btn-edit-profile:hover,

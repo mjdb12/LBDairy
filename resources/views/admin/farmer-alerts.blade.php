@@ -376,7 +376,7 @@ function initializeDataTables() {
                     const sev = (data.severity || '').toString();
                     const cls = data.severity_badge_class || 'secondary';
                     const label = sev ? sev.charAt(0).toUpperCase() + sev.slice(1) : '';
-                    return `<span class="badge badge-${cls}">${label}</span>`;
+                    return `<span class="badge badges-${cls}">${label}</span>`;
                 }
             },
             { data: 'alert_date' },
@@ -859,7 +859,26 @@ function showNotification(message, type) {
 
 @push('styles')
 <style>
-    
+       /* ===== Badge Colors ===== */
+.badges-danger {
+    background-color: #dc3545; /* red for urgent */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-warning {
+    background-color: #fca700; /* yellow for high */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-info {
+    background-color: #17a2b8; /* blue for medium */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-success {
+    background-color: #28a745; /* green for low */
+    color: #ffffffff; /* better contrast on yellow */
+}
         .action-toolbar {
     flex-wrap: nowrap !important;
     gap: 0.5rem;
@@ -1838,16 +1857,64 @@ function showNotification(message, type) {
         color: white;
     }
 
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+ .btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d !important;/* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white !important;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-alerts, .btn-action-refresh-admins {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+    
+.btn-action-refresh-alerts:hover, .btn-action-refresh-admins:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+ .btn-action-edit {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
+}
+
+.btn-action-edit:hover {
+    background-color: #387057 !important;/* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
+}
     
     .btn-action-edit:hover {
         background-color: #fca700;

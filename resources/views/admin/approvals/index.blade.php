@@ -1134,18 +1134,65 @@ function showNotification(message, type) {
         color: white;
     }
 
-    .btn-action-tools {
-        background-color: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-    }
+ .btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+ .btn-action-edit {
+    background-color: white;
+    border: 1px solid #387057 !important;
+    color: #387057; /* blue text */
+}
+
+.btn-action-edit:hover {
+    background-color: #387057; /* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-pending, .btn-action-refresh-admins {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-tools:hover {
-        background-color: #e2e6ea;
-        border-color: #cbd3da;
-        color: #495057;
-    }
-    
+.btn-action-refresh-pending:hover, .btn-action-refresh-admins:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-back {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-back:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
    /* Ensure table has enough space for actions column */
     .table th:last-child,
     .table td:last-child {

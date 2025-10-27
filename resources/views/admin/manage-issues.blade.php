@@ -75,7 +75,7 @@
                     <input type="text" class="form-control" placeholder="Search livestock..." id="activeSearch">
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center">
-                    <button class="btn-action btn-secondary btn-sm" title="Back" onclick="backToFarmers()">
+                    <button class="btn-action btn-action-back btn-sm" title="Back" onclick="backToFarmers()">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
                 </div>
@@ -159,15 +159,15 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn-action btn-action-view-issue" onclick="viewIssue('{{ $issue->id }}')" title="View">
+                                    <button class="btn-action btn-action-ok" onclick="viewIssue('{{ $issue->id }}')" title="View">
                                         <i class="fas fa-eye"></i>
                                         <span>View</span>
                                     </button>
-                                    <button class="btn-action btn-action-edit-issue" onclick="editIssue('{{ $issue->id }}')" title="Edit">
+                                    <button class="btn-action btn-action-edit" onclick="editIssue('{{ $issue->id }}')" title="Edit">
                                         <i class="fas fa-edit"></i>
                                         <span>Edit</span>
                                     </button>
-                                    <button class="btn-action btn-action-delete-issue" onclick="deleteIssue('{{ $issue->id }}')" title="Delete">
+                                    <button class="btn-action btn-action-deletes" onclick="deleteIssue('{{ $issue->id }}')" title="Delete">
                                         <i class="fas fa-trash"></i>
                                         <span>Delete</span>
                                     </button>
@@ -1321,29 +1321,76 @@
         white-space: nowrap;
     }
     
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
+ .btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+.btn-action-edit {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
     }
     
     .btn-action-edit:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
-        color: white;
+        background-color: #387057 !important;/* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
     }
+
+.btn-action-back {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-back:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-farmers, .btn-action-refresh-issues {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
+.btn-action-refresh-farmers:hover, .btn-action-refresh-issues:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
     
     /* Header action buttons styling to match Edit/Delete buttons */
     .btn-action-add {
@@ -2075,7 +2122,7 @@ $(document).ready(function() {
                                     <td>${farmer.livestock_count || 0}</td>
                                     <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</td>
                                     <td>
-                                        <button class="btn-action btn-action-report-farmers" title="Report Issue" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                        <button class="btn-action btn-action-ok" title="Report Issue" onclick="selectFarmer('${farmer.id}', '${displayName}')">
                                             <i class="fas fa-exclamation-triangle"></i> Report Issue
                                         </button>
                                     </td>
@@ -2140,7 +2187,7 @@ $(document).ready(function() {
                                     <td>${animal.farm ? animal.farm.name : 'N/A'}</td>
                                     <td><span class="badge badge-${animal.status === 'active' ? 'success' : 'secondary'}">${animal.status}</span></td>
                                     <td>
-                                        <button class="btn-action btn-action-report-livestock" title="Report Issue" onclick="selectLivestock('${animal.id}', '${animal.tag_number}')">
+                                        <button class="btn-action btn-action-ok" title="Report Issue" onclick="selectLivestock('${animal.id}', '${animal.tag_number}')">
                                             <i class="fas fa-exclamation-triangle"></i> Report Issue
                                         </button>
                                     </td>

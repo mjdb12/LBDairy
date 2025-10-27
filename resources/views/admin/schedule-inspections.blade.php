@@ -389,6 +389,27 @@
         vertical-align: baseline;
     }
 
+    /* ===== Badge Colors ===== */
+.badges-danger {
+    background-color: #dc3545; /* red for urgent */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-warning {
+    background-color: #fca700; /* yellow for high */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-info {
+    background-color: #17a2b8; /* blue for medium */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-success {
+    background-color: #28a745; /* green for low */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
     /* User ID link styling - superadmin theme */
     .user-id-link {
         color: #18375d;
@@ -533,18 +554,7 @@
         color: white;
     }
     
-    /* Header action buttons styling to match Edit/Delete buttons */
-    .btn-action-add {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
-    }
     
-    .btn-action-add:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
     
     .btn-action-print {
         background-color: #6c757d !important;
@@ -558,17 +568,77 @@
         color: white !important;
     }
     
-    .btn-action-refresh-admins, .btn-action-refresh-farmers {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+ .btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+ .btn-action-edit {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
+}
+
+.btn-action-edit:hover {
+    background-color: #387057 !important;/* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
+}
+
+.btn-action-back {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-back:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh-farmers, .btn-action-refresh-admins {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
-        background-color: #e69500;
-        border-color: #e69500;
-        color: white;
-    }
+.btn-action-refresh-farmers:hover, .btn-action-refresh-admins:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
 
     .btn-action-reject {
         background-color: #fca700;
@@ -2756,7 +2826,7 @@ function loadInspections() {
                         inspection.farmer?.farm_name || 'N/A',
                         inspection.inspection_date ? new Date(inspection.inspection_date).toLocaleDateString() : 'N/A',
                         inspection.inspection_time ? new Date(`2000-01-01T${inspection.inspection_time}`).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A',
-                        `<span class="badge badge-${inspection.priority === 'urgent' ? 'danger' : (inspection.priority === 'high' ? 'warning' : (inspection.priority === 'medium' ? 'info' : 'success'))}">${inspection.priority}</span>`,
+                        `<span class="badge badges-${inspection.priority === 'urgent' ? 'danger' : (inspection.priority === 'high' ? 'warning' : (inspection.priority === 'medium' ? 'info' : 'success'))}">${inspection.priority}</span>`,
                         `<span class="badge badge-${inspection.status === 'scheduled' ? 'primary' : (inspection.status === 'completed' ? 'success' : (inspection.status === 'cancelled' ? 'danger' : 'warning'))}">${inspection.status}</span>`,
                         inspection.scheduled_by?.name || 'Admin',
                         `<div class="btn-group">
@@ -2818,7 +2888,7 @@ function loadFarmersTable() {
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </button>
-                            <button class="btn-action btn-action-add" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
+                            <button class="btn-action btn-action-edit" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
                                 <i class="fas fa-calendar-check"></i>
                                 <span>Schedule</span>
                             </button>
