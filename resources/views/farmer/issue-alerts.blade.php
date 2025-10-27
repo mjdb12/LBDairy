@@ -99,11 +99,11 @@
                             <button class="btn-action btn-action-ok" onclick="openCreateAlertModal()">
                                 <i class="fas fa-plus"></i>Add Alert
                             </button>
-                            <button class="btn-action btn-action-refresh" onclick="refreshAlertsTable('alertsTable')">
+                            <button class="btn-action btn-action-refreshs" onclick="refreshAlertsTable('alertsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
-                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                <button class="btn-action btn-action-tool" type="button" data-toggle="dropdown">
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
@@ -124,7 +124,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="alertsTable" width="100%" cellspacing="0">
+                        <table class="table table-bordered " id="alertsTable" width="100%" cellspacing="0">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Livestock ID</th>
@@ -138,14 +138,14 @@
                             </thead>
                             <tbody>
                                 @forelse($alerts as $alert)
-                                <tr class="{{ in_array($alert->severity, ['severe','high','critical']) ? 'table-danger' : (in_array($alert->severity, ['acute','medium']) ? 'table-warning' : ($alert->status === 'resolved' ? 'table-success' : '')) }}">
+                                <tr >
                                     <td>
                                         <strong>{{ $alert->livestock->livestock_id ?? 'N/A' }}</strong>
                                     </td>
                                     <td>{{ $alert->topic }}</td>
                                     <td>{{ Str::limit($alert->description, 50) }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $alert->severity_badge_class }}">
+                                        <span class="badge badges-{{ $alert->severity_badge_class }}">
                                             {{ ucfirst($alert->severity) }}
                                         </span>
                                     </td>
@@ -157,7 +157,7 @@
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <button class="btn-action btn-action-view" id="viewbtn" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
+                                            <button class="btn-action btn-action-ok" id="viewbtn" onclick="viewAlertDetails('{{ $alert->id }}')" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                                 <span>View</span>
                                             </button>
@@ -304,9 +304,7 @@
 @endsection
 
 @push('scripts')
-<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
@@ -316,8 +314,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- jsPDF and autoTable for custom PDF generation (if needed) -->
+<!-- jsPDF and autoTable for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script>
@@ -775,10 +774,9 @@ html body #viewbtn.btn-primary,
 #viewbtn.btn-primary,
 #viewbtn.btn,
 #viewbtn {
-    background-color: #18375d !important;
-    background: #18375d !important;
-    border-color: #18375d !important;
-    color: #fff !important;
+    background-color: white !important;
+    border: 1px solid #18375d !important;
+    color: #18375d !important;/* blue text */
 }
 
 /* Hover and Focus State */
@@ -790,18 +788,9 @@ html body #viewbtn.btn-primary:focus,
 #viewbtn:focus,
 #viewbtn.btn:hover,
 #viewbtn.btn:focus {
-    background-color: #fca700 !important;
-    background: #fca700 !important;
-    border-color: #fca700 !important;
-    color: #fff !important;
-    border: 2px solid #fca700 !important;
-    transform: translateY(-1px);
-    box-shadow: none !important;
-    filter: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    opacity: 1 !important;
-    text-shadow: none !important;
+    background-color: #18375d !important;/* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white !important;
 }
     /* SMART DETAIL MODAL TEMPLATE */
 .smart-detail .modal-content {
@@ -1544,28 +1533,55 @@ html body #viewbtn.btn-primary:focus,
         color: white;
     }
     
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
+    /* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refreshs {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+.btn-action-refreshs:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tool {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tool:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
 /* Search and button group alignment - EXACT COPY FROM SUPERADMIN */
 .search-controls {
     display: flex;
@@ -1835,6 +1851,27 @@ html body #viewbtn.btn-primary:focus,
 .badge {
     font-size: 0.75em;
     padding: 0.375em 0.75em;
+}
+
+/* ===== Badge Colors ===== */
+.badges-danger {
+    background-color: #dc3545; /* red for urgent */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-warning {
+    background-color: #fca700; /* yellow for high */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-info {
+    background-color: #17a2b8; /* blue for medium */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-success {
+    background-color: #28a745; /* green for low */
+    color: #ffffffff; /* better contrast on yellow */
 }
 
 .btn-group .btn {

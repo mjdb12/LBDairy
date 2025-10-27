@@ -128,7 +128,7 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="livestockTable">
+                <table class="table table-bordered " id="livestockTable">
                     <thead class="thead-light">
                         <tr>
                             <th>Livestock ID</th>
@@ -451,12 +451,7 @@
 
 @push('scripts')
 <!-- DataTables CSS and JS -->
-<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-
-
-<!-- DataTables Buttons (CSV, PDF, Print) -->
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
@@ -466,6 +461,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- jsPDF and autoTable for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -3319,28 +3315,55 @@ function showToast(message, type = 'info') {
         color: white;
     }
     
-    .btn-action-ok {
-        background-color: #18375d;
-        border-color: #18375d;
-        color: white;
-    }
+   /* ===== Edit Button ===== */
+.btn-action-ok {
+    background-color: white;
+    border: 1px solid #18375d !important;
+    color: #18375d; /* blue text */
+}
+
+.btn-action-ok:hover {
+    background-color: #18375d; /* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white;
+}
+
+.btn-action-deletes {
+    background-color: white !important;
+    border: 1px solid #dc3545 !important;
+    color: #dc3545 !important; /* blue text */
+}
+
+.btn-action-deletes:hover {
+    background-color: #dc3545 !important; /* yellow on hover */
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+}
+
+.btn-action-refresh {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
     
-    .btn-action-ok:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
-    .btn-action-deletes {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    
-    .btn-action-deletes:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
-    }
+.btn-action-refresh:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tools {
+    background-color: white !important;
+    border: 1px solid #495057 !important;
+    color: #495057 !important;
+}
+
+.btn-action-tools:hover {
+    background-color: #495057 !important; /* yellow on hover */
+    border: 1px solid #495057 !important;
+    color: white !important;
+}
+
 /* Search and button group alignment - Match SuperAdmin */
 .search-controls {
     display: flex;
@@ -3674,15 +3697,6 @@ function showToast(message, type = 'info') {
         right: 0;
     }
     
-    /* Fix pagination positioning for wide tables */
-    .table-responsive .dataTables_wrapper .dataTables_paginate {
-        position: relative;
-        width: 100%;
-        text-align: left;
-        margin: 1rem 0;
-        left: 0;
-        right: 0;
-    }
     
     #usersTable {
         width: 100% !important;
@@ -3747,12 +3761,19 @@ function showToast(message, type = 'info') {
     display: none !important;
 }
 
-/* DataTables Pagination Styling - Match SuperAdmin User Directory Exactly */
+/* DataTables Pagination Styling */
 .dataTables_wrapper .dataTables_paginate {
     text-align: left !important;
     margin-top: 1rem;
+    margin-bottom: 0.75rem !important; /* Match farmers directory gap */
     clear: both;
     width: 100%;
+    float: left !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .pagination {
+    justify-content: flex-start !important;
+    margin: 0;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
