@@ -670,12 +670,7 @@
                                             <td>{{ $record->notes ?? 'No notes' }}</td>
                                         </tr>
                                         @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted py-4">
-                                                <i class="text-center fas fa-tint fa-3x mb-3 text-muted"></i>
-                                                <p>No production records found for this livestock.</p>
-                                            </td>
-                                        </tr>
+                                        {{-- No rows; DataTables emptyTable message handles empty state --}}
                                         @endforelse
                                     </tbody>
                                 </table>
@@ -720,21 +715,15 @@
                                                 <button class="btn-action btn-action-ok btn-sm" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                            </td>
-                                        </tr>
+                                        </td>
+                                    </tr>
                                         @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted py-4">
-                                                <i class="text-center fas fa-heartbeat fa-3x mb-3 text-muted"></i>
-                                                <p>No health records found for this livestock.</p>
-                                            </td>
-                                        </tr>
+                                        {{-- No rows; DataTables emptyTable message handles empty state --}}
                                         @endforelse
-                                    </tbody>
-                                </table>
+                                </tbody>
+                            </table>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -830,6 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
         order: [[0, 'desc']],
         responsive: true,
         language: {
+            emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-tint fa-3x mb-3"></i><p>No production records found for this livestock.</p></div>',
             search: "Search records:",
             lengthMenu: "Show _MENU_ records per page",
             info: "Showing _START_ to _END_ of _TOTAL_ records"
@@ -841,6 +831,7 @@ document.addEventListener('DOMContentLoaded', function() {
         order: [[0, 'desc']],
         responsive: true,
         language: {
+            emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-heartbeat fa-3x mb-3"></i><p>No health records found for this livestock.</p></div>',
             search: "Search records:",
             lengthMenu: "Show _MENU_ records per page",
             info: "Showing _START_ to _END_ of _TOTAL_ records"

@@ -1843,7 +1843,12 @@ function viewLivestockHistory(livestockId) {
                                     pageLength: 10,
                                     order: [[0,'desc']],
                                     responsive: true,
-                                    language: { search: 'Search records:', lengthMenu: 'Show _MENU_ records per page', info: 'Showing _START_ to _END_ of _TOTAL_ records' }
+                                    language: {
+                                        emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-tint fa-3x mb-3"></i><p>No production records found for this livestock.</p></div>',
+                                        search: 'Search records:',
+                                        lengthMenu: 'Show _MENU_ records per page',
+                                        info: 'Showing _START_ to _END_ of _TOTAL_ records'
+                                    }
                                 });
                             }
                             if (!$.fn.DataTable.isDataTable('#healthHistoryTable')) {
@@ -1852,7 +1857,12 @@ function viewLivestockHistory(livestockId) {
                                     order: [[0,'desc']],
                                     responsive: true,
                                     columnDefs: [ { targets: -1, className: 'text-left' } ],
-                                    language: { search: 'Search records:', lengthMenu: 'Show _MENU_ records per page', info: 'Showing _START_ to _END_ of _TOTAL_ records' }
+                                    language: {
+                                        emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-heartbeat fa-3x mb-3"></i><p>No health records found for this livestock.</p></div>',
+                                        search: 'Search records:',
+                                        lengthMenu: 'Show _MENU_ records per page',
+                                        info: 'Showing _START_ to _END_ of _TOTAL_ records'
+                                    }
                                 });
                             } else {
                                 // Ensure last column stays left-aligned on re-init
