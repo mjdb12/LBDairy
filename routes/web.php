@@ -76,6 +76,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::put('/livestock/{id}', [FarmerController::class, 'updateLivestock'])->name('livestock.update');
         Route::delete('/livestock/{id}', [FarmerController::class, 'deleteLivestock'])->name('livestock.destroy');
         Route::post('/livestock/{id}/status', [FarmerController::class, 'updateLivestockStatus'])->name('livestock.update-status');
+        // Lightweight livestock search for sire/dam dropdowns
+        Route::get('/livestock/search', [LivestockController::class, 'search'])->name('livestock.search');
         Route::get('/production', [FarmerController::class, 'production'])->name('production');
         Route::post('/production', [FarmerController::class, 'storeProduction'])->name('production.store');
         // Place static routes before parameterized routes to avoid conflicts
@@ -117,8 +119,10 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/livestock/{id}/production-records', [FarmerController::class, 'getLivestockProductionRecords'])->name('livestock.production-records');
         Route::get('/livestock/{id}/health-records', [FarmerController::class, 'getLivestockHealthRecords'])->name('livestock.health-records');
         Route::get('/livestock/{id}/breeding-records', [FarmerController::class, 'getLivestockBreedingRecords'])->name('livestock.breeding-records');
+        Route::get('/livestock/{id}/growth-records', [FarmerController::class, 'getLivestockGrowthRecords'])->name('livestock.growth-records');
         Route::post('/livestock/{id}/health', [FarmerController::class, 'storeHealthRecord'])->name('livestock.health.store');
         Route::post('/livestock/{id}/breeding', [FarmerController::class, 'storeBreedingRecord'])->name('livestock.breeding.store');
+        Route::post('/livestock/{id}/growth', [FarmerController::class, 'storeGrowthRecord'])->name('livestock.growth.store');
         // Admins list for veterinarian dropdown
         Route::get('/admins', [FarmerController::class, 'listAdmins'])->name('admins.list');
         Route::get('/clients', [App\Http\Controllers\FarmerController::class, 'clients'])->name('clients');
@@ -305,18 +309,22 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::put('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'update'])->name('livestock.update');
         Route::delete('/livestock/{id}', [App\Http\Controllers\LivestockController::class, 'destroy'])->name('livestock.destroy');
         Route::post('/livestock/{id}/status', [App\Http\Controllers\LivestockController::class, 'updateStatus'])->name('livestock.update-status');
+        // Lightweight livestock search for sire/dam dropdowns
+        Route::get('/livestock/search', [App\Http\Controllers\LivestockController::class, 'search'])->name('livestock.search');
         
         // New livestock management routes
         Route::get('/livestock/{id}/details', [App\Http\Controllers\LivestockController::class, 'details'])->name('livestock.details');
         Route::get('/livestock/{id}/production-records', [App\Http\Controllers\LivestockController::class, 'getLivestockProductionRecords'])->name('livestock.production-records');
         Route::get('/livestock/{id}/health-records', [App\Http\Controllers\LivestockController::class, 'getLivestockHealthRecords'])->name('livestock.health-records');
         Route::get('/livestock/{id}/breeding-records', [App\Http\Controllers\LivestockController::class, 'getLivestockBreedingRecords'])->name('livestock.breeding-records');
+        Route::get('/livestock/{id}/growth-records', [App\Http\Controllers\LivestockController::class, 'getLivestockGrowthRecords'])->name('livestock.growth-records');
         Route::get('/livestock/{id}/qr-code', [App\Http\Controllers\LivestockController::class, 'generateQRCode'])->name('livestock.qr-code');
         Route::post('/livestock/issue-alert', [App\Http\Controllers\LivestockController::class, 'issueAlert'])->name('livestock.issue-alert');
         // Admin add record routes (per-livestock)
         Route::post('/livestock/{id}/production', [App\Http\Controllers\LivestockController::class, 'storeLivestockProductionRecord'])->name('livestock.production.store');
         Route::post('/livestock/{id}/health', [App\Http\Controllers\LivestockController::class, 'storeLivestockHealthRecord'])->name('livestock.health.store');
         Route::post('/livestock/{id}/breeding', [App\Http\Controllers\LivestockController::class, 'storeLivestockBreedingRecord'])->name('livestock.breeding.store');
+        Route::post('/livestock/{id}/growth', [App\Http\Controllers\LivestockController::class, 'storeLivestockGrowthRecord'])->name('livestock.growth.store');
         // Veterinarian list for dropdowns
         Route::get('/veterinarians', [App\Http\Controllers\AdminController::class, 'listVeterinarians'])->name('veterinarians.list');
         

@@ -215,7 +215,7 @@
                     <div class="row g-3">
                         <!-- Tag Number -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="tag_number" class="fw-semibold">Tag Number <span class="text-danger">*</span></label>
+                            <label for="tag_number" class="fw-semibold">Tag ID Number <span class="text-danger">*</span></label>
                             <input type="text" class="form-control mt-1" id="tag_number" name="tag_number" required>
                         </div>
 
@@ -228,27 +228,13 @@
                         <!-- Type -->
                         <div class="col-lg-4 col-md-6 mb-3">
                             <label for="type" class="fw-semibold">Type <span class="text-danger">*</span></label>
-                            <select class="form-control mt-1" id="type" name="type" required>
-                                <option value="">Select Type</option>
-                                <option value="cow">Cow</option>
-                                <option value="buffalo">Buffalo</option>
-                                <option value="goat">Goat</option>
-                                <option value="sheep">Sheep</option>
-                            </select>
+                            <input type="text" class="form-control mt-1" id="type" name="type" placeholder="e.g., Cow" required>
                         </div>
 
                         <!-- Breed -->
                         <div class="col-lg-4 col-md-6 mb-3">
                             <label for="breed" class="fw-semibold">Breed <span class="text-danger">*</span></label>
-                            <select class="form-control mt-1" id="breed" name="breed" required>
-                                <option value="">Select Breed</option>
-                                <option value="holstein">Holstein</option>
-                                <option value="jersey">Jersey</option>
-                                <option value="guernsey">Guernsey</option>
-                                <option value="ayrshire">Ayrshire</option>
-                                <option value="brown_swiss">Brown Swiss</option>
-                                <option value="other">Other</option>
-                            </select>
+                            <input type="text" class="form-control mt-1" id="breed" name="breed" placeholder="e.g., Holstein" required>
                         </div>
 
                         <!-- Date of Birth -->
@@ -259,7 +245,7 @@
 
                         <!-- Gender -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="gender" class="fw-semibold">Gender <span class="text-danger">*</span></label>
+                            <label for="gender" class="fw-semibold">Sex <span class="text-danger">*</span></label>
                             <select class="form-control mt-1" id="gender" name="gender" required>
                                 <option value="">Select Gender</option>
                                 <option value="male">Male</option>
@@ -295,37 +281,37 @@
 
                         <!-- Registry ID -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="registry_id" class="fw-semibold">Registry ID</label>
+                            <label for="registry_id" class="fw-semibold">Registry ID Number</label>
                             <input type="text" class="form-control mt-1" id="registry_id" name="registry_id">
                         </div>
 
                         <!-- Natural Marks -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="natural_marks" class="fw-semibold">Natural Marks</label>
-                            <input type="text" class="form-control mt-1" id="natural_marks" name="natural_marks">
+                            <label for="natural_marks" class="fw-semibold">Natural marks</label>
+                            <textarea class="form-control mt-1" id="natural_marks" name="natural_marks" rows="2" style="resize: none;"></textarea>
                         </div>
 
                         <!-- Property Number -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="property_no" class="fw-semibold">Property Number</label>
+                            <label for="property_no" class="fw-semibold">Property No.</label>
                             <input type="text" class="form-control mt-1" id="property_no" name="property_no">
                         </div>
 
                         <!-- Acquisition Date -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="acquisition_date" class="fw-semibold">Acquisition Date</label>
+                            <label for="acquisition_date" class="fw-semibold">Date acquired</label>
                             <input type="date" class="form-control mt-1" id="acquisition_date" name="acquisition_date">
                         </div>
 
                         <!-- Acquisition Cost -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="acquisition_cost" class="fw-semibold">Acquisition Cost (₱)</label>
+                            <label for="acquisition_cost" class="fw-semibold">Acquisition Cost</label>
                             <input type="number" class="form-control mt-1" id="acquisition_cost" name="acquisition_cost" min="0" step="0.01">
                         </div>
 
                         <!-- Sire ID -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="sire_id" class="fw-semibold">Sire ID</label>
+                            <label for="sire_id" class="fw-semibold">Sire - Registry ID Number</label>
                             <input type="text" class="form-control mt-1" id="sire_id" name="sire_id">
                         </div>
 
@@ -337,7 +323,7 @@
 
                         <!-- Dam ID -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="dam_id" class="fw-semibold">Dam ID</label>
+                            <label for="dam_id" class="fw-semibold">Dam - Registry ID Number</label>
                             <input type="text" class="form-control mt-1" id="dam_id" name="dam_id">
                         </div>
 
@@ -345,6 +331,18 @@
                         <div class="col-lg-4 col-md-6 mb-3">
                             <label for="dam_name" class="fw-semibold">Dam Name</label>
                             <input type="text" class="form-control mt-1" id="dam_name" name="dam_name">
+                        </div>
+
+                        <!-- Sire Breed -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <label for="sire_breed" class="fw-semibold">Sire Breed</label>
+                            <input type="text" class="form-control mt-1" id="sire_breed" name="sire_breed">
+                        </div>
+
+                        <!-- Dam Breed -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <label for="dam_breed" class="fw-semibold">Dam Breed</label>
+                            <input type="text" class="form-control mt-1" id="dam_breed" name="dam_breed">
                         </div>
 
                         <!-- Dispersal From -->
@@ -363,6 +361,54 @@
                         <div class="col-12 mb-3">
                             <label for="remarks" class="fw-semibold">Remarks</label>
                             <textarea class="form-control mt-1" id="remarks" name="remarks" rows="3" style="resize: none;"></textarea>
+                        </div>
+
+                        <!-- Distinct Characteristics -->
+                        <div class="col-12 mb-3">
+                            <label for="distinct_characteristics" class="fw-semibold">Distinct Characteristics</label>
+                            <textarea class="form-control mt-1" id="distinct_characteristics" name="distinct_characteristics" rows="3" style="resize: none;"></textarea>
+                        </div>
+
+                        <!-- Source / Origin -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <label for="source_origin" class="fw-semibold">Source / Origin</label>
+                            <input type="text" class="form-control mt-1" id="source_origin" name="source_origin">
+                        </div>
+
+                        <!-- Name of Cooperator -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <label for="cooperator_name" class="fw-semibold">Name of Cooperator</label>
+                            <input type="text" class="form-control mt-1" id="cooperator_name" name="cooperator_name">
+                        </div>
+
+                        <!-- Date Released -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <label for="date_released" class="fw-semibold">Date Released</label>
+                            <input type="date" class="form-control mt-1" id="date_released" name="date_released">
+                        </div>
+
+                        <!-- Cooperative Name -->
+                        <div class="col-lg-6 col-md-6 mb-3">
+                            <label for="cooperative_name" class="fw-semibold">Cooperative</label>
+                            <input type="text" class="form-control mt-1" id="cooperative_name" name="cooperative_name">
+                        </div>
+
+                        <!-- Cooperative Address -->
+                        <div class="col-lg-6 col-md-6 mb-3">
+                            <label for="cooperative_address" class="fw-semibold">Cooperative Address</label>
+                            <input type="text" class="form-control mt-1" id="cooperative_address" name="cooperative_address">
+                        </div>
+
+                        <!-- Cooperative Contact No. -->
+                        <div class="col-lg-6 col-md-6 mb-3">
+                            <label for="cooperative_contact_no" class="fw-semibold">Contact No.</label>
+                            <input type="text" class="form-control mt-1" id="cooperative_contact_no" name="cooperative_contact_no">
+                        </div>
+
+                        <!-- In-Charge -->
+                        <div class="col-lg-6 col-md-6 mb-3">
+                            <label for="in_charge" class="fw-semibold">In-Charge</label>
+                            <input type="text" class="form-control mt-1" id="in_charge" name="in_charge">
                         </div>
                     </div>
 
@@ -721,8 +767,10 @@ function loadLivestockData(livestockId) {
                 $('#acquisition_cost').val(livestock.acquisition_cost);
                 $('#sire_id').val(livestock.sire_id);
                 $('#sire_name').val(livestock.sire_name);
+                $('#sire_breed').val(livestock.sire_breed);
                 $('#dam_id').val(livestock.dam_id);
                 $('#dam_name').val(livestock.dam_name);
+                $('#dam_breed').val(livestock.dam_breed);
                 $('#dispersal_from').val(livestock.dispersal_from);
                 $('#owned_by').val(livestock.owned_by || '');
                 const rawRemarksEdit = (livestock.remarks || '').toString();
@@ -738,10 +786,108 @@ function loadLivestockData(livestockId) {
                     .trim();
                 currentLivestockRemarksMeta = metaLines;
                 $('#remarks').val(cleanedEdit);
+                $('#distinct_characteristics').val(livestock.distinct_characteristics || '');
+                $('#source_origin').val(livestock.source_origin || '');
+                $('#cooperator_name').val(livestock.cooperator_name || '');
+                $('#date_released').val(formatDateForInput(livestock.date_released));
+                $('#cooperative_name').val(livestock.cooperative_name || '');
+                $('#cooperative_address').val(livestock.cooperative_address || '');
+                $('#cooperative_contact_no').val(livestock.cooperative_contact_no || '');
+                $('#in_charge').val(livestock.in_charge || '');
             }
         },
         error: function() {
             showToast('Error loading livestock data', 'error');
+        }
+    });
+}
+
+function addGrowthRecord(livestockId) {
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    const modalHtml = `
+<div class="modal fade" id="growthRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content smart-form text-center p-4">
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle"><i class="fas fa-seedling fa-2x"></i></div>
+        <h5 class="fw-bold mb-1">Add Growth Record</h5>
+        <p class="text-muted mb-0 small">Record measurements for growth monitoring.</p>
+      </div>
+      <form id="growthRecordForm" class="text-start mx-auto">
+        <div class="form-wrapper">
+          <div class="row g-3">
+            <div class="col-md-6"><label class="fw-semibold">Date</label><input type="date" class="form-control mt-1" name="growth_date"></div>
+            <div class="col-md-6"><label class="fw-semibold">Weight (kg)</label><input type="number" step="0.01" min="0" class="form-control mt-1" name="weight_kg"></div>
+            <div class="col-md-6"><label class="fw-semibold">Height (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="height_cm"></div>
+            <div class="col-md-6"><label class="fw-semibold">Heart girth (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="heart_girth_cm"></div>
+            <div class="col-md-6"><label class="fw-semibold">Body length (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="body_length_cm"></div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-modern btn-ok" onclick="saveGrowthRecord('${livestockId}')"><i class="fas fa-save"></i> Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>`;
+    $('#growthRecordModal').remove();
+    $('body').append(modalHtml);
+    $('#growthRecordModal').modal('show');
+}
+
+function saveGrowthRecord(livestockId) {
+    livestockId = livestockId || currentLivestockId;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
+    const fd = new FormData(document.getElementById('growthRecordForm'));
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/growth`,
+        method: 'POST',
+        data: fd,
+        processData: false,
+        contentType: false,
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        success: function(res){
+            if (res && res.success) {
+                $('#growthRecordModal').modal('hide');
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadGrowthRecords(livestockId);
+                }
+                showNotification('Growth record added successfully!', 'success');
+            } else {
+                showNotification(res.message || 'Error adding growth record', 'danger');
+            }
+        },
+        error: function(xhr){
+            showNotification(xhr.responseJSON?.message || 'Error adding growth record', 'danger');
+        }
+    });
+}
+
+function loadGrowthRecords(livestockId) {
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/growth-records`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                const tbody = document.getElementById('growthRecordsTable');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                response.data.forEach(r => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="white-space: nowrap;">${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.weight_kg ?? 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.height_cm ?? 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.heart_girth_cm ?? 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.body_length_cm ?? 'N/A'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
         }
     });
 }
@@ -899,6 +1045,11 @@ function loadLivestockDetails(livestockId) {
             Breeding
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab">
+            Growth
+        </a>
+    </li>
 </ul>
 
 <!-- Tabs Content -->
@@ -909,39 +1060,40 @@ function loadLivestockDetails(livestockId) {
         <div class="smart-table table-responsive">
             <table class="table table-sm table-bordered align-middle mb-0">
                 <tbody>
-                    <tr><th>Tag Number</th><td>${livestock.tag_number || 'Not assigned'}</td></tr>
+                    <tr><th>Owned By</th><td>${livestock.owned_by || 'Not recorded'}</td></tr>
+                    <tr><th>Dispersal From</th><td>${livestock.dispersal_from || 'Not recorded'}</td></tr>
+                    <tr><th>Registry ID Number</th><td>${livestock.registry_id || 'Not assigned'}</td></tr>
+                    <tr><th>Tag ID Number</th><td>${livestock.tag_number || 'Not assigned'}</td></tr>
                     <tr><th>Name</th><td>${livestock.name || 'Not assigned'}</td></tr>
-                    <tr><th>Type</th><td>${livestock.type ? livestock.type.charAt(0).toUpperCase() + livestock.type.slice(1) : 'Not recorded'}</td></tr>
-                    <tr><th>Breed</th><td>${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not recorded'}</td></tr>
                     <tr><th>Date of Birth</th><td>${birthDate}</td></tr>
+                    <tr><th>Sex</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
+                    <tr><th>Breed</th><td>${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not recorded'}</td></tr>
+                    <tr><th>Sire Registry ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
+                    <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
+                    <tr><th>Sire Breed</th><td>${livestock.sire_breed || 'Not recorded'}</td></tr>
+                    <tr><th>Dam Registry ID</th><td>${livestock.dam_id || 'Not recorded'}</td></tr>
+                    <tr><th>Dam Name</th><td>${livestock.dam_name || 'Not recorded'}</td></tr>
+                    <tr><th>Dam Breed</th><td>${livestock.dam_breed || 'Not recorded'}</td></tr>
+                    <tr><th>Distinct Characteristics</th><td>${livestock.distinct_characteristics || 'None recorded'}</td></tr>
+                    <tr><th>Natural Marks</th><td>${livestock.natural_marks || 'None recorded'}</td></tr>
+                    <tr><th>Property No.</th><td>${livestock.property_no || 'Not assigned'}</td></tr>
+                    <tr><th>Date Acquired</th><td>${livestock.acquisition_date ? new Date(livestock.acquisition_date).toLocaleDateString() : 'Not recorded'}</td></tr>
+                    <tr><th>Acquisition Cost</th><td>${livestock.acquisition_cost ? '₱' + parseFloat(livestock.acquisition_cost).toFixed(2) : 'Not recorded'}</td></tr>
+                    <tr><th>Source / Origin</th><td>${livestock.source_origin || 'Not recorded'}</td></tr>
+                    <tr><th>Remarks</th><td>${cleanedRemarks || 'None'}</td></tr>
+                    <tr><th>Name of Cooperator</th><td>${livestock.cooperator_name || 'Not recorded'}</td></tr>
+                    <tr><th>Date Released</th><td>${livestock.date_released ? new Date(livestock.date_released).toLocaleDateString() : 'Not recorded'}</td></tr>
+                    <tr><th>Cooperative</th><td>${livestock.cooperative_name || 'Not recorded'}</td></tr>
+                    <tr><th>Address</th><td>${livestock.cooperative_address || 'Not recorded'}</td></tr>
+                    <tr><th>Contact No.</th><td>${livestock.cooperative_contact_no || 'Not recorded'}</td></tr>
+                    <tr><th>In-Charge</th><td>${livestock.in_charge || 'Not recorded'}</td></tr>
+                    <tr><th>Farm</th><td>${livestock.farm ? livestock.farm.name : 'Not assigned'}</td></tr>
                     <tr><th>Age</th><td>${age}</td></tr>
-                    <tr><th>Gender</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
                     <tr><th>Weight</th><td>${livestock.weight ? livestock.weight + ' kg' : 'Not recorded'}</td></tr>
                     <tr><th>Previous Weight</th><td>${livestock.previous_weight ? livestock.previous_weight + ' kg' : 'Not recorded'}</td></tr>
                     <tr><th>Previous Weight Date</th><td>${livestock.previous_weight_date ? new Date(livestock.previous_weight_date).toLocaleDateString() : 'Not recorded'}</td></tr>
-                    <tr>
-                        <th>Health Status</th>
-                        <td>
-                            <span class="badge badge-${livestock.health_status === 'healthy' ? 'success' : livestock.health_status === 'sick' ? 'danger' : 'warning'}">
-                                ${livestock.health_status ? livestock.health_status.charAt(0).toUpperCase() + livestock.health_status.slice(1) : 'Not recorded'}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Status</th>
-                        <td>
-                            <span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">
-                                ${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'Not recorded'}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr><th>Farm</th><td>${livestock.farm ? livestock.farm.name : 'Not assigned'}</td></tr>
-                    <tr><th>Registry ID</th><td>${livestock.registry_id || 'Not assigned'}</td></tr>
-                    <tr><th>Natural Marks</th><td>${livestock.natural_marks || 'None recorded'}</td></tr>
-                    <tr><th>Property Number</th><td>${livestock.property_no || 'Not assigned'}</td></tr>
-                    <tr><th>Acquisition Date</th><td>${livestock.acquisition_date ? new Date(livestock.acquisition_date).toLocaleDateString() : 'Not recorded'}</td></tr>
-                    <tr><th>Acquisition Cost</th><td>${livestock.acquisition_cost ? '₱' + parseFloat(livestock.acquisition_cost).toFixed(2) : 'Not recorded'}</td></tr>
-                    <tr><th>Remarks</th><td>${cleanedRemarks || 'None'}</td></tr>
+                    <tr><th>Health Status</th><td><span class="badge badge-${livestock.health_status === 'healthy' ? 'success' : livestock.health_status === 'sick' ? 'danger' : 'warning'}">${livestock.health_status ? livestock.health_status.charAt(0).toUpperCase() + livestock.health_status.slice(1) : 'Not recorded'}</span></td></tr>
+                    <tr><th>Status</th><td><span class="badge badge-${livestock.status === 'active' ? 'success' : 'secondary'}">${livestock.status ? livestock.status.charAt(0).toUpperCase() + livestock.status.slice(1) : 'Not recorded'}</span></td></tr>
                     <tr><th>Created</th><td>${createdDate}</td></tr>
                     <tr><th>Last Updated</th><td>${updatedDate}</td></tr>
                 </tbody>
@@ -955,16 +1107,18 @@ function loadLivestockDetails(livestockId) {
             <table class="table table-sm table-bordered align-middle mb-0">
                 <thead class="thead-light">
                     <tr>
-                        <th>Date</th>
-                        <th>Production Type</th>
-                        <th>Quantity</th>
-                        <th>Quality</th>
-                        <th style="text-align: left !important;">Notes</th>
+                        <th>Date of Calving</th>
+                        <th>Calf ID No.</th>
+                        <th>Sex</th>
+                        <th>Breed</th>
+                        <th>Sire ID No.</th>
+                        <th>Milk Prod'n</th>
+                        <th>Days in Milk (DIM)</th>
                     </tr>
                 </thead>
                 <tbody id="productionRecordsTable">
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-3">
+                        <td colspan="7" class="text-center text-muted py-3">
                             <i class="fas fa-info-circle"></i>
                             No production records found.
                         </td>
@@ -986,15 +1140,16 @@ function loadLivestockDetails(livestockId) {
                 <thead class="thead-light">
                     <tr>
                         <th>Date</th>
-                        <th>Health Status</th>
-                        <th>Treatment</th>
-                        <th>Veterinarian</th>
-                        <th style="text-align: left !important;">Notes</th>
+                        <th>Observations</th>
+                        <th>Test Performed</th>
+                        <th>Diagnosis/ Remarks</th>
+                        <th>Drugs/ Biologicals Given</th>
+                        <th>Signature</th>
                     </tr>
                 </thead>
                 <tbody id="healthRecordsTable">
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-3">
+                        <td colspan="6" class="text-center text-muted py-3">
                             <i class="fas fa-info-circle"></i>
                             No health records found.
                         </td>
@@ -1011,32 +1166,30 @@ function loadLivestockDetails(livestockId) {
 
     <!-- Breeding Tab -->
     <div class="tab-pane fade" id="breedingForm" role="tabpanel">
-        <div class="smart-table table-responsive">
-            <table class="table table-sm table-bordered align-middle mb-0">
-                <tbody>
-                    <tr><th>Sire ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
-                    <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
-                    <tr><th>Dam ID</th><td>${livestock.dam_id || 'Not recorded'}</td></tr>
-                    <tr><th>Dam Name</th><td>${livestock.dam_name || 'Not recorded'}</td></tr>
-                    <tr><th>Dispersal From</th><td>${livestock.dispersal_from || 'Not recorded'}</td></tr>
-                </tbody>
-            </table>
-        </div>
         <div class="smart-table table-responsive mt-3" style="display:block; max-width:100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom:8px;">
             <table class="table table-sm table-bordered align-middle mb-0" style="min-width: 1200px !important; table-layout: auto; width: 100% !important;">
                 <thead class="thead-light">
                     <tr>
+                        <th rowspan="2">Date of Service</th>
+                        <th rowspan="2">BCS</th>
+                        <th colspan="3" class="text-center">Signs of Estrus</th>
+                        <th colspan="2" class="text-center">Bull Used</th>
+                        <th colspan="2" class="text-center">PD</th>
+                        <th rowspan="2">AI Tech's Signature</th>
+                    </tr>
+                    <tr>
+                        <th>VO</th>
+                        <th>UT</th>
+                        <th>MD</th>
+                        <th>ID No.</th>
+                        <th>Name</th>
                         <th>Date</th>
-                        <th>Type</th>
-                        <th>Partner</th>
-                        <th>Pregnancy</th>
-                        <th>Success</th>
-                        <th style="text-align: left !important;">Notes</th>
+                        <th>Result</th>
                     </tr>
                 </thead>
                 <tbody id="breedingRecordsTable">
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-3">
+                        <td colspan="10" class="text-center text-muted py-3">
                             <i class="fas fa-info-circle"></i>
                             No breeding records found.
                         </td>
@@ -1044,9 +1197,43 @@ function loadLivestockDetails(livestockId) {
                 </tbody>
             </table>
         </div>
+        <div class="text-muted small mt-2">
+            <strong>Signs of Estrus Legend:</strong>
+            MD - Mucus discharge (1, 2, 3); UT - Uterine tone (1, 2, 3); VO - Vaginal opening (1, 2, 3)
+        </div>
         <div class="text-right mt-3">
             <button class="btn-action btn-action-ok" onclick="addBreedingRecord('${livestock.id}')">
                 <i class="fas fa-plus"></i> Add Breeding Record
+            </button>
+        </div>
+    </div>
+    
+    <!-- Growth Tab -->
+    <div class="tab-pane fade" id="growthForm" role="tabpanel">
+        <div class="smart-table table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Weight (kg)</th>
+                        <th>Height (cm)</th>
+                        <th>Heart girth (cm)</th>
+                        <th>Body length (cm)</th>
+                    </tr>
+                </thead>
+                <tbody id="growthRecordsTable">
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">
+                            <i class="fas fa-info-circle"></i>
+                            No growth records found.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-right mt-3">
+            <button class="btn-action btn-action-ok" onclick="addGrowthRecord('${livestock.id}')">
+                <i class="fas fa-plus"></i> Add Growth Record
             </button>
         </div>
     </div>
@@ -1059,6 +1246,7 @@ function loadLivestockDetails(livestockId) {
                 loadProductionRecords(livestockId);
                 loadHealthRecords(livestockId);
                 loadBreedingRecords(livestockId);
+                loadGrowthRecords(livestockId);
                 
                 // Automatically check QR code status
                 setTimeout(() => {
@@ -1417,33 +1605,58 @@ function printLivestockRecord() {
             const healthRows = hData.map(r => `
                 <tr>
                     <td>${r.date ? new Date(r.date).toLocaleDateString() : ''}</td>
-                    <td>${r.status || ''}</td>
-                    <td>${r.treatment || ''}</td>
-                    <td>${r.veterinarian || ''}</td>
-                    <td>${r.notes || ''}</td>
+                    <td>${r.observations || ''}</td>
+                    <td>${r.test || ''}</td>
+                    <td>${r.diagnosis || ''}</td>
+                    <td>${r.drugs || ''}</td>
+                    <td>${r.signature || ''}</td>
                 </tr>
             `).join('');
             const healthTbl = `
                 <table>
-                    <thead><tr><th colspan="5">Health Records</th></tr><tr><th>Date</th><th>Status</th><th>Treatment</th><th>Veterinarian</th><th>Notes</th></tr></thead>
-                    <tbody>${healthRows || '<tr><td colspan="5">No health records found.</td></tr>'}</tbody>
+                    <thead><tr><th colspan="6">Health Record</th></tr><tr><th>Date</th><th>Observations</th><th>Test Performed</th><th>Diagnosis/ Remarks</th><th>Drugs/ Biologicals Given</th><th>Signature</th></tr></thead>
+                    <tbody>${healthRows || '<tr><td colspan="6">No health records found.</td></tr>'}</tbody>
                 </table>`;
 
             const breedingRows = bData.map(r => `
                 <tr>
-                    <td>${r.date ? new Date(r.date).toLocaleDateString() : ''}</td>
-                    <td>${r.type || ''}</td>
-                    <td>${r.partner || ''}</td>
-                    <td>${r.pregnancy || ''}</td>
-                    <td>${r.success || ''}</td>
-                    <td>${r.notes || ''}</td>
+                    <td>${r.date_of_service ? new Date(r.date_of_service).toLocaleDateString() : ''}</td>
+                    <td>${r.bcs || ''}</td>
+                    <td>${r.vo || ''}</td>
+                    <td>${r.ut || ''}</td>
+                    <td>${r.md || ''}</td>
+                    <td>${r.bull_id_no || ''}</td>
+                    <td>${r.bull_name || ''}</td>
+                    <td>${r.pd_date || ''}</td>
+                    <td>${r.pd_result || ''}</td>
+                    <td>${r.ai_signature || ''}</td>
                 </tr>
             `).join('');
             const breedingTbl = `
                 <table>
-                    <thead><tr><th colspan="6">Breeding Records</th></tr><tr><th>Date</th><th>Type</th><th>Partner</th><th>Pregnancy</th><th>Success</th><th>Notes</th></tr></thead>
-                    <tbody>${breedingRows || '<tr><td colspan="6">No breeding records found.</td></tr>'}</tbody>
+                    <thead>
+                        <tr><th colspan="10">Breeding/AI Activity Record</th></tr>
+                        <tr>
+                            <th rowspan="2">Date of Service</th>
+                            <th rowspan="2">BCS</th>
+                            <th colspan="3">Signs of Estrus</th>
+                            <th colspan="2">Bull Used</th>
+                            <th colspan="2">PD</th>
+                            <th rowspan="2">AI Tech's Signature</th>
+                        </tr>
+                        <tr>
+                            <th>VO</th>
+                            <th>UT</th>
+                            <th>MD</th>
+                            <th>ID No.</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>${breedingRows || '<tr><td colspan="10">No breeding records found.</td></tr>'}</tbody>
                 </table>`;
+            const breedingLegend = `<div style="font-size:12px;margin:6px 0 0 0;">Signs of Estrus Legend: MD - Mucus discharge (1, 2, 3); UT - Uterine tone (1, 2, 3); VO - Vaginal opening (1, 2, 3)</div>`;
 
             const title = `
                 <div style="margin-bottom:10px; text-align:center;">
@@ -1462,7 +1675,7 @@ function printLivestockRecord() {
 
             const container = document.createElement('div');
             // Exclude large H3 titles; rely on table headers only.
-            container.innerHTML = tableCss + `<div>${title}${basicInfo}${productionTbl}${healthTbl}${breedingTbl}</div>`;
+            container.innerHTML = tableCss + `<div>${title}${basicInfo}${productionTbl}${healthTbl}${breedingTbl}${breedingLegend}</div>`;
             if (typeof window.printElement === 'function') {
                 window.printElement(container);
             } else if (typeof window.openPrintWindow === 'function') {
@@ -1611,34 +1824,24 @@ function loadProductionRecords(livestockId) {
         url: `/farmer/livestock/${livestockId}/production-records`,
         method: 'GET',
         success: function(response) {
-            if (response.success && response.data.length > 0) {
+            if (response.success && response.data && response.data.length > 0) {
                 const tbody = document.getElementById('productionRecordsTable');
+                if (!tbody) return;
                 tbody.innerHTML = '';
-                
-                response.data.forEach(record => {
-                    // attempt to derive type from notes if not provided
-                    let pType = record.production_type || '';
-                    if (!pType && record.notes) {
-                        const m = record.notes.match(/\[type:\s*([^\]]+)\]/i);
-                        if (m) pType = m[1];
-                    }
-                    // strip type tag from notes display
-                    let noteText = record.notes || '';
-                    noteText = noteText.replace(/\[type:\s*[^\]]+\]\s*/i, '').trim();
+                response.data.forEach(r => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${new Date(record.production_date).toLocaleDateString()}</td>
-                        <td>${pType || 'Milk'}</td>
-                        <td>${record.quantity || 'N/A'}</td>
-                        <td>${record.quality || 'N/A'}</td>
-                        <td style="text-align: left !important; white-space: normal; word-break: break-word;">${noteText || 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.date_of_calving ? new Date(r.date_of_calving).toLocaleDateString() : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.calf_id || 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.sex || 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.breed || 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.sire_id || 'N/A'}</td>
+                        <td style="white-space: nowrap;">${(r.milk_production !== null && r.milk_production !== undefined && r.milk_production !== '') ? r.milk_production : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${(r.dim !== null && r.dim !== undefined && r.dim !== '') ? r.dim : 'N/A'}</td>
                     `;
                     tbody.appendChild(row);
                 });
             }
-        },
-        error: function() {
-            // Keep the default "no records" message
         }
     });
 }
@@ -1655,10 +1858,11 @@ function loadHealthRecords(livestockId) {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
-                        <td>${r.status || 'N/A'}</td>
-                        <td>${r.treatment || 'N/A'}</td>
-                        <td>${r.veterinarian || 'N/A'}</td>
-                        <td style="text-align: left !important; white-space: normal; word-break: break-word;">${r.notes || 'N/A'}</td>
+                        <td>${r.observations || 'N/A'}</td>
+                        <td>${r.test || 'N/A'}</td>
+                        <td style="text-align: left !important; white-space: normal; word-break: break-word;">${r.diagnosis || 'N/A'}</td>
+                        <td>${r.drugs || 'N/A'}</td>
+                        <td>${r.signature || 'N/A'}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -1679,12 +1883,16 @@ function loadBreedingRecords(livestockId) {
                     response.data.forEach(r => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td style="white-space: nowrap;">${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.type || 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.partner || 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.pregnancy || 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.success || 'N/A'}</td>
-                            <td style="white-space: normal; min-width: 320px; word-break: break-word;">${r.notes || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.date_of_service ? new Date(r.date_of_service).toLocaleDateString() : 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.bcs || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.vo || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.ut || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.md || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.bull_id_no || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.bull_name || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.pd_date || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.pd_result || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.ai_signature || 'N/A'}</td>
                         `;
                         tbody.appendChild(row);
                     });

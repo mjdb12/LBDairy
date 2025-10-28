@@ -143,10 +143,10 @@ class AuthController extends Controller
 
         // Add role-specific fields
         if ($request->role === 'admin') {
-            $userData['admin_code'] = $request->admin_code;
+            $userData['admin_code'] = \App\Models\User::generateNextCode('admin');
             $userData['position'] = $request->position;
         } elseif ($request->role === 'farmer') {
-            $userData['farmer_code'] = 'F' . strtoupper(substr(md5(uniqid()), 0, 3));
+            $userData['farmer_code'] = \App\Models\User::generateNextCode('farmer');
             $userData['farm_name'] = $request->farm_name;
             $userData['farm_address'] = $request->farm_address;
         }

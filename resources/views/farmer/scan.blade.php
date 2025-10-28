@@ -130,23 +130,11 @@
             </div>
             <div class="col-md-6">
               <label for="al_type" class="fw-semibold">Type</label>
-              <select id="al_type" class="form-control" name="type" required>
-                <option value="cow">Cow</option>
-                <option value="buffalo">Buffalo</option>
-                <option value="goat">Goat</option>
-                <option value="sheep">Sheep</option>
-              </select>
+              <input type="text" id="al_type" class="form-control" name="type" placeholder="e.g., Cow" required>
             </div>
             <div class="col-md-6">
               <label for="al_breed" class="fw-semibold">Breed</label>
-              <select id="al_breed" class="form-control" name="breed" required>
-                <option value="holstein">Holstein</option>
-                <option value="jersey">Jersey</option>
-                <option value="guernsey">Guernsey</option>
-                <option value="ayrshire">Ayrshire</option>
-                <option value="brown_swiss">Brown Swiss</option>
-                <option value="other">Other</option>
-              </select>
+              <input type="text" id="al_breed" class="form-control" name="breed" placeholder="e.g., Holstein" required>
             </div>
             <div class="col-md-6">
               <label for="al_birth_date" class="fw-semibold">Birth Date</label>

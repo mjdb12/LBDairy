@@ -296,7 +296,7 @@ function initializeDataTables() {
         ordering: true,
         lengthChange: false,
         pageLength: 10,
-        processing: true,
+        processing: false,
         serverSide: false,
         buttons: [
             {
@@ -859,6 +859,11 @@ function showNotification(message, type) {
 
 @push('styles')
 <style>
+    /* Hide DataTables processing overlay on this page to avoid duplicate spinners */
+    #alertsTable_processing,
+    .dataTables_processing {
+        display: none !important;
+    }
        /* ===== Badge Colors ===== */
 .badges-danger {
     background-color: #dc3545; /* red for urgent */

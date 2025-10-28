@@ -68,7 +68,7 @@ class FarmerController extends Controller
             })
             ->findOrFail($id);
 
-        // Try DB-backed health records first
+        // Try DB-backed health records first and map to: Date, Observations, Test Performed, Diagnosis/Remarks, Drugs/Biologicals Given, Signature
         $dbRecords = HealthRecord::with('veterinarian')
             ->where('livestock_id', $livestock->id)
             ->orderByDesc('health_date')
@@ -76,12 +76,23 @@ class FarmerController extends Controller
             ->take(25)
             ->get()
             ->map(function($r){
+                $notes = (string)($r->notes ?? '');
+                $observations = $r->symptoms ?: $notes;
+                $test = null; $diagnosis = null;
+                if (preg_match('/\bTest\s*Performed\s*:\s*([^|\n]+)/i', $notes, $m) || preg_match('/\bTest\s*:\s*([^|\n]+)/i', $notes, $m)) {
+                    $test = trim($m[1]);
+                }
+                if (preg_match('/\bDiagnosis\s*:\s*([^|\n]+)/i', $notes, $m) || preg_match('/\bRemarks\s*:\s*([^|\n]+)/i', $notes, $m)) {
+                    $diagnosis = trim($m[1]);
+                }
+                if (!$diagnosis && $r->health_status) { $diagnosis = $r->health_status; }
                 return [
                     'date' => optional($r->health_date)->format('Y-m-d'),
-                    'status' => $r->health_status,
-                    'treatment' => $r->treatment,
-                    'veterinarian' => $r->veterinarian ? ($r->veterinarian->name ?: $r->veterinarian->email) : null,
-                    'notes' => $r->notes ?: $r->symptoms,
+                    'observations' => $observations,
+                    'test' => $test,
+                    'diagnosis' => $diagnosis,
+                    'drugs' => $r->treatment,
+                    'signature' => $r->veterinarian ? ($r->veterinarian->name ?: $r->veterinarian->email) : null,
                 ];
             });
 
@@ -89,26 +100,67 @@ class FarmerController extends Controller
             return response()->json(['success' => true, 'data' => $dbRecords]);
         }
 
-        // Fallback: parse from remarks (legacy)
+        // Fallback: parse from remarks (legacy) into the same structure
         $remarks = (string)($livestock->remarks ?? '');
         $lines = preg_split('/\r?\n/', $remarks);
         $records = [];
         foreach ($lines as $line) {
             if (strpos($line, '[Health]') === 0) {
-                $entry = ['date' => null, 'status' => null, 'treatment' => null, 'veterinarian' => null, 'notes' => null];
+                $entry = ['date' => null, 'observations' => null, 'test' => null, 'diagnosis' => null, 'drugs' => null, 'signature' => null];
                 $parts = array_map('trim', explode('|', substr($line, 8)));
                 foreach ($parts as $p) {
                     if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
-                    if (stripos($p, 'Status:') === 0) $entry['status'] = trim(substr($p, 7));
-                    if (stripos($p, 'Treatment:') === 0) $entry['treatment'] = trim(substr($p, 10));
-                    if (stripos($p, 'Veterinarian:') === 0) $entry['veterinarian'] = trim(substr($p, 13));
-                    if (stripos($p, 'Symptoms:') === 0) {
-                        $entry['notes'] = isset($entry['notes']) && $entry['notes']
-                            ? ($entry['notes'] . '; ' . trim(substr($p, 9)))
-                            : trim(substr($p, 9));
-                    }
+                    if (stripos($p, 'Observations:') === 0 || stripos($p, 'Symptoms:') === 0) $entry['observations'] = trim(substr($p, strpos($p, ':') + 1));
+                    if (stripos($p, 'Test Performed:') === 0 || stripos($p, 'Test:') === 0) $entry['test'] = trim(substr($p, strpos($p, ':') + 1));
+                    if (stripos($p, 'Diagnosis:') === 0 || stripos($p, 'Remarks:') === 0) $entry['diagnosis'] = trim(substr($p, strpos($p, ':') + 1));
+                    if (stripos($p, 'Drugs:') === 0 || stripos($p, 'Treatment:') === 0) $entry['drugs'] = trim(substr($p, strpos($p, ':') + 1));
+                    if (stripos($p, 'Signature:') === 0 || stripos($p, 'Veterinarian:') === 0) $entry['signature'] = trim(substr($p, strpos($p, ':') + 1));
                 }
-                if (!$entry['status']) $entry['status'] = $livestock->health_status;
+                if (!$entry['diagnosis']) $entry['diagnosis'] = $livestock->health_status;
+                $records[] = $entry;
+            }
+        }
+
+        return response()->json(['success' => true, 'data' => $records]);
+    }
+
+    /**
+     * Get growth records for the current farmer's livestock.
+     * Structure: date, weight_kg, height_cm, heart_girth_cm, body_length_cm
+     */
+    public function getLivestockGrowthRecords($id)
+    {
+        $user = Auth::user();
+        $livestock = Livestock::whereHas('farm', function($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
+
+        $remarks = (string)($livestock->remarks ?? '');
+        $lines = preg_split('/\r?\n/', $remarks);
+        $records = [];
+        foreach ($lines as $line) {
+            $trim = trim($line);
+            if ($trim === '') continue;
+            if (stripos($trim, '[Growth]') === 0 || stripos($trim, '[Growth Record]') === 0 || stripos($trim, '[GrowthRecord]') === 0) {
+                $entry = [
+                    'date' => null,
+                    'weight_kg' => null,
+                    'height_cm' => null,
+                    'heart_girth_cm' => null,
+                    'body_length_cm' => null,
+                ];
+                $payload = preg_replace('/^\[(?:Growth(?:\s*Record)?|GrowthRecord)\]\s*/i', '', $trim);
+                $parts = array_map('trim', explode('|', $payload));
+                foreach ($parts as $p) {
+                    $label = strtolower(substr($p, 0, strpos($p, ':') !== false ? strpos($p, ':') : 0));
+                    $val = trim(substr($p, strpos($p, ':') !== false ? strpos($p, ':') + 1 : 0));
+                    if ($label === 'date') $entry['date'] = $val;
+                    if (in_array($label, ['weight','weight kg','weight (kg)'])) $entry['weight_kg'] = $val;
+                    if (in_array($label, ['height','height cm','height (cm)'])) $entry['height_cm'] = $val;
+                    if (in_array($label, ['heart girth','heart girth cm','heart_girth','heart_girth cm','heart girth (cm)'])) $entry['heart_girth_cm'] = $val;
+                    if (in_array($label, ['body length','body length cm','body_length','body_length cm','body length (cm)'])) $entry['body_length_cm'] = $val;
+                }
                 $records[] = $entry;
             }
         }
@@ -127,20 +179,54 @@ class FarmerController extends Controller
             })
             ->findOrFail($id);
 
-        // Try DB-backed breeding records first
+        // Try DB-backed breeding records first; map to breeding/AI activity record fields
         $dbRecords = BreedingRecord::where('livestock_id', $livestock->id)
             ->orderByDesc('breeding_date')
             ->orderByDesc('id')
             ->take(25)
             ->get()
             ->map(function($r){
+                $notes = (string)($r->notes ?? '');
+                $bcs = null; $vo = null; $ut = null; $md = null; $pdDate = null; $pdResult = null; $bullId = null; $bullName = null; $sig = null;
+                if (preg_match('/\bBCS\s*:\s*([0-9.]+)/i', $notes, $m)) $bcs = trim($m[1]);
+                if (preg_match('/\bVO\s*:\s*([123])/i', $notes, $m)) $vo = trim($m[1]);
+                if (preg_match('/\bUT\s*:\s*([123])/i', $notes, $m)) $ut = trim($m[1]);
+                if (preg_match('/\bMD\s*:\s*([123])/i', $notes, $m)) $md = trim($m[1]);
+                if (preg_match('/\bPD\s*Date\s*:\s*([^|\n]+)/i', $notes, $m) || preg_match('/\bPD\s*:\s*([^|\n]+)/i', $notes, $m)) $pdDate = trim($m[1]);
+                if (preg_match('/\bPD\s*Result\s*:\s*([^|\n]+)/i', $notes, $m)) $pdResult = trim($m[1]);
+                if (preg_match('/\b(Bull\s*ID|ID\s*No\.)\s*:\s*([^|\n]+)/i', $notes, $m)) $bullId = trim($m[2]);
+                if (preg_match('/\b(Bull\s*Name|Name)\s*:\s*([^|\n]+)/i', $notes, $m)) $bullName = trim($m[2]);
+                if (preg_match('/\b(AI\s*Tech|Signature)\s*:\s*([^|\n]+)/i', $notes, $m)) $sig = trim($m[2]);
+
+                $partnerIdText = $r->partner_livestock_id ? (string)$r->partner_livestock_id : null;
+                if ($partnerIdText) {
+                    $partner = Livestock::query()->where('tag_number', $partnerIdText)->orWhere('id', $partnerIdText)->first();
+                    if ($partner) {
+                        $bullId = $bullId ?: $partner->tag_number;
+                        $bullName = $bullName ?: $partner->name;
+                    } else {
+                        $bullId = $bullId ?: $partnerIdText;
+                    }
+                }
+                if (!$pdResult && $r->pregnancy_status) {
+                    $pdResult = strtolower($r->pregnancy_status) === 'pregnant' ? 'Positive' : (strtolower($r->pregnancy_status) === 'not_pregnant' ? 'Negative' : $r->pregnancy_status);
+                }
+                if (!$sig && $r->recorded_by) {
+                    $u = User::find($r->recorded_by);
+                    if ($u) $sig = $u->name ?: $u->email;
+                }
+
                 return [
-                    'date' => optional($r->breeding_date)->format('Y-m-d'),
-                    'type' => $r->breeding_type ? ucfirst(str_replace('_',' ', $r->breeding_type)) : null,
-                    'partner' => $r->partner_livestock_id,
-                    'pregnancy' => $r->pregnancy_status ? str_replace('_',' ', $r->pregnancy_status) : null,
-                    'success' => $r->breeding_success,
-                    'notes' => $r->notes,
+                    'date_of_service' => optional($r->breeding_date)->format('Y-m-d'),
+                    'bcs' => $bcs,
+                    'vo' => $vo,
+                    'ut' => $ut,
+                    'md' => $md,
+                    'bull_id_no' => $bullId,
+                    'bull_name' => $bullName,
+                    'pd_date' => $pdDate,
+                    'pd_result' => $pdResult,
+                    'ai_signature' => $sig,
                 ];
             });
 
@@ -148,32 +234,36 @@ class FarmerController extends Controller
             return response()->json(['success' => true, 'data' => $dbRecords]);
         }
 
-        // Fallback: parse from remarks (legacy)
+        // Fallback: parse from remarks (legacy) into breeding/AI fields
         $remarks = (string)($livestock->remarks ?? '');
         $lines = preg_split('/\r?\n/', $remarks);
         $records = [];
         foreach ($lines as $line) {
             if (strpos($line, '[Breeding]') === 0) {
-                $entry = ['date' => null, 'type' => null, 'partner' => null, 'pregnancy' => null, 'success' => null, 'notes' => null];
+                $entry = [
+                    'date_of_service' => null,
+                    'bcs' => null,
+                    'vo' => null,
+                    'ut' => null,
+                    'md' => null,
+                    'bull_id_no' => null,
+                    'bull_name' => null,
+                    'pd_date' => null,
+                    'pd_result' => null,
+                    'ai_signature' => null,
+                ];
                 $parts = array_map('trim', explode('|', substr($line, 10)));
                 foreach ($parts as $p) {
-                    if (stripos($p, 'Date:') === 0) $entry['date'] = trim(substr($p, 5));
-                    if (stripos($p, 'Type:') === 0) $entry['type'] = trim(substr($p, 5));
-                    if (stripos($p, 'Partner:') === 0) $entry['partner'] = trim(substr($p, 8));
-                    if (stripos($p, 'Expected Birth:') === 0) {
-                        $val = trim(substr($p, 15));
-                        $entry['notes'] = isset($entry['notes']) && $entry['notes']
-                            ? ($entry['notes'] . '; Expected: ' . $val)
-                            : ('Expected: ' . $val);
-                    }
-                    if (stripos($p, 'Pregnancy:') === 0) $entry['pregnancy'] = trim(substr($p, 10));
-                    if (stripos($p, 'Success:') === 0) $entry['success'] = trim(substr($p, 8));
-                    if (stripos($p, 'Notes:') === 0) {
-                        $val = trim(substr($p, 6));
-                        $entry['notes'] = isset($entry['notes']) && $entry['notes']
-                            ? ($entry['notes'] . '; ' . $val)
-                            : $val;
-                    }
+                    if (stripos($p, 'Date:') === 0) $entry['date_of_service'] = trim(substr($p, 5));
+                    if (stripos($p, 'BCS:') === 0) $entry['bcs'] = trim(substr($p, 4));
+                    if (stripos($p, 'VO:') === 0) $entry['vo'] = trim(substr($p, 3));
+                    if (stripos($p, 'UT:') === 0) $entry['ut'] = trim(substr($p, 3));
+                    if (stripos($p, 'MD:') === 0) $entry['md'] = trim(substr($p, 3));
+                    if (stripos($p, 'Bull ID:') === 0 || stripos($p, 'ID No.:') === 0) $entry['bull_id_no'] = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($p, 'Bull Name:') === 0 || preg_match('/^Name\s*:/i', $p)) $entry['bull_name'] = trim(substr($p, strpos($p, ':')+1));
+                    if (stripos($p, 'PD Date:') === 0) $entry['pd_date'] = trim(substr($p, 8));
+                    if (stripos($p, 'PD Result:') === 0) $entry['pd_result'] = trim(substr($p, 10));
+                    if (stripos($p, 'AI Tech:') === 0 || stripos($p, 'Signature:') === 0) $entry['ai_signature'] = trim(substr($p, strpos($p, ':')+1));
                 }
                 $records[] = $entry;
             }
@@ -708,8 +798,8 @@ class FarmerController extends Controller
         $request->validate([
             'tag_number' => 'required|string|max:255|unique:livestock',
             'name' => 'required|string|max:255',
-            'type' => 'required|in:cow,buffalo,goat,sheep',
-            'breed' => 'required|in:holstein,jersey,guernsey,ayrshire,brown_swiss,other',
+            'type' => 'required|string|max:255',
+            'breed' => 'required|string|max:255',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
@@ -723,10 +813,20 @@ class FarmerController extends Controller
             'acquisition_cost' => 'nullable|numeric|min:0',
             'sire_id' => 'nullable|string|max:255',
             'sire_name' => 'nullable|string|max:255',
+            'sire_breed' => 'nullable|string|max:255',
             'dam_id' => 'nullable|string|max:255',
             'dam_name' => 'nullable|string|max:255',
+            'dam_breed' => 'nullable|string|max:255',
             'dispersal_from' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:1000',
+            'distinct_characteristics' => 'nullable|string',
+            'source_origin' => 'nullable|string|max:255',
+            'cooperator_name' => 'nullable|string|max:255',
+            'date_released' => 'nullable|date',
+            'cooperative_name' => 'nullable|string|max:255',
+            'cooperative_address' => 'nullable|string|max:255',
+            'cooperative_contact_no' => 'nullable|string|max:255',
+            'in_charge' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -759,11 +859,21 @@ class FarmerController extends Controller
                 'acquisition_cost' => $request->acquisition_cost,
                 'sire_id' => $request->sire_id,
                 'sire_name' => $request->sire_name,
+                'sire_breed' => $request->sire_breed,
                 'dam_id' => $request->dam_id,
                 'dam_name' => $request->dam_name,
+                'dam_breed' => $request->dam_breed,
                 'dispersal_from' => $request->dispersal_from,
                 'owned_by' => $request->owned_by ?? $user->name,
                 'remarks' => $request->remarks,
+                'distinct_characteristics' => $request->distinct_characteristics,
+                'source_origin' => $request->source_origin,
+                'cooperator_name' => $request->cooperator_name,
+                'date_released' => $request->date_released,
+                'cooperative_name' => $request->cooperative_name,
+                'cooperative_address' => $request->cooperative_address,
+                'cooperative_contact_no' => $request->cooperative_contact_no,
+                'in_charge' => $request->in_charge,
             ]);
 
             return response()->json([
@@ -1032,8 +1142,8 @@ class FarmerController extends Controller
         $request->validate([
             'tag_number' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
             'name' => 'required|string|max:255',
-            'type' => 'required|in:cow,buffalo,goat,sheep',
-            'breed' => 'required|in:holstein,jersey,guernsey,ayrshire,brown_swiss,other',
+            'type' => 'required|string|max:255',
+            'breed' => 'required|string|max:255',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
@@ -1046,12 +1156,22 @@ class FarmerController extends Controller
             'property_no' => 'nullable|string|max:255',
             'sire_id' => 'nullable|string|max:255',
             'sire_name' => 'nullable|string|max:255',
+            'sire_breed' => 'nullable|string|max:255',
             'dam_id' => 'nullable|string|max:255',
             'dam_name' => 'nullable|string|max:255',
+            'dam_breed' => 'nullable|string|max:255',
             'dispersal_from' => 'nullable|string|max:255',
             'owned_by' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:1000',
             'description' => 'nullable|string|max:1000',
+            'distinct_characteristics' => 'nullable|string',
+            'source_origin' => 'nullable|string|max:255',
+            'cooperator_name' => 'nullable|string|max:255',
+            'date_released' => 'nullable|date',
+            'cooperative_name' => 'nullable|string|max:255',
+            'cooperative_address' => 'nullable|string|max:255',
+            'cooperative_contact_no' => 'nullable|string|max:255',
+            'in_charge' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -1077,12 +1197,22 @@ class FarmerController extends Controller
                 'property_no' => $request->property_no,
                 'sire_id' => $request->sire_id,
                 'sire_name' => $request->sire_name,
+                'sire_breed' => $request->sire_breed,
                 'dam_id' => $request->dam_id,
                 'dam_name' => $request->dam_name,
+                'dam_breed' => $request->dam_breed,
                 'dispersal_from' => $request->dispersal_from,
                 'owned_by' => $request->owned_by,
                 'remarks' => $request->remarks,
                 'description' => $request->description,
+                'distinct_characteristics' => $request->distinct_characteristics,
+                'source_origin' => $request->source_origin,
+                'cooperator_name' => $request->cooperator_name,
+                'date_released' => $request->date_released,
+                'cooperative_name' => $request->cooperative_name,
+                'cooperative_address' => $request->cooperative_address,
+                'cooperative_contact_no' => $request->cooperative_contact_no,
+                'in_charge' => $request->in_charge,
             ]);
 
             return response()->json([
@@ -1531,26 +1661,51 @@ class FarmerController extends Controller
             $q->where('owner_id', $user->id);
         })->findOrFail($id);
 
-        $records = ProductionRecord::whereHas('farm', function($q) use ($user) {
-                $q->where('owner_id', $user->id);
-            })
-            ->where('livestock_id', $livestock->id)
-            ->orderBy('production_date', 'desc')
-            ->take(25)
-            ->get()
-            ->map(function ($r) {
-                $type = null;
-                if (!empty($r->notes) && preg_match('/\[type:\s*([^\]]+)\]/i', $r->notes, $m)) {
-                    $type = ucfirst(strtolower(trim($m[1])));
-                }
-                return [
-                    'production_date' => optional($r->production_date)->format('Y-m-d'),
-                    'production_type' => $type ?: 'Milk',
-                    'quantity' => (string) $r->milk_quantity,
-                    'quality' => $r->milk_quality_score,
-                    'notes' => $r->notes,
+        // Parse calving-style lines from remarks and compute fallbacks
+        $remarks = (string)($livestock->remarks ?? '');
+        $lines = preg_split('/\r?\n/', $remarks);
+        $records = [];
+        foreach ($lines as $line) {
+            $trim = trim($line);
+            if ($trim === '') { continue; }
+            if (strpos($trim, '[Calving]') === 0) {
+                $entry = [
+                    'date_of_calving' => null,
+                    'calf_id' => null,
+                    'sex' => null,
+                    'breed' => null,
+                    'sire_id' => null,
+                    'milk_production' => null,
+                    'dim' => null,
                 ];
-            });
+                $parts = array_map('trim', explode('|', substr($trim, 9)));
+                foreach ($parts as $p) {
+                    $pLower = strtolower($p);
+                    $val = trim(substr($p, strpos($p, ':') !== false ? strpos($p, ':') + 1 : 0));
+                    if (stripos($pLower, 'date of calving:') === 0 || stripos($pLower, 'date:') === 0) $entry['date_of_calving'] = $val;
+                    if (stripos($pLower, 'calf id') === 0 || stripos($pLower, 'calf:') === 0) $entry['calf_id'] = $val;
+                    if (stripos($pLower, 'sex:') === 0) $entry['sex'] = ucfirst(strtolower($val));
+                    if (stripos($pLower, 'breed:') === 0) $entry['breed'] = $val;
+                    if (stripos($pLower, 'sire id') === 0) $entry['sire_id'] = $val;
+                    if (stripos($pLower, 'milk') === 0) $entry['milk_production'] = $val;
+                    if (stripos($pLower, 'dim') === 0 || stripos($pLower, 'days in milk') === 0) $entry['dim'] = $val;
+                }
+                if (!$entry['milk_production'] && !empty($entry['date_of_calving'])) {
+                    $firstProd = ProductionRecord::where('livestock_id', $livestock->id)
+                        ->whereDate('production_date', '>=', $entry['date_of_calving'])
+                        ->orderBy('production_date', 'asc')
+                        ->first();
+                    if ($firstProd) {
+                        $entry['milk_production'] = (string) $firstProd->milk_quantity;
+                        try {
+                            $entry['dim'] = \Carbon\Carbon::parse($firstProd->production_date)
+                                ->diffInDays(\Carbon\Carbon::parse($entry['date_of_calving']));
+                        } catch (\Exception $e) { $entry['dim'] = null; }
+                    }
+                }
+                $records[] = $entry;
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -1683,6 +1838,54 @@ class FarmerController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Breeding record saved.',
+        ]);
+    }
+
+    /**
+     * Store a growth entry for the specified livestock by appending to remarks.
+     */
+    public function storeGrowthRecord(Request $request, $id)
+    {
+        $request->validate([
+            'growth_date' => 'nullable|date',
+            'weight_kg' => 'nullable|numeric|min:0',
+            'height_cm' => 'nullable|numeric|min:0',
+            'heart_girth_cm' => 'nullable|numeric|min:0',
+            'body_length_cm' => 'nullable|numeric|min:0',
+        ]);
+
+        $user = Auth::user();
+        $livestock = Livestock::whereHas('farm', function($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            })
+            ->findOrFail($id);
+
+        $parts = [];
+        if ($request->growth_date) $parts[] = 'Date: ' . $request->growth_date;
+        if ($request->weight_kg !== null && $request->weight_kg !== '') $parts[] = 'Weight: ' . $request->weight_kg;
+        if ($request->height_cm !== null && $request->height_cm !== '') $parts[] = 'Height: ' . $request->height_cm;
+        if ($request->heart_girth_cm !== null && $request->heart_girth_cm !== '') $parts[] = 'Heart girth: ' . $request->heart_girth_cm;
+        if ($request->body_length_cm !== null && $request->body_length_cm !== '') $parts[] = 'Body length: ' . $request->body_length_cm;
+
+        if (empty($parts)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Provide at least one field to save.'
+            ], 422);
+        }
+
+        $entry = '[Growth] ' . implode(' | ', $parts);
+        $updatedRemarks = trim(($livestock->remarks ? $livestock->remarks . "\n" : '') . $entry);
+
+        $payload = ['remarks' => $updatedRemarks];
+        if ($request->weight_kg !== null && $request->weight_kg !== '') {
+            $payload['weight'] = $request->weight_kg;
+        }
+        $livestock->update($payload);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Growth record saved.'
         ]);
     }
 

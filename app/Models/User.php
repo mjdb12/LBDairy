@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -163,4 +164,36 @@ class User extends Authenticatable
         return '';
     }
 
+    /**
+     * Generate the next sequential code for a given role.
+     * Formats: F0001 for farmer, A0001 for admin, S0001 for superadmin.
+     */
+    public static function generateNextCode(string $role, int $pad = 4): string
+    {
+        $role = strtolower($role);
+        $prefix = match ($role) {
+            'farmer' => 'F',
+            'admin' => 'A',
+            'superadmin' => 'S',
+            default => strtoupper(substr($role, 0, 1)),
+        };
+
+        $field = match ($role) {
+            'farmer' => 'farmer_code',
+            'admin' => 'admin_code',
+            // superadmin does not have a dedicated column; fall back to admin_code
+            'superadmin' => 'admin_code',
+            default => 'admin_code',
+        };
+
+        // Find the maximum numeric portion among existing codes matching PREFIX + digits
+        $max = User::where('role', $role)
+            ->whereNotNull($field)
+            ->whereRaw("$field REGEXP ?", ["^{$prefix}[0-9]+$"])
+            ->selectRaw("MAX(CAST(SUBSTRING($field, 2) AS UNSIGNED)) as max_code")
+            ->value('max_code');
+
+        $next = ((int) $max) + 1;
+        return $prefix . str_pad((string)$next, $pad, '0', STR_PAD_LEFT);
+    }
 }
