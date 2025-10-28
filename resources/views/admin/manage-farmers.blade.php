@@ -356,7 +356,7 @@
     color: #fca700 !important; /* blue text */
 }
     
-.btn-action-refresh-admin:hover, .btn-action-refresh-farmers:hover {
+.btn-action-refresh-admins:hover, .btn-action-refresh-farmers:hover {
     background-color: #fca700 !important; /* yellow on hover */
     border: 1px solid #fca700 !important;
     color: white !important;

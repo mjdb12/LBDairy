@@ -64,7 +64,7 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.issue-alerts') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.issue-alerts') }}" data-toggle="tooltip" data-placement="right" data-original-title="Issues Alerts">
-                    <i class="fa fa-exclamation-triangle"></i>
+                    <i class="fa fa-bell"></i>
                     <span>Issues Alerts</span>
                 </a>
             </li>
@@ -78,7 +78,7 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.livestock-analysis') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.livestock-analysis') }}" data-toggle="tooltip" data-placement="right" data-original-title="Livestock Analysis">
-                    <i class="fas fa-fw fa-database"></i>
+                    <i class="fas fa-fw fa-chart-line"></i>
                     <span>Livestock Analysis</span>
                 </a>
             </li>
@@ -107,7 +107,7 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.suppliers') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.suppliers') }}" data-toggle="tooltip" data-placement="right" data-original-title="Suppliers">
-                    <i class="fa fa-users"></i>
+                    <i class="fa fa-truck-loading"></i>
                     <span>Suppliers</span>
                 </a>
             </li>
@@ -121,14 +121,14 @@
 
             <li class="nav-item {{ isCurrentRoute('farmer.expenses') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.expenses') }}" data-toggle="tooltip" data-placement="right" data-original-title="Expenses">
-                    <i class="fas fa-fw fa-donate"></i>
+                    <i class="fas fa-fw fa-receipt"></i>
                     <span>Expenses</span>
                 </a>
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.inventory') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('farmer.inventory') }}" data-toggle="tooltip" data-placement="right" data-original-title="Inventory">
-                    <i class="fa fa-list"></i>
+                    <i class="fa fa-boxes"></i>
                     <span>Inventory</span>
                 </a>
             </li>

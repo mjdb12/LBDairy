@@ -133,11 +133,11 @@
                             <input type="text" class="form-control" placeholder="Search issues..." id="issueSearch">
                         </div>
                         <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
-                            <button class="btn-action btn-action-refresh" onclick="refreshIssuesTable('issuesTable')">
+                            <button class="btn-action btn-action-refreshs" onclick="refreshIssuesTable('issuesTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
-                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                <button class="btn-action btn-action-tool" type="button" data-toggle="dropdown">
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
@@ -189,7 +189,7 @@
                                     </td>
                                     <td>{{ Str::limit($issue->description, 50) }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $issue->priority === 'Urgent' ? 'danger' : ($issue->priority === 'High' ? 'warning' : ($issue->priority === 'Medium' ? 'info' : 'success')) }}">
+                                        <span class="badge badges-{{ $issue->priority === 'Urgent' ? 'danger' : ($issue->priority === 'High' ? 'warning' : ($issue->priority === 'Medium' ? 'info' : 'success')) }}">
                                             {{ $issue->priority }}
                                         </span>
                                     </td>
@@ -260,7 +260,7 @@
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
-                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                <button class="btn-action btn-action-tool" type="button" data-toggle="dropdown">
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
@@ -310,7 +310,7 @@
                                     </td>
                                     <td>{{ Str::limit($alert->description, 50) }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $alert->severity === 'critical' ? 'danger' : ($alert->severity === 'high' ? 'warning' : ($alert->severity === 'medium' ? 'info' : 'success')) }}">
+                                        <span class="badge badges-{{ $alert->severity === 'critical' ? 'danger' : ($alert->severity === 'high' ? 'warning' : ($alert->severity === 'medium' ? 'info' : 'success')) }}">
                                             {{ ucfirst($alert->severity) }}
                                         </span>
                                     </td>
@@ -326,7 +326,7 @@
                                                 <i class="fas fa-eye"></i>
                                                 <span>View Details</span>
                                             </button>
-                                            <button class="btn-action btn-action-edit" id="markbtn" onclick="markAlertAsRead('{{ $alert->id }}')" title="Mark as Read">
+                                            <button class="btn-action btn-action-edits" id="markbtn" onclick="markAlertAsRead('{{ $alert->id }}')" title="Mark as Read">
                                                 <i class="fas fa-check"></i>
                                                 <span>Mark as Read</span>
                                             </button>
@@ -379,7 +379,7 @@
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                             <div class="dropdown">
-                                <button class="btn-action btn-action-tools" type="button" data-toggle="dropdown">
+                                <button class="btn-action btn-action-tool" type="button" data-toggle="dropdown">
                                     <i class="fas fa-tools"></i> Tools
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
@@ -420,7 +420,7 @@
                                     </td>
                                     <td>{{ $inspection->inspection_time ? \Carbon\Carbon::parse($inspection->inspection_time)->format('h:i A') : 'N/A' }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $inspection->priority === 'urgent' ? 'danger' : ($inspection->priority === 'high' ? 'warning' : ($inspection->priority === 'medium' ? 'info' : 'success')) }}">
+                                        <span class="badge badges-{{ $inspection->priority === 'urgent' ? 'danger' : ($inspection->priority === 'high' ? 'warning' : ($inspection->priority === 'medium' ? 'info' : 'success')) }}">
                                             {{ ucfirst($inspection->priority) }}
                                         </span>
                                     </td>
@@ -441,7 +441,7 @@
                                                 <i class="fas fa-eye"></i>View
                                             </button>
                                             @if($inspection->status === 'scheduled')
-                                            <button class="btn-action btn-action-edit" onclick="markInspectionComplete('{{ $inspection->id }}')" title="Mark Complete">
+                                            <button class="btn-action btn-action-edits" id="completebtn" onclick="markInspectionComplete('{{ $inspection->id }}')" title="Mark Complete">
                                                 <i class="fas fa-check"></i>Complete
                                             </button>
                                             @endif
@@ -570,7 +570,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-action btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-action btn-action-edit" id="completeInspectionBtn">
+                <button type="button" class="btn-action btn-action-edits" id="completeInspectionBtn">
                     <i class="fas fa-trash"></i> Mark as Complete
                 </button>
             </div>
@@ -771,7 +771,7 @@ $(document).ready(function() {
 
 // Refresh Admins Table
 function refreshIssuesTable() {
-    const refreshBtn = document.querySelector('.btn-action-refresh');
+    const refreshBtn = document.querySelector('.btn-action-refreshs');
     const originalText = refreshBtn.innerHTML;
     refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
     refreshBtn.disabled = true;
@@ -1494,15 +1494,34 @@ function showNotification(message, type = 'info') {
 
 @push('styles')
 <style>
+           /* ===== Badge Colors ===== */
+.badges-danger {
+    background-color: #dc3545; /* red for urgent */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-warning {
+    background-color: #fca700; /* yellow for high */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-info {
+    background-color: #17a2b8; /* blue for medium */
+    color: #ffffffff; /* better contrast on yellow */
+}
+
+.badges-success {
+    background-color: #28a745; /* green for low */
+    color: #ffffffff; /* better contrast on yellow */
+}
     /* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
 html body #markbtn.btn-primary,
 #markbtn.btn-primary,
 #markbtn.btn,
 #markbtn {
-    background-color: #387057 !important;
-    background: #387057 !important;
-    border-color: #387057 !important;
-    color: #fff !important;
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
 }
 
 /* Hover and Focus State */
@@ -1514,28 +1533,64 @@ html body #markbtn.btn-primary:focus,
 #markbtn:focus,
 #markbtn.btn:hover,
 #markbtn.btn:focus {
-    background-color: #fca700 !important;
-    background: #fca700 !important;
-    border-color: #fca700 !important;
-    color: #fff !important;
-    border: 2px solid #fca700 !important;
-    transform: translateY(-1px);
-    box-shadow: none !important;
-    filter: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    opacity: 1 !important;
-    text-shadow: none !important;
+    background-color: #387057 !important;/* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
+}
+/* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #completebtn.btn-primary,
+#completebtn.btn-primary,
+#completebtn.btn,
+#completebtn {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
+}
+
+/* Hover and Focus State */
+html body #completebtn.btn-primary:hover,
+html body #completebtn.btn-primary:focus,
+#completebtn.btn-primary:hover,
+#completebtn.btn-primary:focus,
+#completebtn:hover,
+#completebtn:focus,
+#completebtn.btn:hover,
+#completebtn.btn:focus {
+    background-color: #387057 !important;/* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
+}
+/* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
+html body #completeInspectionBtn.btn-primary,
+#completeInspectionBtn.btn-primary,
+#completeInspectionBtn.btn,
+#completeInspectionBtn {
+    background-color: white !important;
+    border: 1px solid #387057 !important;
+    color: #387057 !important;/* blue text */
+}
+
+/* Hover and Focus State */
+html body #completeInspectionBtn.btn-primary:hover,
+html body #completeInspectionBtn.btn-primary:focus,
+#completeInspectionBtn.btn-primary:hover,
+#completeInspectionBtn.btn-primary:focus,
+#completeInspectionBtn:hover,
+#completeInspectionBtn:focus,
+#completeInspectionBtn.btn:hover,
+#completeInspectionBtn.btn:focus {
+    background-color: #387057 !important;/* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white !important;
 }
     /* Custom Blue-Green Button for Task Submit - NO GLASS EFFECTS */
 html body #viewbtn.btn-primary,
 #viewbtn.btn-primary,
 #viewbtn.btn,
 #viewbtn {
-    background-color: #18375d !important;
-    background: #18375d !important;
-    border-color: #18375d !important;
-    color: #fff !important;
+    background-color: white !important;
+    border: 1px solid #18375d !important;
+    color: #18375d !important;/* blue text */
 }
 
 /* Hover and Focus State */
@@ -1547,18 +1602,9 @@ html body #viewbtn.btn-primary:focus,
 #viewbtn:focus,
 #viewbtn.btn:hover,
 #viewbtn.btn:focus {
-    background-color: #fca700 !important;
-    background: #fca700 !important;
-    border-color: #fca700 !important;
-    color: #fff !important;
-    border: 2px solid #fca700 !important;
-    transform: translateY(-1px);
-    box-shadow: none !important;
-    filter: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    opacity: 1 !important;
-    text-shadow: none !important;
+    background-color: #18375d !important;/* yellow on hover */
+    border: 1px solid #18375d !important;
+    color: white !important;
 }
        .action-toolbar {
     flex-wrap: nowrap !important;
@@ -1931,27 +1977,27 @@ html body #viewbtn.btn-primary:focus,
         white-space: nowrap;
     }
     
-    .btn-action-edit {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
+    
+ /* ===== Edit Button ===== */
+  .btn-action-edits {
+    background-color: white;
+    border: 1px solid #387057 !important;
+    color: #387057; /* blue text */
     }
     
-    .btn-action-edit:hover {
-        background-color: #fca700;
-        border-color: #fca700;
-        color: white;
+    .btn-action-edits:hover {
+        background-color: #387057; /* yellow on hover */
+    border: 1px solid #387057 !important;
+    color: white;
     }
-    
-    /* ===== Edit Button ===== */
 .btn-action-ok {
-    background-color: white !important;
+    background-color: white;
     border: 1px solid #18375d !important;
-    color: #18375d !important;/* blue text */
+    color: #18375d; /* blue text */
 }
 
 .btn-action-ok:hover {
-    background-color: #18375d !important;/* yellow on hover */
+    background-color: #18375d; /* yellow on hover */
     border: 1px solid #18375d !important;
     color: white;
 }
@@ -1968,53 +2014,41 @@ html body #viewbtn.btn-primary:focus,
     color: white !important;
 }
 
-.btn-action-refresh-alerts {
-    background-color: white !important;
-    border: 1px solid #fca700 !important;
-    color: #fca700 !important; /* blue text */
-}
-
-.btn-action-refresh-alerts:hover {
-    background-color: #fca700 !important; /* yellow on hover */
-    border: 1px solid #fca700 !important;
-    color: white !important;
-}
-.btn-action-refresh-inspection {
-    background-color: white !important;
-    border: 1px solid #fca700 !important;
-    color: #fca700 !important; /* blue text */
-}
-
-.btn-action-refresh-inspection:hover {
-    background-color: #fca700 !important; /* yellow on hover */
-    border: 1px solid #fca700 !important;
-    color: white !important;
-}
-
-.btn-action-refresh {
+ .btn-action-refresh-inspection, .btn-action-refresh-farmers {
     background-color: white !important;
     border: 1px solid #fca700 !important;
     color: #fca700 !important; /* blue text */
 }
     
-.btn-action-refresh:hover {
+.btn-action-refresh-inspection:hover, .btn-action-refresh-farmers:hover {
     background-color: #fca700 !important; /* yellow on hover */
     border: 1px solid #fca700 !important;
     color: white !important;
 }
 
-.btn-action-tools {
+ .btn-action-refreshs, .btn-action-refresh-alerts {
+    background-color: white !important;
+    border: 1px solid #fca700 !important;
+    color: #fca700 !important; /* blue text */
+}
+    
+.btn-action-refreshs:hover, .btn-action-refresh-alerts:hover {
+    background-color: #fca700 !important; /* yellow on hover */
+    border: 1px solid #fca700 !important;
+    color: white !important;
+}
+
+.btn-action-tool{
     background-color: white !important;
     border: 1px solid #495057 !important;
     color: #495057 !important;
 }
 
-.btn-action-tools:hover {
+.btn-action-tool:hover {
     background-color: #495057 !important; /* yellow on hover */
     border: 1px solid #495057 !important;
     color: white !important;
 }
-
 
 /* COMPREHENSIVE STYLING TO MATCH SUPERADMIN FARMS TABLE */
 
@@ -2422,63 +2456,6 @@ html body #viewbtn.btn-primary:focus,
     color: #858796;
 }
 
-.btn-action-print {
-    background-color: #6c757d !important;
-    border-color: #6c757d !important;
-    color: white !important;
-}
-
-.btn-action-print:hover {
-    background-color: #5a6268 !important;
-    border-color: #5a6268 !important;
-    color: white !important;
-}
-
-.btn-action-refresh {
-    background-color: #fca700 !important;
-    border-color: #fca700 !important;
-    color: white !important;
-}
-
-.btn-action-refresh:hover {
-    background-color: #e69500 !important;
-    border-color: #e69500 !important;
-    color: white !important;
-}
-.btn-action-refresh-alerts {
-    background-color: #fca700 !important;
-    border-color: #fca700 !important;
-    color: white !important;
-}
-
-.btn-action-refresh-alerts:hover {
-    background-color: #e69500 !important;
-    border-color: #e69500 !important;
-    color: white !important;
-}
-.btn-action-refresh-inspection {
-    background-color: #fca700 !important;
-    border-color: #fca700 !important;
-    color: white !important;
-}
-
-.btn-action-refresh-inspection:hover {
-    background-color: #e69500 !important;
-    border-color: #e69500 !important;
-    color: white !important;
-}
-
-.btn-action-tools {
-    background-color: #f8f9fa !important;
-    border-color: #dee2e6 !important;
-    color: #495057 !important;
-}
-
-.btn-action-tools:hover {
-    background-color: #e2e6ea !important;
-    border-color: #cbd3da !important;
-    color: #495057 !important;
-}
 
 /* COMPLETE TABLE STYLING TO MATCH SUPERADMIN FARMS - EXACT COPY */
 /* Allow table to scroll horizontally if too wide */
