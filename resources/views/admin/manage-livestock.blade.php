@@ -1482,6 +1482,151 @@
   }
 }
 
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#adminBreedingRecordModal form {
+  text-align: left;
+}
+
+#adminBreedingRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#adminBreedingRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#adminBreedingRecordModal .form-control,
+#adminBreedingRecordModal select.form-control,
+#adminBreedingRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#adminBreedingRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#adminBreedingRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
+#adminHealthRecordModal form {
+  text-align: left;
+}
+
+#adminHealthRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#adminHealthRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#adminHealthRecordModal .form-control,
+#adminHealthRecordModal select.form-control,
+#adminHealthRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#adminHealthRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#adminHealthRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+/* ============================
+   FORM ELEMENT STYLES
+   ============================ */
+#adminProductionRecordModal form {
+  text-align: left;
+}
+
+#adminProductionRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#adminProductionRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#adminProductionRecordModal .form-control,
+#adminProductionRecordModal select.form-control,
+#adminProductionRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#adminProductionRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#adminProductionRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+
 /* MODAL BODY */
 .smart-detail .modal-body {
     background: #ffffff;
@@ -2269,7 +2414,7 @@
 
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
             <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
-            <button type="button" class="btn-modern btn-edit" onclick="printAdminLivestockRecord()">
+            <button type="button" class="btn-modern btn-approve" onclick="printAdminLivestockRecord()">
                 <i class="fas fa-print"></i> Print Record
             </button>
             <button type="button" class="btn-modern btn-ok" onclick="openLivestockEditModal()">
