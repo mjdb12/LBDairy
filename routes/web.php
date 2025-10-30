@@ -12,6 +12,9 @@ use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\AdminApprovalController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\PasswordResetController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,8 +53,33 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-// Protected routes
-Route::middleware(['auth', 'prevent-back-history'])->group(function () {
+// Password reset routes
+Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])
+    ->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])
+    ->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetForm'])
+    ->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
+    ->name('password.store');
+
+// Email verification routes
+Route::get('/verify-email', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/verify-email/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect()->intended('/dashboard');
+})->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// Protected routes (require verified email)
+Route::middleware(['auth', 'verified', 'prevent-back-history'])->group(function () {
     // Main dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     

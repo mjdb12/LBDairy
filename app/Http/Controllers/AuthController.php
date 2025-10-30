@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -104,6 +105,10 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        // Enforce automatic sequence codes; ignore any user-supplied values
+        $request->request->remove('admin_code');
+        $request->request->remove('farmer_code');
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255|unique:users',
             'username' => 'required|string|max:255|unique:users',
@@ -114,7 +119,6 @@ class AuthController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'barangay' => 'nullable|string|max:255',
-            'admin_code' => 'nullable|string|max:255|unique:users',
             'position' => 'nullable|string|max:255',
             'farm_name' => 'nullable|string|max:255',
             'farm_address' => 'nullable|string|max:500',
@@ -153,9 +157,12 @@ class AuthController extends Controller
 
         $user = User::create($userData);
 
+        // Send email verification if applicable
+        event(new Registered($user));
+
         // Send notification to super admins if someone registers as admin
         if ($request->role === 'admin') {
-            notifySuperAdmins(
+            \notifySuperAdmins(
                 'admin_registration',
                 'New Admin Registration',
                 "A new admin '{$user->name}' has registered and is pending approval.",
@@ -171,7 +178,7 @@ class AuthController extends Controller
             );
         }
 
-        return redirect('/login')->with('success', 'Registration successful! Please wait for admin approval.');
+        return redirect('/login')->with('success', 'Registration successful! Please check your email to verify your address. Your account may require admin approval before you can sign in.');
     }
 
     private function getDashboardRoute($role)

@@ -429,10 +429,9 @@
                                     @endif
 
                                     <div class="form-group">
-                                        <label for="farmerCode" class="block text-sm font-medium text-gray-700 mb-2">Farmer Registration Code</label>
-                                        <input type="text" id="farmerCode" name="farmer_code" required
-                                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                            placeholder="Enter your farmer code">
+                                        <div class="alert alert-info" role="alert">
+                                            Your Farmer Registration Code will be assigned automatically after registration.
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
@@ -613,9 +612,9 @@
                                     @endif
 
                                     <div class="form-group">
-                                        <label for="adminCode" class="block text-sm font-medium text-gray-700 mb-2">Admin Registration Code</label>
-                                        <input type="text" id="adminCode" name="admin_code" required class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus transition-all duration-300"
-                                                placeholder="Enter your admin code">
+                                        <div class="alert alert-info" role="alert">
+                                            Your Admin Registration Code will be assigned automatically after registration.
+                                        </div>
                                     </div>
 
                                     <div class="form-group row">

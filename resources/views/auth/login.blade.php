@@ -146,6 +146,9 @@
                                             </button>
                                         </div>
                                     </div>
+                                    <div class="flex justify-end">
+                                        <a href="{{ route('password.request') }}" class="text-sm font-medium" style="color: #18375d;">Forgot your password?</a>
+                                    </div>
                                 </div>
 
                                 <button type="submit"  class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300">
