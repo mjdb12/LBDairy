@@ -774,6 +774,22 @@ class FarmerController extends Controller
 
         // Get farms for the farmer
         $farms = Farm::where('owner_id', $user->id)->get();
+        // Ensure at least one farm exists for this farmer (backfill for older accounts)
+        if ($farms->isEmpty()) {
+            try {
+                Farm::create([
+                    'name' => $user->farm_name ?: 'My Farm',
+                    'description' => null,
+                    'location' => $user->farm_address ?: ($user->address ?: 'N/A'),
+                    'size' => null,
+                    'owner_id' => $user->id,
+                    'status' => 'active',
+                ]);
+                $farms = Farm::where('owner_id', $user->id)->get();
+            } catch (\Exception $e) {
+                // Ignore; view will still render and show disabled button if creation fails
+            }
+        }
 
         $totalLivestock = $livestock->count();
         $healthyLivestock = $livestock->where('health_status', 'healthy')->count();
@@ -833,23 +849,52 @@ class FarmerController extends Controller
             $user = Auth::user();
             $farm = $user->farms->first();
             
+            // Fallback: auto-create a default farm for this farmer if none exists yet
             if (!$farm) {
+                try {
+                    $farm = Farm::create([
+                        'name' => $user->farm_name ?: 'My Farm',
+                        'description' => null,
+                        'location' => $user->farm_address ?: ($user->address ?: 'N/A'),
+                        'size' => null,
+                        'owner_id' => $user->id,
+                        'status' => 'active',
+                    ]);
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'You need to have a farm to add livestock.'
+                    ], 400);
+                }
+            }
+
+            // Normalize and guard against enum constraints in DB
+            $allowedTypes = ['cow','buffalo','goat','sheep'];
+            $normalizedType = strtolower(trim((string)$request->type));
+            if (!in_array($normalizedType, $allowedTypes, true)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'You need to have a farm to add livestock.'
-                ], 400);
+                    'message' => 'Invalid livestock type. Allowed values: cow, buffalo, goat, sheep.'
+                ], 422);
             }
+            $allowedBreeds = ['holstein','jersey','guernsey','ayrshire','brown_swiss','other'];
+            $normalizedBreed = strtolower(trim((string)$request->breed));
+            if (!in_array($normalizedBreed, $allowedBreeds, true)) {
+                $normalizedBreed = 'other';
+            }
+            $normalizedGender = strtolower(trim((string)$request->gender));
+            $normalizedStatus = strtolower(trim((string)$request->status));
 
             $livestock = Livestock::create([
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
-                'type' => $request->type,
-                'breed' => $request->breed,
+                'type' => $normalizedType,
+                'breed' => $normalizedBreed,
                 'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
+                'gender' => $normalizedGender,
                 'weight' => $request->weight,
                 'health_status' => $request->health_status,
-                'status' => $request->status,
+                'status' => $normalizedStatus,
                 'farm_id' => $farm->id,
                 'owner_id' => $user->id,
                 'acquisition_date' => $request->acquisition_date,
@@ -1180,16 +1225,33 @@ class FarmerController extends Controller
                 $query->where('owner_id', $user->id);
             })->findOrFail($id);
 
+            // Normalize to satisfy enum constraints
+            $allowedTypes = ['cow','buffalo','goat','sheep'];
+            $normalizedType = strtolower(trim((string)$request->type));
+            if (!in_array($normalizedType, $allowedTypes, true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid livestock type. Allowed values: cow, buffalo, goat, sheep.'
+                ], 422);
+            }
+            $allowedBreeds = ['holstein','jersey','guernsey','ayrshire','brown_swiss','other'];
+            $normalizedBreed = strtolower(trim((string)$request->breed));
+            if (!in_array($normalizedBreed, $allowedBreeds, true)) {
+                $normalizedBreed = 'other';
+            }
+            $normalizedGender = strtolower(trim((string)$request->gender));
+            $normalizedStatus = strtolower(trim((string)$request->status));
+
             $livestock->update([
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
-                'type' => $request->type,
-                'breed' => $request->breed,
+                'type' => $normalizedType,
+                'breed' => $normalizedBreed,
                 'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
+                'gender' => $normalizedGender,
                 'weight' => $request->weight,
                 'health_status' => $request->health_status,
-                'status' => $request->status,
+                'status' => $normalizedStatus,
                 'acquisition_date' => $request->acquisition_date,
                 'acquisition_cost' => $request->acquisition_cost,
                 'registry_id' => $request->registry_id,

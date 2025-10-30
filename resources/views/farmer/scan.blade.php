@@ -288,6 +288,7 @@
                 </button>
               </div>
             </form>
+            <div class="mt-3" id="growthHistory"></div>
           </div>
 
           <!-- MILK TAB (EDITABLE) -->
@@ -318,6 +319,7 @@
                 </button>
               </div>
             </form>
+            <div class="mt-3" id="milkHistory"></div>
           </div>
 
           <!-- BREEDING TAB -->
@@ -348,6 +350,7 @@
                 </table>
               </div>
             </form>
+            <div class="mt-3" id="breedingHistory"></div>
           </div>
 
           <!-- HEALTH TAB -->
@@ -364,6 +367,7 @@
                 </table>
               </div>
             </form>
+            <div class="mt-3" id="healthHistory"></div>
           </div>
 
         </div> <!-- END TAB CONTENT -->
@@ -2285,6 +2289,10 @@ let isScanning = false;
 let currentCameraId = null;
 const scannerConfig = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
 
+// Track currently viewed livestock (from scan)
+let CURRENT_LIVESTOCK_ID = null;
+let CURRENT_LIVESTOCK_TAG = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize forms
     initializeForms();
@@ -2442,6 +2450,9 @@ function viewLivestockDetails(id) {
         if (data.success && data.livestock) {
             const livestock = data.livestock;
             console.log('Found livestock data:', livestock);
+            // Cache current ids for edit/save endpoints
+            CURRENT_LIVESTOCK_ID = livestock.id || null;
+            CURRENT_LIVESTOCK_TAG = livestock.tag_number || null;
             
             // Update modal title
             document.getElementById("detailLivestockId").textContent = livestock.tag_number || livestock.id;
@@ -2452,6 +2463,14 @@ function viewLivestockDetails(id) {
             // Show the modal
             $('#livestockDetailsModal').modal('show');
             
+            // Load histories for tabs
+            if (CURRENT_LIVESTOCK_ID) {
+                loadGrowthHistory(CURRENT_LIVESTOCK_ID);
+                loadMilkHistory(CURRENT_LIVESTOCK_ID);
+                loadBreedingHistory(CURRENT_LIVESTOCK_ID);
+                loadHealthHistory(CURRENT_LIVESTOCK_ID);
+            }
+
             // Show success message
             showNotification(`Livestock ${livestock.tag_number || livestock.id} information loaded successfully!`, 'success');
             
@@ -2473,57 +2492,329 @@ function viewLivestockDetails(id) {
 }
 
 function populateBasicInfo(livestock) {
-    // Map database fields to form fields
+    // Accurate mapping from API (snake_case) to UI inputs
+    const dateOnly = (val) => val ? String(val).slice(0, 10) : '';
     const fieldMapping = {
-        'ownedBy': livestock.farm?.owner?.name || livestock.farm?.name || 'N/A',
-        'dispersalFrom': livestock.source || 'N/A',
-        'registryId': livestock.tag_number || livestock.id,
-        'tagId': livestock.tag_number || livestock.id,
-        'livestockName': livestock.name || livestock.tag_number || 'N/A',
-        'dob': livestock.birth_date ? livestock.birth_date.split('T')[0] : '',
-        'sex': livestock.gender || 'N/A',
-        'breed': livestock.breed || 'N/A',
-        'sireId': livestock.sire_id || 'N/A',
-        'damId': livestock.dam_id || 'N/A',
-        'sireName': livestock.sire_name || 'N/A',
-        'damName': livestock.dam_name || 'N/A',
-        'sireBreed': livestock.sire_breed || 'N/A',
-        'damBreed': livestock.dam_breed || 'N/A',
-        'naturalMarks': livestock.physical_characteristics || 'N/A',
-        'propertyNo': livestock.farm?.id || 'N/A',
-        'acquisitionDate': livestock.acquisition_date ? livestock.acquisition_date.split('T')[0] : '',
-        'acquisitionCost': livestock.acquisition_cost || 'N/A',
-        'source': livestock.source || 'N/A',
-        'remarks': livestock.notes || livestock.remarks || 'N/A',
-        'cooperator': livestock.farm?.owner?.name || 'N/A',
-        'releasedDate': livestock.released_date ? livestock.released_date.split('T')[0] : '',
-        'cooperative': livestock.farm?.name || 'N/A',
-        'address': livestock.farm?.address || 'N/A',
-        'contactNo': livestock.farm?.owner?.phone || 'N/A',
-        'inCharge': livestock.farm?.owner?.name || 'N/A'
+        // Ownership and identifiers
+        'ownedBy': livestock.owned_by || (livestock.farm && livestock.farm.owner ? livestock.farm.owner.name : 'N/A'),
+        'dispersalFrom': livestock.dispersal_from || '',
+        'registryId': livestock.registry_id || '',
+        'tagId': livestock.tag_number || livestock.id || '',
+        'livestockName': livestock.name || livestock.tag_number || '',
+        'dob': dateOnly(livestock.birth_date),
+        'sex': livestock.gender || '',
+        'breed': livestock.breed || '',
+        // Parentage
+        'sireId': livestock.sire_id || '',
+        'damId': livestock.dam_id || '',
+        'sireName': livestock.sire_name || '',
+        'damName': livestock.dam_name || '',
+        'sireBreed': livestock.sire_breed || '',
+        'damBreed': livestock.dam_breed || '',
+        // Physical and asset details
+        'naturalMarks': livestock.natural_marks || '',
+        'propertyNo': livestock.property_no || '',
+        'acquisitionDate': dateOnly(livestock.acquisition_date),
+        'acquisitionCost': livestock.acquisition_cost || '',
+        'source': livestock.source_origin || '',
+        'remarks': livestock.remarks || '',
+        // Cooperative / cooperator
+        'cooperator': livestock.cooperator_name || '',
+        'releasedDate': dateOnly(livestock.date_released),
+        'cooperative': livestock.cooperative_name || '',
+        'address': livestock.cooperative_address || (livestock.farm ? (livestock.farm.location || '') : ''),
+        'contactNo': livestock.cooperative_contact_no || '',
+        'inCharge': livestock.in_charge || ''
     };
-    
-    // Populate form fields
-    Object.keys(fieldMapping).forEach(key => {
-        const element = document.getElementById(key);
-        if (element) {
-            element.value = fieldMapping[key];
-        }
+
+    Object.keys(fieldMapping).forEach((key) => {
+        const el = document.getElementById(key);
+        if (el) el.value = fieldMapping[key];
     });
 }
 
 function initializeForms() {
-    // Growth form submission
-    document.getElementById('growthDetailsForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        showNotification('Growth record saved successfully!', 'success');
+    const csrf = getCsrfToken();
+
+    // Growth form submission -> POST /farmer/livestock/{id}/growth
+    const growthForm = document.getElementById('growthDetailsForm');
+    if (growthForm) {
+        growthForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!CURRENT_LIVESTOCK_ID) { showNotification('No livestock selected.', 'error'); return; }
+            const payload = {
+                growth_date: document.getElementById('growthDate')?.value || null,
+                weight_kg: valOrNullFloat(document.getElementById('weight')?.value),
+                height_cm: valOrNullFloat(document.getElementById('height')?.value),
+                heart_girth_cm: valOrNullFloat(document.getElementById('heartGirthCm')?.value),
+                body_length_cm: valOrNullFloat(document.getElementById('bodyLengthCm')?.value)
+            };
+            try {
+                const res = await fetch(`/farmer/livestock/${CURRENT_LIVESTOCK_ID}/growth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showNotification(data.message || 'Growth record saved.', 'success');
+                    if (CURRENT_LIVESTOCK_ID) loadGrowthHistory(CURRENT_LIVESTOCK_ID);
+                } else {
+                    showNotification(data.message || 'Failed to save growth record.', 'error');
+                }
+            } catch (err) {
+                showNotification('Error saving growth record: ' + (err.message || err), 'error');
+            }
+        });
+    }
+
+    // Milk form submission -> POST /farmer/production
+    const milkForm = document.getElementById('milkDetailsForm');
+    if (milkForm) {
+        milkForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!CURRENT_LIVESTOCK_ID) { showNotification('No livestock selected.', 'error'); return; }
+            const productionDate = document.getElementById('calvingDate')?.value || new Date().toISOString().slice(0,10);
+            const milkQty = valOrNullFloat(document.getElementById('milkProduction')?.value);
+            if (milkQty === null) { showNotification('Please enter milk production (liters).', 'error'); return; }
+            const payload = {
+                production_date: productionDate,
+                livestock_id: CURRENT_LIVESTOCK_ID,
+                milk_quantity: milkQty,
+                milk_quality_score: null,
+                notes: null
+            };
+            try {
+                const res = await fetch('/farmer/production', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showNotification(data.message || 'Milk record saved.', 'success');
+                    if (CURRENT_LIVESTOCK_ID) loadMilkHistory(CURRENT_LIVESTOCK_ID);
+                } else {
+                    showNotification(data.message || 'Failed to save milk record.', 'error');
+                }
+            } catch (err) {
+                showNotification('Error saving milk record: ' + (err.message || err), 'error');
+            }
+        });
+    }
+
+    // Make Breeding and Health editable and add submit handlers
+    setupBreedingForm(csrf);
+    setupHealthForm(csrf);
+}
+
+function setupBreedingForm(csrf) {
+    const form = document.getElementById('breedingDetailsForm');
+    if (!form) return;
+    ['breedingDate','breedingType','breedingSireId','breedingDamId','pregnancyCheckDate','pregnancyResult','breedingRemarks'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.removeAttribute('readonly'); el.disabled = false; }
     });
-    
-    // Milk form submission
-    document.getElementById('milkDetailsForm').addEventListener('submit', function(e) {
+    // Add Save button if none
+    if (!form.querySelector('.btn-action-save')) {
+        const footer = document.createElement('div');
+        footer.className = 'modal-footer';
+        footer.innerHTML = '<button type="submit" class="btn-action btn-action-ok btn-sm btn-action-save"><i class="fas fa-save"></i> Save</button>';
+        form.appendChild(footer);
+    }
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        showNotification('Milk record saved successfully!', 'success');
+        if (!CURRENT_LIVESTOCK_ID) { showNotification('No livestock selected.', 'error'); return; }
+        const mapPregnancy = (val) => {
+            if (!val) return 'unknown';
+            const v = String(val).toLowerCase();
+            if (v.includes('positive') || v.includes('preg')) return 'pregnant';
+            if (v.includes('negative') || v.includes('not')) return 'not_pregnant';
+            return 'unknown';
+        };
+        const payload = {
+            breeding_date: document.getElementById('breedingDate')?.value || null,
+            breeding_type: document.getElementById('breedingType')?.value || null,
+            partner_livestock_id: document.getElementById('breedingSireId')?.value || null,
+            expected_birth_date: document.getElementById('pregnancyCheckDate')?.value || null,
+            pregnancy_status: mapPregnancy(document.getElementById('pregnancyResult')?.value),
+            breeding_success: 'unknown',
+            notes: document.getElementById('breedingRemarks')?.value || null
+        };
+        try {
+            const res = await fetch(`/farmer/livestock/${CURRENT_LIVESTOCK_ID}/breeding`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showNotification(data.message || 'Breeding record saved.', 'success');
+                if (CURRENT_LIVESTOCK_ID) loadBreedingHistory(CURRENT_LIVESTOCK_ID);
+            } else {
+                showNotification(data.message || 'Failed to save breeding record.', 'error');
+            }
+        } catch (err) {
+            showNotification('Error saving breeding record: ' + (err.message || err), 'error');
+        }
     });
+}
+
+function setupHealthForm(csrf) {
+    const form = document.getElementById('healthDetailsForm');
+    if (!form) return;
+    ['healthDate','healthStatus','treatment','healthRemarks'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.removeAttribute('readonly'); el.disabled = false; }
+    });
+    if (!form.querySelector('.btn-action-save')) {
+        const footer = document.createElement('div');
+        footer.className = 'modal-footer';
+        footer.innerHTML = '<button type="submit" class="btn-action btn-action-ok btn-sm btn-action-save"><i class="fas fa-save"></i> Save</button>';
+        form.appendChild(footer);
+    }
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!CURRENT_LIVESTOCK_ID) { showNotification('No livestock selected.', 'error'); return; }
+        const payload = {
+            health_date: document.getElementById('healthDate')?.value || new Date().toISOString().slice(0,10),
+            health_status: (document.getElementById('healthStatus')?.value || '').toLowerCase().replace(/\s+/g,'_'),
+            weight: null,
+            temperature: null,
+            symptoms: document.getElementById('healthRemarks')?.value || null,
+            treatment: document.getElementById('treatment')?.value || null,
+            veterinarian_id: null
+        };
+        try {
+            const res = await fetch(`/farmer/livestock/${CURRENT_LIVESTOCK_ID}/health`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showNotification(data.message || 'Health record saved.', 'success');
+                if (CURRENT_LIVESTOCK_ID) loadHealthHistory(CURRENT_LIVESTOCK_ID);
+            } else {
+                showNotification(data.message || 'Failed to save health record.', 'error');
+            }
+        } catch (err) {
+            showNotification('Error saving health record: ' + (err.message || err), 'error');
+        }
+    });
+}
+
+// Helpers
+function getCsrfToken() {
+    const el = document.querySelector('meta[name="csrf-token"]');
+    return el ? el.getAttribute('content') : '';
+}
+
+function valOrNullFloat(v) {
+    if (v === undefined || v === null || String(v).trim() === '') return null;
+    const n = Number(v);
+    return isNaN(n) ? null : n;
+}
+
+// History loaders
+async function loadGrowthHistory(id) {
+    try {
+        const res = await fetch(`/farmer/livestock/${id}/growth-records`, { headers: { 'Accept': 'application/json' } });
+        const json = await res.json();
+        const rows = (json && json.success && Array.isArray(json.data)) ? json.data : [];
+        const headers = ['Date','Weight (kg)','Height (cm)','Heart Girth (cm)','Body Length (cm)'];
+        const mapped = rows.map(r => [
+            safeDate(r.date || r.growth_date),
+            safeNum(r.weight || r.weight_kg),
+            safeNum(r.height_cm || r.height),
+            safeNum(r.heart_girth_cm || r.heart_girth),
+            safeNum(r.body_length_cm || r.body_length),
+        ]);
+        renderTable('growthHistory', headers, mapped);
+    } catch (e) {
+        renderError('growthHistory', 'Failed to load growth records');
+    }
+}
+
+async function loadMilkHistory(id) {
+    try {
+        const res = await fetch(`/farmer/livestock/${id}/production-records`, { headers: { 'Accept': 'application/json' } });
+        const json = await res.json();
+        const rows = (json && json.success && Array.isArray(json.data)) ? json.data : [];
+        const headers = ['Date of Calving','Milk (L)','DIM'];
+        const mapped = rows.map(r => [
+            safeDate(r.date_of_calving || r.date),
+            safeNum(r.milk_production),
+            safeNum(r.dim),
+        ]);
+        renderTable('milkHistory', headers, mapped);
+    } catch (e) {
+        renderError('milkHistory', 'Failed to load milk records');
+    }
+}
+
+async function loadBreedingHistory(id) {
+    try {
+        const res = await fetch(`/farmer/livestock/${id}/breeding-records`, { headers: { 'Accept': 'application/json' } });
+        const json = await res.json();
+        const rows = (json && json.success && Array.isArray(json.data)) ? json.data : [];
+        const headers = ['Service Date','BCS','VO','UT','MD','Bull ID','Bull Name','PD Date','PD Result','Signature'];
+        const mapped = rows.map(r => [
+            safeDate(r.service_date), r.bcs || '', r.vo || '', r.ut || '', r.md || '', r.bull_id || r.bull_id_no || '', r.bull_name || '', safeDate(r.pd_date), r.pd_result || '', r.signature || r.ai_signature || ''
+        ]);
+        renderTable('breedingHistory', headers, mapped);
+    } catch (e) {
+        renderError('breedingHistory', 'Failed to load breeding records');
+    }
+}
+
+async function loadHealthHistory(id) {
+    try {
+        const res = await fetch(`/farmer/livestock/${id}/health-records`, { headers: { 'Accept': 'application/json' } });
+        const json = await res.json();
+        const rows = (json && json.success && Array.isArray(json.data)) ? json.data : [];
+        const headers = ['Date','Observations','Test','Diagnosis','Treatment/Drugs','Signature'];
+        const mapped = rows.map(r => [
+            safeDate(r.date), r.observations || '', r.test || '', r.diagnosis || '', r.drugs || '', r.signature || ''
+        ]);
+        renderTable('healthHistory', headers, mapped);
+    } catch (e) {
+        renderError('healthHistory', 'Failed to load health records');
+    }
+}
+
+// Rendering helpers
+function renderTable(containerId, headers, rows) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!rows || rows.length === 0) {
+        el.innerHTML = '<div class="alert alert-light mb-0">No records yet.</div>';
+        return;
+    }
+    const thead = '<thead><tr>' + headers.map(h => `<th>${escapeHtml(h)}</th>`).join('') + '</tr></thead>';
+    const tbody = '<tbody>' + rows.map(r => '<tr>' + r.map(c => `<td>${escapeHtml(c)}</td>`).join('') + '</tr>').join('') + '</tbody>';
+    el.innerHTML = `<div class="table-responsive"><table class="table table-bordered table-sm">${thead}${tbody}</table></div>`;
+}
+
+function renderError(containerId, message) {
+    const el = document.getElementById(containerId);
+    if (el) el.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(message)}</div>`;
+}
+
+function safeDate(v) {
+    if (!v) return '';
+    try { return String(v).slice(0, 10); } catch { return String(v); }
+}
+
+function safeNum(v) {
+    if (v === undefined || v === null || v === '') return '';
+    const n = Number(v);
+    return isNaN(n) ? String(v) : n;
+}
+
+function escapeHtml(val) {
+    const s = val === undefined || val === null ? '' : String(val);
+    return s.replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]); });
 }
 
 function showNotification(message, type) {

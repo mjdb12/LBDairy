@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Farm;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -159,6 +160,27 @@ class AuthController extends Controller
 
         // Send email verification if applicable
         event(new Registered($user));
+
+        // Auto-create a default Farm for farmer accounts so farmer views have farms
+        if ($user->role === 'farmer') {
+            try {
+                // Avoid duplicate farm creation if somehow already exists
+                if ($user->farms()->count() === 0) {
+                    $farmName = $request->farm_name ?: ($user->farm_name ?: 'My Farm');
+                    $farmAddress = $request->farm_address ?: ($user->address ?: 'N/A');
+                    Farm::create([
+                        'name' => $farmName,
+                        'description' => null,
+                        'location' => $farmAddress,
+                        'size' => null,
+                        'owner_id' => $user->id,
+                        'status' => 'active',
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Registration should not fail solely due to farm creation
+            }
+        }
 
         // Send notification to super admins if someone registers as admin
         if ($request->role === 'admin') {
