@@ -4,6 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LB Dairy - Smart Livestock Management System</title>
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="192x192">
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="32x32">
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="16x16">
+    <link rel="shortcut icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('img/Lucban.png') }}?v=20251031">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

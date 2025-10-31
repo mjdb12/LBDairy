@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Favicon override to ensure browsers use LBDAIRY circle logo
+    RewriteRule ^favicon\.ico$ img/Lucban.png [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
