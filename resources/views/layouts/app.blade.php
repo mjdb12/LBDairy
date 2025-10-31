@@ -13,6 +13,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="LB Dairy">
 
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="192x192">
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="32x32">
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="16x16">
+    <link rel="shortcut icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('img/Lucban.png') }}?v=20251031">
+
     <title>@yield('title', 'LBDAIRY')</title>
     <link rel="preload" as="image" href="{{ asset('img/LBDairy.png') }}">
 

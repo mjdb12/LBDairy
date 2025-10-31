@@ -8,6 +8,12 @@
     <meta name="author" content="LBDAIRY">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="192x192">
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="32x32">
+    <link rel="icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png" sizes="16x16">
+    <link rel="shortcut icon" href="{{ asset('img/Lucban.png') }}?v=20251031" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('img/Lucban.png') }}?v=20251031">
+
     <title>@yield('title', 'LBDAIRY - Admin Dashboard')</title>
 
     <!-- Custom fonts -->
