@@ -78,7 +78,7 @@
     <!-- Main Content -->
     <div class="row">
         <div class="col-12">
-            <div class="card shadow fade-in">
+            <div class="card shadow fade-in mb-4">
                 <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-list"></i>
@@ -299,7 +299,7 @@
 </div>
 
 <!-- Bottom spacing to match farm analysis tab -->
-<div style="margin-bottom: 3rem;"></div>
+<div style="margin-bottom: 4rem;"></div>
 
 @endsection
 

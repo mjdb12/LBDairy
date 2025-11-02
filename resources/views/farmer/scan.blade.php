@@ -182,7 +182,7 @@
 
 <!-- SMART DETAIL MODAL - Livestock Details -->
 <div class="modal fade admin" id="livestockDetailsModal" tabindex="-1" role="dialog" aria-labelledby="livestockDetailsLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content smart-details p-4">
 
       <!-- Header -->
@@ -1004,6 +1004,8 @@
     border-radius: 1rem;
     max-height: 88vh; /* taller for longer content */
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* smooth iOS momentum scroll */
+    overscroll-behavior: contain; /* prevent background scroll chaining */
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
 }
@@ -1072,15 +1074,6 @@
     }
 
     .smart-details p {
-        text-align: center;
-        font-size: 0.95rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .smart-details .modal-body {
-        padding: 0.5rem;
-        max-height: 95vh;
     }
 
     .smart-details .detail-wrapper {
@@ -1654,6 +1647,8 @@
     border-radius: 1rem;
     max-height: 70vh; /* ensures content scrolls on smaller screens */
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* smooth iOS momentum scroll */
+    overscroll-behavior: contain;
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
 }
@@ -2316,6 +2311,22 @@ function updateCameraButton(active) {
     btn.innerHTML = active ? '<i class="fas fa-stop"></i>' : '<i class="fas fa-camera"></i>';
 }
 
+// Attempt to trigger the browser's camera permission prompt proactively
+async function preflightCameraPermission() {
+    if (!isSecureOrigin()) return; // Skip on insecure origins
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } }
+        });
+        // Immediately stop the stream; we only need the permission
+        stream.getTracks().forEach(t => t.stop());
+    } catch (err) {
+        console.warn('Camera preflight failed:', err);
+        // Do not throw; allow normal start flow to handle errors and messaging
+    }
+}
+
 async function startScanner() {
     if (!isSecureOrigin()) {
         updateStatus('Camera requires HTTPS. Use Upload or Manual Input.', 'error');
@@ -2326,6 +2337,8 @@ async function startScanner() {
             html5QrCode = new Html5Qrcode("qr-reader");
         }
         let started = false;
+        // Proactively request permission so the prompt appears reliably on mobile
+        await preflightCameraPermission();
         try {
             await html5QrCode.start(
                 { facingMode: "environment" },

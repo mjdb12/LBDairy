@@ -5,6 +5,12 @@
 
     RewriteEngine On
 
+    # Force HTTPS (including when behind a proxy like Nginx/Cloudflare)
+    # This ensures getUserMedia() will prompt for camera permissions on mobile
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
     # Favicon override to ensure browsers use LBDAIRY circle logo
     RewriteRule ^favicon\.ico$ img/Lucban.png [L]
 
@@ -25,4 +31,9 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Explicitly allow camera on this origin (modern browsers)
+<IfModule mod_headers.c>
+    Header always set Permissions-Policy "camera=(self)"
 </IfModule>

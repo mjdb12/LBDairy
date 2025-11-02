@@ -1736,6 +1736,9 @@ SMART FORM - Enhanced Version
         color: #5a5c69 !important;
         font-weight: 600;
     }
+    
+.dataTables_wrapper .dataTables_paginate { text-align: left !important; margin-top: 1rem; margin-bottom: 0.75rem !important; clear: both; width: 100%; float: left !important; }
+.dataTables_wrapper .dataTables_paginate .pagination { justify-content: flex-start !important; margin: 0; }
 </style>
 @endpush
 

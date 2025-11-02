@@ -1858,6 +1858,7 @@
                                 <td class="text-center text-muted">N/A</td>
                                 <td class="text-center text-muted">No clients found</td>
                                 <td class="text-center text-muted">N/A</td>
+                                <td class="text-center text-muted">N/A</td>
                             </tr>
                             @endforelse
                         </tbody>

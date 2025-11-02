@@ -111,7 +111,7 @@
     @endif
 
     <!-- Main Content -->
-            <div class="card shadow fade-in">
+            <div class="card shadow fade-in mb-4">
                 <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-list"></i>
@@ -454,7 +454,16 @@
     </div>
 </div>
 
+<div style="margin-bottom: 4rem;"></div>
+
 @endsection
+
+@push('styles')
+<style>
+.dataTables_wrapper .dataTables_paginate { text-align: left !important; margin-top: 1rem; margin-bottom: 0.75rem !important; clear: both; width: 100%; float: left !important; }
+.dataTables_wrapper .dataTables_paginate .pagination { justify-content: flex-start !important; margin: 0; }
+</style>
+@endpush
 
 @push('scripts')
 <!-- DataTables Core -->

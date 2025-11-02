@@ -2473,7 +2473,7 @@
     </div>
 
 
-        <div class="card shadow">
+        <div class="card shadow mb-4">
             <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                 <h6 class="m-0 font-weight-bold">
                     <i class="fas fa-list mr-2"></i> Suppliers List
@@ -2907,6 +2907,8 @@
   </div>
 </div>
 
+<div style="margin-bottom: 4rem;"></div>
+
 @endsection
 
 @push('styles')
@@ -3013,19 +3015,20 @@ $(document).ready(function(){
         const safeName = esc(name);
         const safeAddress = esc(address);
         const safeContact = esc(contact);
+        const safeNameAttr = (name || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g, "\\'").replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
         const statusCell = '<span class="status-badge badge badge-success">Active</span>';
         const actionCell = `
             <div class="btn-group">
-                <button class="btn-action btn-action-ok" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
+                <button class="btn-action btn-action-ok" onclick="viewDetails('${safeNameAttr}')" title="View Details">
                     <i class="fas fa-eye"></i>
                     <span>View</span>
                 </button>
-                <button class="btn-action btn-action-edit" onclick="viewLedger('{{ $supplier['name'] }}')" title="View Ledger">
+                <button class="btn-action btn-action-edit" onclick="viewLedger('${safeNameAttr}')" title="View Ledger">
                     <i class="fas fa-book"></i>
                     <span>Ledger</span>
                 </button>
-                <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $supplier['name'] }}','{{ $supplier['expense_type'] }}')" title="Delete">
+                <button class="btn-action btn-action-deletes" onclick="confirmDelete('${safeNameAttr}', null)" title="Delete">
                     <i class="fas fa-trash"></i>
                     <span>Delete</span>
                 </button>
