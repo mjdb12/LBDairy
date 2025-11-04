@@ -509,6 +509,22 @@ function updateTopbarProfilePicture() {
     // This function is kept for future use if needed
     console.log('Topbar profile picture updated');
 }
+function updateTopbarProfilePicture(filename) {
+    try {
+        const img = document.querySelector('.navbar-profile-img');
+        if (!img) { return; }
+        const ts = Date.now();
+        if (filename && typeof filename === 'string') {
+            const base = "{{ asset('img') }}";
+            img.src = base + '/' + filename + '?t=' + ts;
+        } else {
+            const baseSrc = (img.src || '').split('?')[0];
+            img.src = baseSrc + '?t=' + ts;
+        }
+    } catch (e) {
+        console.warn('Failed to update topbar profile picture', e);
+    }
+}
 
 function showNotificationError(message) {
     // Create a temporary error notification

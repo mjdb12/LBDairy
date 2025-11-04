@@ -2177,13 +2177,27 @@
             <!-- Type -->
             <div class="col-lg-4 col-md-6 col-12">
               <label class="fw-semibold">Type <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" name="type" placeholder="e.g., Cow" required>
+              <select class="form-control" name="type" required>
+                <option value="">Select Type</option>
+                <option value="cow">Cow</option>
+                <option value="buffalo">Buffalo</option>
+                <option value="goat">Goat</option>
+                <option value="sheep">Sheep</option>
+              </select>
             </div>
 
             <!-- Breed -->
             <div class="col-lg-4 col-md-6 col-12">
               <label class="fw-semibold">Breed <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" name="breed" placeholder="e.g., Holstein" required>
+              <select class="form-control" name="breed" required>
+                <option value="">Select Breed</option>
+                <option value="holstein">Holstein</option>
+                <option value="jersey">Jersey</option>
+                <option value="guernsey">Guernsey</option>
+                <option value="ayrshire">Ayrshire</option>
+                <option value="brown_swiss">Brown Swiss</option>
+                <option value="other">Other</option>
+              </select>
             </div>
 
             <!-- Farm -->
@@ -2501,13 +2515,27 @@
                         <!-- Type -->
                         <div class="col-lg-4 col-md-6 col-12">
                             <label class="fw-semibold">Type <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="editType" name="type" placeholder="e.g., Cow" required>
+                            <select class="form-control" id="editType" name="type" required>
+                                <option value="">Select Type</option>
+                                <option value="cow">Cow</option>
+                                <option value="buffalo">Buffalo</option>
+                                <option value="goat">Goat</option>
+                                <option value="sheep">Sheep</option>
+                            </select>
                         </div>
 
                         <!-- Breed -->
                         <div class="col-lg-4 col-md-6 col-12">
                             <label class="fw-semibold">Breed <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="editBreed" name="breed" placeholder="e.g., Holstein" required>
+                            <select class="form-control" id="editBreed" name="breed" required>
+                                <option value="">Select Breed</option>
+                                <option value="holstein">Holstein</option>
+                                <option value="jersey">Jersey</option>
+                                <option value="guernsey">Guernsey</option>
+                                <option value="ayrshire">Ayrshire</option>
+                                <option value="brown_swiss">Brown Swiss</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
 
                         <!-- Farm -->

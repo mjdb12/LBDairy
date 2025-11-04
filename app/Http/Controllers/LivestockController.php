@@ -367,11 +367,26 @@ class LivestockController extends Controller
         }
 
         try {
+            // Normalize enum-constrained fields
+            $allowedTypes = ['cow','buffalo','goat','sheep'];
+            $type = strtolower(trim((string)$request->type));
+            if (!in_array($type, $allowedTypes, true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid livestock type. Allowed values: cow, buffalo, goat, sheep.'
+                ], 422);
+            }
+            $allowedBreeds = ['holstein','jersey','guernsey','ayrshire','brown_swiss','other'];
+            $breed = strtolower(trim((string)$request->breed));
+            if (!in_array($breed, $allowedBreeds, true)) {
+                $breed = 'other';
+            }
+
             Livestock::create([
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
-                'type' => $request->type,
-                'breed' => $request->breed,
+                'type' => $type,
+                'breed' => $breed,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
@@ -514,11 +529,26 @@ class LivestockController extends Controller
         }
 
         try {
+            // Normalize enum-constrained fields
+            $allowedTypes = ['cow','buffalo','goat','sheep'];
+            $type = strtolower(trim((string)$request->type));
+            if (!in_array($type, $allowedTypes, true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid livestock type. Allowed values: cow, buffalo, goat, sheep.'
+                ], 422);
+            }
+            $allowedBreeds = ['holstein','jersey','guernsey','ayrshire','brown_swiss','other'];
+            $breed = strtolower(trim((string)$request->breed));
+            if (!in_array($breed, $allowedBreeds, true)) {
+                $breed = 'other';
+            }
+
             $livestock->update([
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
-                'type' => $request->type,
-                'breed' => $request->breed,
+                'type' => $type,
+                'breed' => $breed,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,

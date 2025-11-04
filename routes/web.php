@@ -15,6 +15,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\PasswordResetController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -422,6 +423,58 @@ Route::middleware(['auth', 'verified', 'prevent-back-history'])->group(function 
         Route::get('/audit-logs/export', [SuperAdminController::class, 'exportAuditLogs'])->name('audit-logs.export');
         Route::post('/audit-logs/clear', [SuperAdminController::class, 'clearOldLogs'])->name('audit-logs.clear');
         Route::get('/audit-logs/chart-data', [SuperAdminController::class, 'getAuditLogChartData'])->name('audit-logs.chart-data');
+
+        // Superadmin maintenance hard reset: truncate all non-user data, keep superadmin account(s)
+        Route::match(['get', 'post'], '/maintenance/hard-reset', function (Request $request) {
+            $user = auth()->user();
+            if (!$user || $user->role !== 'superadmin') {
+                abort(403);
+            }
+
+            // Determine keep mode: 'role' keeps all users with role=superadmin, 'current' keeps only the invoker
+            $keepMode = $request->get('keep', 'role'); // role|current
+            $confirm = $request->get('confirm'); // must be 'YES' to execute
+
+            // Collect table names dynamically (MySQL)
+            $rows = DB::select("SELECT table_name AS name FROM information_schema.tables WHERE table_schema = DATABASE()");
+            $tables = array_map(fn($r) => $r->name, $rows);
+            $exclude = ['migrations', 'users'];
+            $toTruncate = array_values(array_diff($tables, $exclude));
+
+            if ($confirm !== 'YES') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dry run. To execute, call this endpoint with confirm=YES',
+                    'keep_mode' => $keepMode,
+                    'will_truncate' => $toTruncate,
+                    'note' => 'This will truncate all listed tables and remove non-superadmin users.'
+                ]);
+            }
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            foreach ($toTruncate as $table) {
+                try { DB::table($table)->truncate(); } catch (\Exception $e) { /* ignore */ }
+            }
+
+            // Delete users except superadmin(s) or except current user based on keep mode
+            if ($keepMode === 'current') {
+                DB::table('users')->where('id', '!=', $user->id)->delete();
+                $keptUsers = [$user->id];
+            } else {
+                DB::table('users')->where('role', '!=', 'superadmin')->delete();
+                $keptUsers = DB::table('users')->where('role', 'superadmin')->pluck('id');
+            }
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Database cleared. Only superadmin account(s) retained.',
+                'truncated' => $toTruncate,
+                'kept_user_ids' => $keptUsers,
+                'keep_mode' => $keepMode,
+            ]);
+        })->name('maintenance.hard-reset');
         Route::get('/system-overview', [SuperAdminController::class, 'getSystemOverview'])->name('system-overview');
         Route::get('/system-settings', function () { return view('superadmin.settings'); })->name('settings');
         
