@@ -19,6 +19,7 @@ class Livestock extends Model
         'name',
         'type',
         'breed',
+        'breed_name',
         'birth_date',
         'gender',
         'weight',

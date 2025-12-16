@@ -181,14 +181,14 @@
                         <div class="form-group">
                             <label for="start_date">Start Date</label>
                             <input type="date" class="form-control" id="start_date" name="start_date" 
-                                   value="{{ request('start_date') }}">
+                                   value="{{ request('start_date') }}" max="{{ date('Y-m-d') }}">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="end_date">End Date</label>
                             <input type="date" class="form-control" id="end_date" name="end_date" 
-                                   value="{{ request('end_date') }}">
+                                   value="{{ request('end_date') }}" max="{{ date('Y-m-d') }}">
                         </div>
                     </div>
                     <div class="col-md-1">

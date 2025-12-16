@@ -215,7 +215,7 @@
                         @csrf
                         <div class="form-group">
                             <label for="add_dateSold">Date Sold</label>
-                            <input type="date" class="form-control" id="add_dateSold" name="dateSold" required>
+                            <input type="date" class="form-control" id="add_dateSold" name="dateSold" required max="{{ date('Y-m-d') }}">
                         </div>
                         <div class="form-group">
                             <label for="add_type">Type</label>

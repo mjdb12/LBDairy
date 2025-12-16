@@ -118,6 +118,32 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Legend dots for livestock distribution chart */
+.livestock-legend .legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+/* Colors aligned with chart dataset order: Cow, Buffalo, Goat, Sheep */
+.livestock-legend .legend-cow {
+    background-color: #4e73df;
+}
+
+.livestock-legend .legend-buffalo {
+    background-color: #1cc88a;
+}
+
+.livestock-legend .legend-goat {
+    background-color: #36b9cc;
+}
+
+.livestock-legend .legend-sheep {
+    background-color: #f6c23e;
+}
 /* 🌟 Page Header Styling */
 .page {
     background-color: #18375d;
@@ -355,15 +381,18 @@
                 <div class="chart-pie pt-4 pb-2">
                     <canvas id="livestockChart"></canvas>
                 </div>
-                <div class="mt-4 text-center small">
+                <div class="mt-4 text-center small livestock-legend">
                     <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Dairy Cows
+                        <span class="legend-dot legend-cow"></span> Cow
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-success"></i> Goats
+                        <span class="legend-dot legend-buffalo"></span> Buffalo
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Carabaos
+                        <span class="legend-dot legend-goat"></span> Goat
+                    </span>
+                    <span class="mr-2">
+                        <span class="legend-dot legend-sheep"></span> Sheep
                     </span>
                 </div>
             </div>
@@ -532,8 +561,9 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: {!! json_encode(array_keys($livestockDistribution)) !!},
             datasets: [{
                 data: {!! json_encode(array_values($livestockDistribution)) !!},
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
-                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#f4b619', '#e74a3b'],
+                // Colors aligned with legend: Cow, Buffalo, Goat, Sheep
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
+                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#f4b619'],
                 hoverBorderColor: 'rgba(234, 236, 244, 1)',
             }]
         },

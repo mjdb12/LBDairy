@@ -592,8 +592,8 @@
                     <p class="text-muted mb-0" style="font-size: 0.95rem;">
                         <strong>Tag ID:</strong> {{ $livestock->tag_number }} &nbsp; | &nbsp;
                         <strong>Type:</strong> {{ ucfirst($livestock->type) }} &nbsp; | &nbsp;
-                        <strong>Breed:</strong> {{ ucfirst(str_replace('_', ' ', $livestock->breed)) }} &nbsp; | &nbsp;
-                        <strong>Age:</strong> {{ $age }} years
+                        <strong>Breed:</strong> {{ $livestock->breed_name ?? ($livestock->breed && strtolower($livestock->breed) !== 'other' ? ucwords(str_replace('_', ' ', $livestock->breed)) : 'N/A') }} &nbsp; | &nbsp;
+                        <strong>Age:</strong> {{ ((int) $age > 0) ? (int) $age : '<1' }} months
                     </p>
                 </div>
             </div>
@@ -623,7 +623,8 @@
                     <div>
                         <div class="metric-label">Avg Production</div>
                         <div class="metric-value">
-                            {{ $productionData->avg() ? round($productionData->avg(), 1) : 0 }}
+                            @php $avgProd = $productionData && $productionData->count() ? round($productionData->avg(), 1) : null; @endphp
+                            {{ $avgProd !== null ? $avgProd : 0 }}
                             <small>L/day</small>
                         </div>
                     </div>
@@ -639,7 +640,8 @@
                     <div>
                         <div class="metric-label">Max Production</div>
                         <div class="metric-value">
-                            {{ $productionData->max() ? round($productionData->max(), 1) : 0 }}
+                            @php $maxProd = $productionData && $productionData->count() ? round($productionData->max(), 1) : null; @endphp
+                            {{ $maxProd !== null ? $maxProd : 0 }}
                             <small>L/day</small>
                         </div>
                     </div>
@@ -655,7 +657,7 @@
                     <div>
                         <div class="metric-label">Total Records</div>
                         <div class="metric-value">
-                            {{ $livestock->productionRecords->count() }}
+                            {{ isset($totalProductionRecords) ? $totalProductionRecords : $livestock->productionRecords->count() }}
                         </div>
                     </div>
                     <div class="metric-icon bg-warning-subtle text-warning">
@@ -775,7 +777,7 @@
                         <p class="text-left"><strong>Tag Number:</strong> {{ $livestock->tag_number }}</p>
                         <p class="text-left"><strong>Name:</strong> {{ $livestock->name ?? 'Not specified' }}</p>
                         <p class="text-left"><strong>Type:</strong> {{ ucfirst($livestock->type) }}</p>
-                        <p class="text-left"><strong>Breed:</strong> {{ ucfirst(str_replace('_', ' ', $livestock->breed)) }}</p>
+                        <p class="text-left"><strong>Breed:</strong> {{ $livestock->breed_name ? $livestock->breed_name : ($livestock->breed && strtolower($livestock->breed) !== 'other' ? ucwords(str_replace('_', ' ', $livestock->breed)) : 'N/A') }}</p>
                         <p class="text-left"><strong>Gender:</strong> {{ ucfirst($livestock->gender) }}</p>
                     </div>
 
@@ -808,7 +810,7 @@
             <i class="fas fa-dumbbell me-1"></i> Physical Details
         </h6>
         <p class="text-left"><strong>Birth Date:</strong> {{ $livestock->birth_date ? \Carbon\Carbon::parse($livestock->birth_date)->format('M d, Y') : 'Not recorded' }}</p>
-        <p class="text-left"><strong>Age:</strong> {{ $age }} years</p>
+        <p class="text-left"><strong>Age:</strong> {{ ((int) $age > 0) ? (int) $age : '<1' }} months</p>
         <p class="text-left"><strong>Weight:</strong> {{ $livestock->weight ?? 'Not recorded' }} kg</p>
         <p class="text-left"><strong>Farm:</strong> {{ $livestock->farm->name ?? 'Not assigned' }}</p>
     </div>
@@ -817,10 +819,15 @@
         <h6 class="mb-3 text-info" style="font-weight: 600;">
             <i class="fas fa-industry me-1"></i> Production Summary
         </h6>
-        <p class="text-left"><strong>Total Records:</strong> {{ $livestock->productionRecords->count() }}</p>
-        <p class="text-left"><strong>Average Daily Production:</strong> {{ $productionData->avg() ? round($productionData->avg(), 1) : 0 }} L</p>
-        <p class="text-left"><strong>Maximum Daily Production:</strong> {{ $productionData->max() ? round($productionData->max(), 1) : 0 }} L</p>
-        <p class="text-left"><strong>Minimum Daily Production:</strong> {{ $productionData->min() ? round($productionData->min(), 1) : 0 }} L</p>
+        <p class="text-left"><strong>Total Records:</strong> {{ isset($totalProductionRecords) ? $totalProductionRecords : $livestock->productionRecords->count() }}</p>
+        @php
+            $avgProd = $productionData && $productionData->count() ? round($productionData->avg(), 1) : null;
+            $maxProd = $productionData && $productionData->count() ? round($productionData->max(), 1) : null;
+            $minProd = $productionData && $productionData->count() ? round($productionData->min(), 1) : null;
+        @endphp
+        <p class="text-left"><strong>Average Daily Production:</strong> {{ $avgProd !== null ? $avgProd : 0 }} L</p>
+        <p class="text-left"><strong>Maximum Daily Production:</strong> {{ $maxProd !== null ? $maxProd : 0 }} L</p>
+        <p class="text-left"><strong>Minimum Daily Production:</strong> {{ $minProd !== null ? $minProd : 0 }} L</p>
     </div>
 </div>
 

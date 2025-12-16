@@ -77,39 +77,24 @@
 
 
  <!-- Alerts Section -->
-@if($urgentIssues > 0)
-<div class="alert alert-danger alert-dismissible fade show refresh-notification" role="alert">
-    <i class="fas fa-times-circle"></i>
-    <strong>Urgent Issues Detected!</strong>
-    You have {{ $urgentIssues }} urgent issues that require immediate attention.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-@endif
-
-@if($pendingIssues > 0)
-<div class="alert alert-warning alert-dismissible fade show refresh-notification" role="alert">
-    <i class="fas fa-exclamation-triangle"></i>
-    <strong>Pending Issues:</strong>
-    You have {{ $pendingIssues }} issues awaiting resolution.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-@endif
-
-<!-- Livestock Alerts Section -->
-@if($livestockAlerts && $livestockAlerts->count() > 0)
-<div class="alert alert-info alert-dismissible fade show refresh-notification" role="alert">
-    <i class="fas fa-bell"></i>
-    <strong>New Livestock Alerts:</strong>
-    You have {{ $livestockAlerts->count() }} new alerts from administrators about your livestock.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-@endif
+ @if($urgentIssues > 0)
+ <div class="alert alert-danger alert-dismissible fade show refresh-notification" role="alert">
+     You have {{ $urgentIssues }} urgent issues that require immediate attention.
+     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+     </button>
+ </div>
+ @endif
+ 
+ <!-- Livestock Alerts Section -->
+ @if($livestockAlerts && $livestockAlerts->count() > 0)
+ <div class="alert alert-info alert-dismissible fade show refresh-notification" role="alert">
+     You have {{ $livestockAlerts->count() }} new alerts from administrators about your livestock.
+     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+     </button>
+ </div>
+ @endif
 
 
     <!-- Main Content -->

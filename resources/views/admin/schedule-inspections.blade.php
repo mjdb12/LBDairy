@@ -2577,7 +2577,7 @@
             <!-- Full Name -->
             <div class="col-md-6">
                 <label for="editInspectionDate">Inspection Date <span class="text-danger">*</span></label>
-                <input type="date" class="form-control" id="editInspectionDate" name="inspection_date" required>
+                <input type="date" class="form-control" id="editInspectionDate" name="inspection_date" required min="{{ date('Y-m-d') }}">
             </div>
 
             <!-- Email -->
@@ -2876,8 +2876,13 @@ function loadFarmersTable() {
             
             if (response.success && response.data && response.data.length > 0) {
                 response.data.forEach((farmer) => {
+                    const displayName = `${farmer.first_name || ''} ${farmer.last_name || ''}`.trim();
+                    // Escape characters that break inline JS string literals
+                    const safeName = String(displayName).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                    const safeFarm = String(farmer.farm_name || 'N/A').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
                     const rowData = [
-                        `${farmer.first_name || ''} ${farmer.last_name || ''}`,
+                        `${displayName}`,
                         farmer.farm_name || 'N/A',
                         farmer.email || 'N/A',
                         farmer.phone || 'N/A',
@@ -2888,13 +2893,13 @@ function loadFarmersTable() {
                                 <i class="fas fa-eye"></i>
                                 <span>View</span>
                             </button>
-                            <button class="btn-action btn-action-edit" onclick="scheduleInspectionForFarmer('${farmer.id}', '${farmer.first_name || ''} ${farmer.last_name || ''}', '${farmer.farm_name || 'N/A'}')" title="Schedule Inspection">
+                            <button class="btn-action btn-action-edit" onclick="scheduleInspectionForFarmer('${farmer.id}', '${safeName}', '${safeFarm}')" title="Schedule Inspection">
                                 <i class="fas fa-calendar-check"></i>
                                 <span>Schedule</span>
                             </button>
                         </div>`
                     ];
-                    
+
                     farmersTable.row.add(rowData);
                 });
                 farmersTable.draw();
@@ -2945,14 +2950,26 @@ function scheduleInspectionForFarmer(farmerId, farmerName, farmName) {
     document.getElementById('inspectionNotes').value = '';
     
     // Show the modal
-    $('#scheduleInspectionModal').modal('show');
+    try {
+        var $m = $('#scheduleInspectionModal');
+        if (!$m.length) { console.warn('scheduleInspectionModal not found'); return; }
+        if (!$.fn || !$.fn.modal) { showNotification('Cannot open modal: Bootstrap JS not loaded', 'danger'); return; }
+        if (!$m.parent().is('body')) { $m.appendTo('body'); }
+        $m.modal('show');
+    } catch (e) { console.warn('Error showing scheduleInspectionModal', e); }
     
     // Show a notification that farmer is selected
     showNotification(`Selected farmer: ${farmerName}`, 'info');
 }
 
 function openScheduleModal() {
-    $('#scheduleInspectionModal').modal('show');
+    try {
+        var $m = $('#scheduleInspectionModal');
+        if (!$m.length) { console.warn('scheduleInspectionModal not found'); return; }
+        if (!$.fn || !$.fn.modal) { showNotification('Cannot open modal: Bootstrap JS not loaded', 'danger'); return; }
+        if (!$m.parent().is('body')) { $m.appendTo('body'); }
+        $m.modal('show');
+    } catch (e) { console.warn('Error showing scheduleInspectionModal', e); }
 }
 
 function viewFarmerDetails(farmerId) {
@@ -2999,7 +3016,7 @@ function viewFarmerDetails(farmerId) {
                                 </div>
                                 <div class="col-md-12">
                                     <h6 class="mb-3" style="color: #18375d; font-weight: 600;"><i class="fas fa-calendar me-2"></i> Scheduled Inspections Calendar</h6>
-                                    <div id="farmerCalendar" style="min-height: 600px;">
+                                    <div id="farmerCalendar">
                                     </div>
                                 </div>
                             </div>
@@ -3061,10 +3078,9 @@ function viewFarmerDetails(farmerId) {
                                         } else {
                                             console.log('No inspections found for this farmer');
                                             $('#farmerCalendar').html(`
-                                                <div class="text-center text-muted p-4">
-                                                    <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                                                <div class="empty-state">
+                                                    <i class="fas fa-calendar-times"></i>
                                                     <h5>No Scheduled Inspections</h5>
-                                                    <p>This farmer has no scheduled inspections yet.</p>
                                                 </div>
                                             `);
                                         }
@@ -3075,10 +3091,9 @@ function viewFarmerDetails(farmerId) {
                                     } else {
                                         console.log('No inspections found for this farmer');
                                         $('#farmerCalendar').html(`
-                                            <div class="text-center text-muted p-4">
-                                                <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                                            <div class="empty-state">
+                                                <i class="fas fa-calendar-times"></i>
                                                 <h5>No Scheduled Inspections</h5>
-                                                <p>This farmer has no scheduled inspections yet.</p>
                                             </div>
                                         `);
                                     }

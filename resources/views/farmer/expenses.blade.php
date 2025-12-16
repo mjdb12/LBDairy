@@ -12,6 +12,66 @@
         <p>Track and manage all farm expenses efficiently</p>
     </div>
 
+    <!-- Financial Health / Bankruptcy Risk -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow h-100">
+                <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
+                    <div class="mb-3 mb-md-0">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">
+                            Financial Health (This Month)
+                        </div>
+                        <div class="h5 mb-1 font-weight-bold text-gray-800">
+                            @php($net = $netCashFlow ?? 0)
+                            @if($net === 0)
+                                Net Cash Flow: ₱0.00
+                            @else
+                                Net Cash Flow: {{ $net >= 0 ? '+' : '-' }}₱{{ number_format(abs($net), 2) }}
+                            @endif
+                        </div>
+                        <small class="text-muted d-block">
+                            Sales: ₱{{ number_format($currentMonthSales ?? 0, 2) }} &nbsp;•&nbsp;
+                            Expenses: ₱{{ number_format($currentMonthExpenses ?? 0, 2) }}
+                            @if(!is_null($expenseCoveragePercent))
+                                &nbsp;•&nbsp; Coverage: {{ $expenseCoveragePercent }}%
+                            @endif
+                        </small>
+                        <small class="text-muted d-block mt-1">
+                            Bankruptcy Risk:
+                            {{
+                                $financialStatus === 'loss' ? 'High' : (
+                                $financialStatus === 'borderline' ? 'Medium' : (
+                                $financialStatus === 'healthy' ? 'Low' : 'Unknown'))
+                            }}
+                            @if(($currentMonthSales ?? 0) > 0 && isset($netCashFlow))
+                                &nbsp;•&nbsp; Profit Margin:
+                                {{
+                                    round(
+                                        (($netCashFlow ?? 0) / max(($currentMonthSales ?? 0.01), 0.01)) * 100
+                                    )
+                                }}%
+                            @endif
+                        </small>
+                        @if(!is_null($expenseCoveragePercent))
+                            @php($coverage = max(0, min(200, (int) $expenseCoveragePercent)))
+                            <div class="progress mt-2" style="height: 6px; max-width: 260px;">
+                                <div class="progress-bar" role="progressbar" style="width: {{ $coverage > 0 ? min($coverage, 150) : 0 }}%; background-color: {{ $financialStatusColor ?? '#6c757d' }};" aria-valuenow="{{ $coverage }}" aria-valuemin="0" aria-valuemax="200"></div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="text-center text-md-right">
+                        <span class="badge px-3 py-2" style="background-color: {{ $financialStatusColor ?? '#6c757d' }}; color: #fff; font-size: 0.85rem;">
+                            {{ $financialStatusLabel ?? 'No Data Yet' }}
+                        </span>
+                        <p class="mt-2 mb-0 small text-muted" style="max-width: 280px;">
+                            {{ $financialStatusDescription ?? 'Add sales and expense records to assess financial health.' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
@@ -260,7 +320,7 @@
                         <!-- Expense Date -->
                         <div class="col-md-6">
                             <label for="expense_date" class="fw-semibold">Expense Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="expense_date" name="expense_date" value="{{ date('Y-m-d') }}" required>
+                            <input type="date" class="form-control" id="expense_date" name="expense_date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" required>
                         </div>
 
                         <!-- Description -->

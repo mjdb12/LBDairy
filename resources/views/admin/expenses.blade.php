@@ -229,7 +229,7 @@
                             <i class="fas fa-calendar mr-1"></i>
                             Date
                         </label>
-                        <input type="date" class="form-control" id="expenseDate" name="expenseDate" required>
+                        <input type="date" class="form-control" id="expenseDate" name="expenseDate" required max="{{ date('Y-m-d') }}">
                     </div>
                     <div class="form-group">
                         <label for="expenseName">

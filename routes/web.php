@@ -48,7 +48,8 @@ Route::get('/test-helpers', function() {
 
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+// IP-based throttling: max 20 login attempts per 10 minutes per IP
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:20,10');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -69,10 +70,9 @@ Route::get('/verify-email', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
-Route::get('/verify-email/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect()->intended('/dashboard');
-})->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
+Route::get('/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
 
 Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
     $request->user()->sendEmailVerificationNotification();
@@ -116,9 +116,14 @@ Route::middleware(['auth', 'verified', 'prevent-back-history'])->group(function 
         Route::delete('/production/{id}', [FarmerController::class, 'deleteProduction'])->name('production.destroy');
         Route::get('/users', function () { return view('farmer.users'); })->name('users');
         Route::get('/suppliers', [App\Http\Controllers\FarmerController::class, 'suppliers'])->name('suppliers');
+        Route::post('/suppliers', [App\Http\Controllers\FarmerController::class, 'storeSupplier'])->name('suppliers.store');
+        Route::get('/suppliers/{supplier}/ledger', [App\Http\Controllers\FarmerController::class, 'getSupplierLedger'])->name('suppliers.ledger');
+        Route::post('/suppliers/{supplier}/ledger', [App\Http\Controllers\FarmerController::class, 'storeSupplierLedgerEntry'])->name('suppliers.ledger.store');
+        Route::delete('/suppliers/{supplier}/ledger/{entry}', [App\Http\Controllers\FarmerController::class, 'deleteSupplierLedgerEntry'])->name('suppliers.ledger.destroy');
         Route::delete('/suppliers/{expenseType}', [App\Http\Controllers\FarmerController::class, 'deleteSupplier'])->name('suppliers.destroy');
         Route::get('/schedule', function () { return view('farmer.schedule'); })->name('schedule');
         Route::get('/scan', function () { return view('farmer.scan'); })->name('scan');
+        Route::post('/scan/decode', [FarmerController::class, 'decodeScan'])->name('scan.decode');
         Route::get('/scan/{id}', [FarmerController::class, 'scanLivestock'])->name('scan.livestock');
         Route::get('/sales', [App\Http\Controllers\FarmerController::class, 'sales'])->name('sales');
         Route::post('/sales', [App\Http\Controllers\FarmerController::class, 'storeSale'])->name('sales.store');
@@ -326,6 +331,7 @@ Route::middleware(['auth', 'verified', 'prevent-back-history'])->group(function 
         Route::get('/livestock/create', [App\Http\Controllers\LivestockController::class, 'create'])->name('livestock.create');
         Route::post('/livestock', [App\Http\Controllers\LivestockController::class, 'store'])->name('livestock.store');
         Route::get('/livestock/export', [App\Http\Controllers\LivestockController::class, 'export'])->name('livestock.export');
+        Route::get('/livestock/regenerate-qr-codes', [App\Http\Controllers\LivestockController::class, 'regenerateAllQRCodes'])->name('livestock.regenerate-qr-codes');
         
         // New farmer-specific livestock routes (must come before parameterized routes)
         Route::get('/livestock/farmers', [App\Http\Controllers\LivestockController::class, 'getFarmers'])->name('livestock.farmers');
@@ -424,66 +430,23 @@ Route::middleware(['auth', 'verified', 'prevent-back-history'])->group(function 
         Route::post('/audit-logs/clear', [SuperAdminController::class, 'clearOldLogs'])->name('audit-logs.clear');
         Route::get('/audit-logs/chart-data', [SuperAdminController::class, 'getAuditLogChartData'])->name('audit-logs.chart-data');
 
-        // Superadmin maintenance hard reset: truncate all non-user data, keep superadmin account(s)
-        Route::match(['get', 'post'], '/maintenance/hard-reset', function (Request $request) {
-            $user = auth()->user();
-            if (!$user || $user->role !== 'superadmin') {
-                abort(403);
-            }
-
-            // Determine keep mode: 'role' keeps all users with role=superadmin, 'current' keeps only the invoker
-            $keepMode = $request->get('keep', 'role'); // role|current
-            $confirm = $request->get('confirm'); // must be 'YES' to execute
-
-            // Collect table names dynamically (MySQL)
-            $rows = DB::select("SELECT table_name AS name FROM information_schema.tables WHERE table_schema = DATABASE()");
-            $tables = array_map(fn($r) => $r->name, $rows);
-            $exclude = ['migrations', 'users'];
-            $toTruncate = array_values(array_diff($tables, $exclude));
-
-            if ($confirm !== 'YES') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Dry run. To execute, call this endpoint with confirm=YES',
-                    'keep_mode' => $keepMode,
-                    'will_truncate' => $toTruncate,
-                    'note' => 'This will truncate all listed tables and remove non-superadmin users.'
-                ]);
-            }
-
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            foreach ($toTruncate as $table) {
-                try { DB::table($table)->truncate(); } catch (\Exception $e) { /* ignore */ }
-            }
-
-            // Delete users except superadmin(s) or except current user based on keep mode
-            if ($keepMode === 'current') {
-                DB::table('users')->where('id', '!=', $user->id)->delete();
-                $keptUsers = [$user->id];
-            } else {
-                DB::table('users')->where('role', '!=', 'superadmin')->delete();
-                $keptUsers = DB::table('users')->where('role', 'superadmin')->pluck('id');
-            }
-
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Database cleared. Only superadmin account(s) retained.',
-                'truncated' => $toTruncate,
-                'kept_user_ids' => $keptUsers,
-                'keep_mode' => $keepMode,
-            ]);
-        })->name('maintenance.hard-reset');
-        Route::get('/system-overview', [SuperAdminController::class, 'getSystemOverview'])->name('system-overview');
-        Route::get('/system-settings', function () { return view('superadmin.settings'); })->name('settings');
+    Route::get('/system-overview', [SuperAdminController::class, 'getSystemOverview'])->name('system-overview');
+    Route::get('/system-settings', function () { return view('superadmin.settings'); })->name('settings');
         
-        // Notification routes
-        Route::get('/notifications', [SuperAdminController::class, 'getNotifications'])->name('notifications');
-        Route::post('/notifications/{id}/mark-read', [SuperAdminController::class, 'markNotificationAsRead'])->name('notifications.mark-read');
-        Route::post('/notifications/mark-all-read', [SuperAdminController::class, 'markAllNotificationsAsRead'])->name('notifications.mark-all-read');
+    // Notification routes
+    Route::get('/notifications', [SuperAdminController::class, 'getNotifications'])->name('notifications');
+    Route::post('/notifications/{id}/mark-read', [SuperAdminController::class, 'markNotificationAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [SuperAdminController::class, 'markAllNotificationsAsRead'])->name('notifications.mark-all-read');
         
-        // Additional routes for superadmin functionality
+    // Additional superadmin routes to match static website
+    Route::get('/users/index', function () { return view('superadmin.users'); })->name('users.index');
+    Route::get('/users/list', [SuperAdminController::class, 'getUsersList'])->name('users.list');
+    Route::get('/users/stats', [SuperAdminController::class, 'getUserStats'])->name('users.stats');
+    Route::get('/users/{id}', [SuperAdminController::class, 'showUser'])->name('users.show');
+    Route::post('/users', [SuperAdminController::class, 'storeUser'])->name('users.store');
+    Route::put('/users/{id}', [SuperAdminController::class, 'updateUser'])->name('users.update');
+    Route::patch('/users/{id}/toggle-status', [SuperAdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
+    Route::delete('/users/{id}', [SuperAdminController::class, 'destroyUser'])->name('users.destroy');
         Route::get('/users/index', function () { return view('superadmin.users'); })->name('users.index');
         Route::get('/users/list', [SuperAdminController::class, 'getUsersList'])->name('users.list');
         Route::get('/users/stats', [SuperAdminController::class, 'getUserStats'])->name('users.stats');

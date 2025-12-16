@@ -370,7 +370,13 @@
                     </div>
                     <div class="form-group">
                         <label>Breed:</label>
-                        <input type="text" value="{{ isset($livestock->breed) ? ucfirst($livestock->breed) : '' }}" readonly>
+                        @php
+                            $prettyBreed = isset($livestock->breed) ? ucwords(str_replace('_',' ', $livestock->breed)) : '';
+                            $breedDisplay = isset($livestock->breed_name) && trim($livestock->breed_name) !== ''
+                                ? $livestock->breed_name
+                                : (($livestock->breed ?? null) && $livestock->breed !== 'other' ? $prettyBreed : '');
+                        @endphp
+                        <input type="text" value="{{ $breedDisplay }}" readonly>
                     </div>
                 </div>
                 

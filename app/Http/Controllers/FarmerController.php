@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Livestock;
 use App\Models\Farm;
 use App\Models\Issue;
@@ -17,6 +20,8 @@ use App\Models\Sale;
 use App\Models\Expense;
 use App\Models\Inventory;
 use App\Models\User;
+use App\Models\Supplier;
+use App\Models\SupplierLedgerEntry;
 use Illuminate\Support\Facades\DB;
 use App\Models\HealthRecord;
 use App\Models\BreedingRecord;
@@ -422,12 +427,15 @@ class FarmerController extends Controller
                 // Generate unique filename
                 $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 
-                // Store the file in the public/img directory
-                $file->move(public_path('img'), $filename);
+                // Store the file in the web server document root img directory
+                $docRoot = rtrim($_SERVER['DOCUMENT_ROOT'] ?? public_path(), '/\\');
+                $targetDir = $docRoot . DIRECTORY_SEPARATOR . 'img';
+                $file->move($targetDir, $filename);
                 
                 // Delete old profile picture if it exists and is not the default
-                if ($user->profile_image && $user->profile_image !== 'ronaldo.png' && file_exists(public_path('img/' . $user->profile_image))) {
-                    unlink(public_path('img/' . $user->profile_image));
+                if ($user->profile_image && $user->profile_image !== 'ronaldo.png') {
+                    $oldPath = $targetDir . DIRECTORY_SEPARATOR . $user->profile_image;
+                    if (file_exists($oldPath)) { @unlink($oldPath); }
                 }
                 
                 // Update user's profile image
@@ -671,27 +679,58 @@ class FarmerController extends Controller
             'topic' => 'required|string|max:255',
             'description' => 'required|string',
             'severity' => 'required|in:acute,chronic,severe',
-            'alert_date' => 'required|date',
+            'alert_date' => 'required|date|after_or_equal:today',
         ]);
 
-        $user = Auth::user();
-        
-        // Verify the livestock belongs to the farmer's farm
-        $livestock = Livestock::whereHas('farm', function($query) use ($user) {
-            $query->where('owner_id', $user->id);
-        })->findOrFail($request->livestock_id);
+        try {
+            $user = Auth::user();
+            
+            // Verify the livestock belongs to the farmer's farm
+            $livestock = Livestock::whereHas('farm', function($query) use ($user) {
+                $query->where('owner_id', $user->id);
+            })->findOrFail($request->livestock_id);
 
-        $alert = LivestockAlert::create([
-            'livestock_id' => $request->livestock_id,
-            'issued_by' => $user->id,
-            'alert_date' => $request->alert_date,
-            'topic' => $request->topic,
-            'description' => $request->description,
-            'severity' => $request->severity,
-            'status' => 'active',
-        ]);
+            // Normalize severity to DB enum values (migration allows: low, medium, high, critical)
+            $sev = strtolower(trim((string)$request->severity));
+            $severityMap = [
+                'chronic' => 'low',
+                'acute' => 'medium',
+                'severe' => 'high',
+                // pass-throughs in case UI already uses DB values
+                'low' => 'low',
+                'medium' => 'medium',
+                'high' => 'high',
+                'critical' => 'critical',
+            ];
+            $dbSeverity = $severityMap[$sev] ?? 'medium';
 
-        return redirect()->route('farmer.issue-alerts')->with('success', 'Alert created successfully!');
+            $alert = LivestockAlert::create([
+                'livestock_id' => $request->livestock_id,
+                'issued_by' => $user->id,
+                'alert_date' => $request->alert_date,
+                'topic' => $request->topic,
+                'description' => $request->description,
+                'severity' => $dbSeverity,
+                'status' => 'active',
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Alert created successfully!',
+                    'alert_id' => $alert->id,
+                ]);
+            }
+            return redirect()->route('farmer.issue-alerts')->with('success', 'Alert created successfully!');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to create alert: ' . $e->getMessage(),
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Failed to create alert. Please try again.')->withInput();
+        }
     }
 
     /**
@@ -815,12 +854,13 @@ class FarmerController extends Controller
             'tag_number' => 'required|string|max:255|unique:livestock',
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
+            'breed' => 'nullable|string|max:255',
+            'breed_name' => 'nullable|string|max:255',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
             'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:active,inactive,deceased,transferred,sold',
             'acquisition_date' => 'nullable|date',
             'owned_by' => 'nullable|string|max:255',
             'registry_id' => 'nullable|string|max:255',
@@ -882,14 +922,16 @@ class FarmerController extends Controller
             if (!in_array($normalizedBreed, $allowedBreeds, true)) {
                 $normalizedBreed = 'other';
             }
+            $breedName = trim((string)($request->breed_name ?? $request->breed ?? ''));
             $normalizedGender = strtolower(trim((string)$request->gender));
             $normalizedStatus = strtolower(trim((string)$request->status));
 
-            $livestock = Livestock::create([
+            $data = [
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
                 'type' => $normalizedType,
                 'breed' => $normalizedBreed,
+                'breed_name' => $breedName !== '' ? $breedName : null,
                 'birth_date' => $request->birth_date,
                 'gender' => $normalizedGender,
                 'weight' => $request->weight,
@@ -919,7 +961,19 @@ class FarmerController extends Controller
                 'cooperative_address' => $request->cooperative_address,
                 'cooperative_contact_no' => $request->cooperative_contact_no,
                 'in_charge' => $request->in_charge,
-            ]);
+            ];
+
+            // Only include columns that exist (Hostinger may not have breed_name yet)
+            $payload = [];
+            foreach ($data as $col => $val) {
+                try {
+                    if (Schema::hasColumn('livestock', $col)) {
+                        $payload[$col] = $val;
+                    }
+                } catch (\Exception $e) { /* ignore */ }
+            }
+
+            $livestock = Livestock::create($payload);
 
             return response()->json([
                 'success' => true,
@@ -1184,16 +1238,17 @@ class FarmerController extends Controller
      */
     public function updateLivestock(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'tag_number' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
+            'breed' => 'nullable|string|max:255',
+            'breed_name' => 'nullable|string|max:255',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
-            'health_status' => 'required|in:healthy,sick,recovering,under_treatment',
-            'status' => 'required|in:active,inactive',
+            'health_status' => 'required|in:healthy,sick,recovering,under_treatment,injured,pregnant,lactating',
+            'status' => 'required|in:active,inactive,deceased,transferred,sold',
             'acquisition_date' => 'nullable|date',
             'acquisition_cost' => 'nullable|numeric|min:0',
             'registry_id' => 'nullable|string|max:255',
@@ -1219,6 +1274,14 @@ class FarmerController extends Controller
             'in_charge' => 'nullable|string|max:255',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
         try {
             $user = Auth::user();
             $livestock = Livestock::whereHas('farm', function($query) use ($user) {
@@ -1239,21 +1302,23 @@ class FarmerController extends Controller
             if (!in_array($normalizedBreed, $allowedBreeds, true)) {
                 $normalizedBreed = 'other';
             }
+            $breedName = trim((string)($request->breed_name ?? $request->breed ?? ''));
             $normalizedGender = strtolower(trim((string)$request->gender));
             $normalizedStatus = strtolower(trim((string)$request->status));
 
-            $livestock->update([
+            $updates = [
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
                 'type' => $normalizedType,
                 'breed' => $normalizedBreed,
+                'breed_name' => $breedName !== '' ? $breedName : null,
                 'birth_date' => $request->birth_date,
                 'gender' => $normalizedGender,
-                'weight' => $request->weight,
+                'weight' => $request->filled('weight') ? $request->weight : null,
                 'health_status' => $request->health_status,
                 'status' => $normalizedStatus,
-                'acquisition_date' => $request->acquisition_date,
-                'acquisition_cost' => $request->acquisition_cost,
+                'acquisition_date' => $request->filled('acquisition_date') ? $request->acquisition_date : null,
+                'acquisition_cost' => $request->filled('acquisition_cost') ? $request->acquisition_cost : null,
                 'registry_id' => $request->registry_id,
                 'natural_marks' => $request->natural_marks,
                 'property_no' => $request->property_no,
@@ -1270,22 +1335,34 @@ class FarmerController extends Controller
                 'distinct_characteristics' => $request->distinct_characteristics,
                 'source_origin' => $request->source_origin,
                 'cooperator_name' => $request->cooperator_name,
-                'date_released' => $request->date_released,
+                'date_released' => $request->filled('date_released') ? $request->date_released : null,
                 'cooperative_name' => $request->cooperative_name,
                 'cooperative_address' => $request->cooperative_address,
                 'cooperative_contact_no' => $request->cooperative_contact_no,
                 'in_charge' => $request->in_charge,
-            ]);
+            ];
+
+            // Only update columns that actually exist (host may not have all migrations applied)
+            $filtered = [];
+            foreach ($updates as $col => $val) {
+                try {
+                    if (Schema::hasColumn('livestock', $col)) {
+                        $filtered[$col] = $val;
+                    }
+                } catch (\Exception $e) { /* ignore schema check failures */ }
+            }
+
+            $livestock->update($filtered);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Livestock updated successfully!'
             ]);
         } catch (\Exception $e) {
-            Log::error('Livestock update error: ' . $e->getMessage());
+            Log::error('Farmer livestock update error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update livestock. Please try again.'
+                'message' => 'Update failed: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -1296,7 +1373,7 @@ class FarmerController extends Controller
     public function updateLivestockStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:active,inactive,deceased,transferred,sold',
         ]);
 
         try {
@@ -1723,51 +1800,25 @@ class FarmerController extends Controller
             $q->where('owner_id', $user->id);
         })->findOrFail($id);
 
-        // Parse calving-style lines from remarks and compute fallbacks
-        $remarks = (string)($livestock->remarks ?? '');
-        $lines = preg_split('/\r?\n/', $remarks);
-        $records = [];
-        foreach ($lines as $line) {
-            $trim = trim($line);
-            if ($trim === '') { continue; }
-            if (strpos($trim, '[Calving]') === 0) {
-                $entry = [
-                    'date_of_calving' => null,
-                    'calf_id' => null,
-                    'sex' => null,
-                    'breed' => null,
-                    'sire_id' => null,
-                    'milk_production' => null,
-                    'dim' => null,
+        // Return DB-backed production records for this livestock
+        $records = ProductionRecord::where('livestock_id', $livestock->id)
+            ->orderByDesc('production_date')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function ($r) {
+                $notes = (string)($r->notes ?? '');
+                $ptype = null;
+                if (preg_match('/\[type:\s*([^\]]+)\]/i', $notes, $m)) {
+                    $ptype = trim($m[1]);
+                }
+                return [
+                    'production_date' => optional($r->production_date)->format('Y-m-d'),
+                    'quantity' => $r->milk_quantity !== null ? (float) $r->milk_quantity : null,
+                    'quality' => $r->milk_quality_score !== null ? (float) $r->milk_quality_score : null,
+                    'notes' => $notes,
+                    'production_type' => $ptype,
                 ];
-                $parts = array_map('trim', explode('|', substr($trim, 9)));
-                foreach ($parts as $p) {
-                    $pLower = strtolower($p);
-                    $val = trim(substr($p, strpos($p, ':') !== false ? strpos($p, ':') + 1 : 0));
-                    if (stripos($pLower, 'date of calving:') === 0 || stripos($pLower, 'date:') === 0) $entry['date_of_calving'] = $val;
-                    if (stripos($pLower, 'calf id') === 0 || stripos($pLower, 'calf:') === 0) $entry['calf_id'] = $val;
-                    if (stripos($pLower, 'sex:') === 0) $entry['sex'] = ucfirst(strtolower($val));
-                    if (stripos($pLower, 'breed:') === 0) $entry['breed'] = $val;
-                    if (stripos($pLower, 'sire id') === 0) $entry['sire_id'] = $val;
-                    if (stripos($pLower, 'milk') === 0) $entry['milk_production'] = $val;
-                    if (stripos($pLower, 'dim') === 0 || stripos($pLower, 'days in milk') === 0) $entry['dim'] = $val;
-                }
-                if (!$entry['milk_production'] && !empty($entry['date_of_calving'])) {
-                    $firstProd = ProductionRecord::where('livestock_id', $livestock->id)
-                        ->whereDate('production_date', '>=', $entry['date_of_calving'])
-                        ->orderBy('production_date', 'asc')
-                        ->first();
-                    if ($firstProd) {
-                        $entry['milk_production'] = (string) $firstProd->milk_quantity;
-                        try {
-                            $entry['dim'] = \Carbon\Carbon::parse($firstProd->production_date)
-                                ->diffInDays(\Carbon\Carbon::parse($entry['date_of_calving']));
-                        } catch (\Exception $e) { $entry['dim'] = null; }
-                    }
-                }
-                $records[] = $entry;
-            }
-        }
+            });
 
         return response()->json([
             'success' => true,
@@ -1980,8 +2031,17 @@ class FarmerController extends Controller
                 'expenseStats' => [
                     'monthly_trend' => collect(),
                     'category_distribution' => collect(),
-                    'payment_method_distribution' => collect()
-                ]
+                    'payment_method_distribution' => collect(),
+                ],
+                // Financial health defaults when there is no farm
+                'currentMonthSales' => 0,
+                'currentMonthExpenses' => 0,
+                'netCashFlow' => 0,
+                'expenseCoveragePercent' => null,
+                'financialStatus' => 'no_data',
+                'financialStatusLabel' => 'No Data Yet',
+                'financialStatusDescription' => 'Add sales and expense records to assess financial health.',
+                'financialStatusColor' => '#6c757d',
             ]);
         }
 
@@ -2021,6 +2081,50 @@ class FarmerController extends Controller
         $monthlyBudget = $farms->count() * 25000; // 25k per farm as base budget
         $budgetExceeded = $currentMonthExpenses > $monthlyBudget;
         $budgetExcess = $budgetExceeded ? $currentMonthExpenses - $monthlyBudget : 0;
+
+        // --- Financial health / bankruptcy indicator ---
+        // Current month sales across the farmer's farms
+        $currentMonth = now()->format('Y-m');
+        $currentMonthSales = Sale::whereIn('farm_id', $farmIds)
+            ->whereRaw("DATE_FORMAT(sale_date, '%Y-%m') = ?", [$currentMonth])
+            ->sum('total_amount');
+
+        $netCashFlow = $currentMonthSales - $currentMonthExpenses;
+        $expenseCoveragePercent = $currentMonthExpenses > 0
+            ? (int) round(($currentMonthSales / $currentMonthExpenses) * 100)
+            : null;
+
+        // Classify simple financial status for this month
+        $financialStatus = 'no_data';
+        $financialStatusLabel = 'No Data Yet';
+        $financialStatusDescription = 'Add sales and expense records to assess financial health.';
+        $financialStatusColor = '#6c757d';
+
+        if ($currentMonthExpenses === 0 && $currentMonthSales === 0) {
+            // Nothing recorded yet this month
+            $financialStatus = 'no_data';
+            $financialStatusLabel = 'No Data Yet';
+            $financialStatusDescription = 'Record at least one sale or expense to evaluate bankruptcy risk.';
+            $financialStatusColor = '#6c757d';
+        } elseif ($netCashFlow < 0) {
+            // Expenses are higher than sales this month
+            $financialStatus = 'loss';
+            $financialStatusLabel = 'Loss / Bankruptcy Risk';
+            $financialStatusDescription = 'This month expenses are higher than sales. Review costs and revenue to avoid bankruptcy.';
+            $financialStatusColor = '#dc3545';
+        } elseif ($expenseCoveragePercent !== null && $expenseCoveragePercent < 120) {
+            // Sales only slightly exceed expenses
+            $financialStatus = 'borderline';
+            $financialStatusLabel = 'Thin Profit Margin';
+            $financialStatusDescription = 'Sales only slightly exceed expenses this month. Monitor cash flow closely.';
+            $financialStatusColor = '#ffc107';
+        } else {
+            // Comfortable coverage of expenses
+            $financialStatus = 'healthy';
+            $financialStatusLabel = 'Financially Healthy';
+            $financialStatusDescription = 'Sales comfortably cover expenses this month. Farm is not at bankruptcy risk.';
+            $financialStatusColor = '#28a745';
+        }
 
         // Get expenses data for table
         $expensesData = $expenses->take(20)->map(function ($expense) {
@@ -2090,7 +2194,15 @@ class FarmerController extends Controller
             'budgetExcess',
             'expensesData',
             'farms',
-            'expenseStats'
+            'expenseStats',
+            'currentMonthSales',
+            'currentMonthExpenses',
+            'netCashFlow',
+            'expenseCoveragePercent',
+            'financialStatus',
+            'financialStatusLabel',
+            'financialStatusDescription',
+            'financialStatusColor'
         ));
     }
 
@@ -2822,8 +2934,8 @@ class FarmerController extends Controller
             })
             ->toArray();
 
-        // Livestock distribution by type
-        $livestockDistribution = Livestock::whereIn('farm_id', $farmIds)
+        // Livestock distribution by type (normalized to the tracked types)
+        $rawDistribution = Livestock::whereIn('farm_id', $farmIds)
             ->select('type', DB::raw('count(*) as count'))
             ->groupBy('type')
             ->get()
@@ -2831,6 +2943,16 @@ class FarmerController extends Controller
                 return [$item->type => $item->count];
             })
             ->toArray();
+
+        // Ensure we always return counts for the four tracked animal
+        // types in a fixed order so the chart labels and legend stay
+        // aligned with what the system actually tracks.
+        $livestockDistribution = [
+            'Cow'     => ($rawDistribution['cow']     ?? $rawDistribution['Cow']     ?? 0),
+            'Buffalo' => ($rawDistribution['buffalo'] ?? $rawDistribution['Buffalo'] ?? 0),
+            'Goat'    => ($rawDistribution['goat']    ?? $rawDistribution['Goat']    ?? 0),
+            'Sheep'   => ($rawDistribution['sheep']   ?? $rawDistribution['Sheep']   ?? 0),
+        ];
 
         // Performance metrics (current vs previous month)
         $currentMonthData = $this->getMonthData($farmIds, $currentMonth);
@@ -3049,22 +3171,28 @@ class FarmerController extends Controller
             ->count();
         $underTreatment = Livestock::whereIn('farm_id', $farmIds)->where('health_status', 'under_treatment')->count();
 
-        // Get livestock data for table
+        // Precompute 30-day average production per livestock in a single query
+        $avgProductionByLivestock = ProductionRecord::whereIn('farm_id', $farmIds)
+            ->where('production_date', '>=', now()->subDays(30))
+            ->groupBy('livestock_id')
+            ->select('livestock_id', DB::raw('AVG(milk_quantity) as avg_milk'))
+            ->pluck('avg_milk', 'livestock_id');
+
+        // Get livestock data for table (select only needed columns and light eager-load farm name)
         $livestockData = Livestock::whereIn('farm_id', $farmIds)
-            ->with(['farm', 'productionRecords'])
+            ->select(['id','tag_number','type','breed','birth_date','weight','health_status','farm_id'])
+            ->with(['farm:id,name'])
             ->get()
-            ->map(function ($livestock) {
-                // Calculate average daily production
-                $avgProduction = $livestock->productionRecords()
-                    ->where('production_date', '>=', now()->subDays(30))
-                    ->avg('milk_quantity') ?? 0;
-                
-                // Calculate age from birth date
-                $age = \Carbon\Carbon::parse($livestock->birth_date)->age;
-                
+            ->map(function ($livestock) use ($avgProductionByLivestock) {
+                // Use precomputed average production
+                $avgProduction = (float) ($avgProductionByLivestock[$livestock->id] ?? 0);
+
+                // Calculate age in months from birth date for table display
+                $age = $livestock->birth_date ? \Carbon\Carbon::parse($livestock->birth_date)->diffInMonths(now()) : 0;
+
                 // Calculate health score based on health status
                 $healthScore = $this->calculateLivestockHealthScore($livestock);
-                
+
                 return [
                     'id' => $livestock->id,
                     'livestock_id' => $livestock->tag_number,
@@ -3075,7 +3203,7 @@ class FarmerController extends Controller
                     'avg_production' => round($avgProduction, 1),
                     'weight' => $livestock->weight ?? 0,
                     'health_status' => $livestock->health_status,
-                    'farm_name' => $livestock->farm->name ?? 'Unknown'
+                    'farm_name' => optional($livestock->farm)->name ?? 'Unknown'
                 ];
             });
 
@@ -3131,21 +3259,64 @@ class FarmerController extends Controller
      */
     private function calculateLivestockHealthScore($livestock)
     {
-        $baseScore = 100;
-        
-        // Reduce score based on health status
-        switch ($livestock->health_status) {
-            case 'healthy':
-                return 95;
-            case 'under_treatment':
-                return 75;
-            case 'critical':
-                return 50;
-            case 'recovering':
-                return 85;
-            default:
-                return 80;
+        // Base on current health_status
+        $status = is_string($livestock->health_status) ? strtolower($livestock->health_status) : $livestock->health_status;
+        $baseMap = [
+            'healthy' => 85,
+            'recovering' => 80,
+            'under_treatment' => 65,
+            'critical' => 45,
+        ];
+        $score = $baseMap[$status] ?? 75;
+
+        // Latest health record signals
+        $recentHealth = \App\Models\HealthRecord::where('livestock_id', $livestock->id)
+            ->orderByDesc('health_date')
+            ->orderByDesc('created_at')
+            ->take(2)
+            ->get();
+
+        $latest = $recentHealth->first();
+        $prev = $recentHealth->skip(1)->first();
+
+        // Temperature adjustment
+        if ($latest && $latest->temperature !== null) {
+            $temp = (float) $latest->temperature;
+            if ($temp >= 37.5 && $temp <= 39.5) {
+                $score += 5; // normal range
+            } else {
+                $score -= 10; // fever or hypothermia
+            }
         }
+
+        // Weight trend adjustment (compare with previous record if available)
+        if ($latest && $prev && $latest->weight !== null && $prev->weight !== null) {
+            $wNew = (float) $latest->weight;
+            $wOld = (float) $prev->weight;
+            if ($wOld > 0) {
+                $delta = ($wNew - $wOld) / $wOld; // relative change
+                if ($delta <= -0.05) { // >5% loss
+                    $score -= 5;
+                } elseif ($delta >= 0.05) { // >5% gain
+                    $score += 3;
+                }
+            }
+        }
+
+        // Recent production signal (last 30 days average)
+        $avg30 = \App\Models\ProductionRecord::where('livestock_id', $livestock->id)
+            ->where('production_date', '>=', now()->subDays(30))
+            ->avg('milk_quantity');
+        $avg30 = (float) ($avg30 ?? 0);
+        if ($avg30 >= 15) {
+            $score += 5;
+        } elseif ($avg30 >= 10) {
+            $score += 2;
+        }
+
+        // Clamp and round
+        $score = max(0, min(100, (int) round($score)));
+        return $score;
     }
 
     /**
@@ -3153,35 +3324,51 @@ class FarmerController extends Controller
      */
     private function calculateLivestockPerformanceMetrics($farmIds)
     {
-        // Get production data for last 12 months
-        $productionData = ProductionRecord::whereIn('farm_id', $farmIds)
-            ->selectRaw("DATE_FORMAT(production_date, '%Y-%m') as month, AVG(milk_quantity) as avg_production")
-            ->where('production_date', '>=', now()->subMonths(12))
-            ->groupBy('month')
-            ->orderBy('month')
+        // Aggregate production by calendar month for the last 12 months
+        $rawProduction = ProductionRecord::whereIn('farm_id', $farmIds)
+            ->selectRaw("DATE_FORMAT(production_date, '%Y-%m') as ym, AVG(milk_quantity) as avg_production")
+            ->where('production_date', '>=', now()->subMonths(12)->startOfMonth())
+            ->groupBy('ym')
+            ->orderBy('ym')
             ->get()
             ->mapWithKeys(function ($item) {
-                return [date('M', strtotime($item->month . '-01')) => round($item->avg_production, 1)];
-            })
-            ->toArray();
+                return [$item->ym => (float) round($item->avg_production, 1)];
+            });
 
-        // Calculate health score trend (simplified)
-        $healthScoreData = [];
+        $labels = [];
+        $productionSeries = [];
+        $healthSeries = [];
+
+        // Build aligned series for the last 12 calendar months (including months with no production data)
         for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $totalLivestock = Livestock::whereIn('farm_id', $farmIds)->where('created_at', '<=', $date)->count();
+            $date = now()->subMonths($i)->startOfMonth();
+            $ym = $date->format('Y-m');
+
+            $labels[] = $date->format('M');
+
+            // Use aggregated average for this month, or 0 if no data
+            $productionSeries[] = (float) ($rawProduction[$ym] ?? 0);
+
+            // Health score trend based on proportion of healthy animals each month
+            $monthEnd = $date->copy()->endOfMonth();
+            $totalLivestock = Livestock::whereIn('farm_id', $farmIds)
+                ->where('created_at', '<=', $monthEnd)
+                ->count();
+
             $healthyLivestock = Livestock::whereIn('farm_id', $farmIds)
                 ->where('health_status', 'healthy')
-                ->where('created_at', '<=', $date)
+                ->where('created_at', '<=', $monthEnd)
                 ->count();
-            
-            $healthScore = $totalLivestock > 0 ? round(($healthyLivestock / $totalLivestock) * 100, 1) : 0;
-            $healthScoreData[date('M', $date->timestamp)] = $healthScore;
+
+            $healthSeries[] = $totalLivestock > 0
+                ? (float) round(($healthyLivestock / $totalLivestock) * 100, 1)
+                : 0.0;
         }
 
         return [
-            'production' => $productionData,
-            'health_score' => $healthScoreData
+            'labels' => $labels,
+            'production' => $productionSeries,
+            'health_score' => $healthSeries,
         ];
     }
 
@@ -3532,19 +3719,19 @@ class FarmerController extends Controller
                 if ($totalSpent >= 50000) {
                     $type = 'wholesale';
                     $typeLabel = 'Wholesale';
-                    $typeBadge = 'badge-info';
+                    $typeBadge = 'badge-info'; // blue
                 } elseif ($totalSpent >= 20000) {
                     $type = 'business';
                     $typeLabel = 'Business';
-                    $typeBadge = 'badge-warning';
+                    $typeBadge = 'badge-warning'; // yellow
                 } elseif ($totalSpent >= 10000) {
                     $type = 'market';
                     $typeLabel = 'Market';
-                    $typeBadge = 'badge-secondary';
+                    $typeBadge = 'badge-secondary'; // gray
                 } else {
                     $type = 'retail';
                     $typeLabel = 'Retail';
-                    $typeBadge = 'badge-primary';
+                    $typeBadge = 'badge-success'; // green, matches legend
                 }
 
                 // Determine status based on last order
@@ -3638,94 +3825,61 @@ class FarmerController extends Controller
     {
         $user = Auth::user();
         
-        // Get farmer's farms
+        // Get farmer's farms for expense statistics
         $farms = Farm::where('owner_id', $user->id)->get();
         $farmIds = $farms->pluck('id')->toArray();
-        
-        if (empty($farmIds)) {
-            return view('farmer.suppliers', [
-                'totalSuppliers' => 0,
-                'activeSuppliers' => 0,
-                'totalSpent' => 0,
-                'pendingPayments' => 0,
-                'suppliersData' => [],
-                'supplierStats' => []
-            ]);
-        }
 
-        // Get unique suppliers from expenses data (based on expense types)
-        $suppliersData = Expense::whereIn('farm_id', $farmIds)
-            ->select('expense_type')
-            ->selectRaw('COUNT(*) as total_transactions')
-            ->selectRaw('SUM(amount) as total_spent')
-            ->selectRaw('MAX(expense_date) as last_transaction_date')
-            ->selectRaw('MIN(expense_date) as first_transaction_date')
-            ->groupBy('expense_type')
-            ->orderBy('total_spent', 'desc')
-            ->get()
-            ->map(function ($supplier, $index) {
-                // Determine status based on last transaction
-                $lastTransaction = \Carbon\Carbon::parse($supplier->last_transaction_date);
-                $daysSinceLastTransaction = now()->diffInDays($lastTransaction);
-                
-                if ($daysSinceLastTransaction <= 30) {
-                    $status = 'active';
-                    $statusLabel = 'Active';
-                    $statusBadge = 'status-active';
-                } elseif ($daysSinceLastTransaction <= 90) {
-                    $status = 'pending';
-                    $statusLabel = 'Pending';
-                    $statusBadge = 'status-pending';
-                } else {
-                    $status = 'inactive';
-                    $statusLabel = 'Inactive';
-                    $statusBadge = 'status-inactive';
-                }
+        // Load persistent suppliers for this farmer
+        $suppliersCollection = Supplier::where('farmer_id', $user->id)
+            ->orderBy('name')
+            ->get();
 
-                // Generate supplier ID
-                $supplierId = 'SP' . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
+        $suppliersData = $suppliersCollection->map(function (Supplier $supplier) {
+            $status = $supplier->status ?? 'active';
+            $statusLabel = ucfirst($status);
+            $statusBadge = $status === 'active' ? 'status-active' : 'status-inactive';
 
-                // Create supplier name based on expense type
-                $supplierName = ucfirst($supplier->expense_type) . ' Supplier';
+            $code = $supplier->supplier_code;
+            if (!$code) {
+                $code = 'SP' . str_pad($supplier->id, 3, '0', STR_PAD_LEFT);
+            }
 
-                return [
-                    'id' => $index + 1,
-                    'supplier_id' => $supplierId,
-                    'name' => $supplierName,
-                    'contact' => 'Contact ' . ($index + 1),
-                    'address' => ucfirst($supplier->expense_type) . ' Address',
-                    'status' => $status,
-                    'status_label' => $statusLabel,
-                    'status_badge' => $statusBadge,
-                    'total_transactions' => $supplier->total_transactions,
-                    'total_spent' => $supplier->total_spent,
-                    'last_transaction_date' => $supplier->last_transaction_date,
-                    'first_transaction_date' => $supplier->first_transaction_date,
-                    'days_since_last_transaction' => $daysSinceLastTransaction,
-                    'expense_type' => $supplier->expense_type
-                ];
-            });
+            return [
+                'id' => $supplier->id,
+                'supplier_id' => $code,
+                'name' => $supplier->name,
+                'address' => $supplier->address ?? 'N/A',
+                'contact' => $supplier->contact ?? 'N/A',
+                'status' => $status,
+                'status_label' => $statusLabel,
+                'status_badge' => $statusBadge,
+            ];
+        });
 
-        // Calculate statistics
         $totalSuppliers = $suppliersData->count();
         $activeSuppliers = $suppliersData->where('status', 'active')->count();
-        $totalSpent = $suppliersData->sum('total_spent');
-        
-        // Calculate pending payments (simplified - assuming some expenses might be unpaid)
-        $pendingPayments = Expense::whereIn('farm_id', $farmIds)
-            ->where('payment_method', 'credit')
-            ->sum('amount');
 
-        // Supplier statistics
-        $supplierStats = [
-            'total_transactions' => $suppliersData->sum('total_transactions'),
-            'average_spent_per_supplier' => $totalSuppliers > 0 ? $totalSpent / $totalSuppliers : 0,
-            'top_supplier' => $suppliersData->first(),
-            'recent_transactions' => Expense::whereIn('farm_id', $farmIds)
-                ->orderBy('expense_date', 'desc')
-                ->take(5)
-                ->get()
-        ];
+        // Expense-based statistics still come from the expenses table
+        if (empty($farmIds)) {
+            $totalSpent = 0;
+            $pendingPayments = 0;
+            $supplierStats = [];
+        } else {
+            $totalSpent = Expense::whereIn('farm_id', $farmIds)->sum('amount');
+            $pendingPayments = Expense::whereIn('farm_id', $farmIds)
+                ->where('payment_method', 'credit')
+                ->sum('amount');
+
+            $supplierStats = [
+                'total_transactions' => Expense::whereIn('farm_id', $farmIds)->count(),
+                'average_spent_per_supplier' => $totalSuppliers > 0 ? $totalSpent / $totalSuppliers : 0,
+                'top_supplier' => null,
+                'recent_transactions' => Expense::whereIn('farm_id', $farmIds)
+                    ->orderBy('expense_date', 'desc')
+                    ->take(5)
+                    ->get(),
+            ];
+        }
 
         return view('farmer.suppliers', compact(
             'totalSuppliers',
@@ -3738,6 +3892,133 @@ class FarmerController extends Controller
     }
 
     /**
+     * Store a new supplier for the current farmer.
+     */
+    public function storeSupplier(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'supplierId' => ['nullable', 'string', 'max:64'],
+            'supplierName' => ['required', 'string', 'max:255'],
+            'supplierAddress' => ['required', 'string', 'max:255'],
+            'supplierContact' => ['required', 'regex:/^\\d{11}$/'],
+        ]);
+
+        $supplier = Supplier::create([
+            'farmer_id' => $user->id,
+            'supplier_code' => $validated['supplierId'] ?: null,
+            'name' => $validated['supplierName'],
+            'address' => $validated['supplierAddress'],
+            'contact' => $validated['supplierContact'],
+            'status' => 'active',
+            'source_type' => 'manual',
+            'source_key' => null,
+        ]);
+
+        if (!$supplier->supplier_code) {
+            $supplier->supplier_code = 'SP' . str_pad($supplier->id, 3, '0', STR_PAD_LEFT);
+            $supplier->save();
+        }
+
+        $payload = [
+            'id' => $supplier->id,
+            'supplier_id' => $supplier->supplier_code,
+            'name' => $supplier->name,
+            'address' => $supplier->address ?? 'N/A',
+            'contact' => $supplier->contact ?? 'N/A',
+            'status' => $supplier->status ?? 'active',
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Supplier saved successfully.',
+            'supplier' => $payload,
+        ]);
+    }
+
+    /**
+     * Get ledger entries for a supplier belonging to the current farmer.
+     */
+    public function getSupplierLedger(Supplier $supplier)
+    {
+        $user = Auth::user();
+
+        if ($supplier->farmer_id !== $user->id) {
+            abort(404);
+        }
+
+        $entries = $supplier->ledgerEntries()
+            ->orderBy('entry_date', 'desc')
+            ->get()
+            ->map(function (SupplierLedgerEntry $entry) {
+                return [
+                    'id' => $entry->id,
+                    'date' => optional($entry->entry_date)->format('Y-m-d'),
+                    'type' => $entry->type,
+                    'payable' => (float) $entry->payable_amount,
+                    'paid' => (float) $entry->paid_amount,
+                    'due' => (float) $entry->due_amount,
+                    'status' => $entry->status,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'entries' => $entries,
+        ]);
+    }
+
+    /**
+     * Store a new supplier ledger entry.
+     */
+    public function storeSupplierLedgerEntry(Request $request, Supplier $supplier)
+    {
+        $user = Auth::user();
+
+        if ($supplier->farmer_id !== $user->id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'date' => ['required', 'date'],
+            'type' => ['required', 'string', 'max:64'],
+            'payable' => ['required', 'numeric', 'min:0'],
+            'paid' => ['required', 'numeric', 'min:0'],
+            'status' => ['required', 'in:Unpaid,Partial,Paid'],
+        ]);
+
+        $due = $validated['payable'] - $validated['paid'];
+
+        $entry = SupplierLedgerEntry::create([
+            'supplier_id' => $supplier->id,
+            'farmer_id' => $user->id,
+            'entry_date' => $validated['date'],
+            'type' => $validated['type'],
+            'payable_amount' => $validated['payable'],
+            'paid_amount' => $validated['paid'],
+            'due_amount' => $due,
+            'status' => $validated['status'],
+        ]);
+
+        $payload = [
+            'id' => $entry->id,
+            'date' => optional($entry->entry_date)->format('Y-m-d'),
+            'type' => $entry->type,
+            'payable' => (float) $entry->payable_amount,
+            'paid' => (float) $entry->paid_amount,
+            'due' => (float) $entry->due_amount,
+            'status' => $entry->status,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ledger entry saved.',
+            'entry' => $payload,
+        ]);
+    }
+
+    /**
      * Delete a supplier by expense type for the current farmer (destructive).
      * This removes all Expense rows that match the given expense type
      * across the current farmer's farms.
@@ -3746,6 +4027,37 @@ class FarmerController extends Controller
     {
         try {
             $user = Auth::user();
+
+            // First try to treat the key as a Supplier ID in the new suppliers table
+            $supplier = Supplier::where('farmer_id', $user->id)->find($expenseType);
+            if ($supplier) {
+                $deletedLedger = 0;
+
+                DB::transaction(function () use ($supplier, $user, &$deletedLedger) {
+                    $deletedLedger = SupplierLedgerEntry::where('supplier_id', $supplier->id)->delete();
+                    $name = $supplier->name;
+                    $id = $supplier->id;
+                    $supplier->delete();
+
+                    AuditLog::create([
+                        'user_id' => $user->id,
+                        'action' => 'supplier_deleted',
+                        'description' => "Deleted supplier {$name} (ID {$id}), {$deletedLedger} ledger entries removed",
+                        'severity' => 'warning',
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->userAgent(),
+                    ]);
+                });
+
+                return response()->json([
+                    'success' => true,
+                    'deleted_count' => $deletedLedger,
+                    'deleted_supplier' => true,
+                    'message' => 'Supplier deleted successfully.'
+                ]);
+            }
+
+            // Backwards-compatible path: treat the key as an expense_type
             $farmIds = Farm::where('owner_id', $user->id)->pluck('id');
 
             if ($farmIds->isEmpty()) {
@@ -3783,6 +4095,25 @@ class FarmerController extends Controller
                 'message' => 'Failed to delete supplier.'
             ], 500);
         }
+    }
+
+    /**
+     * Delete a supplier ledger entry for the current farmer.
+     */
+    public function deleteSupplierLedgerEntry(Supplier $supplier, SupplierLedgerEntry $entry)
+    {
+        $user = Auth::user();
+
+        if ($supplier->farmer_id !== $user->id || $entry->farmer_id !== $user->id || $entry->supplier_id !== $supplier->id) {
+            abort(404);
+        }
+
+        $entry->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ledger entry deleted.',
+        ]);
     }
 
     /**
@@ -3857,20 +4188,80 @@ class FarmerController extends Controller
             })->with(['farm', 'productionRecords'])->findOrFail($id);
 
             // Calculate detailed metrics
-            $age = \Carbon\Carbon::parse($livestock->birth_date)->age;
+            $age = \Carbon\Carbon::parse($livestock->birth_date)->diffInMonths(now());
             $healthScore = $this->calculateLivestockHealthScore($livestock);
             
-            // Get production data for the last 12 months
-            $productionData = $livestock->productionRecords()
-                ->where('production_date', '>=', now()->subMonths(12))
+            $monthsBack = 12;
+            $cutoffDate = now()->subMonths($monthsBack);
+            $monthlyBuckets = [];
+            $totalProductionRecords = 0;
+
+            $dbProduction = $livestock->productionRecords()
+                ->where('production_date', '>=', $cutoffDate)
                 ->orderBy('production_date')
-                ->get()
-                ->groupBy(function($record) {
-                    return \Carbon\Carbon::parse($record->production_date)->format('Y-m');
-                })
-                ->map(function($group) {
-                    return $group->avg('milk_quantity');
-                });
+                ->get(['production_date', 'milk_quantity']);
+
+            foreach ($dbProduction as $record) {
+                if (!$record->production_date) {
+                    continue;
+                }
+                $monthKey = \Carbon\Carbon::parse($record->production_date)->format('Y-m');
+                if (!isset($monthlyBuckets[$monthKey])) {
+                    $monthlyBuckets[$monthKey] = [];
+                }
+                $monthlyBuckets[$monthKey][] = (float) $record->milk_quantity;
+                $totalProductionRecords++;
+            }
+
+            $remarks = (string) ($livestock->remarks ?? '');
+            $lines = preg_split('/\r?\n/', $remarks);
+            foreach ($lines as $line) {
+                $trim = trim($line);
+                if ($trim === '' || strpos($trim, '[Calving]') !== 0) {
+                    continue;
+                }
+                $dateString = null;
+                $milkValue = null;
+                $payload = substr($trim, 9);
+                $parts = array_map('trim', explode('|', $payload));
+                foreach ($parts as $p) {
+                    $pLower = strtolower($p);
+                    $val = trim(substr($p, strpos($p, ':') !== false ? strpos($p, ':') + 1 : 0));
+                    if (stripos($pLower, 'date of calving:') === 0 || stripos($pLower, 'date:') === 0) {
+                        $dateString = $val;
+                    }
+                    if (stripos($pLower, 'milk') === 0) {
+                        if (preg_match('/([0-9]+(?:\.[0-9]+)?)/', $val, $m)) {
+                            $milkValue = (float) $m[1];
+                        }
+                    }
+                }
+                if ($dateString === null || $milkValue === null) {
+                    continue;
+                }
+                try {
+                    $dt = \Carbon\Carbon::parse($dateString);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if ($dt->lt($cutoffDate)) {
+                    continue;
+                }
+                $monthKey = $dt->format('Y-m');
+                if (!isset($monthlyBuckets[$monthKey])) {
+                    $monthlyBuckets[$monthKey] = [];
+                }
+                $monthlyBuckets[$monthKey][] = $milkValue;
+                $totalProductionRecords++;
+            }
+
+            ksort($monthlyBuckets);
+            $productionData = collect($monthlyBuckets)->map(function (array $values) {
+                if (count($values) === 0) {
+                    return 0;
+                }
+                return array_sum($values) / count($values);
+            });
 
             // Calculate growth trend
             $weightData = $livestock->productionRecords()
@@ -3893,7 +4284,8 @@ class FarmerController extends Controller
                 'healthScore',
                 'productionData',
                 'weightData',
-                'insights'
+                'insights',
+                'totalProductionRecords'
             ))->render();
 
             return response()->json([
@@ -3935,24 +4327,12 @@ class FarmerController extends Controller
                 ->take(50)
                 ->get();
 
-            // Get health history (simplified - in real system you'd have health records)
-            $healthHistory = collect([
-                [
-                    'date' => now()->subDays(30),
-                    'status' => $livestock->health_status,
-                    'notes' => 'Regular health check'
-                ],
-                [
-                    'date' => now()->subDays(60),
-                    'status' => 'healthy',
-                    'notes' => 'Vaccination administered'
-                ],
-                [
-                    'date' => now()->subDays(90),
-                    'status' => 'healthy',
-                    'notes' => 'Routine examination'
-                ]
-            ]);
+            // Get health history from real records
+            $healthHistory = $livestock->healthRecords()
+                ->orderByDesc('health_date')
+                ->orderByDesc('created_at')
+                ->take(50)
+                ->get();
 
             $html = view('farmer.partials.livestock-history', compact(
                 'livestock',
@@ -4118,6 +4498,103 @@ class FarmerController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error scanning livestock: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Decode a QR payload (ID / JSON / encrypted string) and return livestock for the farmer.
+     */
+    public function decodeScan(Request $request)
+    {
+        try {
+            $request->validate([
+                'payload' => 'required|string',
+            ]);
+
+            $raw = $request->input('payload');
+            $lookupId = null;
+
+            // 1) Try decrypting Laravel-encrypted payload first
+            try {
+                $decrypted = Crypt::decryptString($raw);
+                $json = json_decode($decrypted, true);
+                if (is_array($json) && !empty($json['livestock_id'])) {
+                    $lookupId = (string) $json['livestock_id'];
+                }
+            } catch (\Exception $e) {
+                // Not an encrypted string or invalid ciphertext; ignore
+            }
+
+            // 2) If still no ID, try plain JSON (legacy QR codes)
+            if ($lookupId === null) {
+                $json = json_decode($raw, true);
+                if (is_array($json) && !empty($json['livestock_id'])) {
+                    $lookupId = (string) $json['livestock_id'];
+                }
+            }
+
+            // 3) Fallback: treat raw payload as the identifier directly
+            if ($lookupId === null) {
+                $lookupId = trim((string) $raw);
+            }
+
+            $user = Auth::user();
+
+            // Reuse the same search pattern as scanLivestock, but with resolved $lookupId
+            $livestock = Livestock::with(['farm.owner'])
+                ->whereHas('farm', function ($query) use ($user) {
+                    $query->where('owner_id', $user->id);
+                })
+                ->where('tag_number', $lookupId)
+                ->first();
+
+            if (!$livestock) {
+                $livestock = Livestock::with(['farm.owner'])
+                    ->whereHas('farm', function ($query) use ($user) {
+                        $query->where('owner_id', $user->id);
+                    })
+                    ->where('id', $lookupId)
+                    ->first();
+            }
+
+            if (!$livestock) {
+                $livestock = Livestock::with(['farm.owner'])
+                    ->whereHas('farm', function ($query) use ($user) {
+                        $query->where('owner_id', $user->id);
+                    })
+                    ->where('registry_id', $lookupId)
+                    ->first();
+            }
+
+            if (!$livestock) {
+                return response()->json([
+                    'success' => false,
+                    'lookup_id' => $lookupId,
+                    'message' => 'No livestock found with ID: ' . $lookupId,
+                ], 404);
+            }
+
+            AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'livestock_scanned',
+                'description' => "QR code scanned for livestock: {$livestock->tag_number}",
+                'severity' => 'info',
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'lookup_id' => $lookupId,
+                'livestock' => $livestock,
+                'message' => 'Livestock found successfully',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Livestock decodeScan error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error decoding QR payload: ' . $e->getMessage(),
             ], 500);
         }
     }

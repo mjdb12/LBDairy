@@ -65,6 +65,37 @@ class LivestockAlert extends Model
     }
 
     /**
+     * Get a human-readable severity label aligned with the current
+     * Acute / Chronic / Severe scale, while keeping backward
+     * compatibility for older low/medium/high/critical values.
+     */
+    public function getSeverityLabelAttribute()
+    {
+        switch ($this->severity) {
+            case 'acute':
+                return 'Acute';
+            case 'chronic':
+                return 'Chronic';
+            case 'severe':
+                return 'Severe';
+
+            // Map legacy severities onto the new scale
+            case 'low':
+                return 'Acute';
+            case 'medium':
+                return 'Chronic';
+            case 'high':
+            case 'critical':
+                return 'Severe';
+
+            default:
+                return $this->severity
+                    ? ucfirst($this->severity)
+                    : 'Unknown';
+        }
+    }
+
+    /**
      * Get the status badge class.
      */
     public function getStatusBadgeClassAttribute()

@@ -2198,8 +2198,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     {{ $clientDistribution['business'] ?? 0 }},
                     {{ $clientDistribution['market'] ?? 0 }}
                 ],
-                backgroundColor: ['#4e73df', '#36b9cc', '#f6c23e', '#6c757d'],
-                hoverBackgroundColor: ['#2e59d9', '#2c9faf', '#f4b619', '#545b62'],
+                // Match legend colors: Retail=success (green), Wholesale=info (blue), Business=warning (yellow), Market=secondary (gray)
+                backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#6c757d'],
+                hoverBackgroundColor: ['#218838', '#117a8b', '#e0a800', '#545b62'],
                 hoverBorderColor: 'rgba(234, 236, 244, 1)',
             }]
         },

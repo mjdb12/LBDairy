@@ -134,7 +134,7 @@
                             <th>Livestock ID</th>
                             <th>Type</th>
                             <th>Breed</th>
-                            <th>Age</th>
+                            <th>Age (months)</th>
                             <th>Weight (kg)</th>
                             <th>Health Status</th>
                             <th>Registration Date</th>
@@ -144,7 +144,7 @@
                     <tbody>
                         @forelse($livestock as $animal)
                         @php
-                            $age = $animal->birth_date ? \Carbon\Carbon::parse($animal->birth_date)->age : 'N/A';
+                            $age = $animal->birth_date ? \Carbon\Carbon::parse($animal->birth_date)->diffInMonths(now()) : 'N/A';
                             $registrationDate = $animal->created_at ? $animal->created_at->format('M d, Y') : 'N/A';
                         @endphp
                         <tr>
@@ -152,8 +152,8 @@
                                 <a href="javascript:void(0)" class="livestock-id-link" data-toggle="modal" data-target="#livestockDetailsModal" onclick="openLivestockDetails('{{ $animal->id }}')">{{ $animal->tag_number }}</a>
                             </td>
                             <td>{{ ucfirst($animal->type) }}</td>
-                            <td>{{ ucfirst(str_replace('_', ' ', $animal->breed)) }}</td>
-                            <td>{{ $age }}</td>
+                            <td>{{ $animal->breed_name ? $animal->breed_name : ($animal->breed && strtolower($animal->breed) !== 'other' ? ucwords(str_replace('_', ' ', $animal->breed)) : 'N/A') }}</td>
+                            <td>{{ is_numeric($age) ? (((int)$age > 0) ? (int)$age : '<1') : $age }}</td>
                             <td>{{ $animal->weight ? $animal->weight . ' kg' : 'N/A' }}</td>
                             <td>
                                 <span class="badge badge-{{ $animal->health_status === 'healthy' ? 'success' : ($animal->health_status === 'sick' ? 'danger' : 'warning') }}">
@@ -239,22 +239,22 @@
 
                         <!-- Breed -->
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="breed" class="fw-semibold">Breed <span class="text-danger">*</span></label>
-                            <select class="form-control mt-1" id="breed" name="breed" required>
-                                <option value="">Select Breed</option>
-                                <option value="holstein">Holstein</option>
-                                <option value="jersey">Jersey</option>
-                                <option value="guernsey">Guernsey</option>
-                                <option value="ayrshire">Ayrshire</option>
-                                <option value="brown_swiss">Brown Swiss</option>
-                                <option value="other">Other</option>
-                            </select>
+                            <label for="breed_name" class="fw-semibold">Breed</label>
+                            <input type="text" class="form-control mt-1" id="breed_name" name="breed_name" list="breedSuggestionsFarmer" placeholder="Enter breed">
+                            <datalist id="breedSuggestionsFarmer">
+                                <option value="Holstein"></option>
+                                <option value="Jersey"></option>
+                                <option value="Guernsey"></option>
+                                <option value="Ayrshire"></option>
+                                <option value="Brown Swiss"></option>
+                            </datalist>
+                            <input type="hidden" name="breed" value="other">
                         </div>
 
                         <!-- Date of Birth -->
                         <div class="col-lg-4 col-md-6 mb-3">
                             <label for="birth_date" class="fw-semibold">Date of Birth <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control mt-1" id="birth_date" name="birth_date" required>
+                            <input type="date" class="form-control mt-1" id="birth_date" name="birth_date" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Gender -->
@@ -290,6 +290,9 @@
                             <select class="form-control mt-1" id="status" name="status" required>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
+                                <option value="deceased">Deceased</option>
+                                <option value="transferred">Transferred</option>
+                                <option value="sold">Sold</option>
                             </select>
                         </div>
 
@@ -314,7 +317,7 @@
                         <!-- Acquisition Date -->
                         <div class="col-lg-4 col-md-6 mb-3">
                             <label for="acquisition_date" class="fw-semibold">Date acquired</label>
-                            <input type="date" class="form-control mt-1" id="acquisition_date" name="acquisition_date">
+                            <input type="date" class="form-control mt-1" id="acquisition_date" name="acquisition_date" max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Acquisition Cost -->
@@ -398,7 +401,7 @@
                         <!-- Date Released -->
                         <div class="col-lg-4 col-md-6 mb-3">
                             <label for="date_released" class="fw-semibold">Date Released</label>
-                            <input type="date" class="form-control mt-1" id="date_released" name="date_released">
+                            <input type="date" class="form-control mt-1" id="date_released" name="date_released" max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Cooperative Name -->
@@ -768,7 +771,11 @@ function loadLivestockData(livestockId) {
                 $('#tag_number').val(livestock.tag_number);
                 $('#name').val(livestock.name);
                 $('#type').val(livestock.type);
-                $('#breed').val(livestock.breed);
+                const prettyBreed = (s) => {
+                    if (!s) return '';
+                    return s.toString().replace(/_/g,' ').replace(/\b\w/g, t => t.toUpperCase());
+                };
+                $('#breed_name').val(livestock.breed_name ? livestock.breed_name : (livestock.breed && livestock.breed !== 'other' ? prettyBreed(livestock.breed) : ''));
                 $('#birth_date').val(formatDateForInput(livestock.birth_date));
                 $('#weight').val(livestock.weight);
                 $('#gender').val(livestock.gender);
@@ -821,9 +828,9 @@ function addGrowthRecord(livestockId) {
         showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
         return;
     }
-    const modalHtml = `
+    const modalHtml =`
 <div class="modal fade" id="growthRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content smart-form text-center p-4">
       <div class="d-flex flex-column align-items-center mb-4">
         <div class="icon-circle"><i class="fas fa-seedling fa-2x"></i></div>
@@ -833,11 +840,26 @@ function addGrowthRecord(livestockId) {
       <form id="growthRecordForm" class="text-start mx-auto">
         <div class="form-wrapper">
           <div class="row g-3">
-            <div class="col-md-6"><label class="fw-semibold">Date</label><input type="date" class="form-control mt-1" name="growth_date"></div>
-            <div class="col-md-6"><label class="fw-semibold">Weight (kg)</label><input type="number" step="0.01" min="0" class="form-control mt-1" name="weight_kg"></div>
-            <div class="col-md-6"><label class="fw-semibold">Height (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="height_cm"></div>
-            <div class="col-md-6"><label class="fw-semibold">Heart girth (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="heart_girth_cm"></div>
-            <div class="col-md-6"><label class="fw-semibold">Body length (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="body_length_cm"></div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Date</label>
+              <input type="date" class="form-control mt-1" name="growth_date" max="{{ date('Y-m-d') }}">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Weight (kg)</label>
+              <input type="number" step="0.01" min="0" class="form-control mt-1" name="weight_kg">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Height (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="height_cm">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Heart girth (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="heart_girth_cm">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Body length (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="body_length_cm">
+            </div>
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
@@ -1000,9 +1022,11 @@ function loadLivestockDetails(livestockId) {
                     <div class="col-6 mb-2">
                         <small class="text-muted">Breed</small>
                         <p class="fw-bold mb-0">
-                            ${livestock.breed 
-                                ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) 
-                                : 'N/A'}
+                            ${(livestock.breed_name && livestock.breed_name.trim() !== '')
+                                ? livestock.breed_name
+                                : (livestock.breed && livestock.breed !== 'other'
+                                    ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+                                    : 'N/A')}
                         </p>
                     </div>
 
@@ -1081,7 +1105,11 @@ function loadLivestockDetails(livestockId) {
                     <tr><th>Name</th><td>${livestock.name || 'Not assigned'}</td></tr>
                     <tr><th>Date of Birth</th><td>${birthDate}</td></tr>
                     <tr><th>Sex</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
-                    <tr><th>Breed</th><td>${livestock.breed ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not recorded'}</td></tr>
+                    <tr><th>Breed</th><td>${(livestock.breed_name && livestock.breed_name.trim() !== '')
+                        ? livestock.breed_name
+                        : (livestock.breed && livestock.breed !== 'other'
+                            ? livestock.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+                            : 'Not recorded')}</td></tr>
                     <tr><th>Sire Registry ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
                     <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
                     <tr><th>Sire Breed</th><td>${livestock.sire_breed || 'Not recorded'}</td></tr>
@@ -1121,18 +1149,16 @@ function loadLivestockDetails(livestockId) {
             <table class="table table-sm table-bordered align-middle mb-0">
                 <thead class="thead-light">
                     <tr>
-                        <th>Date of Calving</th>
-                        <th>Calf ID No.</th>
-                        <th>Sex</th>
-                        <th>Breed</th>
-                        <th>Sire ID No.</th>
-                        <th>Milk Prod'n</th>
-                        <th>Days in Milk (DIM)</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Quality</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody id="productionRecordsTable">
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-3">
+                        <td colspan="5" class="text-center text-muted py-3">
                             <i class="fas fa-info-circle"></i>
                             No production records found.
                         </td>
@@ -1838,23 +1864,30 @@ function loadProductionRecords(livestockId) {
         url: `/farmer/livestock/${livestockId}/production-records`,
         method: 'GET',
         success: function(response) {
-            if (response.success && response.data && response.data.length > 0) {
-                const tbody = document.getElementById('productionRecordsTable');
-                if (!tbody) return;
-                tbody.innerHTML = '';
+            const tbody = document.getElementById('productionRecordsTable');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (response.success && Array.isArray(response.data) && response.data.length > 0) {
                 response.data.forEach(r => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td style="white-space: nowrap;">${r.date_of_calving ? new Date(r.date_of_calving).toLocaleDateString() : 'N/A'}</td>
-                        <td style="white-space: nowrap;">${r.calf_id || 'N/A'}</td>
-                        <td style="white-space: nowrap;">${r.sex || 'N/A'}</td>
-                        <td style="white-space: nowrap;">${r.breed || 'N/A'}</td>
-                        <td style="white-space: nowrap;">${r.sire_id || 'N/A'}</td>
-                        <td style="white-space: nowrap;">${(r.milk_production !== null && r.milk_production !== undefined && r.milk_production !== '') ? r.milk_production : 'N/A'}</td>
-                        <td style="white-space: nowrap;">${(r.dim !== null && r.dim !== undefined && r.dim !== '') ? r.dim : 'N/A'}</td>
+                    const tr = document.createElement('tr');
+                    const dateStr = r.production_date ? new Date(r.production_date).toLocaleDateString() : '';
+                    const ptype = r.production_type || 'Milk';
+                    const qty = (r.quantity !== undefined && r.quantity !== null && r.quantity !== '') ? r.quantity : '';
+                    const qual = (r.quality !== undefined && r.quality !== null && r.quality !== '') ? r.quality : '';
+                    const notes = (r.notes || '').replace(/\[type:\s*[^\]]+\]\s*/i, '').trim();
+                    tr.innerHTML = `
+                        <td style="white-space: nowrap;">${dateStr || 'N/A'}</td>
+                        <td style="white-space: nowrap;">${ptype}</td>
+                        <td style="white-space: nowrap;">${qty !== '' ? qty : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${qual !== '' ? qual : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${notes || 'N/A'}</td>
                     `;
-                    tbody.appendChild(row);
+                    tbody.appendChild(tr);
                 });
+            } else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="5" class="text-center text-muted py-3"><i class="fas fa-info-circle"></i> No production records found.</td>`;
+                tbody.appendChild(tr);
             }
         }
     });
@@ -1926,7 +1959,7 @@ function addProductionRecord(livestockId) {
     // Create production record modal
     const modalHtml = `
         <!-- Add Production Record Modal -->
-<div class="modal fade" id="productionRecordModal" tabindex="-1" role="dialog" aria-labelledby="productionRecordModalLabel" aria-hidden="true">
+<div class="modal fade admin-modal" id="productionRecordModal" tabindex="-1" role="dialog" aria-labelledby="productionRecordModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content smart-form text-center p-4">
 
@@ -1947,13 +1980,13 @@ function addProductionRecord(livestockId) {
                     <div class="row g-3">
                         <!-- Production Date -->
                         <div class="col-md-6 ">
-                            <label for="production_date" class="fw-semibold">Production Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control mt-1" id="production_date" name="production_date" required>
+                            <label for="production_date" class="fw-semibold">Production Date</label>
+                            <input type="date" class="form-control mt-1" id="production_date" name="production_date" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Production Type -->
                         <div class="col-md-6 ">
-                            <label for="production_type" class="fw-semibold">Production Type <span class="text-danger">*</span></label>
+                            <label for="production_type" class="fw-semibold">Production Type</label>
                             <select class="form-control mt-1" id="production_type" name="production_type" required>
                                 <option value="">Select Type</option>
                                 <option value="milk">Milk</option>
@@ -1965,7 +1998,7 @@ function addProductionRecord(livestockId) {
 
                         <!-- Quantity -->
                         <div class="col-md-6 ">
-                            <label for="quantity" class="fw-semibold">Quantity <span class="text-danger">*</span></label>
+                            <label for="quantity" class="fw-semibold">Quantity</label>
                             <input type="number" class="form-control mt-1" id="quantity" name="quantity" min="0" step="0.1" required>
                         </div>
 
@@ -2018,6 +2051,15 @@ function saveProductionRecord(livestockId) {
     if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
     const form = document.getElementById('productionRecordForm');
     const formData = new FormData(form);
+    // Basic validation
+    const pd = (formData.get('production_date') || '').toString().trim();
+    const qtyRaw = (formData.get('quantity') || '').toString().trim();
+    if (!pd || !qtyRaw) {
+        showNotification('Please provide production date and quantity.', 'danger');
+        return;
+    }
+    const btn = document.querySelector('#productionRecordModal .btn-ok');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
     
     // Map fields to backend expectations
     const qualityMap = { excellent: 10, good: 8, fair: 6, poor: 4 };
@@ -2040,7 +2082,9 @@ function saveProductionRecord(livestockId) {
         processData: false,
         contentType: false,
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
         },
         success: function(response) {
             if (response.success) {
@@ -2057,7 +2101,8 @@ function saveProductionRecord(livestockId) {
         error: function(xhr) {
             const errorMessage = xhr.responseJSON?.message || 'Error adding production record';
             showNotification(errorMessage, 'danger');
-        }
+        },
+        complete: function(){ if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Record'; } }
     });
 }
 
@@ -2093,7 +2138,7 @@ function addHealthRecord(livestockId) {
                         <!-- Health Date -->
                         <div class="col-md-6">
                             <label for="health_date" class="fw-semibold">Health Check Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control mt-1" id="health_date" name="health_date" required>
+                            <input type="date" class="form-control mt-1" id="health_date" name="health_date" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Health Status -->
@@ -2270,7 +2315,7 @@ function addBreedingRecord(livestockId) {
                         <!-- Breeding Date -->
                         <div class="col-md-6">
                             <label for="breeding_date" class="fw-semibold">Breeding Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control mt-1" id="breeding_date" name="breeding_date" required>
+                            <input type="date" class="form-control mt-1" id="breeding_date" name="breeding_date" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Breeding Type -->
@@ -2293,7 +2338,7 @@ function addBreedingRecord(livestockId) {
                         <!-- Expected Birth Date -->
                         <div class="col-md-6 ">
                             <label for="expected_birth_date" class="fw-semibold">Expected Birth Date</label>
-                            <input type="date" class="form-control mt-1" id="expected_birth_date" name="expected_birth_date">
+                            <input type="date" class="form-control mt-1" id="expected_birth_date" name="expected_birth_date" max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Pregnancy Status -->
@@ -2654,6 +2699,7 @@ function showToast(message, type = 'info') {
     /* ============================
    FORM ELEMENT STYLES
    ============================ */
+   
 #breedingRecordModal form {
   text-align: left;
 }
@@ -2700,6 +2746,60 @@ function showToast(message, type = 'info') {
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
 
+/* Growth modal styling to match Breeding modal */
+#growthRecordModal form,
+#productionRecordModal form {
+  text-align: left;
+}
+
+#growthRecordModal .form-group,
+#productionRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#growthRecordModal label,
+#productionRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#growthRecordModal .form-control,
+#growthRecordModal select.form-control,
+#growthRecordModal textarea.form-control,
+#productionRecordModal .form-control,
+#productionRecordModal select.form-control,
+#productionRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#growthRecordModal textarea.form-control,
+#productionRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#growthRecordModal .form-control:focus,
+#productionRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
 
 #healthRecordModal form {
   text-align: left;
@@ -2744,53 +2844,6 @@ function showToast(message, type = 'info') {
 /* Focus state */
 #healthRecordModal .form-control:focus {
   border-color: #198754;
-  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
-}
-/* ============================
-   FORM ELEMENT STYLES
-   ============================ */
-#productionRecordModal form {
-  text-align: left;
-}
-
-#productionRecordModal .form-group {
-  width: 100%;
-  margin-bottom: 1.2rem;
-}
-
-#productionRecordModal label {
-  font-weight: 600;            /* make labels bold */
-  color: #18375d;              /* consistent primary blue */
-  display: inline-block;
-  margin-bottom: 0.5rem;
-}
-
-/* Unified input + select + textarea styles */
-#productionRecordModal .form-control,
-#productionRecordModal select.form-control,
-#productionRecordModal textarea.form-control {
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  padding: 12px 15px;          /* consistent padding */
-  font-size: 15px;             /* consistent font */
-  line-height: 1.5;
-  transition: all 0.2s ease;
-  width: 100%;
-  height: 46px;                /* unified height */
-  box-sizing: border-box;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  background-color: #fff;
-}
-
-/* Keep textarea resizable but visually aligned */
-#productionRecordModal textarea.form-control {
-  min-height: 100px;
-  height: auto;                /* flexible height for textarea */
-}
-
-/* Focus state */
-#productionRecordModal .form-control:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }

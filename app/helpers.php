@@ -94,6 +94,7 @@ if (!function_exists('notifySuperAdmins')) {
                 'action_url' => $actionUrl,
                 'severity' => $severity,
                 'is_read' => false,
+                'recipient_id' => $superAdmin->id,
                 'metadata' => $metadata
             ]);
         }

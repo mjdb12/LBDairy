@@ -818,16 +818,28 @@
                                 {{ $animal['type'] ?? 'Livestock ' . $loop->iteration }}
                             </div>
                         </td>
-                        <td><span class="badge badge-info">{{ $animal['breed'] ?? 'Holstein' }}</span></td>
-                        <td>{{ $animal['age'] ?? rand(12, 60) }}</td>
+                        <td><span class="badge badge-info">{{ !empty($animal['breed_name']) ? $animal['breed_name'] : (!empty($animal['breed']) && $animal['breed'] !== 'other' ? ucwords(str_replace('_',' ', $animal['breed'])) : 'N/A') }}</span></td>
+                        <td>
+                            @if(isset($animal['age']))
+                                {{ ((int) $animal['age'] > 0) ? (int) $animal['age'] : '<1' }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
                         <td>
                             @php
-                                $healthScore = $animal['health_score'] ?? rand(85, 100);
-                                $healthClass = $healthScore >= 90 ? 'success' : ($healthScore >= 80 ? 'warning' : 'danger');
+                                $healthScore = isset($animal['health_score']) ? (int) $animal['health_score'] : null;
+                                $healthClass = is_numeric($healthScore) ? ($healthScore >= 90 ? 'success' : ($healthScore >= 80 ? 'warning' : 'danger')) : 'secondary';
                             @endphp
-                            <span class="badge badge-{{ $healthClass }}">{{ $healthScore }}%</span>
+                            <span class="badge badge-{{ $healthClass }}">{{ is_numeric($healthScore) ? $healthScore . '%' : 'N/A' }}</span>
                         </td>
-                        <td>{{ $animal['avg_production'] ?? rand(15, 25) }}L</td>
+                        <td>
+                            @if(isset($animal['avg_production']))
+                                {{ $animal['avg_production'] }}L
+                            @else
+                                N/A
+                            @endif
+                        </td>
                         <td>
                             @php
                                 $breedingStatus = $animal['health_status'] === 'healthy' ? 'Active' : ($animal['health_status'] === 'under_treatment' ? 'Under Treatment' : 'Inactive');
@@ -949,6 +961,36 @@
       <div class="modal-body">
         <div id="healthRecordModalBody">
           <!-- Dynamic health record details injected here -->
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer justify-content-center mt-4">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Production Record Modal -->
+<div class="modal fade livestock-modal" id="productionRecordModal" tabindex="-1" role="dialog" aria-labelledby="productionRecordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content smart-detail p-4">
+
+      <!-- Icon + Header -->
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-tint fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-1">Production Record Details</h5>
+        <p class="text-muted mb-0 small text-center">Below is the complete production record of the selected livestock.</p>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div id="productionRecordModalBody">
+          <!-- Dynamic production record details injected here -->
         </div>
       </div>
 
@@ -1575,10 +1617,10 @@ function initializeCharts() {
             const performanceChart = new Chart(performanceCtx, {
                 type: 'line',
                 data: {
-                    labels: {!! json_encode(array_keys($performanceMetrics['production'] ?? [])) !!},
+                    labels: {!! json_encode($performanceMetrics['labels'] ?? []) !!},
                     datasets: [{
                         label: 'Average Milk Production (L/day)',
-                        data: {!! json_encode(array_values($performanceMetrics['production'] ?? [])) !!},
+                        data: {!! json_encode($performanceMetrics['production'] ?? []) !!},
                         borderColor: '#4e73df',
                         backgroundColor: 'rgba(78, 115, 223, 0.05)',
                         borderWidth: 2,
@@ -1586,7 +1628,7 @@ function initializeCharts() {
                         tension: 0.4
                     }, {
                         label: 'Health Score (%)',
-                        data: {!! json_encode(array_values($performanceMetrics['health_score'] ?? [])) !!},
+                        data: {!! json_encode($performanceMetrics['health_score'] ?? []) !!},
                         borderColor: '#1cc88a',
                         backgroundColor: 'rgba(28, 200, 138, 0.05)',
                         borderWidth: 2,
@@ -1827,13 +1869,23 @@ $(document).on('hidden.bs.modal', '#livestockHistoryModal', function(){
     } catch (_) {}
 });
 
-// Ensure body scroll state remains correct when closing nested modals (e.g., healthRecordModal)
+// Ensure body scroll state remains correct when closing nested modals (e.g., healthRecordModal / productionRecordModal)
 $(document).on('hidden.bs.modal', '#healthRecordModal', function(){
     if ($('#livestockHistoryModal').hasClass('show')) {
         $('body').addClass('modal-open');
     }
 });
 $(document).on('shown.bs.modal', '#healthRecordModal', function(){
+    if ($('#livestockHistoryModal').hasClass('show')) {
+        $('body').addClass('modal-open');
+    }
+});
+$(document).on('hidden.bs.modal', '#productionRecordModal', function(){
+    if ($('#livestockHistoryModal').hasClass('show')) {
+        $('body').addClass('modal-open');
+    }
+});
+$(document).on('shown.bs.modal', '#productionRecordModal', function(){
     if ($('#livestockHistoryModal').hasClass('show')) {
         $('body').addClass('modal-open');
     }
@@ -1898,7 +1950,7 @@ function viewLivestockHistory(livestockId) {
                                     order: [[0,'desc']],
                                     responsive: true,
                                     language: {
-                                        emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-tint fa-3x mb-3"></i><p>No production records found for this livestock.</p></div>',
+                                        emptyTable: 'No production records found for this livestock.',
                                         search: 'Search records:',
                                         lengthMenu: 'Show _MENU_ records per page',
                                         info: 'Showing _START_ to _END_ of _TOTAL_ records'
@@ -1912,7 +1964,7 @@ function viewLivestockHistory(livestockId) {
                                     responsive: true,
                                     columnDefs: [ { targets: -1, className: 'text-left' } ],
                                     language: {
-                                        emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-heartbeat fa-3x mb-3"></i><p>No health records found for this livestock.</p></div>',
+                                        emptyTable: 'No health records found for this livestock.',
                                         search: 'Search records:',
                                         lengthMenu: 'Show _MENU_ records per page',
                                         info: 'Showing _START_ to _END_ of _TOTAL_ records'
@@ -1926,7 +1978,7 @@ function viewLivestockHistory(livestockId) {
                     } catch (_) {}
                     try {
                         // Delegated handler for Health tab View buttons
-                        $(document).off('click', '#healthHistoryTable .btn-action-ok').on('click', '#healthHistoryTable .btn-action-ok', function(e){
+                        $(document).off('click', '#healthHistoryTable .health-view-btn').on('click', '#healthHistoryTable .health-view-btn', function(e){
                             e.preventDefault();
                             const toText = function(html){ var div = document.createElement('div'); div.innerHTML = html || ''; return (div.textContent || div.innerText || '').replace(/\s+/g,' ').trim(); };
                             let date = '', status = '', notes = '';
@@ -1934,7 +1986,7 @@ function viewLivestockHistory(livestockId) {
                                 if ($ && $.fn && $.fn.DataTable && $.fn.DataTable.isDataTable('#healthHistoryTable')) {
                                     const dt = $('#healthHistoryTable').DataTable();
                                     const $tr = $(this).closest('tr');
-                                    const row = dt.row($tr.hasClass('child') ? $tr.prev() : $tr);
+                                    const row = dt.row($tr);
                                     const data = row.data();
                                     if (Array.isArray(data)) {
                                         date = toText(data[0] || '');
@@ -1958,7 +2010,7 @@ function viewLivestockHistory(livestockId) {
                                     <tbody>
                                         <tr><th>Date</th><td>${date}</td></tr>
                                         <tr><th>Status</th><td>${status}</td></tr>
-                                        <tr><th>Notes</th><td>${notes}</td></tr>
+                                        <tr><th>Notes</th><td style="white-space: normal; word-break: break-word;">${notes}</td></tr>
                                     </tbody>
                                 </table>`;
                             $('#healthRecordModalBody').html(bodyHtml);
@@ -1966,6 +2018,53 @@ function viewLivestockHistory(livestockId) {
                             if (!$hm.parent().is('body')) { $hm.appendTo('body'); }
                             $hm.modal({ backdrop: true, keyboard: true });
                             $hm.modal('show');
+                        });
+
+                        // Delegated handler for Production tab View buttons
+                        $(document).off('click', '#productionHistoryTable .production-view-btn').on('click', '#productionHistoryTable .production-view-btn', function(e){
+                            e.preventDefault();
+                            const toText = function(html){ var div = document.createElement('div'); div.innerHTML = html || ''; return (div.textContent || div.innerText || '').replace(/\s+/g,' ').trim(); };
+                            let date = '', quantity = '', quality = '', notes = '';
+                            try {
+                                if ($ && $.fn && $.fn.DataTable && $.fn.DataTable.isDataTable('#productionHistoryTable')) {
+                                    const dt = $('#productionHistoryTable').DataTable();
+                                    const $tr = $(this).closest('tr');
+                                    const row = dt.row($tr);
+                                    const data = row.data();
+                                    if (Array.isArray(data)) {
+                                        date = toText(data[0] || '');
+                                        quantity = toText(data[1] || '');
+                                        quality = toText(data[2] || '');
+                                        notes = toText(data[3] || '');
+                                    } else if (data) {
+                                        date = toText(data.date || '');
+                                        quantity = toText(data.quantity || data.milk_quantity || '');
+                                        quality = toText(data.quality || data.milk_quality_score || '');
+                                        notes = toText(data.notes || '');
+                                    }
+                                } else {
+                                    const $cells = $(this).closest('tr').find('td');
+                                    date = ($cells.eq(0).text() || '').trim();
+                                    quantity = ($cells.eq(1).text() || '').trim();
+                                    quality = ($cells.eq(2).text() || '').trim();
+                                    notes = ($cells.eq(3).text() || '').trim();
+                                }
+                            } catch(_) {}
+
+                            const bodyHtml = `
+                                <table class="table table-sm table-bordered mb-0">
+                                    <tbody>
+                                        <tr><th>Date</th><td>${date}</td></tr>
+                                        <tr><th>Milk Quantity</th><td>${quantity}</td></tr>
+                                        <tr><th>Quality Score</th><td>${quality}</td></tr>
+                                        <tr><th>Notes</th><td style="white-space: normal; word-break: break-word;">${notes}</td></tr>
+                                    </tbody>
+                                </table>`;
+                            $('#productionRecordModalBody').html(bodyHtml);
+                            const $pm = $('#productionRecordModal');
+                            if (!$pm.parent().is('body')) { $pm.appendTo('body'); }
+                            $pm.modal({ backdrop: true, keyboard: true });
+                            $pm.modal('show');
                         });
                     } catch (_) {}
                 }, 0);

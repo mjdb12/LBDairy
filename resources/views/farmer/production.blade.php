@@ -1556,7 +1556,7 @@
                     <!-- Production Date -->
                     <div class="col-md-6 ">
                         <label for="production_date" class="fw-semibold">Production Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="production_date" name="production_date" value="{{ date('Y-m-d') }}" required>
+                        <input type="date" class="form-control" id="production_date" name="production_date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" required>
                     </div>
 
                     <!-- Livestock -->
@@ -1801,7 +1801,7 @@ $(document).ready(function() {
                 }
                 if (data.record){ upsertProductionRow(data.record); }
                 $('#addProductionModal').modal('hide');
-                showAlert('success', data.message || 'Record saved successfully!');
+                showNotification(data.message || 'Record saved successfully!', 'success');
                 // Reset for add mode
                 form.reset();
                 $('#production_date').val('{{ date('Y-m-d') }}');

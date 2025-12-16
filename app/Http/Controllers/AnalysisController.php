@@ -340,6 +340,51 @@ class AnalysisController extends Controller
                 ->get()
                 ->pluck('count', 'type')
                 ->toArray();
+
+            // Derive efficiency based on recent production vs baseline per active livestock
+            $effectiveLivestock = max(1, $activeLivestock ?: $totalLivestock);
+            $baselineDailyPerLivestock = 15; // liters per day baseline per animal
+            $baselineDaily = $effectiveLivestock * $baselineDailyPerLivestock;
+            $recentDaily = $recentProduction > 0 ? $recentProduction / 30 : 0;
+            $efficiency = $baselineDaily > 0
+                ? min(100, ($recentDaily / $baselineDaily) * 100)
+                : 0;
+
+            // Build 6‑month trend using existing helper
+            $trendData = $this->getProductionData($farmerId);
+
+            // Compute peak production day and output from actual records
+            $peakDay = null;
+            $peakOutput = 0;
+
+            $peakRow = ProductionRecord::join('farms', 'production_records.farm_id', '=', 'farms.id')
+                ->where('farms.owner_id', $farmerId)
+                ->selectRaw('DATE(COALESCE(production_records.production_date, production_records.created_at)) as d, SUM(production_records.milk_quantity) as total')
+                ->groupBy('d')
+                ->orderByDesc('total')
+                ->first();
+
+            if (!$peakRow) {
+                $peakRow = ProductionRecord::join('livestock', 'production_records.livestock_id', '=', 'livestock.id')
+                    ->where('livestock.owner_id', $farmerId)
+                    ->selectRaw('DATE(COALESCE(production_records.production_date, production_records.created_at)) as d, SUM(production_records.milk_quantity) as total')
+                    ->groupBy('d')
+                    ->orderByDesc('total')
+                    ->first();
+            }
+
+            if (!$peakRow) {
+                $peakRow = ProductionRecord::where('recorded_by', $farmerId)
+                    ->selectRaw('DATE(COALESCE(production_date, created_at)) as d, SUM(milk_quantity) as total')
+                    ->groupBy('d')
+                    ->orderByDesc('total')
+                    ->first();
+            }
+
+            if ($peakRow) {
+                $peakDay = $peakRow->d;
+                $peakOutput = (float) $peakRow->total;
+            }
             
             return [
                 'total_livestock' => $totalLivestock,
@@ -350,7 +395,14 @@ class AnalysisController extends Controller
                 'total_farms' => $totalFarms,
                 'active_farms' => $activeFarms,
                 'recent_production' => round($recentProduction, 1),
-                'livestock_by_type' => $livestockByType
+                'livestock_by_type' => $livestockByType,
+                'efficiency' => round($efficiency, 1),
+                'peak_day' => $peakDay,
+                'peak_output' => round($peakOutput, 1),
+                'trend' => [
+                    'labels' => $trendData['labels'] ?? [],
+                    'values' => $trendData['data'] ?? [],
+                ],
             ];
         } catch (\Exception $e) {
             // Return default values if there's an error
@@ -363,7 +415,14 @@ class AnalysisController extends Controller
                 'total_farms' => 0,
                 'active_farms' => 0,
                 'recent_production' => 0,
-                'livestock_by_type' => []
+                'livestock_by_type' => [],
+                'efficiency' => 0,
+                'peak_day' => null,
+                'peak_output' => 0,
+                'trend' => [
+                    'labels' => [],
+                    'values' => [],
+                ],
             ];
         }
     }

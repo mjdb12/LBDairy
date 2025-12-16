@@ -37,6 +37,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'status',
         'terms_accepted',
         'last_login_at',
+        'failed_login_attempts',
+        'lockout_count',
+        'last_failed_login_at',
+        'locked_until',
+        'last_login_ip',
     ];
 
     /**
@@ -59,6 +64,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
         'is_active' => 'boolean',
         'last_login_at' => 'datetime',
+        'last_failed_login_at' => 'datetime',
+        'locked_until' => 'datetime',
     ];
 
     /**
@@ -196,5 +203,25 @@ class User extends Authenticatable implements MustVerifyEmail
 
         $next = ((int) $max) + 1;
         return $prefix . str_pad((string)$next, $pad, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Derived location accessor combining barangay, address, and farm_address.
+     */
+    public function getLocationAttribute()
+    {
+        if (!empty($this->barangay)) {
+            return $this->barangay;
+        }
+
+        if (!empty($this->address)) {
+            return $this->address;
+        }
+
+        if (!empty($this->farm_address)) {
+            return $this->farm_address;
+        }
+
+        return null;
     }
 }

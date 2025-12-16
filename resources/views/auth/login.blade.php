@@ -66,8 +66,8 @@
                     <!-- Left Side - Branding (Dark Blue) -->
                     <div class="lg:w-1/2 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden" style="background: #18375d;">
                         <div class="logo-container">
-                                <img src="{{ asset('img/lucban.png') }}" alt="LBDAIRY Logo" style="width: 200px; height: 200px;">
-                            </div>
+                            <img src="{{ asset('img/Lucban.png') }}" alt="LBDAIRY Logo" style="width: 200px; height: 200px;">
+                        </div>
                         <div class="absolute inset-0 bg-black opacity-20"></div>
                         <div class="relative z-10 text-center">
                             <h1 class="text-4xl font-bold mb-4">LBDAIRY</h1>
@@ -94,32 +94,12 @@
 
                             <div class="text-center mb-8">
                                 <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome back</h2>
-                                <p class="text-gray-600">Log in to your account</p>
+                                <p class="text-gray-600">Log in to your LBDAIRY account</p>
                             </div>
 
-                            <!-- User Type Tabs -->
-                            <div class="flex rounded-2xl p-1.5 bg-gray-100 w-full">
-                                <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-active" data-tab="farmer">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <span>Farmer</span>
-                                    </div>
-                                </button>
-                                <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-inactive" data-tab="admin">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <span>Admin</span>
-                                    </div>
-                                </button>
-                                <button class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 tab-inactive" data-tab="superadmin">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <span>Super</span>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <!-- Login Form -->
+                            <!-- Centralized Login Form -->
                             <form method="POST" action="{{ route('login') }}" class="space-y-6">
                                 @csrf
-                                <input type="hidden" name="role" id="selectedRole" value="farmer">
                                 
                                 <!-- Validation Errors -->
                                 @if ($errors->any())
@@ -151,6 +131,20 @@
                                             </button>
                                         </div>
                                     </div>
+                                    @if(!empty($requireCaptcha) && !empty($captchaQuestion))
+                                        <div>
+                                            <label for="captcha" class="block text-sm font-medium text-gray-700 mb-2">Security Check</label>
+                                            <div class="flex items-center space-x-3">
+                                                <span class="text-sm text-gray-700">What is {{ $captchaQuestion }}?</span>
+                                                <input type="text" id="captcha" name="captcha"
+                                                       class="w-24 px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                                       autocomplete="off">
+                                            </div>
+                                            @error('captcha')
+                                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    @endif
                                     <div class="flex justify-end">
                                         <a href="{{ route('password.request') }}" class="text-sm font-medium" style="color: #18375d;">Forgot your password?</a>
                                     </div>
@@ -190,45 +184,6 @@
                 icon.classList.add('fa-eye');
             }
         }
-        
-        // Tab switching functionality
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const selectedRoleInput = document.getElementById('selectedRole');
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.dataset.tab;
-                
-                // Update tab buttons
-                tabBtns.forEach(b => {
-                    b.classList.remove('tab-active');
-                    b.classList.add('tab-inactive');
-                });
-                btn.classList.remove('tab-inactive');
-                btn.classList.add('tab-active');
-                
-                // Update hidden input
-                selectedRoleInput.value = tab;
-                
-                // Update form placeholders based on role
-                if (tab === 'farmer') {
-                    usernameInput.placeholder = 'Enter your username (e.g., johnfarmer)';
-                    passwordInput.placeholder = 'Enter your password';
-                } else if (tab === 'admin') {
-                    usernameInput.placeholder = 'Enter your username (e.g., admin)';
-                    passwordInput.placeholder = 'Enter your password';
-                } else if (tab === 'superadmin') {
-                    usernameInput.placeholder = 'Enter your username (e.g., superadmin)';
-                    passwordInput.placeholder = 'Enter your password';
-                }
-                
-                // Clear form fields when switching tabs
-                usernameInput.value = '';
-                passwordInput.value = '';
-            });
-        });
     </script>
 </body>
 </html>

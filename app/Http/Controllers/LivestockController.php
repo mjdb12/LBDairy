@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 
 class LivestockController extends Controller
@@ -320,13 +322,14 @@ class LivestockController extends Controller
             'tag_number' => 'required|string|max:255|unique:livestock,tag_number',
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
+            'breed' => 'nullable|string|max:255',
+            'breed_name' => 'nullable|string|max:255',
             'farm_id' => 'required|exists:farms,id',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
             'health_status' => 'required|string|max:255',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:active,inactive,deceased,transferred,sold',
             'registry_id' => 'nullable|string|max:255',
             'natural_marks' => 'nullable|string|max:255',
             'property_no' => 'nullable|string|max:255',
@@ -378,15 +381,15 @@ class LivestockController extends Controller
             }
             $allowedBreeds = ['holstein','jersey','guernsey','ayrshire','brown_swiss','other'];
             $breed = strtolower(trim((string)$request->breed));
-            if (!in_array($breed, $allowedBreeds, true)) {
-                $breed = 'other';
-            }
+            if (!in_array($breed, $allowedBreeds, true)) { $breed = 'other'; }
+            $breedName = trim((string)($request->breed_name ?? ''));
 
-            Livestock::create([
+            $data = [
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
                 'type' => $type,
                 'breed' => $breed,
+                'breed_name' => $breedName !== '' ? $breedName : null,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
@@ -417,7 +420,19 @@ class LivestockController extends Controller
                 'cooperative_contact_no' => $request->cooperative_contact_no,
                 'in_charge' => $request->in_charge,
                 'owner_id' => $request->farmer_id ?? Auth::user()->id,
-            ]);
+            ];
+
+            // Only include columns that exist (Hostinger may not have breed_name yet)
+            $filtered = [];
+            foreach ($data as $col => $val) {
+                try {
+                    if (Schema::hasColumn('livestock', $col)) {
+                        $filtered[$col] = $val;
+                    }
+                } catch (\Exception $e) { /* ignore schema check failures */ }
+            }
+
+            Livestock::create($filtered);
 
             if ($request->ajax()) {
                 return response()->json([
@@ -482,13 +497,14 @@ class LivestockController extends Controller
             'tag_number' => 'required|string|max:255|unique:livestock,tag_number,' . $id,
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'breed' => 'required|string|max:255',
+            'breed' => 'nullable|string|max:255',
+            'breed_name' => 'nullable|string|max:255',
             'farm_id' => 'required|exists:farms,id',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'weight' => 'nullable|numeric|min:0',
             'health_status' => 'nullable|string|max:255',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:active,inactive,deceased,transferred,sold',
             'registry_id' => 'nullable|string|max:255',
             'natural_marks' => 'nullable|string|max:255',
             'property_no' => 'nullable|string|max:255',
@@ -543,23 +559,33 @@ class LivestockController extends Controller
             if (!in_array($breed, $allowedBreeds, true)) {
                 $breed = 'other';
             }
+            $breedName = trim((string)($request->breed_name ?? ''));
 
-            $livestock->update([
+            // Clamp health_status to DB-safe values to avoid enum errors on hosts without new statuses
+            $health = $request->health_status;
+            $allowedHealthDb = ['healthy','sick','recovering','under_treatment'];
+            $health = in_array(strtolower((string)$health), $allowedHealthDb, true)
+                ? strtolower((string)$health)
+                : 'healthy';
+
+            // Build updates
+            $updates = [
                 'tag_number' => $request->tag_number,
                 'name' => $request->name,
                 'type' => $type,
                 'breed' => $breed,
+                'breed_name' => $breedName !== '' ? $breedName : null,
                 'farm_id' => $request->farm_id,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
-                'weight' => $request->weight,
-                'health_status' => $request->health_status ?? 'healthy',
+                'weight' => $request->filled('weight') ? $request->weight : null,
+                'health_status' => $health,
                 'status' => $request->status,
                 'registry_id' => $request->registry_id,
                 'natural_marks' => $request->natural_marks,
                 'property_no' => $request->property_no,
-                'acquisition_date' => $request->acquisition_date,
-                'acquisition_cost' => $request->acquisition_cost,
+                'acquisition_date' => $request->filled('acquisition_date') ? $request->acquisition_date : null,
+                'acquisition_cost' => $request->filled('acquisition_cost') ? $request->acquisition_cost : null,
                 'sire_id' => $request->sire_id,
                 'sire_name' => $request->sire_name,
                 'sire_breed' => $request->sire_breed,
@@ -573,12 +599,24 @@ class LivestockController extends Controller
                 'distinct_characteristics' => $request->distinct_characteristics,
                 'source_origin' => $request->source_origin,
                 'cooperator_name' => $request->cooperator_name,
-                'date_released' => $request->date_released,
+                'date_released' => $request->filled('date_released') ? $request->date_released : null,
                 'cooperative_name' => $request->cooperative_name,
                 'cooperative_address' => $request->cooperative_address,
                 'cooperative_contact_no' => $request->cooperative_contact_no,
                 'in_charge' => $request->in_charge,
-            ]);
+            ];
+
+            // Only include columns that actually exist in the livestock table (Hostinger may not have latest migrations)
+            $filtered = [];
+            foreach ($updates as $col => $val) {
+                try {
+                    if (Schema::hasColumn('livestock', $col)) {
+                        $filtered[$col] = $val;
+                    }
+                } catch (\Exception $e) { /* ignore schema check failures */ }
+            }
+
+            $livestock->update($filtered);
 
             if ($request->ajax()) {
                 return response()->json([
@@ -593,7 +631,7 @@ class LivestockController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to update livestock. Please try again.'
+                    'message' => 'Failed to update livestock: ' . $e->getMessage()
                 ], 500);
             }
             return redirect()->back()
@@ -641,7 +679,7 @@ class LivestockController extends Controller
             $livestock = Livestock::findOrFail($id);
             
             $validator = Validator::make($request->all(), [
-                'status' => 'required|in:active,inactive'
+                'status' => 'required|in:active,inactive,deceased,transferred,sold'
             ]);
 
             if ($validator->fails()) {
@@ -747,7 +785,7 @@ class LivestockController extends Controller
                         'last_name' => $farmer->last_name,
                         'name' => $farmer->name,
                         'email' => $farmer->email,
-                        'contact_number' => $farmer->contact_number,
+                        'contact_number' => $farmer->phone ?? $farmer->contact_number,
                         'barangay' => $farmer->barangay,
                         'status' => $farmer->status,
                         'livestock_count' => $farmer->livestock_count
@@ -897,25 +935,42 @@ class LivestockController extends Controller
     {
         try {
             $livestock = Livestock::with(['farm', 'qrCodeGenerator'])->findOrFail($id);
-            // Attach previous weight info from latest health record that has weight
-            $prev = HealthRecord::where('livestock_id', $livestock->id)
-                ->whereNotNull('weight')
-                ->orderByDesc('health_date')
-                ->orderByDesc('id')
-                ->first();
+
+            // Attach previous weight info from latest health record that has weight (robust to schema/data)
+            $prev = null;
+            try {
+                $prev = HealthRecord::where('livestock_id', $livestock->id)
+                    ->whereNotNull('weight')
+                    ->orderByDesc('health_date')
+                    ->orderByDesc('id')
+                    ->first();
+            } catch (\Exception $e) {
+                // Ignore errors fetching previous weight; not critical
+                $prev = null;
+            }
+
             $payload = $livestock->toArray();
             $payload['previous_weight'] = $prev ? (string) $prev->weight : null;
-            $payload['previous_weight_date'] = ($prev && $prev->health_date) ? optional($prev->health_date)->format('Y-m-d') : null;
+            $payload['previous_weight_date'] = null;
+            if ($prev && $prev->health_date) {
+                try {
+                    $payload['previous_weight_date'] = \Carbon\Carbon::parse($prev->health_date)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    $payload['previous_weight_date'] = null;
+                }
+            }
 
             return response()->json([
                 'success' => true,
-                'data' => $payload
+                'data' => $payload,
+                'livestock' => $payload,
             ]);
         } catch (\Exception $e) {
+            \Log::error('Livestock details error: '.$e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Livestock not found'
-            ], 404);
+                'message' => 'Failed to load livestock details: '.$e->getMessage()
+            ], 500);
         }
     }
 
@@ -926,51 +981,24 @@ class LivestockController extends Controller
     {
         try {
             $livestock = Livestock::findOrFail($id);
-            $remarks = (string)($livestock->remarks ?? '');
-            $lines = preg_split('/\r?\n/', $remarks);
-            $records = [];
-            foreach ($lines as $line) {
-                $trim = trim($line);
-                if ($trim === '') { continue; }
-                if (strpos($trim, '[Calving]') === 0) {
-                    $entry = [
-                        'date_of_calving' => null,
-                        'calf_id' => null,
-                        'sex' => null,
-                        'breed' => null,
-                        'sire_id' => null,
-                        'milk_production' => null,
-                        'dim' => null,
+            $records = ProductionRecord::where('livestock_id', $livestock->id)
+                ->orderByDesc('production_date')
+                ->orderByDesc('id')
+                ->get()
+                ->map(function ($r) {
+                    $notes = (string)($r->notes ?? '');
+                    $ptype = null;
+                    if (preg_match('/\[type:\s*([^\]]+)\]/i', $notes, $m)) {
+                        $ptype = trim($m[1]);
+                    }
+                    return [
+                        'production_date' => optional($r->production_date)->format('Y-m-d'),
+                        'quantity' => $r->milk_quantity !== null ? (float) $r->milk_quantity : null,
+                        'quality' => $r->milk_quality_score !== null ? (float) $r->milk_quality_score : null,
+                        'notes' => $notes,
+                        'production_type' => $ptype,
                     ];
-                    $parts = array_map('trim', explode('|', substr($trim, 9)));
-                    foreach ($parts as $p) {
-                        $pLower = strtolower($p);
-                        $val = trim(substr($p, strpos($p, ':') !== false ? strpos($p, ':') + 1 : 0));
-                        if (stripos($pLower, 'date of calving:') === 0 || stripos($pLower, 'date:') === 0) $entry['date_of_calving'] = $val;
-                        if (stripos($pLower, 'calf id') === 0 || stripos($pLower, 'calf:') === 0) $entry['calf_id'] = $val;
-                        if (stripos($pLower, 'sex:') === 0) $entry['sex'] = ucfirst(strtolower($val));
-                        if (stripos($pLower, 'breed:') === 0) $entry['breed'] = $val;
-                        if (stripos($pLower, 'sire id') === 0) $entry['sire_id'] = $val;
-                        if (stripos($pLower, 'milk') === 0) $entry['milk_production'] = $val;
-                        if (stripos($pLower, 'dim') === 0 || stripos($pLower, 'days in milk') === 0) $entry['dim'] = $val;
-                    }
-                    // Fallbacks: try to infer milk production and DIM from ProductionRecord if not present
-                    if (!$entry['milk_production'] && !empty($entry['date_of_calving'])) {
-                        $firstProd = ProductionRecord::where('livestock_id', $livestock->id)
-                            ->whereDate('production_date', '>=', $entry['date_of_calving'])
-                            ->orderBy('production_date', 'asc')
-                            ->first();
-                        if ($firstProd) {
-                            $entry['milk_production'] = (string) $firstProd->milk_quantity;
-                            try {
-                                $entry['dim'] = \Carbon\Carbon::parse($firstProd->production_date)
-                                    ->diffInDays(\Carbon\Carbon::parse($entry['date_of_calving']));
-                            } catch (\Exception $e) { $entry['dim'] = null; }
-                        }
-                    }
-                    $records[] = $entry;
-                }
-            }
+                });
             return response()->json(['success' => true, 'data' => $records]);
         } catch (\Exception $e) {
             return response()->json([
@@ -1168,8 +1196,8 @@ class LivestockController extends Controller
         try {
             $livestock = Livestock::with(['farm', 'owner'])->findOrFail($id);
             
-            // Generate QR code data
-            $qrData = json_encode([
+            // Build QR payload as JSON
+            $payload = [
                 'livestock_id' => $livestock->tag_number,
                 'livestock_name' => $livestock->name,
                 'type' => $livestock->type,
@@ -1179,11 +1207,16 @@ class LivestockController extends Controller
                 'owner_id' => $livestock->owner_id,
                 'owner_name' => $livestock->owner ? $livestock->owner->name : 'Unknown',
                 'generated_at' => now()->toISOString(),
-                'generated_by' => Auth::user()->name
-            ]);
-            
+                'generated_by' => Auth::user()->name,
+            ];
+
+            $plainJson = json_encode($payload);
+
+            // Encrypt payload so that generic phone scanners cannot read the raw details
+            $encryptedPayload = Crypt::encryptString($plainJson);
+
             // Generate QR code URL using QR Server API
-            $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($qrData);
+            $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($encryptedPayload);
             
             // Save QR code information to database
             $livestock->update([
@@ -1205,6 +1238,62 @@ class LivestockController extends Controller
                 'success' => false,
                 'message' => 'Failed to generate QR code: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Regenerate encrypted QR codes for all livestock (admin maintenance helper).
+     */
+    public function regenerateAllQRCodes()
+    {
+        try {
+            $livestockList = Livestock::with(['farm', 'owner'])->get();
+            $updatedCount = 0;
+
+            foreach ($livestockList as $livestock) {
+                $payload = [
+                    'livestock_id' => $livestock->tag_number,
+                    'livestock_name' => $livestock->name,
+                    'type' => $livestock->type,
+                    'breed' => $livestock->breed,
+                    'farm_id' => $livestock->farm_id,
+                    'farm_name' => $livestock->farm ? $livestock->farm->name : 'Unknown',
+                    'owner_id' => $livestock->owner_id,
+                    'owner_name' => $livestock->owner ? $livestock->owner->name : 'Unknown',
+                    'generated_at' => now()->toISOString(),
+                    'generated_by' => Auth::user() ? Auth::user()->name : 'System',
+                ];
+
+                $plainJson = json_encode($payload);
+                $encryptedPayload = Crypt::encryptString($plainJson);
+                $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($encryptedPayload);
+
+                $livestock->qr_code_generated = true;
+                $livestock->qr_code_url = $qrCodeUrl;
+                $livestock->qr_code_generated_at = now();
+                $livestock->qr_code_generated_by = Auth::id();
+                $livestock->save();
+
+                $updatedCount++;
+            }
+
+            if (request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'updated' => $updatedCount,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Regenerated QR codes for ' . $updatedCount . ' livestock.');
+        } catch (\Exception $e) {
+            if (request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to regenerate QR codes: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Failed to regenerate QR codes: ' . $e->getMessage());
         }
     }
 

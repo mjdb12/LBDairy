@@ -37,7 +37,7 @@
         <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-clock mr-2"></i>
-                Pending Approvals ({{ $pendingUsers->count() }})
+                Pending Approvals
             </h6>
         </div>
         <div class="card-body">
@@ -379,7 +379,53 @@ function initializeDataTables() {
     $('.dataTables_filter').hide();
     $('.dt-buttons').hide();
 
+    // Keep pagination/info left-aligned when table redraws
+    pendingTable.on('draw.dt', function() {
+        setTimeout(forcePaginationLeftApprovals, 50);
+    });
+
+    // Initial alignment
+    setTimeout(forcePaginationLeftApprovals, 200);
+
     console.log("✅ pendingTable initialized", pendingTable);
+}
+
+// Force pagination and info blocks to align left for approvals page
+function forcePaginationLeftApprovals() {
+    $('.dataTables_wrapper .row').css({
+        'display': 'block',
+        'width': '100%',
+        'margin': '0',
+        'padding': '0'
+    });
+
+    $('.dataTables_wrapper .row > div').css({
+        'width': '100%',
+        'float': 'left',
+        'clear': 'both',
+        'padding': '0',
+        'margin': '0'
+    });
+
+    $('.dataTables_wrapper .dataTables_paginate').css({
+        'text-align': 'left',
+        'float': 'left',
+        'clear': 'both',
+        'display': 'block',
+        'width': 'auto',
+        'margin-right': '1rem',
+        'margin-top': '1rem'
+    });
+
+    $('.dataTables_wrapper .dataTables_info').css({
+        'text-align': 'left',
+        'float': 'left',
+        'clear': 'both',
+        'display': 'block',
+        'width': 'auto',
+        'margin-right': '1rem',
+        'margin-top': '1rem'
+    });
 }
 
 // Refresh Admins Table

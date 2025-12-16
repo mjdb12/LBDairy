@@ -22,6 +22,14 @@ class CheckRole
 
         $user = Auth::user();
         
+        if ($user->role !== 'superadmin') {
+            if ($user->status !== 'approved' || !$user->is_active) {
+                return redirect('/login')->withErrors([
+                    'username' => 'Your account is not approved or is inactive.',
+                ]);
+            }
+        }
+
         if ($user->role !== $role) {
             abort(403, 'Unauthorized access.');
         }

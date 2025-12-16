@@ -2023,7 +2023,29 @@ function loadUsers() {
                     const displayName = user.first_name && user.last_name 
                         ? `${user.first_name} ${user.last_name}` 
                         : user.name || 'N/A';
-                    
+
+                    // Build actions HTML, hiding the Delete button for superadmin accounts
+                    let actionsHtml = `
+                        <div class="btn-group">
+                            <button type="button" class="btn-action btn-action-ok" data-toggle="modal" data-target="#editAdminModal" data-user-id="${user.id}" onclick="editUser('${user.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit</span>
+                            </button>
+                    `;
+
+                    if (user.role !== 'superadmin') {
+                        actionsHtml += `
+                            <button class="btn-action btn-action-deletes" onclick="confirmDelete('${user.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                                <span>Delete</span>
+                            </button>
+                        `;
+                    }
+
+                    actionsHtml += `
+                        </div>
+                    `;
+
                     const rowData = [
                         `<a href="#" class="user-id-link" onclick="showUserDetails('${user.id}')">${user.id}</a>`,
                         escapeHtml(displayName),
@@ -2032,17 +2054,7 @@ function loadUsers() {
                         `<span class="badge badge-${getStatusBadgeClass(user.status)}">${escapeHtml(user.status)}</span>`,
                         new Date(user.created_at).toLocaleDateString(),
                         getLastLoginDisplay(user),
-                        `<div class="btn-group">
-                            <button type="button" class="btn-action btn-action-ok" data-toggle="modal" data-target="#editAdminModal" data-user-id="${user.id}" onclick="editUser('${user.id}')" title="Edit">
-                                <i class="fas fa-edit"></i>
-                                <span>Edit</span>
-                            </button>
-
-                            <button class="btn-action btn-action-deletes" onclick="confirmDelete('${user.id}')" title="Delete">
-                                <i class="fas fa-trash"></i>
-                                <span>Delete</span>
-                            </button>
-                        </div>`
+                        actionsHtml
                     ];
                     
                     usersTable.row.add(rowData).draw(false);

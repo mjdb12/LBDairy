@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Issue Management')
+@section('title', 'Announcements')
 
 @section('content')
     <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
-            <i class="fas fa-exclamation-triangle"></i>
-            Issue Management
+            <i class="fas fa-bell"></i>
+            Announcements
         </h1>
-        <p>Select a farmer to report issues for their livestock</p>
+        <p>Select a farmer to create and manage announcements for their livestock</p>
     </div>
 
     <!-- Farmer Selection Section -->
@@ -101,12 +101,12 @@
         </div>
     </div>
 
-    <!-- All Issues Section -->
+    <!-- All Announcements Section -->
     <div class="card shadow mb-4">
         <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
                 <i class="fas fa-list"></i>
-                All Issues
+                All Announcements
             </h6>
         </div>
         <div class="card-body">
@@ -180,7 +180,7 @@
                             <td class="text-center text-muted">N/A</td>
                             <td class="text-center text-muted">N/A</td>
                             <td class="text-center text-muted">N/A</td>
-                            <td class="text-center text-muted">No issues found</td>
+                            <td class="text-center text-muted">No announcements found</td>
                             <td class="text-center text-muted">N/A</td>
                             <td class="text-center text-muted">N/A</td>
                             <td class="text-center text-muted">N/A</td>
@@ -248,7 +248,7 @@
 
                         <div class="col-md-6 col-12">
                             <label for="dateReported">Date Reported <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="dateReported" name="date_reported" required value="{{ date('Y-m-d') }}">
+                            <input type="date" class="form-control" id="dateReported" name="date_reported" required value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Description -->
@@ -374,7 +374,7 @@
                         <!-- Date Reported -->
                         <div class="col-md-6 ">
                             <label class="fw-semibold">Date Reported <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="editDateReported" name="date_reported" required>
+                            <input type="date" class="form-control" id="editDateReported" name="date_reported" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Description -->
@@ -2012,39 +2012,56 @@
     let selectedFarmerId = null;
     let selectedFarmerName = '';
     let selectedLivestockId = null;
+    let farmersDataTable = null;
+    let issuesDataTable = null;
 
-    
     $(document).ready(function() {
-    console.log('Document ready, loading farmers...');
-    loadFarmers();
-    
-    // Farmer search
-    $('#farmerSearch').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        $('#farmersTable tr').each(function() {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.indexOf(searchTerm) > -1);
-        });
-    });
+        console.log('Document ready, loading farmers...');
+        loadFarmers();
 
-    // Issues search
-    $('#issueSearch').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        $('#issuesTable tr').each(function() {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.indexOf(searchTerm) > -1);
-        });
-    });
+        // Initialize DataTable for All Issues table (server-rendered rows)
+        initializeIssuesDataTable();
 
-    // Livestock search
-    $('#activeSearch').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        $('#livestockTable tr').each(function() {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.indexOf(searchTerm) > -1);
+        // Farmer search - use DataTables when available for proper paging
+        $('#farmerSearch').on('keyup', function() {
+            const searchTerm = $(this).val();
+            if (farmersDataTable) {
+                farmersDataTable.search(searchTerm).draw();
+            } else {
+                const lower = searchTerm.toLowerCase();
+                $('#farmersTable tr').each(function() {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.indexOf(lower) > -1);
+                });
+            }
         });
+
+        // Issues search - use DataTables when available for proper paging
+        $('#issueSearch').on('keyup', function() {
+            const searchTerm = $(this).val();
+            if (issuesDataTable) {
+                issuesDataTable.search(searchTerm).draw();
+            } else {
+                const lower = searchTerm.toLowerCase();
+                $('#issuesTable tr').each(function() {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.indexOf(lower) > -1);
+                });
+            }
+        });
+
+        // Livestock search (remains simple row filtering)
+        $('#activeSearch').on('keyup', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('#livestockTable tr').each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(searchTerm) > -1);
+            });
+        });
+
+        // Apply left-aligned pagination after initial load
+        setTimeout(forcePaginationLeftIssues, 200);
     });
-});
 
 
 // Refresh Pending Farmers Table
@@ -2094,6 +2111,113 @@ $(document).ready(function() {
     }
 });
 
+    function initializeFarmersDataTable() {
+        if (!$.fn.DataTable) {
+            return;
+        }
+
+        if ($.fn.DataTable.isDataTable('#farmersTable')) {
+            $('#farmersTable').DataTable().clear().destroy();
+        }
+
+        farmersDataTable = $('#farmersTable').DataTable({
+            searching: true,
+            paging: true,
+            info: true,
+            ordering: true,
+            lengthChange: false,
+            pageLength: 10,
+            columnDefs: [
+                { targets: -1, orderable: false, searchable: false }
+            ]
+        });
+
+        hideDefaultDataTablesControls();
+
+        // Keep pagination/info left-aligned when table redraws
+        farmersDataTable.on('draw.dt', function() {
+            setTimeout(forcePaginationLeftIssues, 50);
+        });
+    }
+
+    function initializeIssuesDataTable() {
+        if (!$.fn.DataTable) {
+            return;
+        }
+
+        if ($.fn.DataTable.isDataTable('#issuesTable')) {
+            issuesDataTable = $('#issuesTable').DataTable();
+            hideDefaultDataTablesControls();
+            setTimeout(forcePaginationLeftIssues, 50);
+            return;
+        }
+
+        issuesDataTable = $('#issuesTable').DataTable({
+            searching: true,
+            paging: true,
+            info: true,
+            ordering: true,
+            lengthChange: false,
+            pageLength: 10,
+            columnDefs: [
+                { targets: -1, orderable: false, searchable: false }
+            ]
+        });
+
+        hideDefaultDataTablesControls();
+
+        // Keep pagination/info left-aligned when table redraws
+        issuesDataTable.on('draw.dt', function() {
+            setTimeout(forcePaginationLeftIssues, 50);
+        });
+    }
+
+    function hideDefaultDataTablesControls() {
+        $('.dataTables_filter').hide();
+        $('.dt-buttons').hide();
+    }
+
+    // Force pagination and info blocks to align left (similar to Active Farmers page)
+    function forcePaginationLeftIssues() {
+        // Normalize DataTables wrapper rows
+        $('.dataTables_wrapper .row').css({
+            'display': 'block',
+            'width': '100%',
+            'margin': '0',
+            'padding': '0'
+        });
+
+        $('.dataTables_wrapper .row > div').css({
+            'width': '100%',
+            'float': 'left',
+            'clear': 'both',
+            'padding': '0',
+            'margin': '0'
+        });
+
+        // Pagination controls
+        $('.dataTables_wrapper .dataTables_paginate').css({
+            'text-align': 'left',
+            'float': 'left',
+            'clear': 'both',
+            'display': 'block',
+            'width': 'auto',
+            'margin-right': '1rem',
+            'margin-top': '1rem'
+        });
+
+        // Info text ("Showing 1 to 10 of ...")
+        $('.dataTables_wrapper .dataTables_info').css({
+            'text-align': 'left',
+            'float': 'left',
+            'clear': 'both',
+            'display': 'block',
+            'width': 'auto',
+            'margin-right': '1rem',
+            'margin-top': '1rem'
+        });
+    }
+
 
     function loadFarmers() {
         $('#farmersTableBody').html('<tr><td colspan="7" class="text-center">Loading farmers...</td></tr>');
@@ -2131,6 +2255,7 @@ $(document).ready(function() {
                         });
                     }
                     $('#farmersTableBody').html(html);
+                    initializeFarmersDataTable();
                 } else {
                     $('#farmersTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error loading farmers: ' + (response.message || 'Unknown error') + '</td></tr>');
                 }

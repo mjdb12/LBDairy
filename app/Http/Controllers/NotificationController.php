@@ -49,10 +49,7 @@ class NotificationController extends Controller
 
             // Get unread notifications from database (user-specific or global)
             $notifications = Notification::unread()
-                ->where(function($query) use ($user) {
-                    $query->where('recipient_id', $user->id)
-                          ->orWhereNull('recipient_id'); // Global notifications
-                })
+                ->where('recipient_id', $user->id)
                 ->recent()
                 ->orderBy('created_at', 'desc')
                 ->limit(10) // Limit to prevent performance issues
@@ -78,7 +75,8 @@ class NotificationController extends Controller
 
             // Only generate system notifications if there are no unread notifications
             // and we haven't generated any in the last 5 minutes
-            $lastGeneratedNotification = Notification::where('metadata->identifier', 'like', '%_generated')
+            $lastGeneratedNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'like', '%_generated')
                 ->where('created_at', '>=', now()->subMinutes(5))
                 ->first();
 
@@ -91,14 +89,11 @@ class NotificationController extends Controller
             if ($notifications->isEmpty() && !$lastGeneratedNotification) {
                 Log::info('Generating system notifications...');
                 try {
-                    $this->generateSystemNotifications();
+                    $this->generateSystemNotifications($user);
                     
                     // Get notifications again after generation
                     $notifications = Notification::unread()
-                        ->where(function($query) use ($user) {
-                            $query->where('recipient_id', $user->id)
-                                  ->orWhereNull('recipient_id'); // Global notifications
-                        })
+                        ->where('recipient_id', $user->id)
                         ->recent()
                         ->orderBy('created_at', 'desc')
                         ->limit(10)
@@ -147,19 +142,25 @@ class NotificationController extends Controller
     /**
      * Generate system notifications for super admin and store in database
      */
-    private function generateSystemNotifications()
+    private function generateSystemNotifications($user)
     {
         try {
-            // Only generate notifications if there are no existing unread notifications
-            $existingUnreadCount = Notification::unread()->count();
+            // Only generate notifications if there are no existing unread notifications for this recipient
+            $existingUnreadCount = Notification::unread()->where('recipient_id', $user->id)->count();
             
             if ($existingUnreadCount > 0) {
                 // If there are already unread notifications, don't generate new ones
                 return;
             }
 
+            // Generate only for superadmins
+            if ($user->role !== 'superadmin') {
+                return;
+            }
+
             // Critical system alerts - only if there are new critical logs since last notification
-            $lastCriticalNotification = Notification::where('metadata->identifier', 'critical_logs')
+            $lastCriticalNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'critical_logs')
                 ->orderBy('created_at', 'desc')
                 ->first();
             
@@ -174,6 +175,7 @@ class NotificationController extends Controller
             
             if ($newCriticalLogs > 0) {
                 $this->createOrUpdateNotification(
+                    $user->id,
                     'critical_logs',
                     'system',
                     'Critical System Events',
@@ -185,7 +187,8 @@ class NotificationController extends Controller
             }
 
             // Pending admin approvals - only if there are new pending admins
-            $lastPendingAdminsNotification = Notification::where('metadata->identifier', 'pending_admins')
+            $lastPendingAdminsNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'pending_admins')
                 ->orderBy('created_at', 'desc')
                 ->first();
             
@@ -198,6 +201,7 @@ class NotificationController extends Controller
             
             if ($newPendingAdmins > 0) {
                 $this->createOrUpdateNotification(
+                    $user->id,
                     'pending_admins',
                     'admin',
                     'Pending Admin Approvals',
@@ -209,7 +213,8 @@ class NotificationController extends Controller
             }
 
             // New user registrations - only if there are new users since last notification
-            $lastNewUsersNotification = Notification::where('metadata->identifier', 'new_users')
+            $lastNewUsersNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'new_users')
                 ->orderBy('created_at', 'desc')
                 ->first();
             
@@ -224,6 +229,7 @@ class NotificationController extends Controller
             
             if ($newUsers > 0) {
                 $this->createOrUpdateNotification(
+                    $user->id,
                     'new_users',
                     'user',
                     'New User Registrations',
@@ -235,7 +241,8 @@ class NotificationController extends Controller
             }
 
             // High priority issues - only if there are new urgent issues
-            $lastUrgentIssuesNotification = Notification::where('metadata->identifier', 'urgent_issues')
+            $lastUrgentIssuesNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'urgent_issues')
                 ->orderBy('created_at', 'desc')
                 ->first();
             
@@ -248,6 +255,7 @@ class NotificationController extends Controller
             
             if ($newUrgentIssues > 0) {
                 $this->createOrUpdateNotification(
+                    $user->id,
                     'urgent_issues',
                     'issue',
                     'Urgent Issues',
@@ -259,7 +267,8 @@ class NotificationController extends Controller
             }
 
             // System performance alerts - only if there's unusual activity
-            $lastHighActivityNotification = Notification::where('metadata->identifier', 'high_activity')
+            $lastHighActivityNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'high_activity')
                 ->orderBy('created_at', 'desc')
                 ->first();
             
@@ -267,6 +276,7 @@ class NotificationController extends Controller
             
             if ($recentLogs > 100 && !$lastHighActivityNotification) {
                 $this->createOrUpdateNotification(
+                    $user->id,
                     'high_activity',
                     'system',
                     'High System Activity',
@@ -278,7 +288,8 @@ class NotificationController extends Controller
             }
 
             // Farm registration alerts - only if there are new pending farms
-            $lastPendingFarmsNotification = Notification::where('metadata->identifier', 'pending_farms')
+            $lastPendingFarmsNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'pending_farms')
                 ->orderBy('created_at', 'desc')
                 ->first();
             
@@ -291,6 +302,7 @@ class NotificationController extends Controller
             
             if ($newPendingFarms > 0) {
                 $this->createOrUpdateNotification(
+                    $user->id,
                     'pending_farms',
                     'farm',
                     'Pending Farm Registrations',
@@ -302,13 +314,15 @@ class NotificationController extends Controller
             }
 
             // Database performance - only if size has increased significantly
-            $lastDbSizeNotification = Notification::where('metadata->identifier', 'db_size')
+            $lastDbSizeNotification = Notification::where('recipient_id', $user->id)
+                ->where('metadata->identifier', 'db_size')
                 ->orderBy('created_at', 'desc')
                 ->first();
             
             $dbSize = $this->getDatabaseSize();
             if ($dbSize > 100 && !$lastDbSizeNotification) { // MB
                 $this->createOrUpdateNotification(
+                    $user->id,
                     'db_size',
                     'system',
                     'Database Size Alert',
@@ -323,6 +337,7 @@ class NotificationController extends Controller
             Log::error('Error generating specific notifications: ' . $e->getMessage());
             // Create error notification if there's an error
             $this->createOrUpdateNotification(
+                $user->id,
                 'system_error',
                 'system',
                 'System Error',
@@ -337,10 +352,11 @@ class NotificationController extends Controller
     /**
      * Create or update a notification in the database
      */
-    private function createOrUpdateNotification($identifier, $type, $title, $message, $icon, $actionUrl, $severity)
+    private function createOrUpdateNotification($recipientId, $identifier, $type, $title, $message, $icon, $actionUrl, $severity)
     {
-        // Check if notification already exists (read or unread)
-        $existingNotification = Notification::where('metadata->identifier', $identifier)
+        // Check if notification already exists (read or unread) for this recipient
+        $existingNotification = Notification::where('recipient_id', $recipientId)
+            ->where('metadata->identifier', $identifier)
             ->first();
 
         if (!$existingNotification) {
@@ -353,6 +369,7 @@ class NotificationController extends Controller
                 'action_url' => $actionUrl,
                 'severity' => $severity,
                 'is_read' => false,
+                'recipient_id' => $recipientId,
                 'metadata' => ['identifier' => $identifier]
             ]);
         } else {
@@ -414,7 +431,7 @@ class NotificationController extends Controller
                 ], 404);
             }
 
-            if (!is_null($notification->recipient_id) && (int)$notification->recipient_id !== (int)$user->id) {
+            if ((int)$notification->recipient_id !== (int)$user->id) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Forbidden'
@@ -447,12 +464,9 @@ class NotificationController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // Mark all unread notifications as read (user-specific or global)
+            // Mark all unread notifications as read for this user only
             Notification::unread()
-                ->where(function($query) use ($user) {
-                    $query->where('recipient_id', $user->id)
-                          ->orWhereNull('recipient_id');
-                })
+                ->where('recipient_id', $user->id)
                 ->update([
                 'is_read' => true,
                 'read_at' => now(),

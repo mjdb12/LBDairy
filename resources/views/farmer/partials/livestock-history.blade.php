@@ -495,6 +495,46 @@
     color: #fff !important;
 }
 
+/* Ensure Notes column header and cells are left-aligned and can expand */
+#productionHistoryTable th:nth-child(4),
+#productionHistoryTable td:nth-child(4) {
+    text-align: left !important;
+}
+
+/* Tighten Production Actions column so it only takes minimal width */
+#productionHistoryTable th:nth-child(5),
+#productionHistoryTable td:nth-child(5) {
+    min-width: 0 !important;
+    width: 1% !important;
+    white-space: nowrap !important;
+}
+
+/* Force Health History layout: Date/Status compact, Notes wide, Actions tight */
+#healthHistoryTable {
+    table-layout: fixed;
+    width: 100%;
+}
+
+#healthHistoryTable th:nth-child(1),
+#healthHistoryTable td:nth-child(1),
+#healthHistoryTable th:nth-child(2),
+#healthHistoryTable td:nth-child(2) {
+    width: 18% !important;
+}
+
+#healthHistoryTable th:nth-child(3),
+#healthHistoryTable td:nth-child(3) {
+    width: auto !important;
+}
+
+/* Keep Health Actions column very narrow so Notes can take remaining width */
+#healthHistoryTable th:nth-child(4),
+#healthHistoryTable td:nth-child(4) {
+    min-width: 0 !important;
+    width: 1% !important;
+    white-space: nowrap !important;
+}
+
 </style>
     <!-- Livestock Header Information -->
     <div class="smart-detail-header row align-items-center mb-4">
@@ -611,6 +651,40 @@
                         <canvas id="productionHistoryChart" height="100"></canvas>
                     </div>
                 </div>
+                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2  text-sm-start">
+                    <h6 class="m-0 font-weight-bold ">
+                        <i class="fas fa-chart-bar"></i>
+                        Summary Statistics
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Production Statistics</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Total Production:</strong> {{ $productionHistory->sum('milk_quantity') }} L</li>
+                                <li><strong>Average Daily Production:</strong> {{ $productionHistory->avg('milk_quantity') ? round($productionHistory->avg('milk_quantity'), 1) : 0 }} L</li>
+                                <li><strong>Highest Daily Production:</strong> {{ $productionHistory->max('milk_quantity') }} L</li>
+                                <li><strong>Lowest Daily Production:</strong> {{ $productionHistory->min('milk_quantity') }} L</li>
+                                <li><strong>Records Span:</strong> {{ $productionHistory->count() > 0 ? $productionHistory->first()->production_date->diffInDays($productionHistory->last()->production_date) + 1 : 0 }} days</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 >Health Summary</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Current Status:</strong> 
+                                    <span class="badge badge-{{ $livestock->health_status === 'healthy' ? 'success' : ($livestock->health_status === 'under_treatment' ? 'warning' : 'danger') }}">
+                                        {{ ucfirst(str_replace('_', ' ', $livestock->health_status)) }}
+                                    </span>
+                                </li>
+                                <li><strong>Health Records:</strong> {{ $healthHistory->count() }}</li>
+                                <li><strong>Last Health Check:</strong> {{ $healthHistory->first() ? optional($healthHistory->first()->health_date)->format('M d, Y') : 'N/A' }}</li>
+                                <li><strong>Farm Location:</strong> {{ $livestock->farm->name ?? 'Not assigned' }}</li>
+                                <li><strong>Age:</strong> {{ ((int) \Carbon\Carbon::parse($livestock->birth_date)->diffInMonths(now()) > 0) ? (int) \Carbon\Carbon::parse($livestock->birth_date)->diffInMonths(now()) : '<1' }} months</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -644,7 +718,8 @@
                                             <th>Date</th>
                                             <th>Milk Quantity (L)</th>
                                             <th>Quality Score</th>
-                                            <th>Notes</th>
+                                            <th class="text-left">Notes</th>
+                                            <th class="text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -656,18 +731,16 @@
                                                     {{ $record->milk_quantity }} L
                                                 </span>
                                             </td>
-                                            <td>
-                                                @if($record->milk_quantity >= 20)
-                                                    <span class="badge badge-success">Excellent</span>
-                                                @elseif($record->milk_quantity >= 15)
-                                                    <span class="badge badge-info">Good</span>
-                                                @elseif($record->milk_quantity >= 10)
-                                                    <span class="badge badge-warning">Average</span>
-                                                @else
-                                                    <span class="badge badge-danger">Low</span>
-                                                @endif
+                                            <td>{{ $record->milk_quality_score !== null ? number_format($record->milk_quality_score, 1) : 'N/A' }}</td>
+                                            <td class="text-left">{{ $record->notes ?? 'No notes' }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn-action btn-action-ok production-view-btn" title="View production record details">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>View Details</span>
+                                                    </button>
+                                                </div>
                                             </td>
-                                            <td>{{ $record->notes ?? 'No notes' }}</td>
                                         </tr>
                                         @empty
                                         {{-- No rows; DataTables emptyTable message handles empty state --}}
@@ -683,39 +756,37 @@
                                 <table class="table table-bordered table-hover" id="healthHistoryTable">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Health Status</th>
-                                            <th>Notes</th>
-                                            <th class="text-left">Actions</th>
+                                            <th style="width: 20%;">Date</th>
+                                            <th style="width: 20%;">Health Status</th>
+                                            <th class="text-left" style="width: 52%;">Notes</th>
+                                            <th class="text-right" style="width: 8%; white-space: nowrap;">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse($healthHistory as $record)
                                         <tr>
-                                            <td>{{ \Carbon\Carbon::parse($record['date'])->format('M d, Y') }}</td>
+                                            <td>{{ optional($record->health_date)->format('M d, Y') ?? 'N/A' }}</td>
                                             <td>
-                                                @if($record['status'] === 'healthy')
-                                                    <span class="badge badge-success">
-                                                        <i class="fas fa-check-circle"></i> Healthy
-                                                    </span>
-                                                @elseif($record['status'] === 'under_treatment')
-                                                    <span class="badge badge-warning">
-                                                        <i class="fas fa-stethoscope"></i> Under Treatment
-                                                    </span>
-                                                @elseif($record['status'] === 'critical')
-                                                    <span class="badge badge-danger">
-                                                        <i class="fas fa-exclamation-triangle"></i> Critical
-                                                    </span>
+                                                @php $status = is_string($record->health_status) ? strtolower($record->health_status) : $record->health_status; @endphp
+                                                @if($status === 'healthy')
+                                                    <span class="badge badge-success">Healthy</span>
+                                                @elseif($status === 'under_treatment')
+                                                    <span class="badge badge-warning">Under Treatment</span>
+                                                @elseif($status === 'critical')
+                                                    <span class="badge badge-danger">Critical</span>
                                                 @else
-                                                    <span class="badge badge-secondary">{{ ucfirst($record['status']) }}</span>
+                                                    <span class="badge badge-secondary">{{ ucfirst(str_replace('_',' ', (string)$status)) }}</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $record['notes'] }}</td>
-                                            <td class="text-left">
-                                                <button class="btn-action btn-action-ok btn-sm" title="View Details">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                        </td>
+                                            <td class="text-left">{{ $record->notes ?? 'No notes' }}</td>
+                                            <td class="text-right">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn-action btn-action-ok health-view-btn" title="View health record details">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>View Details</span>
+                                                    </button>
+                                                </div>
+                                            </td>
                                     </tr>
                                         @empty
                                         {{-- No rows; DataTables emptyTable message handles empty state --}}
@@ -730,46 +801,23 @@
     </div>
 
     <!-- Summary Statistics -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2  text-sm-start">
-                    <h6 class="m-0 font-weight-bold ">
-                        <i class="fas fa-chart-bar"></i>
-                        Summary Statistics
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Production Statistics</h6>
-                            <ul class="list-unstyled">
-                                <li><strong>Total Production:</strong> {{ $productionHistory->sum('milk_quantity') }} L</li>
-                                <li><strong>Average Daily Production:</strong> {{ $productionHistory->avg('milk_quantity') ? round($productionHistory->avg('milk_quantity'), 1) : 0 }} L</li>
-                                <li><strong>Highest Daily Production:</strong> {{ $productionHistory->max('milk_quantity') }} L</li>
-                                <li><strong>Lowest Daily Production:</strong> {{ $productionHistory->min('milk_quantity') }} L</li>
-                                <li><strong>Records Span:</strong> {{ $productionHistory->count() > 0 ? $productionHistory->first()->production_date->diffInDays($productionHistory->last()->production_date) + 1 : 0 }} days</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 >Health Summary</h6>
-                            <ul class="list-unstyled">
-                                <li><strong>Current Status:</strong> 
-                                    <span class="badge badge-{{ $livestock->health_status === 'healthy' ? 'success' : ($livestock->health_status === 'under_treatment' ? 'warning' : 'danger') }}">
-                                        {{ ucfirst(str_replace('_', ' ', $livestock->health_status)) }}
-                                    </span>
-                                </li>
-                                <li><strong>Health Records:</strong> {{ $healthHistory->count() }}</li>
-                                <li><strong>Last Health Check:</strong> {{ $healthHistory->first() ? \Carbon\Carbon::parse($healthHistory->first()['date'])->format('M d, Y') : 'N/A' }}</li>
-                                <li><strong>Farm Location:</strong> {{ $livestock->farm->name ?? 'Not assigned' }}</li>
-                                <li><strong>Age:</strong> {{ \Carbon\Carbon::parse($livestock->birth_date)->age }} years</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+<style>
+    /* Ensure Health Actions column is visible but compact, Notes remains widest */
+    #healthHistoryTable th:last-child,
+    #healthHistoryTable td:last-child {
+        min-width: 100px !important;
+        width: 8% !important;
+        white-space: nowrap !important;
+        text-align: right !important;
+    }
+
+    #productionHistoryTable th:last-child,
+    #productionHistoryTable td:last-child {
+        white-space: nowrap !important;
+        text-align: right !important;
+    }
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -819,7 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
         order: [[0, 'desc']],
         responsive: true,
         language: {
-            emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-tint fa-3x mb-3"></i><p>No production records found for this livestock.</p></div>',
+            emptyTable: 'No production records found for this livestock.',
             search: "Search records:",
             lengthMenu: "Show _MENU_ records per page",
             info: "Showing _START_ to _END_ of _TOTAL_ records"
@@ -831,7 +879,7 @@ document.addEventListener('DOMContentLoaded', function() {
         order: [[0, 'desc']],
         responsive: true,
         language: {
-            emptyTable: '<div class="py-4 text-center text-muted"><i class="fas fa-heartbeat fa-3x mb-3"></i><p>No health records found for this livestock.</p></div>',
+            emptyTable: 'No health records found for this livestock.',
             search: "Search records:",
             lengthMenu: "Show _MENU_ records per page",
             info: "Showing _START_ to _END_ of _TOTAL_ records"

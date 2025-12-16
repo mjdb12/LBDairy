@@ -195,7 +195,7 @@
                         <!-- Due Date -->
                         <div class="col-md-6 col-12">
                             <label for="taskDueDate" class="fw-semibold">Due Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control mt-1" id="taskDueDate" required>
+                            <input type="date" class="form-control mt-1" id="taskDueDate" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Description -->

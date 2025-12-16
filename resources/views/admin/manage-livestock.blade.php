@@ -1531,6 +1531,52 @@
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
 
+/* Match Growth modal styling to Breeding modal */
+#adminGrowthRecordModal form {
+  text-align: left;
+}
+
+#adminGrowthRecordModal .form-group {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+#adminGrowthRecordModal label {
+  font-weight: 600;            /* make labels bold */
+  color: #18375d;              /* consistent primary blue */
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+/* Unified input + select + textarea styles */
+#adminGrowthRecordModal .form-control,
+#adminGrowthRecordModal select.form-control,
+#adminGrowthRecordModal textarea.form-control {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 12px 15px;          /* consistent padding */
+  font-size: 15px;             /* consistent font */
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 46px;                /* unified height */
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+/* Keep textarea resizable but visually aligned */
+#adminGrowthRecordModal textarea.form-control {
+  min-height: 100px;
+  height: auto;                /* flexible height for textarea */
+}
+
+/* Focus state */
+#adminGrowthRecordModal .form-control:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
 
 #adminHealthRecordModal form {
   text-align: left;
@@ -2188,16 +2234,16 @@
 
             <!-- Breed -->
             <div class="col-lg-4 col-md-6 col-12">
-              <label class="fw-semibold">Breed <span class="text-danger">*</span></label>
-              <select class="form-control" name="breed" required>
-                <option value="">Select Breed</option>
-                <option value="holstein">Holstein</option>
-                <option value="jersey">Jersey</option>
-                <option value="guernsey">Guernsey</option>
-                <option value="ayrshire">Ayrshire</option>
-                <option value="brown_swiss">Brown Swiss</option>
-                <option value="other">Other</option>
-              </select>
+              <label class="fw-semibold">Breed</label>
+              <input type="text" class="form-control" name="breed_name" list="breedSuggestions" placeholder="Enter breed">
+              <datalist id="breedSuggestions">
+                <option value="Holstein"></option>
+                <option value="Jersey"></option>
+                <option value="Guernsey"></option>
+                <option value="Ayrshire"></option>
+                <option value="Brown Swiss"></option>
+              </datalist>
+              <input type="hidden" name="breed" value="other">
             </div>
 
             <!-- Farm -->
@@ -2217,7 +2263,7 @@
             <!-- Birth Date -->
             <div class="col-lg-4 col-md-6 col-12">
               <label class="fw-semibold">Birth Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" name="birth_date" required>
+              <input type="date" class="form-control" name="birth_date" required max="{{ date('Y-m-d') }}">
             </div>
 
             <!-- Gender -->
@@ -2253,6 +2299,9 @@
               <select class="form-control" name="status" required>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
+                <option value="deceased">Deceased</option>
+                <option value="transferred">Transferred</option>
+                <option value="sold">Sold</option>
               </select>
             </div>
 
@@ -2271,7 +2320,7 @@
             <!-- Acquisition Date -->
             <div class="col-lg-4 col-md-6 col-12">
               <label class="fw-semibold">Date acquired</label>
-              <input type="date" class="form-control" name="acquisition_date">
+              <input type="date" class="form-control" name="acquisition_date" max="{{ date('Y-m-d') }}">
             </div>
 
             <!-- Acquisition Cost -->
@@ -2349,7 +2398,7 @@
             <!-- Date Released -->
             <div class="col-lg-4 col-md-6 col-12">
               <label class="fw-semibold">Date Released</label>
-              <input type="date" class="form-control" name="date_released">
+              <input type="date" class="form-control" name="date_released" max="{{ date('Y-m-d') }}">
             </div>
 
             <!-- Cooperative Name -->
@@ -2526,16 +2575,16 @@
 
                         <!-- Breed -->
                         <div class="col-lg-4 col-md-6 col-12">
-                            <label class="fw-semibold">Breed <span class="text-danger">*</span></label>
-                            <select class="form-control" id="editBreed" name="breed" required>
-                                <option value="">Select Breed</option>
-                                <option value="holstein">Holstein</option>
-                                <option value="jersey">Jersey</option>
-                                <option value="guernsey">Guernsey</option>
-                                <option value="ayrshire">Ayrshire</option>
-                                <option value="brown_swiss">Brown Swiss</option>
-                                <option value="other">Other</option>
-                            </select>
+                            <label class="fw-semibold">Breed</label>
+                            <input type="text" class="form-control" id="editBreedName" name="breed_name" list="breedSuggestionsEdit" placeholder="Enter breed">
+                            <datalist id="breedSuggestionsEdit">
+                                <option value="Holstein"></option>
+                                <option value="Jersey"></option>
+                                <option value="Guernsey"></option>
+                                <option value="Ayrshire"></option>
+                                <option value="Brown Swiss"></option>
+                            </datalist>
+                            <input type="hidden" name="breed" value="other">
                         </div>
 
                         <!-- Farm -->
@@ -2555,7 +2604,7 @@
                         <!-- Birth Date -->
                         <div class="col-lg-4 col-md-6 col-12">
                             <label class="fw-semibold">Birth Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="editBirthDate" name="birth_date" required>
+                            <input type="date" class="form-control" id="editBirthDate" name="birth_date" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Gender -->
@@ -2592,6 +2641,9 @@
                             <select class="form-control" id="editStatus" name="status" required>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
+                                <option value="deceased">Deceased</option>
+                                <option value="transferred">Transferred</option>
+                                <option value="sold">Sold</option>
                             </select>
                         </div>
 
@@ -2610,7 +2662,7 @@
                         <!-- Acquisition Date -->
                         <div class="col-lg-4 col-md-6 col-12">
                             <label class="fw-semibold">Date acquired</label>
-                            <input type="date" class="form-control" id="editAcquisitionDate" name="acquisition_date">
+                            <input type="date" class="form-control" id="editAcquisitionDate" name="acquisition_date" max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Acquisition Cost -->
@@ -2688,7 +2740,7 @@
                         <!-- Date Released -->
                         <div class="col-lg-4 col-md-6 col-12">
                             <label class="fw-semibold">Date Released</label>
-                            <input type="date" class="form-control" id="editDateReleased" name="date_released">
+                            <input type="date" class="form-control" id="editDateReleased" name="date_released" max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Cooperative Name -->
@@ -2773,7 +2825,7 @@
 </div>
 
 <!-- Modern Approve Farmer Modal -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="approveFarmerModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content smart-modal text-center p-4">
             <!-- Icon -->
@@ -2949,10 +3001,82 @@
     }
     #livestockDetailsModal .badge { font-weight: 600; }
     #livestockDetailsModal .smart-card-header { background: transparent !important; }
+
+    /* DataTables Pagination Styling - match Admin Farmers tables */
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: left !important;
+        margin-top: 1rem;
+        clear: both;
+        width: 100%;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #ffffff;
+        color: #18375d;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: default;
+    }
+
+    /* Ensure pagination container stays left inside responsive tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        text-align: left !important;
+        float: left !important;
+        margin-top: 0.5rem;
+    }
+
 </style>
 @endpush
 
 @push('scripts')
+<!-- DataTables Core -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<!-- Required libraries for PDF/Excel (same stack as Admin Farmers) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- jsPDF and autoTable for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+
 <script>
     function formatDateForInput(dateVal) {
         if (!dateVal) return '';
@@ -2976,16 +3100,22 @@
     let currentAdminLivestockPrintBasic = null;
 
    $(document).ready(function() {
-        console.log('Document ready, loading farmers...');
-        loadFarmers();
+        console.log('Document ready, initializing livestock farmers page...');
         
         // 🔍 Search functionality for Farmers Table
         $('#farmerSearch').on('keyup', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            $('#farmersTable tbody tr').each(function() {
-                const text = $(this).text().toLowerCase();
-                $(this).toggle(text.indexOf(searchTerm) > -1);
-            });
+            const value = $(this).val();
+            if (typeof farmersTable !== 'undefined' && farmersTable) {
+                // Use DataTables global search when available
+                farmersTable.search(value).draw();
+            } else {
+                // Fallback manual filtering before DataTables initialization
+                const searchTerm = value.toLowerCase();
+                $('#farmersTable tbody tr').each(function() {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.indexOf(searchTerm) > -1);
+                });
+            }
         });
         // Search functionality
         $('#activeSearch').on('keyup', function() {
@@ -3068,6 +3198,7 @@ $(document).ready(function () {
 
 
     let farmersTable;
+    let livestockTable;
 
 $(document).ready(function () {
     // Initialize DataTables
@@ -3084,44 +3215,155 @@ $(document).ready(function () {
     
 });
 
+// Safe DataTables initializer for this page
+function initializeDataTables() {
+    try {
+        if (!$.fn || !$.fn.DataTable) {
+            console.warn('DataTables plugin not loaded; skipping initialization');
+            return;
+        }
+        // Initialize farmers table if present
+        if ($('#farmersTable').length && !$.fn.DataTable.isDataTable('#farmersTable')) {
+            farmersTable = $('#farmersTable').DataTable({
+                dom: 'Bfrtip',
+                searching: true,
+                paging: true,
+                info: true,
+                lengthChange: false,
+                pageLength: 10,
+                buttons: [
+                    { extend: 'csvHtml5', className: 'd-none' },
+                    { extend: 'pdfHtml5', className: 'd-none' },
+                    { extend: 'print', className: 'd-none' }
+                ],
+                columnDefs: [
+                    { targets: -1, orderable: false, searchable: false }
+                ]
+            });
+        }
+        // Initialize livestock table if present
+        if ($('#livestockTable').length && !$.fn.DataTable.isDataTable('#livestockTable')) {
+            livestockTable = $('#livestockTable').DataTable({
+                dom: 'Bfrtip',
+                searching: true,
+                paging: true,
+                info: true,
+                lengthChange: false,
+                pageLength: 10,
+                buttons: [
+                    { extend: 'csvHtml5', className: 'd-none' },
+                    { extend: 'pdfHtml5', className: 'd-none' },
+                    { extend: 'print', className: 'd-none' }
+                ],
+                columnDefs: [
+                    { targets: -1, orderable: false, searchable: false }
+                ]
+            });
+        }
+        // Hide default elements we don't use in UI
+        $('.dataTables_filter').hide();
+        $('.dt-buttons').hide();
+    } catch (e) {
+        console.warn('initializeDataTables error:', e);
+    }
+}
+
+// Backwards-compat shim: some code calls loadfarmersTable(), but our function is loadFarmers()
+function loadfarmersTable() {
+    try { if (typeof loadFarmers === 'function') { loadFarmers(); } } catch (_) {}
+}
+
+// No-op if updateStats is not yet implemented on this page
+if (typeof updateStats !== 'function') {
+    function updateStats() { /* intentionally empty */ }
+}
+
     function loadFarmers() {
-        $('#farmersTableBody').html('<tr><td colspan="7" class="text-center">Loading farmers...</td></tr>');
-        
+        // Only inject a manual loading row if DataTables has NOT been initialized yet.
+        // Once DataTables is managing the table, rows must be added via its API to avoid column count warnings.
+        if (typeof farmersTable === 'undefined' || !farmersTable) {
+            $('#farmersTableBody').html('<tr><td colspan="7" class="text-center">Loading farmers...</td></tr>');
+        }
+
         $.ajax({
             url: '{{ route("admin.livestock.farmers") }}',
             method: 'GET',
             success: function(response) {
                 console.log('Farmers response:', response);
-                if (response.success) {
-                    let html = '';
-                    if (response.data.length === 0) {
-                        html = '<tr><td colspan="7" class="text-center">No farmers found</td></tr>';
-                    } else {
-                        response.data.forEach(farmer => {
-                            const displayName = farmer.first_name && farmer.last_name 
-                                ? `${farmer.first_name} ${farmer.last_name}` 
-                                : farmer.name || 'N/A';
-                            
-                            html += `
-                                <tr>
-                                    <td>${farmer.id}</td>
-                                    <td><a href="#" class="farmer-link" onclick="selectFarmer('${farmer.id}', '${displayName}')">${displayName}</a></td>
-                                    <td>${farmer.email}</td>
-                                    <td>${farmer.contact_number || 'N/A'}</td>
-                                    <td>${farmer.livestock_count || 0}</td>
-                                    <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</span></td>
-                                    <td>
-                                        <button class="btn-action btn-action-ok" title="View Livestock" onclick="selectFarmer('${farmer.id}', '${displayName}')">
-                                            <i class="fas fa-eye"></i> View Livestock
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                    }
-                    $('#farmersTableBody').html(html);
-                } else {
+                if (!response.success) {
                     $('#farmersTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error loading farmers: ' + (response.message || 'Unknown error') + '</td></tr>');
+                    return;
+                }
+
+                const hasData = Array.isArray(response.data) && response.data.length > 0;
+
+                // No farmers
+                if (!hasData) {
+                    if (typeof farmersTable !== 'undefined' && farmersTable) {
+                        farmersTable.clear().draw();
+                        $('#farmersTableBody').html('<tr><td colspan="7" class="text-center">No farmers found</td></tr>');
+                    } else {
+                        $('#farmersTableBody').html('<tr><td colspan="7" class="text-center">No farmers found</td></tr>');
+                    }
+                    return;
+                }
+
+                // We have farmers: feed them into DataTables if available, otherwise fall back to raw HTML rows.
+                if (typeof farmersTable !== 'undefined' && farmersTable) {
+                    farmersTable.clear();
+
+                    response.data.forEach(farmer => {
+                        const displayName = farmer.first_name && farmer.last_name
+                            ? `${farmer.first_name} ${farmer.last_name}`
+                            : (farmer.name || 'N/A');
+
+                        const nameLink = `<a href="#" class="farmer-link" onclick="selectFarmer('${farmer.id}', '${displayName}')">${displayName}</a>`;
+                        const statusBadge = `<span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</span>`;
+                        const actionsHtml = `
+                            <button class="btn-action btn-action-ok" title="View Livestock" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                <i class="fas fa-eye"></i> View Livestock
+                            </button>`;
+
+                        const rowData = [
+                            farmer.id,
+                            nameLink,
+                            farmer.email || 'N/A',
+                            farmer.contact_number || 'N/A',
+                            farmer.livestock_count || 0,
+                            statusBadge,
+                            actionsHtml
+                        ];
+
+                        farmersTable.row.add(rowData);
+                    });
+
+                    farmersTable.draw();
+                } else {
+                    // Fallback when DataTables is not initialized for some reason
+                    let html = '';
+                    response.data.forEach(farmer => {
+                        const displayName = farmer.first_name && farmer.last_name
+                            ? `${farmer.first_name} ${farmer.last_name}`
+                            : (farmer.name || 'N/A');
+
+                        html += `
+                            <tr>
+                                <td>${farmer.id}</td>
+                                <td><a href="#" class="farmer-link" onclick="selectFarmer('${farmer.id}', '${displayName}')">${displayName}</a></td>
+                                <td>${farmer.email || 'N/A'}</td>
+                                <td>${farmer.contact_number || 'N/A'}</td>
+                                <td>${farmer.livestock_count || 0}</td>
+                                <td><span class="badge badge-${getStatusBadgeClass(farmer.status)}">${farmer.status}</span></td>
+                                <td>
+                                    <button class="btn-action btn-action-ok" title="View Livestock" onclick="selectFarmer('${farmer.id}', '${displayName}')">
+                                        <i class="fas fa-eye"></i> View Livestock
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    $('#farmersTableBody').html(html);
                 }
             },
             error: function(xhr, status, error) {
@@ -3182,62 +3424,156 @@ $(document).ready(function () {
     }
 
     function loadFarmerLivestock(farmerId) {
-        $('#livestockTableBody').html('<tr><td colspan="7" class="text-center">Loading livestock...</td></tr>');
-        
+        // Same pattern as farmers table: avoid injecting a single-colspan row once DataTables is active.
+        if (typeof livestockTable === 'undefined' || !livestockTable) {
+            $('#livestockTableBody').html('<tr><td colspan="7" class="text-center">Loading livestock...</td></tr>');
+        }
+
         $.ajax({
             url: `{{ route("admin.livestock.farmer-livestock", ["id" => "__ID__"]) }}`.replace('__ID__', farmerId),
             method: 'GET',
             success: function(response) {
-                if (response.success) {
-                    let html = '';
-                    if (response.data.livestock.length === 0) {
-                        html = '<tr><td colspan="7" class="text-center">No livestock found for this farmer</td></tr>';
-                    } else {
-                        response.data.livestock.forEach(animal => {
-                            html += `
-                                <tr>
-                                    <td>${animal.tag_number}</td>
-                                    <td>${animal.type}</td>
-                                    <td>${animal.breed}</td>
-                                    <td>${animal.gender}</td>
-                                    <td>${animal.farm ? animal.farm.name : 'N/A'}</td>
-                                    <td>
-                                        <span class="badge badge-${animal.status === 'active' ? 'success' : 'danger'}">
-                                            ${animal.status === 'active' ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn-action btn-action-ok" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                                <span>View</span>
-                                            </button>
-                                            <button class="btn-action btn-action-qr" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
-                                                <i class="fas fa-qrcode"></i>
-                                                <span>QR Code</span>
-                                            </button>
-                                            <button class="btn-action btn-action-issue" onclick="issueAlert('${animal.id}')" title="Issue Alert">
-                                                <i class="fas fa-exclamation-triangle"></i>
-                                                <span>Alert</span>
-                                            </button>
-                                            <button class="btn-action btn-action-edit" onclick="editLivestock('${animal.id}')" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                                <span>Edit</span>
-                                            </button>
-                                            <button class="btn-action btn-action-deletes" onclick="deleteLivestock('${animal.id}')" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                                <span>Delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                    }
-                    $('#livestockTableBody').html(html);
-                    updateFarmerStats(response.data.stats);
-                } else {
+                if (!response.success) {
                     $('#livestockTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error loading livestock</td></tr>');
+                    return;
+                }
+
+                const livestock = (response.data && Array.isArray(response.data.livestock)) ? response.data.livestock : [];
+                const hasLivestock = livestock.length > 0;
+
+                if (!hasLivestock) {
+                    if (typeof livestockTable !== 'undefined' && livestockTable) {
+                        livestockTable.clear().draw();
+                        $('#livestockTableBody').html('<tr><td colspan="7" class="text-center">No livestock found for this farmer</td></tr>');
+                    } else {
+                        $('#livestockTableBody').html('<tr><td colspan="7" class="text-center">No livestock found for this farmer</td></tr>');
+                    }
+                    if (response.data && response.data.stats) {
+                        updateFarmerStats(response.data.stats);
+                    }
+                    return;
+                }
+
+                if (typeof livestockTable !== 'undefined' && livestockTable) {
+                    livestockTable.clear();
+
+                    livestock.forEach(animal => {
+                        const breedText = (animal.breed_name && animal.breed_name.trim() !== '')
+                            ? animal.breed_name
+                            : (animal.breed && animal.breed !== 'other'
+                                ? animal.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+                                : 'N/A');
+
+                        const statusMap = {
+                            'active':   { class: 'success',   label: 'Active' },
+                            'inactive': { class: 'secondary', label: 'Inactive' },
+                            'deceased': { class: 'dark',      label: 'Deceased' },
+                            'transferred': { class: 'info',   label: 'Transferred' },
+                            'sold':     { class: 'warning',   label: 'Sold' }
+                        };
+                        const rawStatus = (animal.status || '').toString().toLowerCase();
+                        const mapped = statusMap[rawStatus] || {
+                            class: 'secondary',
+                            label: rawStatus ? rawStatus.charAt(0).toUpperCase() + rawStatus.slice(1) : 'Unknown'
+                        };
+                        const statusBadge = `
+                            <span class="badge badge-${mapped.class}">
+                                ${mapped.label}
+                            </span>`;
+
+                        const actionsHtml = `
+                            <div class="btn-group">
+                                <button class="btn-action btn-action-ok" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                    <span>View</span>
+                                </button>
+                                <button class="btn-action btn-action-qr" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
+                                    <i class="fas fa-qrcode"></i>
+                                    <span>QR Code</span>
+                                </button>
+                                <button class="btn-action btn-action-issue" onclick="issueAlert('${animal.id}')" title="Issue Alert">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Alert</span>
+                                </button>
+                                <button class="btn-action btn-action-edit" onclick="editLivestock('${animal.id}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="btn-action btn-action-deletes" onclick="deleteLivestock('${animal.id}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </div>`;
+
+                        const rowData = [
+                            animal.tag_number,
+                            animal.type,
+                            breedText,
+                            animal.gender,
+                            animal.farm ? animal.farm.name : 'N/A',
+                            statusBadge,
+                            actionsHtml
+                        ];
+
+                        livestockTable.row.add(rowData);
+                    });
+
+                    livestockTable.draw();
+                } else {
+                    // Fallback when DataTables is not initialized
+                    let html = '';
+                    livestock.forEach(animal => {
+                        const breedText = (animal.breed_name && animal.breed_name.trim() !== '')
+                            ? animal.breed_name
+                            : (animal.breed && animal.breed !== 'other'
+                                ? animal.breed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+                                : 'N/A');
+
+                        html += `
+                            <tr>
+                                <td>${animal.tag_number}</td>
+                                <td>${animal.type}</td>
+                                <td>${breedText}</td>
+                                <td>${animal.gender}</td>
+                                <td>${animal.farm ? animal.farm.name : 'N/A'}</td>
+                                <td>
+                                    <span class="badge badge-${animal.status === 'active' ? 'success' : 'danger'}">
+                                        ${animal.status === 'active' ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn-action btn-action-ok" onclick="viewLivestockDetails('${animal.id}')" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                            <span>View</span>
+                                        </button>
+                                        <button class="btn-action btn-action-qr" onclick="generateQRCode('${animal.id}')" title="Generate QR Code">
+                                            <i class="fas fa-qrcode"></i>
+                                            <span>QR Code</span>
+                                        </button>
+                                        <button class="btn-action btn-action-issue" onclick="issueAlert('${animal.id}')" title="Issue Alert">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <span>Alert</span>
+                                        </button>
+                                        <button class="btn-action btn-action-edit" onclick="editLivestock('${animal.id}')" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                            <span>Edit</span>
+                                        </button>
+                                        <button class="btn-action btn-action-deletes" onclick="deleteLivestock('${animal.id}')" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    $('#livestockTableBody').html(html);
+                }
+
+                if (response.data && response.data.stats) {
+                    updateFarmerStats(response.data.stats);
                 }
             },
             error: function() {
@@ -3313,19 +3649,45 @@ $(document).ready(function () {
             method: 'GET',
             success: function(response) {
                 if (response.success) {
-                    const livestock = response.data;
+                    const livestock = response.livestock || response.data;
                     
                     // Populate the edit form
                     $('#editLivestockId').val(livestock.id);
                     $('#editTagNumber').val(livestock.tag_number);
                     $('#editName').val(livestock.name);
-                    $('#editType').val(livestock.type);
-                    $('#editBreed').val(livestock.breed);
+                    // Normalize enums to match select option values
+                    const norm = (v) => (v || '').toString().trim().toLowerCase();
+                    const normOpt = (v) => norm(v).replace(/[\s-]+/g, '_');
+                    const allowedTypes = ['cow','buffalo','goat','sheep'];
+                    const allowedBreeds = ['holstein','jersey','guernsey','ayrshire','brown_swiss','other'];
+                    const allowedGenders = ['male','female'];
+                    const allowedStatuses = ['active','inactive','deceased','transferred','sold'];
+                    const allowedHealth = ['healthy','sick','recovering','under_treatment','injured','pregnant','lactating'];
+
+                    let typeVal = norm(livestock.type);
+                    let breedVal = normOpt(livestock.breed);
+                    let genderVal = norm(livestock.gender);
+                    let statusVal = norm(livestock.status);
+                    let healthVal = norm(livestock.health_status);
+
+                    if (!allowedTypes.includes(typeVal)) typeVal = '';
+                    if (!allowedBreeds.includes(breedVal)) breedVal = 'other';
+                    if (!allowedGenders.includes(genderVal)) genderVal = '';
+                    if (!allowedStatuses.includes(statusVal)) statusVal = '';
+                    if (!allowedHealth.includes(healthVal)) healthVal = 'healthy';
+
+                    $('#editType').val(typeVal);
+                    // Populate breed text (prefer stored breed_name)
+                    const prettyBreed = (s) => {
+                        if (!s) return '';
+                        return s.toString().replace(/_/g,' ').replace(/\b\w/g, t => t.toUpperCase());
+                    };
+                    $('#editBreedName').val(livestock.breed_name ? livestock.breed_name : (breedVal && breedVal !== 'other' ? prettyBreed(breedVal) : ''));
                     $('#editBirthDate').val(formatDateForInput(livestock.birth_date));
-                    $('#editGender').val(livestock.gender);
+                    $('#editGender').val(genderVal);
                     $('#editWeight').val(livestock.weight);
-                    $('#editHealthStatus').val(livestock.health_status);
-                    $('#editStatus').val(livestock.status);
+                    $('#editHealthStatus').val(healthVal);
+                    $('#editStatus').val(statusVal);
                     $('#editRegistryId').val(livestock.registry_id);
                     $('#editNaturalMarks').val(livestock.natural_marks);
                     $('#editPropertyNo').val(livestock.property_no);
@@ -3350,11 +3712,25 @@ $(document).ready(function () {
                     $('#editRemarks').val(livestock.remarks || '');
                     $('#editDescription').val(livestock.description || '');
                     
-                    // Load farms for the farmer
-                    loadFarmerFarmsForEdit(selectedFarmerId, livestock.farm_id);
+                    // Pre-seed current farm to ensure a valid value exists even before async load
+                    (function(){
+                        const farmSelect = $('#editFarmId');
+                        const farmName = (livestock.farm && (livestock.farm.name || livestock.farm.farm_name)) ? (livestock.farm.name || livestock.farm.farm_name) : 'Current Farm';
+                        const farmId = (livestock.farm_id != null && livestock.farm_id !== '') ? livestock.farm_id : (livestock.farm && livestock.farm.id) ? livestock.farm.id : '';
+                        farmSelect.empty().append(`<option value="${farmId}" selected>${farmName}</option>`);
+                    })();
+                    // Load farms for the farmer (fallback to owner from payload if needed)
+                    const ownerId = selectedFarmerId || (livestock.farm && livestock.farm.owner_id) || livestock.owner_id || null;
+                    if (ownerId) {
+                        const farmId = (livestock.farm_id != null && livestock.farm_id !== '') ? livestock.farm_id : (livestock.farm && livestock.farm.id) ? livestock.farm.id : '';
+                        loadFarmerFarmsForEdit(ownerId, farmId);
+                    }
                     
                     // Show the edit modal
-                    $('#editLivestockModal').modal('show');
+                    const $m = $('#editLivestockModal');
+                    if (!$m.parent().is('body')) { $m.appendTo('body'); }
+                    $m.modal({ backdrop: 'static', keyboard: true });
+                    $m.modal('show');
                 } else {
                     showNotification('Error loading livestock data', 'danger');
                 }
@@ -3409,6 +3785,8 @@ $(document).ready(function () {
         
         const livestockId = $('#editLivestockId').val();
         const formData = new FormData(this);
+        if (!formData.get('_method')) { formData.append('_method', 'PUT'); }
+        if (!formData.get('_token')) { formData.append('_token', '{{ csrf_token() }}'); }
         
         $.ajax({
             url: `{{ route("admin.livestock.update", ["id" => "__ID__"]) }}`.replace('__ID__', livestockId),
@@ -3417,7 +3795,8 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             headers: {
-                'X-HTTP-Method-Override': 'PUT'
+                'X-HTTP-Method-Override': 'PUT',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function(response) {
                 $('#editLivestockModal').modal('hide');
@@ -3426,11 +3805,16 @@ $(document).ready(function () {
                 showNotification('Livestock updated successfully!', 'success');
             },
             error: function(xhr) {
+                try { console.warn('Admin livestock update error:', xhr.status, xhr.responseText); } catch(_) {}
                 const errors = xhr.responseJSON?.errors || {};
                 let errorMessage = 'Failed to update livestock. ';
-                Object.values(errors).forEach(error => {
-                    errorMessage += error[0] + ' ';
-                });
+                if (Object.keys(errors).length) {
+                    Object.values(errors).forEach(error => { errorMessage += error[0] + ' '; });
+                } else if (xhr.responseJSON?.message) {
+                    errorMessage += xhr.responseJSON.message;
+                } else if (xhr.status) {
+                    errorMessage += `(status ${xhr.status})`;
+                }
                 showNotification(errorMessage, 'danger');
             }
         });
@@ -3471,7 +3855,7 @@ $(document).ready(function () {
             method: 'GET',
             success: function(response) {
                 if (response.success) {
-                    const livestock = response.data || {};
+                    const livestock = (response.livestock || response.data) || {};
                     currentAdminLivestockData = livestock;
                     currentAdminLivestockPrintBasic = {
                         tag_number: livestock.tag_number || '',
@@ -3552,7 +3936,11 @@ $(document).ready(function () {
                                             </div>
                                             <div class="col-6 mb-2">
                                                 <small class="text-muted">Breed</small>
-                                                <p class="fw-bold mb-0">${livestock.breed ? livestock.breed.replace('_',' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
+                                                <p class="fw-bold mb-0">${(livestock.breed_name && livestock.breed_name.trim() !== '')
+                                                    ? livestock.breed_name
+                                                    : (livestock.breed && livestock.breed !== 'other'
+                                                        ? livestock.breed.replace('_',' ').replace(/\b\w/g, l => l.toUpperCase())
+                                                        : 'N/A')}</p>
                                             </div>
                                             <div class="col-6 mb-2">
                                                 <small class="text-muted">Age</small>
@@ -3606,7 +3994,11 @@ $(document).ready(function () {
                                             <tr><th>Name</th><td>${livestock.name || 'Not assigned'}</td></tr>
                                             <tr><th>Date of Birth</th><td>${birthDate}</td></tr>
                                             <tr><th>Sex</th><td>${livestock.gender ? livestock.gender.charAt(0).toUpperCase() + livestock.gender.slice(1) : 'Not recorded'}</td></tr>
-                                            <tr><th>Breed</th><td>${livestock.breed ? livestock.breed.replace('_',' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not recorded'}</td></tr>
+                                            <tr><th>Breed</th><td>${livestock.breed_name && livestock.breed_name.trim() !== '' 
+                                                ? livestock.breed_name 
+                                                : (livestock.breed && livestock.breed !== 'other' 
+                                                    ? livestock.breed.replace('_',' ').replace(/\b\w/g, l => l.toUpperCase()) 
+                                                    : 'Not recorded')}</td></tr>
                                             <tr><th>Sire Registry ID</th><td>${livestock.sire_id || 'Not recorded'}</td></tr>
                                             <tr><th>Sire Name</th><td>${livestock.sire_name || 'Not recorded'}</td></tr>
                                             <tr><th>Sire Breed</th><td>${livestock.sire_breed || 'Not recorded'}</td></tr>
@@ -3639,18 +4031,16 @@ $(document).ready(function () {
                                     <table class="table table-sm table-bordered align-middle mb-0">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>Date of Calving</th>
-                                                <th>Calf ID No.</th>
-                                                <th>Sex</th>
-                                                <th>Breed</th>
-                                                <th>Sire ID No.</th>
-                                                <th>Milk Prod'n</th>
-                                                <th>Days in Milk (DIM)</th>
+                                                <th>Date</th>
+                                                <th>Type</th>
+                                                <th>Quantity</th>
+                                                <th>Quality</th>
+                                                <th>Notes</th>
                                             </tr>
                                         </thead>
                                         <tbody id="productionRecordsTable">
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted py-3">
+                                                <td colspan="5" class="text-center text-muted py-3">
                                                     <i class="fas fa-info-circle"></i>
                                                     No production records found.
                                                 </td>
@@ -3816,23 +4206,30 @@ $(document).ready(function () {
             url: `{{ route("admin.livestock.production-records", ["id" => "__ID__"]) }}`.replace('__ID__', livestockId),
             method: 'GET',
             success: function(response) {
-                if (response.success && response.data && response.data.length > 0) {
-                    const tbody = document.getElementById('productionRecordsTable');
-                    if (!tbody) return;
-                    tbody.innerHTML = '';
+                const tbody = document.getElementById('productionRecordsTable');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                if (response.success && Array.isArray(response.data) && response.data.length > 0) {
                     response.data.forEach(r => {
                         const tr = document.createElement('tr');
+                        const dateStr = r.production_date ? new Date(r.production_date).toLocaleDateString() : '';
+                        const ptype = r.production_type || 'Milk';
+                        const qty = (r.quantity !== undefined && r.quantity !== null && r.quantity !== '') ? r.quantity : '';
+                        const qual = (r.quality !== undefined && r.quality !== null && r.quality !== '') ? r.quality : '';
+                        const notes = (r.notes || '').replace(/\[type:\s*[^\]]+\]\s*/i, '').trim();
                         tr.innerHTML = `
-                            <td style="white-space: nowrap;">${r.date_of_calving ? new Date(r.date_of_calving).toLocaleDateString() : 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.calf_id || 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.sex || 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.breed || 'N/A'}</td>
-                            <td style="white-space: nowrap;">${r.sire_id || 'N/A'}</td>
-                            <td style="white-space: nowrap;">${(r.milk_production !== null && r.milk_production !== undefined && r.milk_production !== '') ? r.milk_production : 'N/A'}</td>
-                            <td style="white-space: nowrap;">${(r.dim !== null && r.dim !== undefined && r.dim !== '') ? r.dim : 'N/A'}</td>
+                            <td style="white-space: nowrap;">${dateStr || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${ptype}</td>
+                            <td style="white-space: nowrap;">${qty !== '' ? qty : 'N/A'}</td>
+                            <td style="white-space: nowrap;">${qual !== '' ? qual : 'N/A'}</td>
+                            <td style="white-space: nowrap;">${notes || 'N/A'}</td>
                         `;
                         tbody.appendChild(tr);
                     });
+                } else {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td colspan="5" class="text-center text-muted py-3"><i class=\"fas fa-info-circle\"></i> No production records found.</td>`;
+                    tbody.appendChild(tr);
                 }
             }
         });
@@ -3908,7 +4305,7 @@ $(document).ready(function () {
       <form id="adminProductionRecordForm" class="text-start mx-auto">
         <div class="form-wrapper">
           <div class="row g-3">
-            <div class="col-md-6"><label class="fw-semibold">Production Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="production_date" required></div>
+            <div class="col-md-6"><label class="fw-semibold">Production Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="production_date" required max="{{ date('Y-m-d') }}"></div>
             <div class="col-md-6"><label class="fw-semibold">Production Type <span class="text-danger">*</span></label><select class="form-control mt-1" name="production_type" required><option value="">Select Type</option><option value="milk">Milk</option><option value="eggs">Eggs</option><option value="meat">Meat</option><option value="wool">Wool</option></select></div>
             <div class="col-md-6"><label class="fw-semibold">Quantity <span class="text-danger">*</span></label><input type="number" class="form-control mt-1" name="quantity" min="0" step="0.1" required></div>
             <div class="col-md-6"><label class="fw-semibold">Quality</label><select class="form-control mt-1" name="quality"><option value="">Select Quality</option><option value="excellent">Excellent</option><option value="good">Good</option><option value="fair">Fair</option><option value="poor">Poor</option></select></div>
@@ -3933,6 +4330,8 @@ $(document).ready(function () {
         if (!livestockId) { showNotification('Missing livestock ID.', 'danger'); return; }
         const form = document.getElementById('adminProductionRecordForm');
         const fd = new FormData(form);
+        const btn = document.querySelector('#adminProductionRecordModal .btn-ok');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
         const qualityMap = { excellent: 10, good: 8, fair: 6, poor: 4 };
         const quality = fd.get('quality');
         const qty = fd.get('quantity');
@@ -3948,7 +4347,7 @@ $(document).ready(function () {
             data: fd,
             processData: false,
             contentType: false,
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
             success: function(res){
                 if (res && res.success) {
                     $('#adminProductionRecordModal').modal('hide');
@@ -3956,7 +4355,8 @@ $(document).ready(function () {
                     showNotification('Production record added successfully!', 'success');
                 } else { showNotification('Error adding production record', 'danger'); }
             },
-            error: function(xhr){ showNotification(xhr.responseJSON?.message || 'Error adding production record', 'danger'); }
+            error: function(xhr){ showNotification(xhr.responseJSON?.message || 'Error adding production record', 'danger'); },
+            complete: function(){ if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Record'; } }
         });
     }
 
@@ -3974,7 +4374,7 @@ $(document).ready(function () {
       <form id="adminHealthRecordForm" class="text-start mx-auto">
         <div class="form-wrapper">
           <div class="row g-3">
-            <div class="col-md-6"><label class="fw-semibold">Health Check Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="health_date" required></div>
+            <div class="col-md-6"><label class="fw-semibold">Health Check Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="health_date" required max="{{ date('Y-m-d') }}"></div>
             <div class="col-md-6"><label class="fw-semibold">Health Status <span class="text-danger">*</span></label><select class="form-control mt-1" name="health_status" required><option value="">Select Status</option><option value="healthy">Healthy</option><option value="sick">Sick</option><option value="recovering">Recovering</option><option value="under_treatment">Under Treatment</option></select></div>
             <div class="col-md-6"><label class="fw-semibold">Weight (kg)</label><input type="number" class="form-control mt-1" name="weight" min="0" step="0.1"></div>
             <div class="col-md-6"><label class="fw-semibold">Temperature (°C)</label><input type="number" class="form-control mt-1" name="temperature" min="0" step="0.1"></div>
@@ -4033,10 +4433,10 @@ $(document).ready(function () {
       <form id="adminBreedingRecordForm" class="text-start mx-auto">
         <div class="form-wrapper">
           <div class="row g-3">
-            <div class="col-md-6"><label class="fw-semibold">Breeding Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="breeding_date" required></div>
+            <div class="col-md-6"><label class="fw-semibold">Breeding Date <span class="text-danger">*</span></label><input type="date" class="form-control mt-1" name="breeding_date" required max="{{ date('Y-m-d') }}"></div>
             <div class="col-md-6"><label class="fw-semibold">Breeding Type <span class="text-danger">*</span></label><select class="form-control mt-1" name="breeding_type" required><option value="">Select Type</option><option value="natural">Natural Breeding</option><option value="artificial">Artificial Insemination</option><option value="embryo_transfer">Embryo Transfer</option></select></div>
             <div class="col-md-6"><label class="fw-semibold">Partner Livestock ID</label><input type="text" class="form-control mt-1" name="partner_livestock_id"></div>
-            <div class="col-md-6"><label class="fw-semibold">Expected Birth Date</label><input type="date" class="form-control mt-1" name="expected_birth_date"></div>
+            <div class="col-md-6"><label class="fw-semibold">Expected Birth Date</label><input type="date" class="form-control mt-1" name="expected_birth_date" max="{{ date('Y-m-d') }}"></div>
             <div class="col-md-6"><label class="fw-semibold">Pregnancy Status</label><select class="form-control mt-1" name="pregnancy_status"><option value="">Select Status</option><option value="unknown">Unknown</option><option value="pregnant">Pregnant</option><option value="not_pregnant">Not Pregnant</option></select></div>
             <div class="col-md-6"><label class="fw-semibold">Breeding Success</label><select class="form-control mt-1" name="breeding_success"><option value="">Select Result</option><option value="unknown">Unknown</option><option value="successful">Successful</option><option value="unsuccessful">Unsuccessful</option></select></div>
             <div class="col-12 mb-3"><label class="fw-semibold">Notes</label><textarea class="form-control mt-1" name="notes" rows="3" style="resize:none;"></textarea></div>
@@ -4081,7 +4481,7 @@ $(document).ready(function () {
         if (typeof $.fn.modal === 'undefined') { showNotification('Modal is unavailable.', 'danger'); return; }
         const modalHtml = `
 <div class="modal fade" id="adminGrowthRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content smart-form text-center p-4">
       <div class="d-flex flex-column align-items-center mb-4">
         <div class="icon-circle"><i class="fas fa-seedling fa-2x"></i></div>
@@ -4091,17 +4491,32 @@ $(document).ready(function () {
       <form id="adminGrowthRecordForm" class="text-start mx-auto">
         <div class="form-wrapper">
           <div class="row g-3">
-            <div class="col-md-6"><label class="fw-semibold">Date</label><input type="date" class="form-control mt-1" name="growth_date"></div>
-            <div class="col-md-6"><label class="fw-semibold">Weight (kg)</label><input type="number" step="0.01" min="0" class="form-control mt-1" name="weight_kg"></div>
-            <div class="col-md-6"><label class="fw-semibold">Height (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="height_cm"></div>
-            <div class="col-md-6"><label class="fw-semibold">Heart girth (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="heart_girth_cm"></div>
-            <div class="col-md-6"><label class="fw-semibold">Body length (cm)</label><input type="number" step="0.1" min="0" class="form-control mt-1" name="body_length_cm"></div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Date</label>
+              <input type="date" class="form-control mt-1" name="growth_date" max="{{ date('Y-m-d') }}">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Weight (kg)</label>
+              <input type="number" step="0.01" min="0" class="form-control mt-1" name="weight_kg">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Height (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="height_cm">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Heart girth (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="heart_girth_cm">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Body length (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="body_length_cm">
+            </div>
           </div>
         </div>
-        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
-          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn-modern btn-ok" onclick="adminSaveGrowthRecord('${livestockId}')"><i class="fas fa-save"></i> Save Record</button>
-        </div>
+      <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+        <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-modern btn-ok" onclick="adminSaveGrowthRecord('${livestockId}')"><i class="fas fa-save"></i> Save Record</button>
+      </div>
       </form>
     </div>
   </div>
@@ -4167,7 +4582,7 @@ $(document).ready(function () {
 
             const ensureFilled = (primary, fallback) => {
                 const out = { ...primary };
-                const keys = ['tag_number','name','type','breed','gender','birth_date','status','health_status','weight','farm_name'];
+                const keys = ['tag_number','name','type','breed','breed_name','gender','birth_date','status','health_status','weight','farm_name'];
                 keys.forEach(k => {
                     const v = out[k];
                     if (v === undefined || v === null || (typeof v === 'string' && v.trim() === '')) {
@@ -4182,6 +4597,7 @@ $(document).ready(function () {
                 name: (ll.name || b.name || ''),
                 type: (ll.type || b.type || ''),
                 breed: (ll.breed || b.breed || ''),
+                breed_name: (ll.breed_name || b.breed_name || ''),
                 gender: (ll.gender || b.gender || ''),
                 birth_date: (ll.birth_date || b.birth_date || ''),
                 status: (ll.status || b.status || ''),
@@ -4211,7 +4627,9 @@ $(document).ready(function () {
             const createdAt = fmt(ll.created_at || '');
 
             const typeDisp = upWords(bbSafe.type);
-            const breedDisp = upWords(bbSafe.breed);
+            const breedDisp = (bbSafe.breed_name && bbSafe.breed_name.trim() !== '')
+                ? bbSafe.breed_name
+                : (bbSafe.breed && bbSafe.breed !== 'other' ? upWords(bbSafe.breed) : '');
             const genderDisp = up1(bbSafe.gender);
             const statusDisp = up1(bbSafe.status);
             const healthDisp = up1(bbSafe.health_status);

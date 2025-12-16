@@ -1782,7 +1782,7 @@
             </div>
 
             <!-- Form -->
-            <form id="addLivestockDetailsForm" onsubmit="submitSale(event)">
+            <form id="addLivestockDetailsForm">
                 @csrf
 
                 <div class="form-wrapper text-start mx-auto">
@@ -1828,7 +1828,7 @@
 
                         <div class="col-md-6">
                             <label for="add_sale_date" class="fw-semibold">Sale Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="add_sale_date" name="sale_date" required value="{{ date('Y-m-d') }}">
+                            <input type="date" class="form-control" id="add_sale_date" name="sale_date" required value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Payment Details -->
@@ -2072,6 +2072,7 @@
 let saleToDelete = null;
 let salesDT = null;
 let downloadCounter = 1;
+let isSubmittingSale = false;
 
 $(document).ready(function () {
     // Initialize history data
@@ -2139,6 +2140,14 @@ $('#salesSearch').on('keyup', function() {
 let editSaleId = null;
 
 function submitSale() {
+    if (isSubmittingSale) { return; }
+    isSubmittingSale = true;
+    const submitBtn = document.querySelector('#addLivestockDetailsForm button[type="submit"]');
+    const originalBtnHtml = submitBtn ? submitBtn.innerHTML : null;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    }
     const formData = new FormData(document.getElementById('addLivestockDetailsForm'));
 
     if (!formData.get('farm_id') || !formData.get('customer_name') || !formData.get('quantity') || !formData.get('unit_price') || !formData.get('sale_date')) {
@@ -2185,6 +2194,13 @@ function submitSale() {
     .catch(err => {
         console.error('submitSale error:', err);
         showNotification('An error occurred while saving the sale record', 'danger');
+    })
+    .finally(() => {
+        isSubmittingSale = false;
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            if (originalBtnHtml != null) submitBtn.innerHTML = originalBtnHtml;
+        }
     });
 }
 

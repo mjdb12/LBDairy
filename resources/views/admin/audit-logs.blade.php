@@ -144,11 +144,11 @@
                     <!-- Date Range -->
                     <div class="filter-group">
                         <label for="dateFrom">From</label>
-                        <input type="date" id="dateFrom" class="filter-input">
+                        <input type="date" id="dateFrom" class="filter-input" max="{{ date('Y-m-d') }}">
                     </div>
                     <div class="filter-group">
                         <label for="dateTo">To</label>
-                        <input type="date" id="dateTo" class="filter-input">
+                        <input type="date" id="dateTo" class="filter-input" max="{{ date('Y-m-d') }}">
                     </div>
 
                     <!-- Buttons -->

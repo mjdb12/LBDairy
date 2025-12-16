@@ -511,6 +511,17 @@ SMART FORM - Enhanced Version
     line-height: 1.65;
 }
 
+/* Calendar Event Details modal: slightly tighter layout to avoid large empty spaces */
+#eventDetailsModal .modal-body {
+    padding: 2rem 2.25rem;
+}
+
+#eventDetailsModal .detail-wrapper {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 1.75rem 1.75rem;
+}
+
 /* Detail Rows */
 .smart-detail .detail-row {
     display: flex;
@@ -1690,6 +1701,68 @@ SMART FORM - Enhanced Version
                     <div class="h4 text-info mb-0" id="todayEvents">0</div>
                     <small class="text-muted">Today</small>
                 </div>
+                <hr>
+                <div class="mt-2">
+                    <div class="text-center mb-2">
+                        <small class="text-muted text-uppercase" style="letter-spacing: .05em;">By Priority</small>
+                    </div>
+                    <div class="d-flex justify-content-around text-center mb-3">
+                        <div>
+                            <div class="h6 text-danger mb-0" id="highPriorityEvents">0</div>
+                            <small class="text-muted">High</small>
+                        </div>
+                        <div>
+                            <div class="h6 text-warning mb-0" id="mediumPriorityEvents">0</div>
+                            <small class="text-muted">Medium</small>
+                        </div>
+                        <div>
+                            <div class="h6 text-success mb-0" id="lowPriorityEvents">0</div>
+                            <small class="text-muted">Low</small>
+                        </div>
+                    </div>
+                    <div class="text-center mb-2 mt-3">
+                        <small class="text-muted text-uppercase" style="letter-spacing: .05em;">By Type</small>
+                    </div>
+                    <div class="d-flex justify-content-around text-center">
+                        <div>
+                            <div class="h6 mb-0" id="taskEvents">0</div>
+                            <small class="text-muted">My Activities</small>
+                        </div>
+                        <div>
+                            <div class="h6 mb-0" id="inspectionEvents">0</div>
+                            <small class="text-muted">Inspections</small>
+                        </div>
+                    </div>
+                    <div class="text-center mb-2 mt-3">
+                        <small class="text-muted text-uppercase" style="letter-spacing: .05em;">By Category</small>
+                    </div>
+                    <div class="d-flex justify-content-around text-center flex-wrap">
+                        <div class="mb-2" style="min-width: 80px;">
+                            <div class="h6 mb-0" id="feedingEvents">0</div>
+                            <small class="text-muted">Feeding</small>
+                        </div>
+                        <div class="mb-2" style="min-width: 80px;">
+                            <div class="h6 mb-0" id="healthEvents">0</div>
+                            <small class="text-muted">Health</small>
+                        </div>
+                        <div class="mb-2" style="min-width: 80px;">
+                            <div class="h6 mb-0" id="maintenanceEvents">0</div>
+                            <small class="text-muted">Maintenance</small>
+                        </div>
+                        <div class="mb-2" style="min-width: 80px;">
+                            <div class="h6 mb-0" id="milkingEvents">0</div>
+                            <small class="text-muted">Milking</small>
+                        </div>
+                        <div class="mb-2" style="min-width: 80px;">
+                            <div class="h6 mb-0" id="breedingEvents">0</div>
+                            <small class="text-muted">Breeding</small>
+                        </div>
+                        <div class="mb-2" style="min-width: 80px;">
+                            <div class="h6 mb-0" id="otherCategoryEvents">0</div>
+                            <small class="text-muted">Other</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1772,12 +1845,12 @@ SMART FORM - Enhanced Version
             <!-- Date & Time -->
             <div class="col-md-6">
               <label for="event_start" class="fw-semibold">Start Date & Time <span class="text-danger">*</span></label>
-              <input type="datetime-local" class="form-control" id="event_start" name="start" required>
+              <input type="datetime-local" class="form-control" id="event_start" name="start" required min="{{ date('Y-m-d') }}T00:00">
             </div>
 
             <div class="col-md-6">
               <label for="event_end" class="fw-semibold">End Date & Time</label>
-              <input type="datetime-local" class="form-control" id="event_end" name="end">
+              <input type="datetime-local" class="form-control" id="event_end" name="end" min="{{ date('Y-m-d') }}T00:00">
             </div>
 
             <!-- Category -->
@@ -2158,22 +2231,43 @@ function openEventDetailsModal(event) {
         const status = ext.status || 'todo';
         const description = ext.description || '';
 
+        const safeDescription = description
+            ? description.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            : '';
+
         const content = `
-            <div class="mb-2">
-                <strong>When:</strong><br>
-                <span>${whenHtml}</span>
+            <div class="detail-wrapper">
+                <div class="detail-row">
+                    <div class="detail-label">When</div>
+                    <div class="detail-value">${whenHtml}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Category</div>
+                    <div class="detail-value">
+                        <span class="badge badge-info text-uppercase">${category}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Priority / Status</div>
+                    <div class="detail-value">
+                        <span class="badge badge-${getPriorityBadgeClass(priority)} mr-1 text-uppercase">${priority}</span>
+                        <span class="badge badge-${getStatusBadgeClass(status)} text-uppercase">${status}</span>
+                    </div>
+                </div>
+                ${safeDescription ? `
+                    <div class="detail-row" style="flex-direction: column; align-items: flex-start;">
+                        <div class="detail-label mb-1">Description</div>
+                        <div class="detail-value" style="text-align:left; white-space:pre-wrap;">${safeDescription}</div>
+                    </div>
+                ` : ''}
+                ${(category === 'inspection' || (event.id && event.id.startsWith('insp_'))) ? `
+                    <div class="detail-row" style="border-bottom:none;">
+                        <div class="detail-value text-muted small" style="text-align:left;">
+                            <i class="fas fa-lock mr-1"></i>Admin-scheduled inspection (read-only)
+                        </div>
+                    </div>
+                ` : ''}
             </div>
-            <div class="mb-2">
-                <strong>Category:</strong><br>
-                <span class="badge badge-info">${category}</span>
-            </div>
-            <div class="mb-2">
-                <strong>Priority / Status:</strong><br>
-                <span class="badge badge-${getPriorityBadgeClass(priority)} mr-1">${priority}</span>
-                <span class="badge badge-${getStatusBadgeClass(status)}">${status}</span>
-            </div>
-            ${description ? `<div class=\"mb-2\"><strong>Description:</strong><br><div>${description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>` : ''}
-            ${(category === 'inspection' || (event.id && event.id.startsWith('insp_'))) ? `<div class=\"text-muted small\"><i class=\"fas fa-lock mr-1\"></i>Admin-scheduled inspection (read-only)</div>` : ''}
         `;
 
         const container = document.getElementById('eventDetailsContent');
@@ -2304,20 +2398,123 @@ function updateStats(eventsArg) {
     var events = Array.isArray(eventsArg) && eventsArg.length !== undefined ? eventsArg : calendar.getEvents();
     var today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     var total = events.length;
-    var completed = events.filter(e => ['done','completed'].includes(e.extendedProps.status)).length;
-    var pending = events.filter(e => ['todo','in_progress','scheduled'].includes(e.extendedProps.status)).length;
-    var todayCount = events.filter(e => {
-        var eventDate = new Date(e.start);
-        eventDate.setHours(0, 0, 0, 0);
-        return eventDate.getTime() === today.getTime();
-    }).length;
-    
-    document.getElementById('totalEvents').textContent = total;
-    document.getElementById('completedEvents').textContent = completed;
-    document.getElementById('pendingEvents').textContent = pending;
-    document.getElementById('todayEvents').textContent = todayCount;
+    var completed = 0;
+    var pending = 0;
+    var todayCount = 0;
+
+    var highPriority = 0;
+    var mediumPriority = 0;
+    var lowPriority = 0;
+
+    var taskEvents = 0;       // farmer-created activities
+    var inspectionEvents = 0; // admin inspections
+
+    // Category buckets (farm activities only; inspections counted separately)
+    var feedingCount = 0;
+    var healthCount = 0;
+    var maintenanceCount = 0;
+    var milkingCount = 0;
+    var breedingCount = 0;
+    var otherCategoryCount = 0;
+
+    events.forEach(function(e) {
+        var ext = e.extendedProps || {};
+        var status = (ext.status || '').toString().toLowerCase();
+        var priority = (ext.priority || '').toString().toLowerCase();
+        var category = (ext.category || '').toString().toLowerCase();
+
+        // Status-based counts
+        if (['done','completed'].includes(status)) {
+            completed++;
+        } else if (['todo','in_progress','scheduled'].includes(status)) {
+            pending++;
+        }
+
+        // Today count
+        try {
+            var eventDate = new Date(e.start);
+            eventDate.setHours(0, 0, 0, 0);
+            if (eventDate.getTime() === today.getTime()) {
+                todayCount++;
+            }
+        } catch (err) {}
+
+        // Priority counts
+        if (priority === 'high') {
+            highPriority++;
+        } else if (priority === 'medium') {
+            mediumPriority++;
+        } else if (priority === 'low') {
+            lowPriority++;
+        }
+
+        // Type counts (task vs inspection)
+        var idStr = e.id ? e.id.toString() : '';
+        if (category === 'inspection' || idStr.startsWith('insp_')) {
+            inspectionEvents++;
+        } else {
+            // default to farmer activities
+            taskEvents++;
+
+            // Category counts for farm activities only
+            if (category === 'feeding') {
+                feedingCount++;
+            } else if (category === 'health') {
+                healthCount++;
+            } else if (category === 'maintenance') {
+                maintenanceCount++;
+            } else if (category === 'milking') {
+                milkingCount++;
+            } else if (category === 'breeding') {
+                breedingCount++;
+            } else if (category === 'other') {
+                otherCategoryCount++;
+            } else if (category && category !== 'task') {
+                // Any other custom category set in the future
+                otherCategoryCount++;
+            }
+        }
+    });
+
+    // Basic stats
+    var elTotal = document.getElementById('totalEvents');
+    var elCompleted = document.getElementById('completedEvents');
+    var elPending = document.getElementById('pendingEvents');
+    var elToday = document.getElementById('todayEvents');
+    if (elTotal) elTotal.textContent = total;
+    if (elCompleted) elCompleted.textContent = completed;
+    if (elPending) elPending.textContent = pending;
+    if (elToday) elToday.textContent = todayCount;
+
+    // Priority stats
+    var elHigh = document.getElementById('highPriorityEvents');
+    var elMed = document.getElementById('mediumPriorityEvents');
+    var elLow = document.getElementById('lowPriorityEvents');
+    if (elHigh) elHigh.textContent = highPriority;
+    if (elMed) elMed.textContent = mediumPriority;
+    if (elLow) elLow.textContent = lowPriority;
+
+    // Type stats
+    var elTask = document.getElementById('taskEvents');
+    var elInspection = document.getElementById('inspectionEvents');
+    if (elTask) elTask.textContent = taskEvents;
+    if (elInspection) elInspection.textContent = inspectionEvents;
+
+    // Category stats
+    var elFeeding = document.getElementById('feedingEvents');
+    var elHealth = document.getElementById('healthEvents');
+    var elMaintenance = document.getElementById('maintenanceEvents');
+    var elMilking = document.getElementById('milkingEvents');
+    var elBreeding = document.getElementById('breedingEvents');
+    var elOtherCat = document.getElementById('otherCategoryEvents');
+    if (elFeeding) elFeeding.textContent = feedingCount;
+    if (elHealth) elHealth.textContent = healthCount;
+    if (elMaintenance) elMaintenance.textContent = maintenanceCount;
+    if (elMilking) elMilking.textContent = milkingCount;
+    if (elBreeding) elBreeding.textContent = breedingCount;
+    if (elOtherCat) elOtherCat.textContent = otherCategoryCount;
 }
 
 function exportCalendar() {

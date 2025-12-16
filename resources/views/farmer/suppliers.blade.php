@@ -2531,12 +2531,12 @@
                         </thead>
                         <tbody id="suppliersTableBody">
                             @forelse($suppliersData as $supplier)
-                            <tr data-expense-type="{{ $supplier['expense_type'] }}">
+                            <tr data-supplier-id="{{ $supplier['id'] }}">
                                 <td>{{ $supplier['supplier_id'] }}</td>
                                 <td>{{ $supplier['name'] }}</td>
                                 <td>{{ $supplier['address'] }}</td>
                                 <td>{{ $supplier['contact'] }}</td>
-                                <td><span class="status-badge badge badge-success">Active</span></td>
+                                <td><span class="status-badge badge badge-success">{{ $supplier['status_label'] }}</span></td>
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn-action btn-action-ok" onclick="viewDetails('{{ $supplier['name'] }}')" title="View Details">
@@ -2547,7 +2547,7 @@
                                             <i class="fas fa-book"></i>
                                             <span>Ledger</span>
                                         </button>
-                                        <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $supplier['name'] }}','{{ $supplier['expense_type'] }}')" title="Delete">
+                                        <button class="btn-action btn-action-deletes" onclick="confirmDelete('{{ $supplier['name'] }}','{{ $supplier['id'] }}')" title="Delete">
                                             <i class="fas fa-trash"></i>
                                             <span>Delete</span>
                                         </button>
@@ -2676,7 +2676,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="purchaseDate" class="fw-semibold">Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control mt-1" id="purchaseDate" required>
+                        <input type="date" class="form-control mt-1" id="purchaseDate" required max="{{ date('Y-m-d') }}">
                     </div>
 
                     <div class="col-md-6">
@@ -2998,6 +2998,11 @@ $(document).ready(function(){
         $('#addLivestockDetailsForm').trigger('submit');
     });
 
+    // Enforce numeric-only 11-digit contact on input
+    $('#add_supplierContact').on('input', function(){
+        this.value = this.value.replace(/\D/g, '').slice(0, 11);
+    });
+
     $('#addLivestockDetailsForm').on('submit', function(e){
         e.preventDefault();
         const id = $('#add_supplierId').val().trim();
@@ -3010,13 +3015,13 @@ $(document).ready(function(){
             return;
         }
 
-        const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        const safeId = esc(id);
-        const safeName = esc(name);
-        const safeAddress = esc(address);
-        const safeContact = esc(contact);
-        const safeNameAttr = (name || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g, "\\'").replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        if (!/^\d{11}$/.test(contact)){
+            showNotification('Contact number must be exactly 11 digits.', 'error');
+            return;
+        }
 
+        const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        const safeNameAttr = (name || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g, "\\'").replace(/</g,'&lt;').replace(/>/g,'&gt;');
         const statusCell = '<span class="status-badge badge badge-success">Active</span>';
         const actionCell = `
             <div class="btn-group">
@@ -3034,52 +3039,81 @@ $(document).ready(function(){
                 </button>
             </div>`;
 
-        if (suppliersDT){
-            // Remove placeholder row if present
-            suppliersDT.rows().every(function(){
-                const d = this.data();
-                if (Array.isArray(d) && d[4] && (d[4]+"").toLowerCase().includes('no suppliers')){
-                    this.remove();
+        $.ajax({
+            url: '{{ route('farmer.suppliers.store') }}',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                _token: CSRF_TOKEN,
+                supplierId: id,
+                supplierName: name,
+                supplierAddress: address,
+                supplierContact: contact
+            }
+        }).done(function(resp){
+            if (!resp || !resp.success || !resp.supplier){
+                showNotification('Failed to save supplier. Please try again.', 'error');
+                return;
+            }
+
+            const s = resp.supplier;
+            const safeId = esc(s.supplier_id || id);
+            const safeName = esc(s.name || name);
+            const safeAddress = esc(s.address || address);
+            const safeContact = esc(s.contact || contact);
+
+            if (suppliersDT){
+                suppliersDT.rows().every(function(){
+                    const d = this.data();
+                    if (Array.isArray(d) && d[4] && (d[4]+"").toLowerCase().includes('no suppliers')){
+                        this.remove();
+                    }
+                });
+
+                const rowNode = suppliersDT
+                    .row.add([safeId, safeName, safeAddress, safeContact, statusCell, actionCell])
+                    .draw(false)
+                    .node();
+
+                if (rowNode){
+                    rowNode.setAttribute('data-supplier-id', s.id);
+                    if (suppliersDT.search()) suppliersDT.search('');
+                    suppliersDT.page('last').draw('page');
+                    rowNode.classList.add('table-success');
+                    rowNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(()=> rowNode.classList.remove('table-success'), 2000);
                 }
-            });
-
-            const rowNode = suppliersDT
-                .row.add([safeId, safeName, safeAddress, safeContact, statusCell, actionCell])
-                .draw(false)
-                .node();
-
-            // Ensure it's visible: clear search and go to last page
-            if (suppliersDT.search()) suppliersDT.search('');
-            suppliersDT.page('last').draw('page');
-
-            if (rowNode){
-                rowNode.classList.add('table-success');
-                rowNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(()=> rowNode.classList.remove('table-success'), 2000);
+            } else {
+                $('#suppliersTableBody').append(`
+                    <tr data-supplier-id="${s.id}">
+                        <td>${safeId}</td>
+                        <td>${safeName}</td>
+                        <td>${safeAddress}</td>
+                        <td>${safeContact}</td>
+                        <td>${statusCell}</td>
+                        <td>${actionCell}</td>
+                    </tr>`);
+                const last = $('#suppliersTableBody tr:last')[0];
+                if (last){
+                    last.classList.add('table-success');
+                    last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(()=> last.classList.remove('table-success'), 2000);
+                }
             }
-        } else {
-            // Fallback if DataTables not initialized
-            $('#suppliersTableBody').append(`
-                <tr>
-                    <td>${safeId}</td>
-                    <td>${safeName}</td>
-                    <td>${safeAddress}</td>
-                    <td>${safeContact}</td>
-                    <td>${statusCell}</td>
-                    <td>${actionCell}</td>
-                </tr>`);
-            const last = $('#suppliersTableBody tr:last')[0];
-            if (last){
-                last.classList.add('table-success');
-                last.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(()=> last.classList.remove('table-success'), 2000);
-            }
-        }
 
-        // Close modal, reset form, and notify
-        $('#addLivestockDetailsModal').modal('hide');
-        this.reset();
-        showNotification('Supplier added successfully!', 'success');
+            $('#addLivestockDetailsModal').modal('hide');
+            $('#addLivestockDetailsForm')[0].reset();
+            showNotification('Supplier added successfully!', 'success');
+        }).fail(function(xhr){
+            let msg = 'Failed to save supplier. Please check the details and try again.';
+            if (xhr.responseJSON && xhr.responseJSON.errors){
+                const errs = xhr.responseJSON.errors;
+                if (errs.supplierContact && errs.supplierContact.length){
+                    msg = errs.supplierContact[0];
+                }
+            }
+            showNotification(msg, 'error');
+        });
     });
 });
 
@@ -3087,41 +3121,63 @@ $(document).ready(function(){
 function viewLedger(supplierName) {
     document.getElementById('ledgerSupplierName').textContent = supplierName;
     const tr = getSupplierRowByName(supplierName);
+    let supplierId = null;
     if (tr) {
         const tds = tr.querySelectorAll('td');
-        const id = tds[0] ? (tds[0].innerText||'').trim() : '';
+        const idText = tds[0] ? (tds[0].innerText||'').trim() : '';
         const address = tds[2] ? (tds[2].innerText||'').trim() : '';
         const idEl = document.getElementById('supplierInfoId');
         const addrEl = document.getElementById('supplierInfoAddress');
-        if (idEl) idEl.textContent = id || 'N/A';
+        if (idEl) idEl.textContent = idText || 'N/A';
         if (addrEl) addrEl.textContent = address || 'N/A';
+        supplierId = tr.getAttribute('data-supplier-id');
     }
-    // Set current supplier context for the ledger modal and render existing entries
     const $modal = $('#supplierLedgerModal');
-    $modal.data('currentSupplier', supplierName);
-    if (!supplierLedgers[supplierName]) supplierLedgers[supplierName] = [];
-    renderSupplierLedgerTable(supplierName);
-    // Reset and hide the Add Entry form by default
+    $modal.data('currentSupplierName', supplierName);
+    $modal.data('currentSupplierId', supplierId || null);
     hideAddSupplierLedgerEntryForm();
     const form = document.getElementById('addLedgerEntryFormInner');
     if (form) form.reset();
-    // In a real implementation, you would fetch supplier details and ledger data from backend
+    fetchSupplierLedger(supplierId);
     $('#supplierLedgerModal').modal('show');
 }
 
-// Render ledger entries for the current supplier into the table
-function renderSupplierLedgerTable(supplierName) {
+function fetchSupplierLedger(supplierId) {
     const tbody = document.querySelector('#supplierLedgerTable tbody');
     if (!tbody) return;
-    const entries = supplierLedgers[supplierName] || [];
+    if (!supplierId) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No ledger entries</td></tr>';
+        return;
+    }
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Loading...</td></tr>';
+    $.ajax({
+        url: `/farmer/suppliers/${encodeURIComponent(supplierId)}/ledger`,
+        method: 'GET',
+        dataType: 'json'
+    }).done(function(resp){
+        if (!resp || !resp.success){
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Failed to load ledger entries</td></tr>';
+            return;
+        }
+        renderSupplierLedgerTable(resp.entries || []);
+    }).fail(function(){
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Failed to load ledger entries</td></tr>';
+    });
+}
+
+// Render ledger entries for the current supplier into the table
+function renderSupplierLedgerTable(entries) {
+    const tbody = document.querySelector('#supplierLedgerTable tbody');
+    if (!tbody) return;
+    const list = entries || [];
     tbody.innerHTML = '';
-    if (entries.length === 0) {
+    if (!list.length) {
         const tr = document.createElement('tr');
-        tr.innerHTML = '<td colspan="7" class="text-center text-muted">No ledger entries</td>'; 
+        tr.innerHTML = '<td colspan="7" class="text-center text-muted">No ledger entries</td>';
         tbody.appendChild(tr);
         return;
     }
-    entries.forEach((e, idx) => {
+    list.forEach((e) => {
         const tr = document.createElement('tr');
         const badge = statusBadge(e.status);
         tr.innerHTML = `
@@ -3132,32 +3188,47 @@ function renderSupplierLedgerTable(supplierName) {
             <td>${formatCurrency(e.due)}</td>
             <td>${badge}</td>
             <td class="text-center">
-                <button class="btn-modern btn-delete btn-sm" onclick="deleteLedgerEntry(${idx})"><i class="fas fa-trash"></i> Delete</button>
+                <button class="btn-modern btn-delete btn-sm" onclick="deleteLedgerEntry(${e.id})"><i class="fas fa-trash"></i> Delete</button>
             </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-function deleteLedgerEntry(index) {
-    const supplierName = $('#supplierLedgerModal').data('currentSupplier');
-    if (!supplierName) return;
-    const entries = supplierLedgers[supplierName] || [];
-    if (index >= 0 && index < entries.length) {
-        entries.splice(index, 1);
-        renderSupplierLedgerTable(supplierName);
+function deleteLedgerEntry(entryId) {
+    const $modal = $('#supplierLedgerModal');
+    const supplierId = $modal.data('currentSupplierId');
+    if (!supplierId || !entryId) return;
+    $.ajax({
+        url: `/farmer/suppliers/${encodeURIComponent(supplierId)}/ledger/${encodeURIComponent(entryId)}`,
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': CSRF_TOKEN,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        dataType: 'json'
+    }).done(function(resp){
+        if (!resp || !resp.success){
+            showNotification('Failed to delete ledger entry.', 'error');
+            return;
+        }
         showNotification('Ledger entry deleted.', 'success');
-    }
+        fetchSupplierLedger(supplierId);
+    }).fail(function(){
+        showNotification('Failed to delete ledger entry.', 'error');
+    });
 }
 
 // Handle Add Ledger Entry form submission
 $(document).on('submit', '#addLedgerEntryFormInner', function(e){
     e.preventDefault();
 
-    const supplierName = $('#supplierLedgerModal').data('currentSupplier') || 
-                         document.getElementById('ledgerSupplierName')?.textContent?.trim();
+    const $modal = $('#supplierLedgerModal');
+    const supplierId = $modal.data('currentSupplierId');
+    const supplierName = $modal.data('currentSupplierName') || document.getElementById('ledgerSupplierName')?.textContent?.trim();
 
-    if (!supplierName) {
+    if (!supplierId || !supplierName) {
         showNotification('No supplier selected.', 'error');
         return;
     }
@@ -3173,22 +3244,34 @@ $(document).on('submit', '#addLedgerEntryFormInner', function(e){
         return;
     }
 
-    const dueVal = Math.max(0, payableVal - paidVal);
-    const entry = { date: dateVal, type: typeVal, payable: payableVal, paid: paidVal, due: dueVal, status: statusVal };
-
-    if (!supplierLedgers[supplierName]) supplierLedgers[supplierName] = [];
-    supplierLedgers[supplierName].push(entry);
-
-    // Re-render ledger table
-    renderSupplierLedgerTable(supplierName);
-
-    // Hide the **new modal**
-    $('#addSupplierLedgerEntryModal').modal('hide');
-
-    // Reset the form
-    this.reset();
-
-    showNotification('Ledger entry saved.', 'success');
+    $.ajax({
+        url: `/farmer/suppliers/${encodeURIComponent(supplierId)}/ledger`,
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': CSRF_TOKEN,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        dataType: 'json',
+        data: {
+            date: dateVal,
+            type: typeVal,
+            payable: payableVal,
+            paid: paidVal,
+            status: statusVal
+        }
+    }).done(function(resp){
+        if (!resp || !resp.success){
+            showNotification('Failed to save ledger entry.', 'error');
+            return;
+        }
+        $('#addSupplierLedgerEntryModal').modal('hide');
+        $('#addLedgerEntryFormInner')[0].reset();
+        showNotification('Ledger entry saved.', 'success');
+        fetchSupplierLedger(supplierId);
+    }).fail(function(){
+        showNotification('Failed to save ledger entry.', 'error');
+    });
 });
 
 

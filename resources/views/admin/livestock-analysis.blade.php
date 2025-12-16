@@ -204,7 +204,7 @@
                                 </div>
                             </td>
                             <td><span class="badge badge-info">{{ $animal->breed }}</span></td>
-                            <td>{{ $animal->age_months }}</td>
+                            <td>{{ ((int) $animal->age_months > 0) ? (int) $animal->age_months : '<1' }}</td>
                             <td>
                                 <span class="status-badge status-{{ $animal->status == 'active' ? 'active' : 'inactive' }}">
                                     <i class="fas fa-{{ $animal->status == 'active' ? 'check-circle' : 'times-circle' }} mr-1"></i>

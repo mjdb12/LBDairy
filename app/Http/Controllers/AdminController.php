@@ -16,6 +16,8 @@ use App\Models\AuditLog;
 use App\Models\LivestockAlert;
 use App\Models\Inventory;
 use App\Models\Notification;
+use App\Models\Supplier;
+use App\Models\SupplierLedgerEntry;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -207,20 +209,30 @@ class AdminController extends Controller
         $cursor = $start->copy();
 
         if ($type === 'health') {
-            $rows = ProductionRecord::selectRaw("DATE_FORMAT(COALESCE(production_date, created_at), '%Y-%m') as ym, AVG(milk_quality_score) as avgq")
+            // Pull health records and compute monthly average status score
+            $records = \App\Models\HealthRecord::select('health_date','created_at','health_status')
                 ->where('livestock_id', $id)
                 ->where(function($q) use ($start) {
-                    $q->whereDate('production_date', '>=', $start)
+                    $q->whereDate('health_date', '>=', $start)
                       ->orWhereDate('created_at', '>=', $start);
                 })
-                ->groupBy('ym')
-                ->orderBy('ym')
-                ->get();
+                ->orderBy('health_date')
+                ->orderBy('created_at')
+                ->get()
+                ->map(function($r){
+                    $status = is_string($r->health_status) ? strtolower($r->health_status) : $r->health_status;
+                    $map = [ 'healthy' => 100, 'recovering' => 80, 'under_treatment' => 65, 'critical' => 45 ];
+                    $score = $map[$status] ?? 70;
+                    $date = $r->health_date ?: $r->created_at;
+                    return [ 'ym' => optional($date)->format('Y-m'), 'score' => $score ];
+                });
+
             for ($i = 0; $i < $months; $i++) {
                 $labels[] = $cursor->format('M');
                 $ym = $cursor->format('Y-m');
-                $val = optional($rows->firstWhere('ym', $ym))->avgq ?? 0;
-                $data[] = round((float) $val, 1);
+                $monthScores = $records->where('ym', $ym)->pluck('score');
+                $val = $monthScores->count() > 0 ? round($monthScores->avg(), 1) : 0;
+                $data[] = $val;
                 $cursor->addMonth();
             }
             return response()->json(['labels' => $labels, 'data' => $data, 'label' => 'Health Score']);
@@ -1150,11 +1162,63 @@ class AdminController extends Controller
      */
     private function calculateHealthScore($animal)
     {
-        // Simple health score based on health status and production
-        $healthStatus = $animal->health_status === 'healthy' ? 100 : 50;
-        $productionScore = $animal->productionRecords->avg('milk_quantity') ?? 0;
-        
-        return ($healthStatus + $productionScore) / 2;
+        // Base on current health_status
+        $status = is_string($animal->health_status) ? strtolower($animal->health_status) : $animal->health_status;
+        $baseMap = [
+            'healthy' => 85,
+            'recovering' => 80,
+            'under_treatment' => 65,
+            'critical' => 45,
+        ];
+        $score = $baseMap[$status] ?? 75;
+
+        // Latest health record signals (use latest two for trend)
+        $recentHealth = \App\Models\HealthRecord::where('livestock_id', $animal->id)
+            ->orderByDesc('health_date')
+            ->orderByDesc('created_at')
+            ->take(2)
+            ->get();
+
+        $latest = $recentHealth->first();
+        $prev = $recentHealth->skip(1)->first();
+
+        // Temperature adjustment
+        if ($latest && $latest->temperature !== null) {
+            $temp = (float) $latest->temperature;
+            if ($temp >= 37.5 && $temp <= 39.5) {
+                $score += 5; // normal range
+            } else {
+                $score -= 10; // fever or hypothermia
+            }
+        }
+
+        // Weight trend adjustment
+        if ($latest && $prev && $latest->weight !== null && $prev->weight !== null) {
+            $wNew = (float) $latest->weight;
+            $wOld = (float) $prev->weight;
+            if ($wOld > 0) {
+                $delta = ($wNew - $wOld) / $wOld;
+                if ($delta <= -0.05) {
+                    $score -= 5; // >5% loss
+                } elseif ($delta >= 0.05) {
+                    $score += 3; // >5% gain
+                }
+            }
+        }
+
+        // Recent production signal (last 30 days average)
+        $avg30 = \App\Models\ProductionRecord::where('livestock_id', $animal->id)
+            ->where('production_date', '>=', now()->subDays(30))
+            ->avg('milk_quantity');
+        $avg30 = (float) ($avg30 ?? 0);
+        if ($avg30 >= 15) {
+            $score += 5;
+        } elseif ($avg30 >= 10) {
+            $score += 2;
+        }
+
+        // Clamp and round
+        return max(0, min(100, (int) round($score)));
     }
 
     /**
@@ -1510,16 +1574,142 @@ class AdminController extends Controller
             $farmer = User::where('role', 'farmer')
                 ->with(['farms', 'livestock', 'productionRecords'])
                 ->findOrFail($id);
+            $stats = $this->buildFarmerOverviewStats($farmer);
 
             return response()->json([
                 'success' => true,
-                'farmer' => $farmer
+                'farmer' => $farmer,
+                'stats' => $stats,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Farmer not found'
             ], 404);
+        }
+    }
+
+    /**
+     * Build aggregate overview statistics for a specific farmer for the admin view.
+     */
+    private function buildFarmerOverviewStats(User $farmer): array
+    {
+        try {
+            $farmerId = $farmer->id;
+
+            // Farms owned by this farmer
+            $farmIds = Farm::where('owner_id', $farmerId)->pluck('id');
+            $totalFarms = $farmIds->count();
+            $activeFarms = $farmIds->isNotEmpty()
+                ? Farm::whereIn('id', $farmIds)->where('status', 'active')->count()
+                : 0;
+
+            // Livestock statistics by status
+            $totalLivestock = Livestock::where('owner_id', $farmerId)->count();
+            $activeLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'active')->count();
+            $inactiveLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'inactive')->count();
+            $deceasedLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'deceased')->count();
+            $transferredLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'transferred')->count();
+            $soldLivestock = Livestock::where('owner_id', $farmerId)->where('status', 'sold')->count();
+
+            // Production totals (via farms)
+            $totalProduction = 0.0;
+            $recentProduction = 0.0;
+
+            if ($farmIds->isNotEmpty()) {
+                $totalProduction = (float) ProductionRecord::whereIn('farm_id', $farmIds)->sum('milk_quantity');
+                $recentProduction = (float) ProductionRecord::whereIn('farm_id', $farmIds)
+                    ->whereDate('production_date', '>=', now()->subDays(30)->toDateString())
+                    ->sum('milk_quantity');
+            }
+
+            // Sales and client information (via farms)
+            $totalSalesAmount = 0.0;
+            $totalSalesCount = 0;
+            $uniqueClients = 0;
+            $lastSaleDate = null;
+
+            if ($farmIds->isNotEmpty()) {
+                $salesQuery = Sale::whereIn('farm_id', $farmIds);
+                $totalSalesAmount = (float) $salesQuery->sum('total_amount');
+                $totalSalesCount = (int) $salesQuery->count();
+                $uniqueClients = (int) $salesQuery
+                    ->whereNotNull('customer_name')
+                    ->distinct('customer_name')
+                    ->count('customer_name');
+                $lastSaleDate = $salesQuery->max('sale_date');
+            }
+
+            // Expense information (via farms)
+            $totalExpensesAmount = 0.0;
+            $totalExpensesCount = 0;
+            $lastExpenseDate = null;
+
+            if ($farmIds->isNotEmpty()) {
+                $expenseQuery = Expense::whereIn('farm_id', $farmIds);
+                $totalExpensesAmount = (float) $expenseQuery->sum('amount');
+                $totalExpensesCount = (int) $expenseQuery->count();
+                $lastExpenseDate = $expenseQuery->max('expense_date');
+            }
+
+            // Supplier overview and outstanding payables
+            $totalSuppliers = (int) Supplier::where('farmer_id', $farmerId)->count();
+            $totalSupplierPayables = (float) SupplierLedgerEntry::where('farmer_id', $farmerId)->sum('due_amount');
+
+            // Basic financial rundown
+            $netIncome = $totalSalesAmount - $totalExpensesAmount;
+            $expenseCoverage = $totalExpensesAmount > 0
+                ? (int) round(($totalSalesAmount / max($totalExpensesAmount, 0.01)) * 100)
+                : null;
+
+            return [
+                'total_farms' => $totalFarms,
+                'active_farms' => $activeFarms,
+                'total_livestock' => $totalLivestock,
+                'active_livestock' => $activeLivestock,
+                'inactive_livestock' => $inactiveLivestock,
+                'deceased_livestock' => $deceasedLivestock,
+                'transferred_livestock' => $transferredLivestock,
+                'sold_livestock' => $soldLivestock,
+                'total_production_liters' => round($totalProduction, 1),
+                'recent_production_30d' => round($recentProduction, 1),
+                'total_sales_amount' => round($totalSalesAmount, 2),
+                'total_sales_count' => $totalSalesCount,
+                'total_expenses_amount' => round($totalExpensesAmount, 2),
+                'total_expenses_count' => $totalExpensesCount,
+                'net_income' => round($netIncome, 2),
+                'expense_coverage_percent' => $expenseCoverage,
+                'total_suppliers' => $totalSuppliers,
+                'total_clients' => $uniqueClients,
+                'total_supplier_payables' => round($totalSupplierPayables, 2),
+                'last_sale_date' => $lastSaleDate,
+                'last_expense_date' => $lastExpenseDate,
+            ];
+        } catch (\Throwable $e) {
+            // Fail-safe: never break the modal, just return zeroed stats
+            return [
+                'total_farms' => 0,
+                'active_farms' => 0,
+                'total_livestock' => 0,
+                'active_livestock' => 0,
+                'inactive_livestock' => 0,
+                'deceased_livestock' => 0,
+                'transferred_livestock' => 0,
+                'sold_livestock' => 0,
+                'total_production_liters' => 0,
+                'recent_production_30d' => 0,
+                'total_sales_amount' => 0,
+                'total_sales_count' => 0,
+                'total_expenses_amount' => 0,
+                'total_expenses_count' => 0,
+                'net_income' => 0,
+                'expense_coverage_percent' => null,
+                'total_suppliers' => 0,
+                'total_clients' => 0,
+                'total_supplier_payables' => 0,
+                'last_sale_date' => null,
+                'last_expense_date' => null,
+            ];
         }
     }
 
@@ -2079,8 +2269,10 @@ class AdminController extends Controller
                 $file = $request->file('profile_picture');
                 $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 
-                // Store the file in the public/img directory
-                $file->move(public_path('img'), $filename);
+                // Store the file in the web server document root img directory
+                $docRoot = rtrim($_SERVER['DOCUMENT_ROOT'] ?? public_path(), '/\\');
+                $targetDir = $docRoot . DIRECTORY_SEPARATOR . 'img';
+                $file->move($targetDir, $filename);
                 
                 // Update user's profile_image field
                 $user->update(['profile_image' => $filename]);
@@ -2281,7 +2473,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'farmer_id' => 'required|exists:users,id',
-            'inspection_date' => 'required|date|after:today',
+            'inspection_date' => 'required|date|after_or_equal:today',
             'inspection_time' => 'required|date_format:H:i',
             'priority' => 'required|in:low,medium,high,urgent',
             'notes' => 'nullable|string|max:1000',

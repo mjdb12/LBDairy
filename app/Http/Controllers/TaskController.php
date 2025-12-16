@@ -12,17 +12,15 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         
-        if ($user->role === 'superadmin' || $user->role === 'admin') {
-            $tasks = Task::orderBy('sort_order')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            // Farmers can only see their own tasks
-            $tasks = Task::where('assigned_to', $user->id)
-                ->orderBy('sort_order')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        }
+        // Each user sees only their own task board: tasks assigned to them
+        // or tasks they created. This keeps boards user-specific across roles.
+        $tasks = Task::where(function ($query) use ($user) {
+                $query->where('assigned_to', $user->id)
+                      ->orWhere('created_by', $user->id);
+            })
+            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json(['success' => true, 'tasks' => $tasks]);
     }

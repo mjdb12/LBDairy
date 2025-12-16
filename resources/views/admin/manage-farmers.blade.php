@@ -1415,6 +1415,9 @@
                             <a class="dropdown-item" href="#" onclick="exportPDF('activeFarmersTable')">
                                 <i class="fas fa-file-pdf"></i> Download PDF
                             </a>
+                            <a class="dropdown-item" href="#" onclick="document.getElementById('activeFarmersCsvInput').click()">
+                                <i class="fas fa-file-csv"></i> Import CSV
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1439,6 +1442,7 @@
                     </tbody>
                 </table>
             </div>
+            <input type="file" id="activeFarmersCsvInput" accept=".csv" style="display:none" onchange="importFarmersCSV('active', event)">
         </div>
     </div>
 
@@ -2316,13 +2320,13 @@ function sendMessage(event) {
             message: message
         },
         success: function(response) {
-    // Show success notification
-    showNotification(`Message sent to <strong>&nbsp;Farmer&nbsp;</strong> successfully!`, 'success');
+            var nEl = document.getElementById('farmerNameHidden');
+            var displayName = nEl && nEl.value ? nEl.value : 'Farmer';
+            showNotification(`Message sent to ${displayName} successfully!`, 'success');
 
-    // Clear input fields
-    document.getElementById('messageSubject').value = '';
-    document.getElementById('messageBody').value = '';
-},
+            document.getElementById('messageSubject').value = '';
+            document.getElementById('messageBody').value = '';
+        },
 
 error: function(xhr) {
     // Show error notification

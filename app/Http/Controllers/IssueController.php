@@ -81,7 +81,8 @@ class IssueController extends Controller
                         'last_name' => $farmer->last_name,
                         'name' => $farmer->name,
                         'email' => $farmer->email,
-                        'contact_number' => $farmer->contact_number,
+                        // Prefer phone, fall back to legacy contact_number so frontend contact column shows a real value
+                        'contact_number' => $farmer->phone ?? $farmer->contact_number,
                         'barangay' => $farmer->barangay,
                         'status' => $farmer->status,
                         'livestock_count' => $farmer->livestock_count
@@ -138,7 +139,7 @@ class IssueController extends Controller
             'livestock_id' => 'required|exists:livestock,id',
             'issue_type' => 'required|string|max:255',
             'priority' => 'required|string|in:Low,Medium,High,Urgent',
-            'date_reported' => 'required|date',
+            'date_reported' => 'required|date|after_or_equal:today',
             'description' => 'required|string|max:1000',
             'notes' => 'nullable|string|max:1000',
         ]);

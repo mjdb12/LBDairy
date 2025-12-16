@@ -1,25 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'Issue Alerts')
+@section('title', 'Announcements')
 
 @section('content')
     <!-- Page Header -->
     <div class="page bg-white shadow-md rounded p-4 mb-4 fade-in">
         <h1>
-            <i class="fas fa-exclamation-triangle"></i>
-            Issue Alerts
+            <i class="fas fa-bell"></i>
+            Announcements
         </h1>
-        <p>Create and manage alerts to notify administrators about livestock issues</p>
+        <p>Create and manage announcements to notify administrators about livestock issues</p>
     </div>
 
     <!-- Statistics Cards -->
     <div class="row fade-in">
-        <!-- Total Alerts -->
+        <!-- Total Announcements -->
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
-                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Alerts</div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Announcements</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalAlerts }}</div>
                     </div>
                     <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <!-- Active Alerts -->
+        <!-- Active Announcements -->
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <!-- Critical Alerts -->
+        <!-- Critical Announcements -->
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <!-- Resolved Alerts -->
+        <!-- Resolved Announcements -->
         <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body d-flex align-items-center justify-content-between">
@@ -82,7 +82,7 @@
                 <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
                     <h6 class="mb-0">
                         <i class="fas fa-list"></i>
-                        My Alerts
+                        My Announcements
                     </h6>
                 </div>
                 <div class="card-body">
@@ -93,11 +93,11 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control" placeholder="Search alerts..." id="alertSearch">
+                            <input type="text" class="form-control" placeholder="Search announcements..." id="alertSearch">
                         </div>
                         <div class="d-flex align-items-center justify-content-center flex-nowrap gap-2 action-toolbar">
                             <button class="btn-action btn-action-ok" onclick="openCreateAlertModal()">
-                                <i class="fas fa-plus"></i>Add Alert
+                                <i class="fas fa-plus"></i>Add Announcement
                             </button>
                             <button class="btn-action btn-action-refreshs" onclick="refreshAlertsTable('alertsTable')">
                                 <i class="fas fa-sync-alt"></i> Refresh
@@ -140,13 +140,13 @@
                                 @forelse($alerts as $alert)
                                 <tr >
                                     <td>
-                                        <strong>{{ $alert->livestock->livestock_id ?? 'N/A' }}</strong>
+                                        <strong>{{ optional($alert->livestock)->tag_number ?? 'N/A' }}</strong>
                                     </td>
                                     <td>{{ $alert->topic }}</td>
                                     <td>{{ Str::limit($alert->description, 50) }}</td>
                                     <td>
                                         <span class="badge badges-{{ $alert->severity_badge_class }}">
-                                            {{ ucfirst($alert->severity) }}
+                                            {{ $alert->severity_label }}
                                         </span>
                                     </td>
                                     <td>{{ $alert->alert_date ? $alert->alert_date->format('M d, Y') : $alert->created_at->format('M d, Y') }}</td>
@@ -168,7 +168,7 @@
                                 <tr>
                                     <td class="text-center text-muted">N/A</td>
                                     <td class="text-center text-muted">N/A</td>
-                                    <td class="text-center text-muted">No alerts created yet</td>
+                                    <td class="text-center text-muted">No announcements created yet</td>
                                     <td class="text-center text-muted">N/A</td>
                                     <td class="text-center text-muted">N/A</td>
                                     <td class="text-center text-muted">N/A</td>
@@ -215,7 +215,7 @@
                                 <option value="">Select Livestock</option>
                                 @foreach($livestock as $animal)
                                     <option value="{{ $animal->id }}">
-                                        {{ $animal->livestock_id }} - {{ $animal->type }} ({{ $animal->breed }})
+                                        {{ $animal->tag_number }} - {{ $animal->type }} ({{ $animal->breed }})
                                     </option>
                                 @endforeach
                             </select>
@@ -249,7 +249,7 @@
                                 Alert Date <span class="text-danger">*</span>
                             </label>
                             <input type="date" class="form-control mt-1" id="alert_date" name="alert_date"
-                                   value="{{ date('Y-m-d') }}" required>
+                                   value="{{ date('Y-m-d') }}" required max="{{ date('Y-m-d') }}">
                         </div>
 
                         <!-- Description -->
@@ -431,19 +431,21 @@ function submitAlertForm() {
         data: formData,
         processData: false,
         contentType: false,
+        headers: { 'Accept': 'application/json' },
         success: function(response) {
-            alert('Alert created successfully!');
             $('#createAlertModal').modal('hide');
-            location.reload();
+            showNotification('Alert created successfully!', 'success');
+            setTimeout(() => { location.reload(); }, 800);
         },
         error: function(xhr) {
             if (xhr.status === 422) {
                 const errors = xhr.responseJSON.errors;
-                Object.keys(errors).forEach(field => {
-                    alert(errors[field][0]);
-                });
+                const firstKey = Object.keys(errors)[0];
+                const firstMsg = firstKey ? errors[firstKey][0] : 'Validation failed';
+                showNotification(firstMsg, 'danger');
             } else {
-                alert('Error creating alert');
+                const msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Error creating alert';
+                showNotification(msg, 'danger');
             }
         }
     });

@@ -227,8 +227,10 @@ class SuperAdminController extends Controller
                 $file = $request->file('profile_picture');
                 $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 
-                // Store the file in the public/img directory
-                $file->move(public_path('img'), $filename);
+                // Store the file in the web server document root img directory
+                $docRoot = rtrim($_SERVER['DOCUMENT_ROOT'] ?? public_path(), '/\\');
+                $targetDir = $docRoot . DIRECTORY_SEPARATOR . 'img';
+                $file->move($targetDir, $filename);
                 
                 // Update user's profile_image field
                 $user->update(['profile_image' => $filename]);
@@ -293,43 +295,53 @@ class SuperAdminController extends Controller
             return $log;
         });
 
-        // Get security alerts (warning, danger, and critical events from last 7 days)
+        // Get security alerts (warning and high-severity events from last 7 days)
         $securityAlerts = AuditLog::with(['user'])
             ->whereIn('severity', ['warning', 'danger', 'critical', 'error'])
             ->where('created_at', '>=', now()->subDays(7))
             ->orderBy('created_at', 'desc')
             ->limit(50)
             ->get()
-            ->map(function($log) {
-                // Determine severity badge class
-                $severityClass = 'warning';
-                $severityLabel = 'Warning';
-                
-                switch($log->severity) {
-                    case 'critical':
-                    case 'error':
+            ->map(function ($log) {
+                // Normalize into the same 3-level severity categories used by the Events by Severity chart
+                $raw = strtolower($log->severity ?? 'info');
+                $category = 'Low';
+                if (in_array($raw, ['critical', 'error', 'danger'], true)) {
+                    $category = 'High';
+                } elseif ($raw === 'warning') {
+                    $category = 'Medium';
+                }
+
+                // Map category to Bootstrap class and shared hex colors
+                switch ($category) {
+                    case 'High':
                         $severityClass = 'danger';
-                        $severityLabel = 'Critical';
+                        $severityColor = '#c82333';
+                        $textColor = 'white';
                         break;
-                    case 'danger':
-                        $severityClass = 'danger';
-                        $severityLabel = 'High Risk';
-                        break;
-                    case 'warning':
+                    case 'Medium':
                         $severityClass = 'warning';
-                        $severityLabel = 'Warning';
+                        $severityColor = '#ffc107';
+                        $textColor = '#212529';
+                        break;
+                    default: // Low
+                        $severityClass = 'info';
+                        $severityColor = '#387057';
+                        $textColor = 'white';
                         break;
                 }
-                
+
                 return (object) [
                     'id' => $log->id,
                     'timestamp' => $log->created_at->format('M d, Y H:i:s'),
                     'user_name' => $log->user ? $log->user->name : 'System',
                     'event' => ucfirst(str_replace('_', ' ', $log->action)),
                     'details' => $log->description ?: 'No additional details',
-                    'severity' => $log->severity,
+                    'severity' => $raw,
                     'severity_class' => $severityClass,
-                    'severity_label' => $severityLabel
+                    'severity_label' => $category,
+                    'severity_color' => $severityColor,
+                    'severity_text_color' => $textColor,
                 ];
             });
 
@@ -831,6 +843,14 @@ class SuperAdminController extends Controller
     {
         try {
             $user = User::findOrFail($id);
+            
+            // Protect superadmin accounts from deletion at the backend level
+            if ($user->role === 'superadmin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Superadmin accounts cannot be deleted.'
+                ], 403);
+            }
             $userName = $user->name;
             $userEmail = $user->email;
             $user->delete();
@@ -1098,22 +1118,45 @@ class SuperAdminController extends Controller
     public function showFarm($id)
     {
         try {
-            $farm = Farm::with('owner')->findOrFail($id);
+            // Load farm with owner and livestock for accurate, real-time metrics
+            $farm = Farm::with(['owner', 'livestock'])->findOrFail($id);
+
+            // Real-time livestock count
+            $livestockCount = $farm->livestock ? $farm->livestock->count() : 0;
+
+            // Real-time monthly production for this farm (current month)
+            $monthStart = now()->startOfMonth();
+            $monthlyProduction = (float) ProductionRecord::where('farm_id', $farm->id)
+                ->where(function ($q) use ($monthStart) {
+                    $q->whereDate('production_date', '>=', $monthStart)
+                      ->orWhereDate('created_at', '>=', $monthStart);
+                })
+                ->sum('milk_quantity');
+
+            // Payload consumed by the farm details modal
             $payload = [
                 'id' => $farm->id,
                 'farm_id' => $farm->id,
                 'name' => $farm->name,
+                'location' => $farm->location,
                 'barangay' => $farm->location,
                 'status' => $farm->status,
                 'description' => $farm->description,
                 'created_at' => $farm->created_at,
+                'updated_at' => $farm->updated_at,
                 'owner' => [
                     'name' => $farm->owner->name ?? trim(($farm->owner->first_name ?? '') . ' ' . ($farm->owner->last_name ?? '')),
                     'email' => $farm->owner->email ?? null,
                     'phone' => $farm->owner->phone ?? null,
                 ],
             ];
-            return response()->json(['success' => true, 'data' => $payload]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $payload,
+                'livestock_count' => $livestockCount,
+                'monthly_production' => round($monthlyProduction, 1),
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Farm not found'], 404);
         }
@@ -1935,8 +1978,15 @@ class SuperAdminController extends Controller
                 $data[] = round($total, 1);
                 $daysInMonth = (int) $cursor->daysInMonth;
                 $avgProduction[] = $daysInMonth > 0 ? round($total / $daysInMonth, 1) : 0;
-                $activeFarms[] = \App\Models\Farm::where('status', 'active')->count();
-                $activeLivestock[] = \App\Models\Livestock::where('status', 'active')->count();
+
+                // Active farms and livestock as of the end of this month
+                $monthEnd = $cursor->copy()->endOfMonth();
+                $activeFarms[] = \App\Models\Farm::where('status', 'active')
+                    ->where('created_at', '<=', $monthEnd)
+                    ->count();
+                $activeLivestock[] = \App\Models\Livestock::where('status', 'active')
+                    ->where('created_at', '<=', $monthEnd)
+                    ->count();
                 $cursor->addMonth();
             }
 
@@ -2023,7 +2073,8 @@ class SuperAdminController extends Controller
                 'info' => 'low',
                 'warning' => 'medium',
                 'error' => 'high',
-                'critical' => 'high'
+                'critical' => 'high',
+                'danger' => 'high',
             ];
 
             // Count events by new categories
@@ -2141,12 +2192,12 @@ class SuperAdminController extends Controller
     public function getNotifications()
     {
         try {
-            $notifications = Notification::where('type', 'admin_registration')
+            $notifications = Notification::where('recipient_id', Auth::id())
                 ->orderBy('created_at', 'desc')
                 ->limit(10)
                 ->get();
 
-            $unreadCount = Notification::where('type', 'admin_registration')
+            $unreadCount = Notification::where('recipient_id', Auth::id())
                 ->where('is_read', false)
                 ->count();
 
@@ -2171,6 +2222,13 @@ class SuperAdminController extends Controller
     {
         try {
             $notification = Notification::findOrFail($id);
+            if ((int)$notification->recipient_id !== (int)Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Forbidden'
+                ], 403);
+            }
+
             $notification->markAsRead(Auth::id());
 
             return response()->json([
@@ -2192,7 +2250,7 @@ class SuperAdminController extends Controller
     public function markAllNotificationsAsRead()
     {
         try {
-            Notification::where('type', 'admin_registration')
+            Notification::where('recipient_id', Auth::id())
                 ->where('is_read', false)
                 ->update([
                     'is_read' => true,

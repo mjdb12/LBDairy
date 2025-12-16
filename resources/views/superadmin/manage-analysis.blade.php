@@ -1433,7 +1433,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(\App\Models\Farm::with(['owner', 'livestock', 'productionRecords'])->take(10)->get() as $farm)
+                            @foreach(\App\Models\Farm::with(['owner', 'livestock', 'productionRecords'])->get() as $farm)
                                 @php
                                     $livestockCount = $farm->livestock->count();
                                     $monthlyProduction = $farm->productionRecords

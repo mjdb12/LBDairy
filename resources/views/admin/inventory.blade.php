@@ -214,7 +214,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inventoryDate">Date</label>
-                                <input type="date" class="form-control" id="inventoryDate" name="inventoryDate" required>
+                                <input type="date" class="form-control" id="inventoryDate" name="inventoryDate" required max="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                     </div>

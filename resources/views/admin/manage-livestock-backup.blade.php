@@ -217,7 +217,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="birth_date">Birth Date</label>
-                                <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+                                <input type="date" class="form-control" id="birth_date" name="birth_date" required max="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -319,7 +319,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="edit_birth_date">Birth Date</label>
-                                <input type="date" class="form-control" id="edit_birth_date" name="birth_date" required>
+                                <input type="date" class="form-control" id="edit_birth_date" name="birth_date" required max="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                         <div class="col-md-6">

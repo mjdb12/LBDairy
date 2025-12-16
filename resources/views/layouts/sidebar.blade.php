@@ -63,9 +63,9 @@
             </li>
 
             <li class="nav-item {{ isCurrentRoute('farmer.issue-alerts') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('farmer.issue-alerts') }}" data-toggle="tooltip" data-placement="right" data-original-title="Issues Alerts">
+                <a class="nav-link" href="{{ route('farmer.issue-alerts') }}" data-toggle="tooltip" data-placement="right" data-original-title="Announcements">
                     <i class="fa fa-bell"></i>
-                    <span>Issues Alerts</span>
+                    <span>Announcements</span>
                 </a>
             </li>
 
@@ -195,11 +195,11 @@
                 </a>
             </li>
 
-            <!-- Nav Item - Issues -->
+            <!-- Nav Item - Announcements -->
             <li class="nav-item {{ isCurrentRoute('admin.issues.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('admin.issues.index') }}" data-toggle="tooltip" data-placement="right" data-original-title="Issues Alerts">
+                <a class="nav-link" href="{{ route('admin.issues.index') }}" data-toggle="tooltip" data-placement="right" data-original-title="Announcements">
                     <i class="fas fa-fw fa-exclamation-triangle"></i>
-                    <span>Issues Alerts</span>
+                    <span>Announcements</span>
                 </a>
             </li>
 

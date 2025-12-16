@@ -37,7 +37,8 @@ class HardResetDatabase extends Command
         }
 
         // Collect table names (MySQL)
-        $tables = array_map('current', DB::select('SHOW TABLES'));
+        $rows = DB::select("SELECT table_name AS name FROM information_schema.tables WHERE table_schema = DATABASE()");
+        $tables = array_map(fn($r) => $r->name, $rows);
         $exclude = ['migrations', 'users'];
         $toTruncate = array_values(array_diff($tables, $exclude));
 
@@ -45,7 +46,6 @@ class HardResetDatabase extends Command
         foreach ($toTruncate as $t) { $this->line(" - {$t}"); }
         $this->warn('Users table will be pruned according to the keep policy.');
 
-        DB::beginTransaction();
         try {
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             foreach ($toTruncate as $table) {
@@ -65,7 +65,6 @@ class HardResetDatabase extends Command
                 $exists = DB::table('users')->where('email', $email)->exists();
                 if (!$exists) {
                     DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-                    DB::rollBack();
                     $this->error("User with email {$email} not found. Aborting.");
                     return self::FAILURE;
                 }
@@ -74,14 +73,12 @@ class HardResetDatabase extends Command
             }
 
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            DB::commit();
 
             $this->info('Hard reset completed successfully.');
             $this->line('Kept user IDs: [' . implode(',', $kept) . ']');
             return self::SUCCESS;
         } catch (\Throwable $e) {
             try { DB::statement('SET FOREIGN_KEY_CHECKS=1;'); } catch (\Throwable $e2) {}
-            DB::rollBack();
             $this->error('Failed to hard reset: ' . $e->getMessage());
             return self::FAILURE;
         }

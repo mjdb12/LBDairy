@@ -138,7 +138,7 @@
             </div>
             <div class="col-md-6">
               <label for="al_birth_date" class="fw-semibold">Birth Date</label>
-              <input type="date" class="form-control" id="al_birth_date" name="birth_date" required>
+              <input type="date" class="form-control" id="al_birth_date" name="birth_date" required max="{{ date('Y-m-d') }}">
             </div>
             <div class="col-md-6">
               <label for="al_gender" class="fw-semibold">Gender</label>
@@ -165,6 +165,9 @@
               <select id="al_status" class="form-control" name="status" required>
                 <option value="active" selected>Active</option>
                 <option value="inactive">Inactive</option>
+                <option value="deceased">Deceased</option>
+                <option value="transferred">Transferred</option>
+                <option value="sold">Sold</option>
               </select>
             </div>
           </div>
@@ -206,13 +209,13 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab" aria-controls="growthForm" aria-selected="false">
-              <i class="fas fa-chart-line"></i> Growth
+            <a class="nav-link" id="production-tab" data-toggle="tab" href="#productionForm" role="tab" aria-controls="productionForm" aria-selected="false">
+              <i class="fas fa-tint"></i> Production
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="milk-tab" data-toggle="tab" href="#milkForm" role="tab" aria-controls="milkForm" aria-selected="false">
-              <i class="fas fa-tint"></i> Milk
+            <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab" aria-controls="healthForm" aria-selected="false">
+              <i class="fas fa-heartbeat"></i> Health
             </a>
           </li>
           <li class="nav-item">
@@ -221,8 +224,8 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="health-tab" data-toggle="tab" href="#healthForm" role="tab" aria-controls="healthForm" aria-selected="false">
-              <i class="fas fa-heartbeat"></i> Health
+            <a class="nav-link" id="growth-tab" data-toggle="tab" href="#growthForm" role="tab" aria-controls="growthForm" aria-selected="false">
+              <i class="fas fa-chart-line"></i> Growth
             </a>
           </li>
         </ul>
@@ -230,144 +233,233 @@
         <!-- TAB CONTENT -->
         <div class="tab-content" id="livestockTabContent">
 
-          <!-- BASIC INFO TAB (READ-ONLY) -->
+          <!-- BASIC INFO TAB (EDITABLE VERSION FOR SCAN VIEW) -->
           <div class="tab-pane fade show active" id="basicForm" role="tabpanel" aria-labelledby="basic-tab">
-            <form id="basicDetailsForm">
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                  <tbody>
-                    <tr><th>Owned By</th><td><input type="text" class="form-control" id="ownedBy" readonly></td></tr>
-                    <tr><th>Dispersal From</th><td><input type="text" class="form-control" id="dispersalFrom" readonly></td></tr>
-                    <tr><th>Registry ID</th><td><input type="text" class="form-control" id="registryId" readonly></td></tr>
-                    <tr><th>Tag ID</th><td><input type="text" class="form-control" id="tagId" readonly></td></tr>
-                    <tr><th>Name</th><td><input type="text" class="form-control" id="livestockName" readonly></td></tr>
-                    <tr><th>Date of Birth</th><td><input type="date" class="form-control" id="dob" readonly></td></tr>
-                    <tr><th>Sex</th><td><input type="text" class="form-control" id="sex" readonly></td></tr>
-                    <tr><th>Breed</th><td><input type="text" class="form-control" id="breed" readonly></td></tr>
-                    <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="sireId" readonly></td></tr>
-                    <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="damId" readonly></td></tr>
-                    <tr><th>Sire Name</th><td><input type="text" class="form-control" id="sireName" readonly></td></tr>
-                    <tr><th>Dam Name</th><td><input type="text" class="form-control" id="damName" readonly></td></tr>
-                    <tr><th>Sire Breed</th><td><input type="text" class="form-control" id="sireBreed" readonly></td></tr>
-                    <tr><th>Dam Breed</th><td><input type="text" class="form-control" id="damBreed" readonly></td></tr>
-                    <tr><th>Natural Marks</th><td><input type="text" class="form-control" id="naturalMarks" readonly></td></tr>
-                    <tr><th>Property No.</th><td><input type="text" class="form-control" id="propertyNo" readonly></td></tr>
-                    <tr><th>Date Acquired</th><td><input type="date" class="form-control" id="acquisitionDate" readonly></td></tr>
-                    <tr><th>Acquisition Cost</th><td><input type="number" class="form-control" id="acquisitionCost" readonly></td></tr>
-                    <tr><th>Source</th><td><input type="text" class="form-control" id="source" readonly></td></tr>
-                    <tr><th>Remarks</th><td><textarea class="form-control" id="remarks" readonly></textarea></td></tr>
-                    <tr><th>Cooperator</th><td><input type="text" class="form-control" id="cooperator" readonly></td></tr>
-                    <tr><th>Date Released</th><td><input type="date" class="form-control" id="releasedDate" readonly></td></tr>
-                    <tr><th>Cooperative</th><td><input type="text" class="form-control" id="cooperative" readonly></td></tr>
-                    <tr><th>Address</th><td><input type="text" class="form-control" id="address" readonly></td></tr>
-                    <tr><th>Contact No.</th><td><input type="text" class="form-control" id="contactNo" readonly></td></tr>
-                    <tr><th>In-Charge</th><td><input type="text" class="form-control" id="inCharge" readonly></td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </form>
-          </div>
-
-          <!-- GROWTH TAB (EDITABLE) -->
-          <div class="tab-pane fade" id="growthForm" role="tabpanel" aria-labelledby="growth-tab">
-            <form id="growthDetailsForm">
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                  <tbody>
-                    <tr><th>Date</th><td><input type="date" class="form-control" id="growthDate"></td></tr>
-                    <tr><th>Weight (kg)</th><td><input type="number" class="form-control" id="weight"></td></tr>
-                    <tr><th>Height (cm)</th><td><input type="number" class="form-control" id="height"></td></tr>
-                    <tr><th>Heart Girth (cm)</th><td><input type="number" step="0.1" class="form-control" id="heartGirthCm" required></td></tr>
-                    <tr><th>Body Length (cm)</th><td><input type="number" step="0.1" class="form-control" id="bodyLengthCm" required></td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn-action btn-action-ok btn-sm">
-                  Save Record
-                </button>
-              </div>
-            </form>
-            <div class="mt-3" id="growthHistory"></div>
-          </div>
-
-          <!-- MILK TAB (EDITABLE) -->
-          <div class="tab-pane fade" id="milkForm" role="tabpanel" aria-labelledby="milk-tab">
-            <form id="milkDetailsForm">
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                  <tbody>
-                    <tr><th>Date of Calving</th><td><input type="date" class="form-control" id="calvingDate" required></td></tr>
-                    <tr><th>Calf ID Number</th><td><input type="text" class="form-control" id="calfIdNumber" required></td></tr>
-                    <tr><th>Sex</th><td>
-                      <select class="form-control" id="calfSex" required>
-                        <option value="" disabled selected>Select Sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
+            <div class="table-responsive">
+              <table class="table table-bordered mb-0">
+                <tbody>
+                  <tr><th>Owned By</th><td><input type="text" class="form-control" id="ownedBy"></td></tr>
+                  <tr><th>Dispersal From</th><td><input type="text" class="form-control" id="dispersalFrom"></td></tr>
+                  <tr><th>Registry ID Number</th><td><input type="text" class="form-control" id="registryId"></td></tr>
+                  <tr><th>Tag ID Number</th><td><input type="text" class="form-control" id="tagId"></td></tr>
+                  <tr><th>Name</th><td><input type="text" class="form-control" id="livestockName"></td></tr>
+                  <tr><th>Type</th>
+                    <td>
+                      <select class="form-control" id="typeInput">
+                        <option value="">Select Type</option>
+                        <option value="cow">Cow</option>
+                        <option value="buffalo">Buffalo</option>
+                        <option value="goat">Goat</option>
+                        <option value="sheep">Sheep</option>
                       </select>
-                    </td></tr>
-                    <tr><th>Breed</th><td><input type="text" class="form-control" id="calfBreed" required></td></tr>
-                    <tr><th>Sire ID Number</th><td><input type="text" class="form-control" id="sireIdNumber" required></td></tr>
-                    <tr><th>Milk Production (liters)</th><td><input type="number" step="0.01" class="form-control" id="milkProduction" required></td></tr>
-                    <tr><th>Days in Milk</th><td><input type="number" class="form-control" id="daysInMilk" required></td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn-action btn-action-ok btn-sm">
-                  Save Record
-                </button>
-              </div>
-            </form>
-            <div class="mt-3" id="milkHistory"></div>
+                    </td>
+                  </tr>
+                  <tr><th>Date of Birth</th><td><input type="date" class="form-control" id="dob" max="{{ date('Y-m-d') }}"></td></tr>
+                  <tr><th>Sex</th>
+                    <td>
+                      <select class="form-control" id="sex">
+                        <option value="">Select Sex</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr><th>Breed</th><td><input type="text" class="form-control" id="breed"></td></tr>
+                  <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="sireId"></td></tr>
+                  <tr><th>Sire Name</th><td><input type="text" class="form-control" id="sireName"></td></tr>
+                  <tr><th>Sire Breed</th><td><input type="text" class="form-control" id="sireBreed"></td></tr>
+                  <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="damId"></td></tr>
+                  <tr><th>Dam Name</th><td><input type="text" class="form-control" id="damName"></td></tr>
+                  <tr><th>Dam Breed</th><td><input type="text" class="form-control" id="damBreed"></td></tr>
+                  <tr><th>Distinct Characteristics</th><td><textarea class="form-control" id="distinctCharacteristics" rows="2"></textarea></td></tr>
+                  <tr><th>Natural Marks</th><td><textarea class="form-control" id="naturalMarks" rows="2"></textarea></td></tr>
+                  <tr><th>Property No.</th><td><input type="text" class="form-control" id="propertyNo"></td></tr>
+                  <tr><th>Date Acquired</th><td><input type="date" class="form-control" id="acquisitionDate" max="{{ date('Y-m-d') }}"></td></tr>
+                  <tr><th>Acquisition Cost</th><td><input type="number" class="form-control" id="acquisitionCost" min="0" step="0.01"></td></tr>
+                  <tr><th>Source / Origin</th><td><input type="text" class="form-control" id="source"></td></tr>
+                  <tr><th>Remarks</th><td><textarea class="form-control" id="remarks" rows="3"></textarea></td></tr>
+                  <tr><th>Name of Cooperator</th><td><input type="text" class="form-control" id="cooperator"></td></tr>
+                  <tr><th>Date Released</th><td><input type="date" class="form-control" id="releasedDate" max="{{ date('Y-m-d') }}"></td></tr>
+                  <tr><th>Cooperative</th><td><input type="text" class="form-control" id="cooperative"></td></tr>
+                  <tr><th>Address</th><td><input type="text" class="form-control" id="address"></td></tr>
+                  <tr><th>Contact No.</th><td><input type="text" class="form-control" id="contactNo"></td></tr>
+                  <tr><th>In-Charge</th><td><input type="text" class="form-control" id="inCharge"></td></tr>
+                  <tr><th>Farm</th><td><span id="farm"></span></td></tr>
+                  <tr><th>Age</th><td><span id="ageDisplay"></span></td></tr>
+                  <tr><th>Weight</th><td><input type="number" class="form-control" id="weightDisplay" min="0" step="0.1"></td></tr>
+                  <tr><th>Previous Weight</th><td><input type="number" class="form-control" id="prevWeight" min="0" step="0.1"></td></tr>
+                  <tr><th>Previous Weight Date</th><td><input type="date" class="form-control" id="prevWeightDate" max="{{ date('Y-m-d') }}"></td></tr>
+                  <tr><th>Health Status</th>
+                    <td>
+                      <select class="form-control" id="healthStatusDisplay">
+                        <option value="">Select Health Status</option>
+                        <option value="healthy">Healthy</option>
+                        <option value="sick">Sick</option>
+                        <option value="recovering">Recovering</option>
+                        <option value="under_treatment">Under Treatment</option>
+                        <option value="injured">Injured</option>
+                        <option value="pregnant">Pregnant</option>
+                        <option value="lactating">Lactating</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr><th>Status</th>
+                    <td>
+                      <select class="form-control" id="statusDisplay">
+                        <option value="">Select Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="deceased">Deceased</option>
+                        <option value="transferred">Transferred</option>
+                        <option value="sold">Sold</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr><th>Created</th><td><span id="createdAt"></span></td></tr>
+                  <tr><th>Last Updated</th><td><span id="updatedAt"></span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-3">
+              <button type="button" class="btn-action btn-action-ok btn-sm" onclick="saveBasicInfo()">
+                <i class="fas fa-save"></i> Save Changes
+              </button>
+            </div>
           </div>
 
-          <!-- BREEDING TAB -->
-          <div class="tab-pane fade" id="breedingForm" role="tabpanel" aria-labelledby="breeding-tab">
-            <form id="breedingDetailsForm">
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                  <tbody>
-                    <tr><th>Breeding Date</th><td><input type="date" class="form-control" id="breedingDate" value="2023-04-15" readonly></td></tr>
-                    <tr><th>Breeding Type</th><td>
-                      <select class="form-control" id="breedingType" readonly>
-                        <option value="Natural" selected>Natural</option>
-                        <option value="Artificial Insemination">Artificial Insemination</option>
-                      </select>
-                    </td></tr>
-                    <tr><th>Sire Registry ID</th><td><input type="text" class="form-control" id="breedingSireId" value="SR123" readonly></td></tr>
-                    <tr><th>Dam Registry ID</th><td><input type="text" class="form-control" id="breedingDamId" value="DR456" readonly></td></tr>
-                    <tr><th>Pregnancy Check Date</th><td><input type="date" class="form-control" id="pregnancyCheckDate" value="2023-05-01" readonly></td></tr>
-                    <tr><th>Pregnancy Result</th><td>
-                      <select class="form-control" id="pregnancyResult" readonly>
-                        <option value="Positive" selected>Positive</option>
-                        <option value="Negative">Negative</option>
-                        <option value="Unknown">Unknown</option>
-                      </select>
-                    </td></tr>
-                    <tr><th>Remarks</th><td><textarea class="form-control" id="breedingRemarks" readonly>Healthy pregnancy confirmed.</textarea></td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </form>
-            <div class="mt-3" id="breedingHistory"></div>
+          <!-- Production Tab (table layout, matches Manage Livestock) -->
+          <div class="tab-pane fade" id="productionForm" role="tabpanel">
+            <div class="smart-table table-responsive">
+              <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Quality</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="productionRecordsTable">
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-3">
+                      <i class="fas fa-info-circle"></i>
+                      No production records found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-right mt-3">
+              <button class="btn-action btn-action-ok" onclick="addProductionRecord(CURRENT_LIVESTOCK_ID)">
+                <i class="fas fa-plus"></i> Add Production Record
+              </button>
+            </div>
           </div>
 
-          <!-- HEALTH TAB -->
-          <div class="tab-pane fade" id="healthForm" role="tabpanel" aria-labelledby="health-tab">
-            <form id="healthDetailsForm">
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                  <tbody>
-                    <tr><th>Date</th><td><input type="date" class="form-control" id="healthDate" value="2023-04-20" readonly></td></tr>
-                    <tr><th>Health Status</th><td><input type="text" class="form-control" id="healthStatus" value="Good" readonly></td></tr>
-                    <tr><th>Treatment</th><td><input type="text" class="form-control" id="treatment" value="Routine check-up" readonly></td></tr>
-                    <tr><th>Remarks</th><td><textarea class="form-control" id="healthRemarks" readonly>No issues found during the check-up.</textarea></td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </form>
-            <div class="mt-3" id="healthHistory"></div>
+          <!-- Health Tab (table layout) -->
+          <div class="tab-pane fade" id="healthForm" role="tabpanel">
+            <div class="smart-table table-responsive mt-3" style="display:block; max-width:100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom:8px;">
+              <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Date</th>
+                    <th>Observations</th>
+                    <th>Test Performed</th>
+                    <th>Diagnosis/ Remarks</th>
+                    <th>Drugs/ Biologicals Given</th>
+                    <th>Signature</th>
+                  </tr>
+                </thead>
+                <tbody id="healthRecordsTable">
+                  <tr>
+                    <td colspan="6" class="text-center text-muted py-3">
+                      <i class="fas fa-info-circle"></i>
+                      No health records found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-right mt-3">
+              <button class="btn-action btn-action-ok" onclick="addHealthRecord(CURRENT_LIVESTOCK_ID)">
+                <i class="fas fa-plus"></i> Add Health Record
+              </button>
+            </div>
+          </div>
+
+          <!-- Breeding Tab (table layout) -->
+          <div class="tab-pane fade" id="breedingForm" role="tabpanel">
+            <div class="smart-table table-responsive mt-3" style="display:block; max-width:100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom:8px;">
+              <table class="table table-sm table-bordered align-middle mb-0" style="min-width: 1200px !important; table-layout: auto; width: 100% !important;">
+                <thead class="thead-light">
+                  <tr>
+                    <th rowspan="2">Date of Service</th>
+                    <th rowspan="2">BCS</th>
+                    <th colspan="3" class="text-center">Signs of Estrus</th>
+                    <th colspan="2" class="text-center">Bull Used</th>
+                    <th colspan="2" class="text-center">PD</th>
+                    <th rowspan="2">AI Tech's Signature</th>
+                  </tr>
+                  <tr>
+                    <th>VO</th>
+                    <th>UT</th>
+                    <th>MD</th>
+                    <th>ID No.</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody id="breedingRecordsTable">
+                  <tr>
+                    <td colspan="10" class="text-center text-muted py-3">
+                      <i class="fas fa-info-circle"></i>
+                      No breeding records found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-muted small mt-2">
+              <strong>Signs of Estrus Legend:</strong>
+              MD - Mucus discharge (1, 2, 3); UT - Uterine tone (1, 2, 3); VO - Vaginal opening (1, 2, 3)
+            </div>
+            <div class="text-right mt-3">
+              <button class="btn-action btn-action-ok" onclick="addBreedingRecord(CURRENT_LIVESTOCK_ID)">
+                <i class="fas fa-plus"></i> Add Breeding Record
+              </button>
+            </div>
+          </div>
+
+          <!-- Growth Tab (table layout) -->
+          <div class="tab-pane fade" id="growthForm" role="tabpanel">
+            <div class="smart-table table-responsive">
+              <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Date</th>
+                    <th>Weight (kg)</th>
+                    <th>Height (cm)</th>
+                    <th>Heart girth (cm)</th>
+                    <th>Body length (cm)</th>
+                  </tr>
+                </thead>
+                <tbody id="growthRecordsTable">
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-3">
+                      <i class="fas fa-info-circle"></i>
+                      No growth records found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-right mt-3">
+              <button class="btn-action btn-action-ok" onclick="addGrowthRecord(CURRENT_LIVESTOCK_ID)">
+                <i class="fas fa-plus"></i> Add Growth Record
+              </button>
+            </div>
           </div>
 
         </div> <!-- END TAB CONTENT -->
@@ -832,6 +924,18 @@
 #addLivestockModal .form-control:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* Ensure Add Livestock modal is scrollable on mobile */
+#addLivestockModal .modal-dialog {
+  max-height: 100vh;
+  margin: 0.5rem auto;
+}
+
+#addLivestockModal .modal-content.smart-form {
+  max-height: calc(100vh - 1rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ============================
@@ -2287,18 +2391,38 @@ const scannerConfig = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio
 // Track currently viewed livestock (from scan)
 let CURRENT_LIVESTOCK_ID = null;
 let CURRENT_LIVESTOCK_TAG = null;
+let CURRENT_LIVESTOCK_DATA = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize forms
-    initializeForms();
-    
-    // Initialize scanner
+    // Initialize scanner only; tab forms now use Add Record modals like Manage Livestock
     initializeScanner();
 });
 
 function initializeScanner() {
     html5QrCode = new Html5Qrcode("qr-reader");
     updateStatus('Ready to Scan', 'ready');
+}
+
+function calculateAge(birthDate) {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    
+    if (age === 0) {
+        const monthAge = today.getMonth() - birth.getMonth();
+        if (monthAge <= 0) {
+            const dayAge = today.getDate() - birth.getDate();
+            return dayAge <= 0 ? 'Less than 1 day' : `${dayAge} day${dayAge > 1 ? 's' : ''}`;
+        }
+        return `${monthAge} month${monthAge > 1 ? 's' : ''}`;
+    }
+    
+    return `${age} year${age > 1 ? 's' : ''}`;
 }
 
 function isSecureOrigin() {
@@ -2433,39 +2557,31 @@ function onScanFailure(error) {
     console.log('Scan failed:', error);
 }
 
-function viewLivestockDetails(id) {
+function viewLivestockDetails(rawPayload) {
     // Show loading state
     updateStatus('Loading livestock data...', 'scanning');
-    
-    // Check if the ID is JSON data from QR code
-    let livestockId = id;
-    try {
-        const qrData = JSON.parse(id);
-        if (qrData.livestock_id) {
-            livestockId = qrData.livestock_id;
-            console.log('Extracted livestock ID from QR data:', livestockId);
-        }
-    } catch (e) {
-        // Not JSON, use as is
-        console.log('Using ID as is:', livestockId);
-    }
-    
-    // Fetch livestock data from server
-    fetch(`/farmer/scan/${livestockId}`, {
-        method: 'GET',
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Send full payload (can be ID, JSON, or encrypted string) to backend for decoding
+    fetch('/farmer/scan/decode', {
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+        },
+        body: JSON.stringify({ payload: rawPayload }),
     })
     .then(response => response.json())
     .then(data => {
         if (data.success && data.livestock) {
             const livestock = data.livestock;
             console.log('Found livestock data:', livestock);
-            // Cache current ids for edit/save endpoints
+            // Cache current ids and full object for edit/save endpoints
             CURRENT_LIVESTOCK_ID = livestock.id || null;
             CURRENT_LIVESTOCK_TAG = livestock.tag_number || null;
+            CURRENT_LIVESTOCK_DATA = livestock;
             
             // Update modal title
             document.getElementById("detailLivestockId").textContent = livestock.tag_number || livestock.id;
@@ -2476,12 +2592,20 @@ function viewLivestockDetails(id) {
             // Show the modal
             $('#livestockDetailsModal').modal('show');
             
-            // Load histories for tabs
+            // Load tab tables using the same loaders as Manage Livestock
             if (CURRENT_LIVESTOCK_ID) {
-                loadGrowthHistory(CURRENT_LIVESTOCK_ID);
-                loadMilkHistory(CURRENT_LIVESTOCK_ID);
-                loadBreedingHistory(CURRENT_LIVESTOCK_ID);
-                loadHealthHistory(CURRENT_LIVESTOCK_ID);
+                if (typeof loadProductionRecords === 'function') {
+                    loadProductionRecords(CURRENT_LIVESTOCK_ID);
+                }
+                if (typeof loadHealthRecords === 'function') {
+                    loadHealthRecords(CURRENT_LIVESTOCK_ID);
+                }
+                if (typeof loadBreedingRecords === 'function') {
+                    loadBreedingRecords(CURRENT_LIVESTOCK_ID);
+                }
+                if (typeof loadGrowthRecords === 'function') {
+                    loadGrowthRecords(CURRENT_LIVESTOCK_ID);
+                }
             }
 
             // Show success message
@@ -2492,8 +2616,10 @@ function viewLivestockDetails(id) {
                 updateStatus('Scanning...', 'scanning');
             }, 2000);
         } else {
-            showNotification(`No livestock found with ID: ${livestockId}`, 'error');
-            openAddLivestockModal(livestockId);
+            showNotification(data.message || 'No livestock found for this QR code', 'error');
+            // If backend returned a resolved lookup_id, use it; otherwise fall back to raw payload
+            const fallbackId = data.lookup_id || rawPayload;
+            openAddLivestockModal(fallbackId);
             updateStatus('Scanning...', 'scanning');
         }
     })
@@ -2507,16 +2633,21 @@ function viewLivestockDetails(id) {
 function populateBasicInfo(livestock) {
     // Accurate mapping from API (snake_case) to UI inputs
     const dateOnly = (val) => val ? String(val).slice(0, 10) : '';
+    const prettyBreed = (s) => s ? s.toString().replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase()) : '';
+    const normalizeLower = (s) => s ? String(s).toLowerCase() : '';
     const fieldMapping = {
         // Ownership and identifiers
         'ownedBy': livestock.owned_by || (livestock.farm && livestock.farm.owner ? livestock.farm.owner.name : 'N/A'),
         'dispersalFrom': livestock.dispersal_from || '',
         'registryId': livestock.registry_id || '',
         'tagId': livestock.tag_number || livestock.id || '',
+        'typeInput': livestock.type || '',
         'livestockName': livestock.name || livestock.tag_number || '',
         'dob': dateOnly(livestock.birth_date),
         'sex': livestock.gender || '',
-        'breed': livestock.breed || '',
+        'breed': (livestock.breed_name && String(livestock.breed_name).trim() !== '')
+            ? livestock.breed_name
+            : ((livestock.breed && livestock.breed !== 'other') ? prettyBreed(livestock.breed) : ''),
         // Parentage
         'sireId': livestock.sire_id || '',
         'damId': livestock.dam_id || '',
@@ -2525,6 +2656,7 @@ function populateBasicInfo(livestock) {
         'sireBreed': livestock.sire_breed || '',
         'damBreed': livestock.dam_breed || '',
         // Physical and asset details
+        'distinctCharacteristics': livestock.distinct_characteristics || '',
         'naturalMarks': livestock.natural_marks || '',
         'propertyNo': livestock.property_no || '',
         'acquisitionDate': dateOnly(livestock.acquisition_date),
@@ -2537,13 +2669,185 @@ function populateBasicInfo(livestock) {
         'cooperative': livestock.cooperative_name || '',
         'address': livestock.cooperative_address || (livestock.farm ? (livestock.farm.location || '') : ''),
         'contactNo': livestock.cooperative_contact_no || '',
-        'inCharge': livestock.in_charge || ''
+        'inCharge': livestock.in_charge || '',
+        // Derived and status fields to mirror Manage Livestock details modal
+        'farm': livestock.farm && livestock.farm.name ? livestock.farm.name : '',
+        'ageDisplay': livestock.birth_date ? calculateAge(livestock.birth_date) : '',
+        'weightDisplay': (livestock.weight ?? ''),
+        'prevWeight': (livestock.previous_weight ?? ''),
+        'prevWeightDate': dateOnly(livestock.previous_weight_date),
+        'healthStatusDisplay': normalizeLower(livestock.health_status),
+        'statusDisplay': normalizeLower(livestock.status),
+        'createdAt': dateOnly(livestock.created_at),
+        'updatedAt': dateOnly(livestock.updated_at)
     };
 
     Object.keys(fieldMapping).forEach((key) => {
         const el = document.getElementById(key);
-        if (el) el.value = fieldMapping[key];
+        if (!el) return;
+        const val = fieldMapping[key] ?? '';
+        if ('value' in el) {
+            el.value = val;
+        } else {
+            el.textContent = val;
+        }
     });
+}
+
+async function saveBasicInfo() {
+    if (!CURRENT_LIVESTOCK_ID || !CURRENT_LIVESTOCK_DATA) {
+        showNotification('No livestock selected. Please scan or open a livestock first.', 'error');
+        return;
+    }
+
+    const csrf = getCsrfToken();
+    const getVal = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return '';
+        return (el.value !== undefined && el.value !== null)
+            ? String(el.value).trim()
+            : '';
+    };
+
+    const numericOrNull = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        return valOrNullFloat(el.value);
+    };
+
+    const current = CURRENT_LIVESTOCK_DATA || {};
+
+    const selectedType = document.getElementById('typeInput')?.value || current.type || '';
+    const selectedHealth = document.getElementById('healthStatusDisplay')?.value || current.health_status || '';
+    const selectedStatus = document.getElementById('statusDisplay')?.value || current.status || '';
+    const selectedGender = document.getElementById('sex')?.value || current.gender || '';
+
+    const payload = {
+        tag_number: getVal('tagId') || current.tag_number || current.id,
+        name: getVal('livestockName') || current.name || '',
+        type: String(selectedType || '').toLowerCase(),
+        // Breed slug and display name
+        breed: (() => {
+            const raw = getVal('breed');
+            if (raw) {
+                return raw.toLowerCase().replace(/\s+/g, '_');
+            }
+            return current.breed || null;
+        })(),
+        breed_name: getVal('breed') || current.breed_name || null,
+        birth_date: getVal('dob') || current.birth_date || null,
+        gender: String(selectedGender || '').toLowerCase(),
+        weight: numericOrNull('weightDisplay'),
+        health_status: String(selectedHealth || '').toLowerCase(),
+        status: String(selectedStatus || '').toLowerCase(),
+        acquisition_date: getVal('acquisitionDate') || null,
+        acquisition_cost: numericOrNull('acquisitionCost'),
+        registry_id: getVal('registryId') || null,
+        natural_marks: getVal('naturalMarks') || null,
+        property_no: getVal('propertyNo') || null,
+        sire_id: getVal('sireId') || null,
+        sire_name: getVal('sireName') || null,
+        sire_breed: getVal('sireBreed') || null,
+        dam_id: getVal('damId') || null,
+        dam_name: getVal('damName') || null,
+        dam_breed: getVal('damBreed') || null,
+        dispersal_from: getVal('dispersalFrom') || null,
+        owned_by: getVal('ownedBy') || null,
+        remarks: document.getElementById('remarks')?.value || current.remarks || null,
+        distinct_characteristics: document.getElementById('distinctCharacteristics')?.value || current.distinct_characteristics || null,
+        source_origin: getVal('source') || current.source_origin || null,
+        cooperator_name: getVal('cooperator') || current.cooperator_name || null,
+        date_released: getVal('releasedDate') || current.date_released || null,
+        cooperative_name: getVal('cooperative') || current.cooperative_name || null,
+        cooperative_address: getVal('address') || current.cooperative_address || null,
+        cooperative_contact_no: getVal('contactNo') || current.cooperative_contact_no || null,
+        in_charge: getVal('inCharge') || current.in_charge || null,
+    };
+
+    // Clean undefined values for a tidier payload
+    Object.keys(payload).forEach((k) => {
+        if (payload[k] === undefined) {
+            delete payload[k];
+        }
+    });
+
+    const btn = document.querySelector('#basicForm .btn-action-ok');
+    const originalHtml = btn ? btn.innerHTML : null;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    }
+
+    try {
+        const res = await fetch(`/farmer/livestock/${CURRENT_LIVESTOCK_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrf,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        let data = null;
+        try { data = await res.json(); } catch (_) { data = null; }
+
+        if (res.ok && data && data.success) {
+            // Merge updated fields into our local snapshot and repopulate UI
+            const updated = {
+                ...current,
+                tag_number: payload.tag_number,
+                name: payload.name,
+                type: payload.type,
+                breed: payload.breed,
+                breed_name: payload.breed_name,
+                birth_date: payload.birth_date,
+                gender: payload.gender,
+                weight: payload.weight,
+                health_status: payload.health_status,
+                status: payload.status,
+                acquisition_date: payload.acquisition_date,
+                acquisition_cost: payload.acquisition_cost,
+                registry_id: payload.registry_id,
+                natural_marks: payload.natural_marks,
+                property_no: payload.property_no,
+                sire_id: payload.sire_id,
+                sire_name: payload.sire_name,
+                sire_breed: payload.sire_breed,
+                dam_id: payload.dam_id,
+                dam_name: payload.dam_name,
+                dam_breed: payload.dam_breed,
+                dispersal_from: payload.dispersal_from,
+                owned_by: payload.owned_by,
+                remarks: payload.remarks,
+                distinct_characteristics: payload.distinct_characteristics,
+                source_origin: payload.source_origin,
+                cooperator_name: payload.cooperator_name,
+                date_released: payload.date_released,
+                cooperative_name: payload.cooperative_name,
+                cooperative_address: payload.cooperative_address,
+                cooperative_contact_no: payload.cooperative_contact_no,
+                in_charge: payload.in_charge,
+            };
+
+            CURRENT_LIVESTOCK_DATA = updated;
+            populateBasicInfo(updated);
+            showNotification(data.message || 'Basic information updated successfully!', 'success');
+        } else if (res.status === 422 && data && data.errors) {
+            Object.keys(data.errors).forEach((field) => {
+                showNotification(data.errors[field][0], 'error');
+            });
+        } else {
+            showNotification((data && data.message) || 'Failed to update livestock information.', 'error');
+        }
+    } catch (err) {
+        showNotification('Error updating livestock information: ' + (err.message || err), 'error');
+    } finally {
+        if (btn && originalHtml) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    }
 }
 
 function initializeForms() {
@@ -2619,6 +2923,655 @@ function initializeForms() {
     // Make Breeding and Health editable and add submit handlers
     setupBreedingForm(csrf);
     setupHealthForm(csrf);
+}
+
+// =============================
+//  SHARED RECORD LOADERS (MATCH MANAGE LIVESTOCK)
+// =============================
+
+function loadProductionRecords(livestockId) {
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/production-records`,
+        method: 'GET',
+        success: function(response) {
+            const tbody = document.getElementById('productionRecordsTable');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+                response.data.forEach(r => {
+                    const tr = document.createElement('tr');
+                    const dateStr = r.production_date ? new Date(r.production_date).toLocaleDateString() : '';
+                    const ptype = r.production_type || 'Milk';
+                    const qty = (r.quantity !== undefined && r.quantity !== null && r.quantity !== '') ? r.quantity : '';
+                    const qual = (r.quality !== undefined && r.quality !== null && r.quality !== '') ? r.quality : '';
+                    const notes = (r.notes || '').replace(/\[type:\s*[^\]]+\]\s*/i, '').trim();
+                    tr.innerHTML = `
+                        <td style="white-space: nowrap;">${dateStr || 'N/A'}</td>
+                        <td style="white-space: nowrap;">${ptype}</td>
+                        <td style="white-space: nowrap;">${qty !== '' ? qty : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${qual !== '' ? qual : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${notes || 'N/A'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="5" class="text-center text-muted py-3"><i class="fas fa-info-circle"></i> No production records found.</td>`;
+                tbody.appendChild(tr);
+            }
+        }
+    });
+}
+
+function loadHealthRecords(livestockId) {
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/health-records`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                const tbody = document.getElementById('healthRecordsTable');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                response.data.forEach(r => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
+                        <td>${r.observations || 'N/A'}</td>
+                        <td>${r.test || 'N/A'}</td>
+                        <td style="text-align: left !important; white-space: normal; word-break: break-word;">${r.diagnosis || 'N/A'}</td>
+                        <td>${r.drugs || 'N/A'}</td>
+                        <td>${r.signature || 'N/A'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        }
+    });
+}
+
+function loadBreedingRecords(livestockId) {
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/breeding-records`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                const tbody = document.getElementById('breedingRecordsTable');
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    response.data.forEach(r => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="white-space: nowrap;">${r.date_of_service ? new Date(r.date_of_service).toLocaleDateString() : 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.bcs || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.vo || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.ut || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.md || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.bull_id_no || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.bull_name || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.pd_date || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.pd_result || 'N/A'}</td>
+                            <td style="white-space: nowrap;">${r.ai_signature || 'N/A'}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+            }
+        }
+    });
+}
+
+function loadGrowthRecords(livestockId) {
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/growth-records`,
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                const tbody = document.getElementById('growthRecordsTable');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                response.data.forEach(r => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="white-space: nowrap;">${r.date ? new Date(r.date).toLocaleDateString() : 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.weight_kg ?? 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.height_cm ?? 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.heart_girth_cm ?? 'N/A'}</td>
+                        <td style="white-space: nowrap;">${r.body_length_cm ?? 'N/A'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        }
+    });
+}
+
+// =============================
+//  ADD RECORD MODALS (MATCH MANAGE LIVESTOCK)
+// =============================
+
+function addProductionRecord(livestockId) {
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    const modalHtml = `
+        <!-- Add Production Record Modal -->
+<div class="modal fade admin-modal" id="productionRecordModal" tabindex="-1" role="dialog" aria-labelledby="productionRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-chart-line fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="productionRecordModalLabel">Add Production Record</h5>
+                <p class="text-muted mb-0 small">
+                    Enter the production details below to record livestock output.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="productionRecordForm" class="text-start mx-auto">
+                <div class="form-wrapper">
+                    <div class="row g-3">
+                        <!-- Production Date -->
+                        <div class="col-md-6 ">
+                            <label for="production_date" class="fw-semibold">Production Date</label>
+                            <input type="date" class="form-control mt-1" id="production_date" name="production_date" required max="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <!-- Production Type -->
+                        <div class="col-md-6 ">
+                            <label for="production_type" class="fw-semibold">Production Type</label>
+                            <select class="form-control mt-1" id="production_type" name="production_type" required>
+                                <option value="">Select Type</option>
+                                <option value="milk">Milk</option>
+                                <option value="eggs">Eggs</option>
+                                <option value="meat">Meat</option>
+                                <option value="wool">Wool</option>
+                            </select>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="col-md-6 ">
+                            <label for="quantity" class="fw-semibold">Quantity</label>
+                            <input type="number" class="form-control mt-1" id="quantity" name="quantity" min="0" step="0.1" required>
+                        </div>
+
+                        <!-- Quality -->
+                        <div class="col-md-6 ">
+                            <label for="quality" class="fw-semibold">Quality</label>
+                            <select class="form-control mt-1" id="quality" name="quality">
+                                <option value="">Select Quality</option>
+                                <option value="excellent">Excellent</option>
+                                <option value="good">Good</option>
+                                <option value="fair">Fair</option>
+                                <option value="poor">Poor</option>
+                            </select>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-12 mb-3">
+                            <label for="notes" class="fw-semibold">Notes</label>
+                            <textarea class="form-control mt-1" id="notes" name="notes" rows="3" style="resize: none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-modern btn-ok" onclick="saveProductionRecord('${livestockId}')">
+                        <i class="fas fa-save"></i> Save Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    `;
+    $('#productionRecordModal').remove();
+    $('body').append(modalHtml);
+    $('#productionRecordModal').modal('show');
+}
+
+function saveProductionRecord(livestockId) {
+    livestockId = livestockId || CURRENT_LIVESTOCK_ID;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
+    const form = document.getElementById('productionRecordForm');
+    const formData = new FormData(form);
+    const pd = (formData.get('production_date') || '').toString().trim();
+    const qtyRaw = (formData.get('quantity') || '').toString().trim();
+    if (!pd || !qtyRaw) {
+        showNotification('Please provide production date and quantity.', 'danger');
+        return;
+    }
+    const btn = document.querySelector('#productionRecordModal .btn-ok');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+    const qualityMap = { excellent: 10, good: 8, fair: 6, poor: 4 };
+    const quality = formData.get('quality');
+    const qty = formData.get('quantity');
+    if (qty !== null) formData.append('milk_quantity', qty);
+    if (quality) formData.append('milk_quality_score', qualityMap[quality] || '');
+    const pType = formData.get('production_type');
+    const userNotes = (formData.get('notes') || '').toString().trim();
+    const combinedNotes = `[type: ${pType || 'milk'}] ${userNotes}`.trim();
+    formData.set('notes', combinedNotes);
+    formData.append('livestock_id', livestockId);
+
+    $.ajax({
+        url: '/farmer/production',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('Production record added successfully!', 'success');
+                $('#productionRecordModal').modal('hide');
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadProductionRecords(livestockId);
+                }
+            } else {
+                showNotification('Error adding production record: ' + (response.message || 'Unknown error'), 'danger');
+            }
+        },
+        error: function(xhr) {
+            const errorMessage = xhr.responseJSON?.message || 'Error adding production record';
+            showNotification(errorMessage, 'danger');
+        },
+        complete: function(){ if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Record'; } }
+    });
+}
+
+function addHealthRecord(livestockId) {
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    const modalHtml = `
+        <!-- Add Health Record Modal -->
+<div class="modal fade" id="healthRecordModal" tabindex="-1" role="dialog" aria-labelledby="healthRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-heartbeat fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="healthRecordModalLabel">Add Health Record</h5>
+                <p class="text-muted mb-0 small">
+                    Provide the details below to record the livestock’s health status.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="healthRecordForm" class="text-start mx-auto">
+                <div class="form-wrapper">
+                    <div class="row g-3">
+                        <!-- Health Date -->
+                        <div class="col-md-6">
+                            <label for="health_date" class="fw-semibold">Health Check Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="health_date" name="health_date" required max="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <!-- Health Status -->
+                        <div class="col-md-6">
+                            <label for="health_status" class="fw-semibold">Health Status <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="health_status" name="health_status" required>
+                                <option value="">Select Status</option>
+                                <option value="healthy">Healthy</option>
+                                <option value="sick">Sick</option>
+                                <option value="recovering">Recovering</option>
+                                <option value="under_treatment">Under Treatment</option>
+                            </select>
+                        </div>
+
+                        <!-- Weight -->
+                        <div class="col-md-6 ">
+                            <label for="health_weight" class="fw-semibold">Weight (kg)</label>
+                            <input type="number" class="form-control mt-1" id="health_weight" name="weight" min="0" step="0.1">
+                        </div>
+
+                        <!-- Temperature -->
+                        <div class=" col-md-6 ">
+                            <label for="temperature" class="fw-semibold">Temperature (°C)</label>
+                            <input type="number" class="form-control mt-1" id="temperature" name="temperature" min="0" step="0.1">
+                        </div>
+
+                        <!-- Symptoms / Observations -->
+                        <div class="col-12 mb-3">
+                            <label for="symptoms" class="fw-semibold">Symptoms / Observations</label>
+                            <textarea class="form-control mt-1" id="symptoms" name="symptoms" rows="3" style="resize: none;"></textarea>
+                        </div>
+
+                        <!-- Treatment -->
+                        <div class="col-12 mb-3">
+                            <label for="treatment" class="fw-semibold">Treatment Given</label>
+                            <textarea class="form-control mt-1" id="treatment" name="treatment" rows="3" style="resize: none;"></textarea>
+                        </div>
+
+                        <!-- Veterinarian -->
+                        <div class="col-lg-6 col-md-6 mb-3">
+                            <label for="veterinarian_id" class="fw-semibold">Veterinarian</label>
+                            <select class="form-control mt-1" id="veterinarian_id" name="veterinarian_id">
+                                <option value="">Select Veterinarian</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-modern btn-ok" onclick="saveHealthRecord('${livestockId}')">
+                        <i class="fas fa-save"></i> Save Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    `;
+    $('#healthRecordModal').remove();
+    $('body').append(modalHtml);
+    $('#healthRecordModal').modal('show');
+
+    // Populate veterinarian dropdown
+    $.ajax({
+        url: '/farmer/admins',
+        method: 'GET',
+        success: function(res) {
+            if (res && res.success && Array.isArray(res.data)) {
+                const sel = document.querySelector('#healthRecordModal #veterinarian_id');
+                if (sel) {
+                    if (res.data.length === 0) {
+                        const opt = document.createElement('option');
+                        opt.value = '';
+                        opt.textContent = 'No admins found';
+                        sel.appendChild(opt);
+                    } else {
+                        res.data.forEach(a => {
+                            const opt = document.createElement('option');
+                            opt.value = a.id;
+                            opt.textContent = a.name;
+                            sel.appendChild(opt);
+                        });
+                    }
+                }
+            }
+        },
+        error: function() {
+            const sel = document.querySelector('#healthRecordModal #veterinarian_id');
+            if (sel && sel.children.length === 1) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'Unable to load admins';
+                sel.appendChild(opt);
+            }
+        }
+    });
+}
+
+function saveHealthRecord(livestockId) {
+    livestockId = livestockId || CURRENT_LIVESTOCK_ID;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
+    const form = document.getElementById('healthRecordForm');
+    const formData = new FormData(form);
+    formData.append('livestock_id', livestockId);
+
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/health`,
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('Health record added successfully!', 'success');
+                $('#healthRecordModal').modal('hide');
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadHealthRecords(livestockId);
+                }
+            } else {
+                showNotification('Error adding health record: ' + (response.message || 'Unknown error'), 'danger');
+            }
+        },
+        error: function(xhr) {
+            const errorMessage = xhr.responseJSON?.message || 'Error adding health record';
+            showNotification(errorMessage, 'danger');
+        }
+    });
+}
+
+function addBreedingRecord(livestockId) {
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    const modalHtml = `
+        <!-- Add Breeding Record Modal -->
+<div class="modal fade" id="breedingRecordModal" tabindex="-1" role="dialog" aria-labelledby="breedingRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content smart-form text-center p-4">
+
+            <!-- Icon + Header -->
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="icon-circle">
+                    <i class="fas fa-heart fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" id="breedingRecordModalLabel">Add Breeding Record</h5>
+                <p class="text-muted mb-0 small">
+                    Provide the breeding details below to update the livestock’s reproductive record.
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="breedingRecordForm" class="text-start mx-auto">
+                <div class="form-wrapper">
+                    <div class="row g-3">
+                        <!-- Breeding Date -->
+                        <div class="col-md-6">
+                            <label for="breeding_date" class="fw-semibold">Breeding Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control mt-1" id="breeding_date" name="breeding_date" required max="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <!-- Breeding Type -->
+                        <div class="col-md-6">
+                            <label for="breeding_type" class="fw-semibold">Breeding Type <span class="text-danger">*</span></label>
+                            <select class="form-control mt-1" id="breeding_type" name="breeding_type" required>
+                                <option value="">Select Type</option>
+                                <option value="natural">Natural Breeding</option>
+                                <option value="artificial">Artificial Insemination</option>
+                                <option value="embryo_transfer">Embryo Transfer</option>
+                            </select>
+                        </div>
+
+                        <!-- Partner Livestock ID -->
+                        <div class="col-md-6 ">
+                            <label for="partner_livestock_id" class="fw-semibold">Partner Livestock ID</label>
+                            <input type="text" class="form-control mt-1" id="partner_livestock_id" name="partner_livestock_id">
+                        </div>
+
+                        <!-- Expected Birth Date -->
+                        <div class="col-md-6 ">
+                            <label for="expected_birth_date" class="fw-semibold">Expected Birth Date</label>
+                            <input type="date" class="form-control mt-1" id="expected_birth_date" name="expected_birth_date" max="{{ date('Y-m-d') }}">
+                        </div>
+
+                        <!-- Pregnancy Status -->
+                        <div class="col-md-6">
+                            <label for="pregnancy_status" class="fw-semibold">Pregnancy Status</label>
+                            <select class="form-control mt-1" id="pregnancy_status" name="pregnancy_status">
+                                <option value="">Select Status</option>
+                                <option value="unknown">Unknown</option>
+                                <option value="pregnant">Pregnant</option>
+                                <option value="not_pregnant">Not Pregnant</option>
+                            </select>
+                        </div>
+
+                        <!-- Breeding Success -->
+                        <div class="col-md-6">
+                            <label for="breeding_success" class="fw-semibold">Breeding Success</label>
+                            <select class="form-control mt-1" id="breeding_success" name="breeding_success">
+                                <option value="">Select Result</option>
+                                <option value="unknown">Unknown</option>
+                                <option value="successful">Successful</option>
+                                <option value="unsuccessful">Unsuccessful</option>
+                            </select>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-12 mb-3">
+                            <label for="notes" class="fw-semibold">Notes</label>
+                            <textarea class="form-control mt-1" id="notes" name="notes" rows="3" style="resize: none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+                    <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-modern btn-ok" onclick="saveBreedingRecord('${livestockId}')">
+                        <i class="fas fa-save"></i> Save Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    `;
+    $('#breedingRecordModal').remove();
+    $('body').append(modalHtml);
+    $('#breedingRecordModal').modal('show');
+}
+
+function saveBreedingRecord(livestockId) {
+    livestockId = livestockId || CURRENT_LIVESTOCK_ID;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
+    const form = document.getElementById('breedingRecordForm');
+    const formData = new FormData(form);
+    formData.append('livestock_id', livestockId);
+
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/breeding`,
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('Breeding record added successfully!', 'success');
+                $('#breedingRecordModal').modal('hide');
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadBreedingRecords(livestockId);
+                }
+            } else {
+                showNotification('Error adding breeding record: ' + (response.message || 'Unknown error'), 'danger');
+            }
+        },
+        error: function(xhr) {
+            const errorMessage = xhr.responseJSON?.message || 'Error adding breeding record';
+            showNotification(errorMessage, 'danger');
+        }
+    });
+}
+
+function addGrowthRecord(livestockId) {
+    if (typeof $.fn.modal === 'undefined') {
+        showNotification('Modal functionality is not available. Please refresh the page.', 'danger');
+        return;
+    }
+    const modalHtml =`
+<div class="modal fade" id="growthRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content smart-form text-center p-4">
+      <div class="d-flex flex-column align-items-center mb-4">
+        <div class="icon-circle"><i class="fas fa-seedling fa-2x"></i></div>
+        <h5 class="fw-bold mb-1">Add Growth Record</h5>
+        <p class="text-muted mb-0 small">Record measurements for growth monitoring.</p>
+      </div>
+      <form id="growthRecordForm" class="text-start mx-auto">
+        <div class="form-wrapper">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="fw-semibold">Date</label>
+              <input type="date" class="form-control mt-1" name="growth_date" max="{{ date('Y-m-d') }}">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Weight (kg)</label>
+              <input type="number" step="0.01" min="0" class="form-control mt-1" name="weight_kg">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Height (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="height_cm">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Heart girth (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="heart_girth_cm">
+            </div>
+            <div class="col-md-6">
+              <label class="fw-semibold">Body length (cm)</label>
+              <input type="number" step="0.1" min="0" class="form-control mt-1" name="body_length_cm">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center align-items-center flex-nowrap gap-2 mt-4">
+          <button type="button" class="btn-modern btn-cancel" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-modern btn-ok" onclick="saveGrowthRecord('${livestockId}')"><i class="fas fa-save"></i> Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>`;
+    $('#growthRecordModal').remove();
+    $('body').append(modalHtml);
+    $('#growthRecordModal').modal('show');
+}
+
+function saveGrowthRecord(livestockId) {
+    livestockId = livestockId || CURRENT_LIVESTOCK_ID;
+    if (!livestockId) { showNotification('Missing livestock ID. Please reopen details and try again.', 'danger'); return; }
+    const fd = new FormData(document.getElementById('growthRecordForm'));
+    $.ajax({
+        url: `/farmer/livestock/${livestockId}/growth`,
+        method: 'POST',
+        data: fd,
+        processData: false,
+        contentType: false,
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        success: function(res){
+            if (res && res.success) {
+                $('#growthRecordModal').modal('hide');
+                if ($('#livestockDetailsModal').hasClass('show')) {
+                    loadGrowthRecords(livestockId);
+                }
+                showNotification('Growth record added successfully!', 'success');
+            } else {
+                showNotification(res.message || 'Error adding growth record', 'danger');
+            }
+        },
+        error: function(xhr){
+            showNotification(xhr.responseJSON?.message || 'Error adding growth record', 'danger');
+        }
+    });
 }
 
 function setupBreedingForm(csrf) {
@@ -3115,7 +4068,8 @@ document.getElementById('addLivestockForm')?.addEventListener('submit', async fu
         tag_number: document.getElementById('al_tag_number')?.value?.trim(),
         name: document.getElementById('al_name')?.value?.trim(),
         type: document.getElementById('al_type')?.value,
-        breed: document.getElementById('al_breed')?.value,
+        breed_name: document.getElementById('al_breed')?.value,
+        breed: 'other',
         birth_date: document.getElementById('al_birth_date')?.value,
         gender: document.getElementById('al_gender')?.value,
         weight: document.getElementById('al_weight')?.value,
@@ -3139,6 +4093,9 @@ document.getElementById('addLivestockForm')?.addEventListener('submit', async fu
         if (res.ok && data.success && data.livestock) {
             $('#addLivestockModal').modal('hide');
             showNotification('Livestock added successfully!', 'success');
+            CURRENT_LIVESTOCK_ID = data.livestock.id || null;
+            CURRENT_LIVESTOCK_TAG = data.livestock.tag_number || null;
+            CURRENT_LIVESTOCK_DATA = data.livestock;
             document.getElementById('detailLivestockId').textContent = data.livestock.tag_number || data.livestock.id;
             populateBasicInfo(data.livestock);
             $('#livestockDetailsModal').modal('show');

@@ -1188,7 +1188,10 @@
                             <td>{{ $alert->user_name ?? 'N/A' }}</td>
                             <td>{{ $alert->event ?? 'N/A' }}</td>
                             <td>
-                                <span class="badge badge-{{ $alert->severity_class ?? 'warning' }} badge-pill">{{ $alert->severity_label ?? 'Warning' }}</span>
+                                <span class="badge badge-{{ $alert->severity_class ?? 'info' }} badge-pill"
+                                      style="background-color: {{ $alert->severity_color ?? '#387057' }} !important; color: {{ $alert->severity_text_color ?? 'white' }} !important;">
+                                    {{ $alert->severity_label ?? 'Low' }}
+                                </span>
                             </td>
                             <td>{{ $alert->details ?? 'N/A' }}</td>
                             <td>
@@ -1489,13 +1492,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="filterDateFrom">Date From</label>
-                                <input type="date" class="form-control" id="filterDateFrom" name="date_from">
+                                <input type="date" class="form-control" id="filterDateFrom" name="date_from" max="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="filterDateTo">Date To</label>
-                                <input type="date" class="form-control" id="filterDateTo" name="date_to">
+                                <input type="date" class="form-control" id="filterDateTo" name="date_to" max="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                     </div>

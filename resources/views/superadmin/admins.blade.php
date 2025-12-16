@@ -515,15 +515,19 @@
 }
 
     .btn-action-approve {
-        background-color: #387057;
-        border-color: #387057;
-        color: white;
+        background: white !important;
+        background-image: none !important;
+        border: 1px solid #387057 !important;
+        color: #387057 !important;
+        box-shadow: none !important;
     }
     
     .btn-action-approve:hover {
-        background-color: #2d5a47;
-        border-color: #2d5a47;
-        color: white;
+        background: #387057 !important;
+        background-image: none !important;
+        border: 1px solid #387057 !important;
+        color: white !important;
+        box-shadow: none !important;
     }
     
     .btn-action-reject {
@@ -2514,7 +2518,7 @@ function loadPendingAdmins() {
                         admin.username || '',
                         admin.created_at ? new Date(admin.created_at).toLocaleDateString() : '',
                         `<div class="btn-group">
-                            <button class="btn-action btn-action-edit" onclick="approveAdmin('${admin.id}')" title="Approve">
+                            <button class="btn-action btn-action-approve" onclick="approveAdmin('${admin.id}')" title="Approve">
                                 <i class="fas fa-check"></i>
                                 <span>Approve</span>
                             </button>
