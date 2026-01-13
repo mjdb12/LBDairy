@@ -24,19 +24,45 @@ class LivestockController extends Controller
     public function index()
     {
         $livestock = Livestock::with('farm')->get();
-        $farms = Farm::all(); // Add this line to get all farms
+        $farms = Farm::all();
+
         $totalLivestock = $livestock->count();
         $activeLivestock = $livestock->where('status', 'active')->count();
         $inactiveLivestock = $livestock->where('status', 'inactive')->count();
+        $deceasedLivestock = $livestock->where('status', 'deceased')->count();
+        $transferredLivestock = $livestock->where('status', 'transferred')->count();
+        $soldLivestock = $livestock->where('status', 'sold')->count();
         $totalFarms = Farm::count();
+
+        // Overall farm/farmer stats for the analysis-style cards
+        $activeFarmsCount = Farm::where('status', 'active')->count();
+        $totalFarmers = User::where('role', 'farmer')->count();
+
+        $avgProductivity = ProductionRecord::avg('milk_quantity') ?? 0;
+        $avgProductivity = round($avgProductivity, 1);
+
+        $topProducerRecord = ProductionRecord::select('farms.owner_id as user_id', DB::raw('AVG(production_records.milk_quantity) as avg_production'))
+            ->join('farms', 'production_records.farm_id', '=', 'farms.id')
+            ->groupBy('farms.owner_id')
+            ->orderBy('avg_production', 'desc')
+            ->first();
+
+        $topProducer = $topProducerRecord ? 'F' . str_pad($topProducerRecord->user_id, 3, '0', STR_PAD_LEFT) : null;
 
         return view('admin.manage-livestock', compact(
             'livestock',
-            'farms', // Add this to the compact array
+            'farms',
             'totalLivestock',
             'activeLivestock',
             'inactiveLivestock',
-            'totalFarms'
+            'deceasedLivestock',
+            'transferredLivestock',
+            'soldLivestock',
+            'totalFarms',
+            'activeFarmsCount',
+            'avgProductivity',
+            'topProducer',
+            'totalFarmers'
         ));
     }
 
@@ -822,6 +848,9 @@ class LivestockController extends Controller
                 'total' => $livestock->count(),
                 'active' => $livestock->where('status', 'active')->count(),
                 'inactive' => $livestock->where('status', 'inactive')->count(),
+                'deceased' => $livestock->where('status', 'deceased')->count(),
+                'transferred' => $livestock->where('status', 'transferred')->count(),
+                'sold' => $livestock->where('status', 'sold')->count(),
                 'farms' => $livestock->pluck('farm_id')->unique()->count()
             ];
 

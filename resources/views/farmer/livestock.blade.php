@@ -75,7 +75,21 @@
         </div>
     </div>
 
-            <!-- Livestock Table -->
+    <div class="card shadow mb-4 fade-in">
+        <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+            <h6 class="mb-0">
+                <i class="fas fa-chart-bar"></i>
+                Livestock Status Overview
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-container" style="height: 260px;">
+                <canvas id="farmerLivestockStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Livestock Table -->
     <div class="card shadow mb-4 fade-in" id="farmerSelectionCard">
         <div class="card-body d-flex flex-column flex-sm-row  justify-content-between gap-2 text-center text-sm-start">
             <h6 class="mb-0">
@@ -532,6 +546,76 @@
 
 <script>
 const CURRENT_FARMER_NAME = @json(Auth::user()->name);
+let farmerLivestockStatusChartInstance = null;
+
+function initializeFarmerLivestockStatusChart() {
+    const canvas = document.getElementById('farmerLivestockStatusChart');
+    if (!canvas || typeof Chart === 'undefined') {
+        return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    const data = {
+        labels: ['Active', 'Inactive', 'Deceased', 'Transferred', 'Sold'],
+        datasets: [{
+            label: 'Livestock Count',
+            data: [
+                {{ $activeLivestock ?? 0 }},
+                {{ $inactiveLivestock ?? 0 }},
+                {{ $deceasedLivestock ?? 0 }},
+                {{ $transferredLivestock ?? 0 }},
+                {{ $soldLivestock ?? 0 }}
+            ],
+            backgroundColor: [
+                '#1cc88a',
+                '#858796',
+                '#4b5563',
+                '#36b9cc',
+                '#f6c23e'
+            ],
+            hoverBackgroundColor: [
+                '#17a673',
+                '#6c757d',
+                '#374151',
+                '#2c9faf',
+                '#dda20a'
+            ],
+            borderColor: '#ffffff',
+            borderWidth: 2
+        }]
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                stacked: false
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    };
+
+    if (farmerLivestockStatusChartInstance) {
+        farmerLivestockStatusChartInstance.destroy();
+    }
+
+    farmerLivestockStatusChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options
+    });
+}
 function formatDateForInput(dateVal) {
     if (!dateVal) return '';
     try {
@@ -557,6 +641,7 @@ let currentLivestockPrintBasic = null;
 
 
 $(document).ready(function() {
+    initializeFarmerLivestockStatusChart();
     // Initialize DataTable only if the table exists
     if ($('#livestockTable').length > 0) {
         try {

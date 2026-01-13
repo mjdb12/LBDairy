@@ -2071,10 +2071,54 @@
 
     .action-toolbar .btn-action {
         font-size: 0.9rem;
-        padding: 0.4rem 0.8rem;
-        width: auto !important;
     }
-}
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        display: inline-block;
+        min-width: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0 0.125rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #ffffff;
+        color: #18375d;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #fff !important;
+        background-color: #18375d !important;
+        border-color: #18375d !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+        cursor: default;
+    }
+
+    /* Ensure pagination container stays left inside responsive tables */
+    .table-responsive .dataTables_wrapper .dataTables_paginate {
+        position: relative;
+        width: 100%;
+        text-align: left;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        text-align: left !important;
+        float: left !important;
+        margin-top: 0.5rem;
+    }
+
 </style>
 @endpush
 
@@ -2084,6 +2128,103 @@
             <i class="fas fa-clipboard-list"></i>Livestock Management
         </h1>
         <p>Select a farmer to view and manage their livestock</p>
+    </div>
+
+    <div class="row fade-in mb-3">
+        <!-- Active Farms -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Active Farms</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeFarmsCount ?? 0 }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-tractor fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avg Daily Production -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Avg Daily Production</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($avgProductivity ?? 0, 1) }}L</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-chart-bar fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Producer -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Top Producer</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $topProducer ?? 'N/A' }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-trophy fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Farmers -->
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #18375d !important;">Total Farmers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalFarmers ?? 0 }}</div>
+                    </div>
+                    <div class="icon" style="display: block !important; width: 60px; height: 60px; text-align: center; line-height: 60px;">
+                        <i class="fas fa-users fa-2x" style="color: #18375d !important; display: inline-block !important;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4 fade-in" id="globalStatusCard">
+        <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+            <h6 class="mb-0">
+                <i class="fas fa-chart-bar"></i>
+                Overall Livestock Status
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-container" style="height: 260px;">
+                <canvas id="globalLivestockStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4 fade-in" id="farmerStatusWrapper" style="display:none;">
+        <div class="card-body d-flex flex-column flex-sm-row justify-content-between gap-2 text-center text-sm-start">
+            <h6 class="mb-0">
+                <i class="fas fa-user"></i>
+                Selected Farmer Livestock Status
+            </h6>
+            <span id="selectedFarmerNameHeader" class="small text-muted"></span>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-6 col-md-3 mb-2"><strong>Total:</strong> <span id="farmerTotalLivestock">0</span></div>
+                <div class="col-6 col-md-3 mb-2"><strong>Active:</strong> <span id="farmerActiveLivestock">0</span></div>
+                <div class="col-6 col-md-3 mb-2"><strong>Inactive:</strong> <span id="farmerInactiveLivestock">0</span></div>
+                <div class="col-6 col-md-3 mb-2"><strong>Farms:</strong> <span id="farmerTotalFarms">0</span></div>
+            </div>
+            <div class="chart-container" style="height: 260px;">
+                <canvas id="farmerLivestockStatusChart"></canvas>
+            </div>
+        </div>
     </div>
 
     <!-- Farmer Selection Section -->
@@ -3077,7 +3218,151 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
+    let globalStatusChartInstance = null;
+    let farmerStatusChartInstance = null;
+
+    function initializeGlobalStatusChart() {
+        const canvas = document.getElementById('globalLivestockStatusChart');
+        if (!canvas || typeof Chart === 'undefined') {
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
+        const data = {
+            labels: ['Active', 'Inactive', 'Deceased', 'Transferred', 'Sold'],
+            datasets: [{
+                label: 'Livestock Count',
+                data: [
+                    {{ $activeLivestock ?? 0 }},
+                    {{ $inactiveLivestock ?? 0 }},
+                    {{ $deceasedLivestock ?? 0 }},
+                    {{ $transferredLivestock ?? 0 }},
+                    {{ $soldLivestock ?? 0 }}
+                ],
+                backgroundColor: [
+                    '#1cc88a', // active
+                    '#858796', // inactive
+                    '#4b5563', // deceased
+                    '#36b9cc', // transferred
+                    '#f6c23e'  // sold
+                ],
+                hoverBackgroundColor: [
+                    '#17a673',
+                    '#6c757d',
+                    '#374151',
+                    '#2c9faf',
+                    '#dda20a'
+                ],
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        };
+
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    stacked: false
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        };
+
+        if (globalStatusChartInstance) {
+            globalStatusChartInstance.destroy();
+        }
+
+        globalStatusChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    }
+
+    function updateFarmerStatusChart(payload) {
+        const canvas = document.getElementById('farmerLivestockStatusChart');
+        if (!canvas || typeof Chart === 'undefined') {
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
+        const data = {
+            labels: ['Active', 'Inactive', 'Deceased', 'Transferred', 'Sold'],
+            datasets: [{
+                label: 'Livestock Count',
+                data: [
+                    payload.active || 0,
+                    payload.inactive || 0,
+                    payload.deceased || 0,
+                    payload.transferred || 0,
+                    payload.sold || 0
+                ],
+                backgroundColor: [
+                    '#1cc88a',
+                    '#858796',
+                    '#4b5563',
+                    '#36b9cc',
+                    '#f6c23e'
+                ],
+                hoverBackgroundColor: [
+                    '#17a673',
+                    '#6c757d',
+                    '#374151',
+                    '#2c9faf',
+                    '#dda20a'
+                ],
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        };
+
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    stacked: false
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        };
+
+        if (farmerStatusChartInstance) {
+            farmerStatusChartInstance.destroy();
+        }
+
+        farmerStatusChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    }
+
     function formatDateForInput(dateVal) {
         if (!dateVal) return '';
         try {
@@ -3101,6 +3386,7 @@
 
    $(document).ready(function() {
         console.log('Document ready, initializing livestock farmers page...');
+        initializeGlobalStatusChart();
         
         // 🔍 Search functionality for Farmers Table
         $('#farmerSearch').on('keyup', function() {
@@ -3404,6 +3690,9 @@ if (typeof updateStats !== 'function') {
         selectedFarmerName = farmerName;
         
         $('#selectedFarmerName').text(farmerName);
+        $('#selectedFarmerNameHeader').text(farmerName);
+        $('#farmerStatusWrapper').show();
+        $('#globalStatusCard').hide();
         $('#selectedFarmerId').val(farmerId);
         
         $('#farmerSelectionCard').hide();
@@ -3419,6 +3708,8 @@ if (typeof updateStats !== 'function') {
         
         $('#farmerSelectionCard').show();
         $('#livestockCard').hide();
+        $('#farmerStatusWrapper').hide();
+        $('#globalStatusCard').show();
         
         $('#livestockTableBody').empty();
     }
@@ -3433,6 +3724,7 @@ if (typeof updateStats !== 'function') {
             url: `{{ route("admin.livestock.farmer-livestock", ["id" => "__ID__"]) }}`.replace('__ID__', farmerId),
             method: 'GET',
             success: function(response) {
+                console.log('Farmers response:', response);
                 if (!response.success) {
                     $('#livestockTableBody').html('<tr><td colspan="7" class="text-center text-danger">Error loading livestock</td></tr>');
                     return;
@@ -3622,6 +3914,15 @@ if (typeof updateStats !== 'function') {
         $('#farmerActiveLivestock').text(stats.active || 0);
         $('#farmerInactiveLivestock').text(stats.inactive || 0);
         $('#farmerTotalFarms').text(stats.farms || 0);
+
+        const payload = {
+            active: stats.active || 0,
+            inactive: stats.inactive || 0,
+            deceased: stats.deceased || 0,
+            transferred: stats.transferred || 0,
+            sold: stats.sold || 0
+        };
+        updateFarmerStatusChart(payload);
     }
 
     function refreshData() {

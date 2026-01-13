@@ -835,13 +835,24 @@ class FarmerController extends Controller
         $attentionNeeded = $livestock->where('health_status', '!=', 'healthy')->count();
         $productionReady = $livestock->where('status', 'active')->count(); // You can adjust this logic based on your needs
 
+        $activeLivestock = $livestock->where('status', 'active')->count();
+        $inactiveLivestock = $livestock->where('status', 'inactive')->count();
+        $deceasedLivestock = $livestock->where('status', 'deceased')->count();
+        $transferredLivestock = $livestock->where('status', 'transferred')->count();
+        $soldLivestock = $livestock->where('status', 'sold')->count();
+
         return view('farmer.livestock', compact(
             'livestock',
             'farms',
             'totalLivestock',
             'healthyLivestock',
             'attentionNeeded',
-            'productionReady'
+            'productionReady',
+            'activeLivestock',
+            'inactiveLivestock',
+            'deceasedLivestock',
+            'transferredLivestock',
+            'soldLivestock'
         ));
     }
 
